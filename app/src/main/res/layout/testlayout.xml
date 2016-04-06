@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/intro_prompt_one"
+        android:id="@+id/textView"
+        android:textColor="#004d86"
+        android:textIsSelectable="false"
+        android:textSize="60dp"
+        android:fontFamily="Verdana"
+        android:textStyle="bold|italic"
+        android:textAlignment="center"
+        android:paddingTop="60dp"
+        android:gravity="center_horizontal"
+        android:lineSpacingMultiplier="2"/>
+</LinearLayout>

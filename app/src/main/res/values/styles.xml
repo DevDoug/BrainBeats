@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- the theme applied to the application or activity -->
+    <style name="BrainBeatsTheme"
+        parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/TabTextStyle</item>
+        <item name="android:actionMenuTextColor">#FFFFFF</item>
+
+        <!-- Support library compatibility -->
+        <item name="actionBarStyle">@style/MyActionBar</item>
+        <item name="actionBarTabTextStyle">@style/TabTextStyle</item>
+        <item name="actionMenuTextColor">#FFFFFF</item>
+    </style>
+
+    <!-- general styles for the action bar -->
+    <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar">
+        <item name="android:titleTextStyle">@style/TitleTextStyle</item>
+        <item name="android:background">@color/ActionBarBackground</item>
+        <item name="android:backgroundStacked">@color/ActionBarBackground</item>
+        <item name="android:backgroundSplit">@color/ActionBarBackground</item>
+        <item name="android:colorAccent" tools:ignore="NewApi">#E3F2FD</item>
+
+        <!-- Support library compatibility -->
+        <item name="titleTextStyle">@style/TitleTextStyle</item>
+        <item name="background">@color/ActionBarBackground</item>
+        <item name="backgroundStacked">@color/ActionBarBackground</item>
+        <item name="backgroundSplit">@color/ActionBarBackground</item>
+    </style>
+
+    <!-- action bar title text -->
+    <style name="TitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:layout_gravity">center</item>
+
+    </style>
+
+    <!-- action bar tab text -->
+    <style name="TabTextStyle" parent="@style/Widget.AppCompat.ActionBar.TabText">
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <color name="ActionBarBackground">#2196F3</color>
+    <color name="alpha_wave_color">#64B5F6</color>
+    <color name="beta_wave_color">#E57373</color>
+    <color name="delta_wave_color">#FF8A65</color>
+    <color name="gamma_wave_color">#009688</color>
+
+</resources>
