@@ -429,7 +429,7 @@ public class WaveSketcher extends SurfaceView implements SurfaceHolder.Callback 
             mWavePaint= new Paint();
             mWavePaint.setColor(Color.BLACK);
             mWavePaint.setStrokeWidth(4);
-            mAlphaPaint.setColor(getResources().getColor(R.color.alpha_wave_color));
+/*            mAlphaPaint.setColor(getResources().getColor(R.color.alpha_wave_color));
             mAlphaPaint.setStrokeWidth(4);
             mAlphaPaint.setTextSize(60);
             mGammaPaint.setColor(getResources().getColor(R.color.beta_wave_color));
@@ -438,7 +438,7 @@ public class WaveSketcher extends SurfaceView implements SurfaceHolder.Callback 
             mThataPaint.setColor(getResources().getColor(R.color.delta_wave_color));
             mThataPaint.setStrokeWidth(4);
             mThataPaint.setTextSize(60);
-            mDeltaPaint.setColor(getResources().getColor(R.color.gamma_wave_color));
+            mDeltaPaint.setColor(getResources().getColor(R.color.gamma_wave_color));*/
             mDeltaPaint.setStrokeWidth(4);
             mDeltaPaint.setTextSize(60);
             mWaveTilesPaint = new Paint();
