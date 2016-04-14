@@ -5,11 +5,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.GridLayout;
+import android.widget.GridView;
 
 public class MainActivity extends AppCompatActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private Toolbar mDashboardToolbar;
+    private GridView mBeatsGrid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 
         mDashboardToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mDashboardToolbar);
+        mBeatsGrid = (GridView) findViewById(R.id.beats_grid);
     }
 
     @Override
