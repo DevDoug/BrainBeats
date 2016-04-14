@@ -3,6 +3,7 @@ package com.brainbeats;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -21,20 +22,15 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         setContentView(R.layout.activity_main);
 
         mDashboardToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mDashboardToolbar.setNavigationIcon(R.drawable.ic_menu_white);
         setSupportActionBar(mDashboardToolbar);
         mBeatsGrid = (GridView) findViewById(R.id.beats_grid);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-/*        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.dashboard, menu);
-            return true;
-        }*/
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_dashboard, menu);
+        return true;
     }
 
     @Override

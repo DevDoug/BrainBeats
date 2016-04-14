@@ -1,6 +1,5 @@
 package adapters;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +8,7 @@ import android.view.ViewGroup;
 /**
  * Created by Douglas on 4/13/2016.
  */
-public class BeatListAdapter extends RecyclerView.Adapter<BeatListAdapter.ViewHolder> {
+public class BeatAdapter extends RecyclerView.Adapter<BeatAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ViewHolder(View v) {
