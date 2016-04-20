@@ -2,29 +2,48 @@ package com.brainbeats;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.GridLayout;
-import android.widget.GridView;
+import java.util.ArrayList;
+import java.util.List;
+import adapters.BeatAdapter;
+import model.Beat;
 
-public class MainActivity extends AppCompatActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class MainActivity extends AppCompatActivity {
 
-    private NavigationDrawerFragment mNavigationDrawerFragment;
     private Toolbar mDashboardToolbar;
-    private GridView mBeatsGrid;
+    //TODO: Replace dummy data with data returned by sound cloud.
+    List<Beat> beatList = new ArrayList<>();
+    private RecyclerView mBeatsGrid;
+    private BeatAdapter mBeatAdapter;
+    private GridLayoutManager mBeatGridLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mBeatsGrid = (RecyclerView) findViewById(R.id.beats_grid);
+
         mDashboardToolbar = (Toolbar) findViewById(R.id.toolbar);
         mDashboardToolbar.setNavigationIcon(R.drawable.ic_menu_white);
+        mDashboardToolbar.setTitle(R.string.dashboard_title);
         setSupportActionBar(mDashboardToolbar);
-        mBeatsGrid = (GridView) findViewById(R.id.beats_grid);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        mBeatsGrid = (RecyclerView) findViewById(R.id.beats_grid);
+
+        mBeatAdapter = new BeatAdapter(this,beatList);
+        mBeatGridLayoutManager = new GridLayoutManager(getApplicationContext(),4);
+        mBeatsGrid.setLayoutManager(mBeatGridLayoutManager);
+        mBeatsGrid.setAdapter(mBeatAdapter);
+
+        getAlbumData();
     }
 
     @Override
@@ -47,21 +66,14 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onNavigationDrawerItemSelected(int position) {
-/*        // update the main content by replacing fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        switch (position) {
-            case 0:
-                fragmentManager.beginTransaction().replace(R.id.container, ExploreBeatsFragment.newInstance()).commit();
-                break;
-            case 1:
-                fragmentManager.beginTransaction().replace(R.id.container, LibraryFragment.newInstance()).commit();
-                break;
-            case 2:
-                fragmentManager.beginTransaction().replace(R.id.container, WikiFragment.newInstance()).commit();
-                break;
-        }*/
+    public void getAlbumData(){
+        beatList.add(new Beat());
+        beatList.get(0).setBeatTitle("Beat Title One");
+        beatList.add(new Beat());
+        beatList.get(1).setBeatTitle("Beat Title Two");
+        beatList.add(new Beat());
+        beatList.get(2).setBeatTitle("Beat Title Three");
+        mBeatAdapter.notifyDataSetChanged();
     }
 }
 

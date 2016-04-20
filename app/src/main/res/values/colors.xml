@@ -4,7 +4,7 @@
     <color name="theme_primary_color">#03A9F4</color>
     <color name="theme_accent_color">#009688</color>
     <color name="theme_light_primary_color">#B3E5FC</color>
-    <color name="theme_primary_text_color">#212121</color>
+    <color name="theme_primary_text_color">#FFFFFF</color>
     <color name="theme_secondary_text_color">#727272</color>
     <color name="theme_icons_color">#FFFFFF</color>
     <color name="theme_divider_color">#B6B6B6</color>
