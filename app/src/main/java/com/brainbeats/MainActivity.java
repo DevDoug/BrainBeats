@@ -1,5 +1,6 @@
 package com.brainbeats;
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -29,14 +30,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mBeatsGrid = (RecyclerView) findViewById(R.id.beats_grid);
-
         mDashboardToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mDashboardToolbar.setNavigationIcon(R.drawable.ic_menu_white);
-        mDashboardToolbar.setTitle(R.string.dashboard_title);
-        setSupportActionBar(mDashboardToolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        mBeatsGrid = (RecyclerView) findViewById(R.id.beats_grid);
+/*        mDashboardToolbar.setTitle(R.string.dashboard_title);
+        mDashboardToolbar.setLogo(R.drawable.ic_navigation_drawer);*/
+        setSupportActionBar(mDashboardToolbar);
+        //getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mBeatAdapter = new BeatAdapter(this,beatList);
         mBeatGridLayoutManager = new GridLayoutManager(getApplicationContext(),4);
@@ -69,10 +68,16 @@ public class MainActivity extends AppCompatActivity {
     public void getAlbumData(){
         beatList.add(new Beat());
         beatList.get(0).setBeatTitle("Beat Title One");
+        beatList.get(0).setBeatAlbumCoverArt(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder));
         beatList.add(new Beat());
         beatList.get(1).setBeatTitle("Beat Title Two");
+        beatList.get(1).setBeatAlbumCoverArt(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder));
         beatList.add(new Beat());
         beatList.get(2).setBeatTitle("Beat Title Three");
+        beatList.get(2).setBeatAlbumCoverArt(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder));
+        beatList.add(new Beat());
+        beatList.get(3).setBeatTitle("Beat Title Three");
+        beatList.get(3).setBeatAlbumCoverArt(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder));
         mBeatAdapter.notifyDataSetChanged();
     }
 }

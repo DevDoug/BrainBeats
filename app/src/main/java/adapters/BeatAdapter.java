@@ -32,7 +32,7 @@ public class BeatAdapter extends RecyclerView.Adapter<BeatAdapter.ViewHolder> {
 
         public ViewHolder(View v) {
             super(v);
-            //mAlbumArtCover = (ImageView) v.findViewById(R.id.album_cover_art);
+            mAlbumArtCover = (ImageView) v.findViewById(R.id.album_cover_art);
             mAlbumTitle = (TextView) v.findViewById(R.id.album_title);
         }
     }
@@ -47,6 +47,7 @@ public class BeatAdapter extends RecyclerView.Adapter<BeatAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.mAlbumTitle.setText(mBeats.get(position).getBeatTitle());
+        holder.mAlbumArtCover.setImageBitmap(mBeats.get(position).getBeatAlbumCoverArt());
     }
 
     @Override
