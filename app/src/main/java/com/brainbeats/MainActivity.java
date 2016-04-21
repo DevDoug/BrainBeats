@@ -2,6 +2,8 @@ package com.brainbeats;
 
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,12 +15,13 @@ import android.support.v7.widget.Toolbar;
 import java.util.ArrayList;
 import java.util.List;
 import adapters.BeatAdapter;
+import architecture.BaseActivity;
 import model.Beat;
+import utils.Constants;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private Toolbar mDashboardToolbar;
-    //TODO: Replace dummy data with data returned by sound cloud.
     List<Beat> beatList = new ArrayList<>();
     private RecyclerView mBeatsGrid;
     private BeatAdapter mBeatAdapter;
@@ -32,13 +35,12 @@ public class MainActivity extends AppCompatActivity {
         mBeatsGrid = (RecyclerView) findViewById(R.id.beats_grid);
         mDashboardToolbar = (Toolbar) findViewById(R.id.toolbar);
 
-/*        mDashboardToolbar.setTitle(R.string.dashboard_title);
-        mDashboardToolbar.setLogo(R.drawable.ic_navigation_drawer);*/
+        mDashboardToolbar.setTitle(R.string.dashboard_title);
+        mDashboardToolbar.setLogo(R.drawable.ic_navigation);
         setSupportActionBar(mDashboardToolbar);
-        //getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mBeatAdapter = new BeatAdapter(this,beatList);
-        mBeatGridLayoutManager = new GridLayoutManager(getApplicationContext(),4);
+        mBeatGridLayoutManager = new GridLayoutManager(getApplicationContext(), Constants.GRID_SPAN_COUNT);
         mBeatsGrid.setLayoutManager(mBeatGridLayoutManager);
         mBeatsGrid.setAdapter(mBeatAdapter);
 
@@ -65,15 +67,16 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //TODO: Replace dummy data with real data from sound cloud
     public void getAlbumData(){
         beatList.add(new Beat());
-        beatList.get(0).setBeatTitle("Beat Title One");
+        beatList.get(0).setBeatTitle("Focus");
         beatList.get(0).setBeatAlbumCoverArt(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder));
         beatList.add(new Beat());
-        beatList.get(1).setBeatTitle("Beat Title Two");
+        beatList.get(1).setBeatTitle("Meditation");
         beatList.get(1).setBeatAlbumCoverArt(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder));
         beatList.add(new Beat());
-        beatList.get(2).setBeatTitle("Beat Title Three");
+        beatList.get(2).setBeatTitle("Relaxation");
         beatList.get(2).setBeatAlbumCoverArt(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder));
         beatList.add(new Beat());
         beatList.get(3).setBeatTitle("Beat Title Three");
