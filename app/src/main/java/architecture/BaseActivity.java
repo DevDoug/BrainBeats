@@ -50,7 +50,7 @@ public class BaseActivity extends AppCompatActivity {
         mToolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolBar);
         if (mToolBar != null) {
-            mToolBar.setNavigationIcon(R.drawable.ic_ab_drawer);
+            mToolBar.setNavigationIcon(R.drawable.ic_navigation);
             mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

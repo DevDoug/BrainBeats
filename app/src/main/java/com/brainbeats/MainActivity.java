@@ -30,8 +30,6 @@ public class MainActivity extends BaseActivity {
 
         Toolbar mDashboardToolbar = getToolBar();
         mDashboardToolbar.setTitle(R.string.dashboard_title);
-        mDashboardToolbar.setLogo(R.drawable.ic_navigation);
-        setSupportActionBar(mDashboardToolbar);
 
         mBeatAdapter = new BeatAdapter(this,beatList);
         mBeatGridLayoutManager = new GridLayoutManager(getApplicationContext(), Constants.GRID_SPAN_COUNT);
