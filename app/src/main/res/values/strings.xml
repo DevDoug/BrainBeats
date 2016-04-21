@@ -10,20 +10,10 @@
     <!-- Menu itmes-->
     <string name="action_settings">Settings</string>
 
-    <!-- Navigation drawer -->
-    <string name="nav_item_dashboard">Dashboard</string>
-    <string name="nav_item_friends">Friends</string>
-    <string name="nav_item_notifications">Messages</string>
-
-    <!-- navigation drawer item labels  -->
-    <string-array name="nav_drawer_labels">
-        <item>@string/nav_item_dashboard</item>
-        <item>@string/nav_item_friends</item>
-        <item>@string/nav_item_notifications</item>
-    </string-array>
-
-    <string name="title_messages">Messages</string>
-    <string name="title_friends">Friends</string>
-    <string name="title_home">Home</string>
+    <!-- Navigation drawer item labels -->
+    <string name="nav_item_label_dashboard">Dashboard</string>
+    <string name="nav_item_label_library">Library</string>
+    <string name="nav_item_label_mixer">Mixer</string>
+    <string name="nav_item_label_social">Social</string>
 
 </resources>

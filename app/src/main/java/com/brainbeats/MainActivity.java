@@ -2,12 +2,7 @@ package com.brainbeats;
 
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,7 +16,6 @@ import utils.Constants;
 
 public class MainActivity extends BaseActivity {
 
-    private Toolbar mDashboardToolbar;
     List<Beat> beatList = new ArrayList<>();
     private RecyclerView mBeatsGrid;
     private BeatAdapter mBeatAdapter;
@@ -33,8 +27,8 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
         mBeatsGrid = (RecyclerView) findViewById(R.id.beats_grid);
-        mDashboardToolbar = (Toolbar) findViewById(R.id.toolbar);
 
+        Toolbar mDashboardToolbar = getToolBar();
         mDashboardToolbar.setTitle(R.string.dashboard_title);
         mDashboardToolbar.setLogo(R.drawable.ic_navigation);
         setSupportActionBar(mDashboardToolbar);
