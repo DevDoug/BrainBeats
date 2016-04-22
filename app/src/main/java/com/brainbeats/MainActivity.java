@@ -1,5 +1,8 @@
 package com.brainbeats;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -71,9 +74,18 @@ public class MainActivity extends BaseActivity {
         beatList.get(2).setBeatTitle("Relaxation");
         beatList.get(2).setBeatAlbumCoverArt(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder));
         beatList.add(new Beat());
-        beatList.get(3).setBeatTitle("Beat Title Three");
+        beatList.get(3).setBeatTitle("Yoga");
         beatList.get(3).setBeatAlbumCoverArt(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder));
         mBeatAdapter.notifyDataSetChanged();
+    }
+
+
+    public void loadBeatDetailFragment(){
+/*        FragmentManager fragManager = getSupportFragmentManager();
+        DashboardDetailFragment dashDetailFragment = new DashboardDetailFragment();
+        FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+        fragmentTransaction.add(dashDetailFragment, )*/
+
     }
 }
 

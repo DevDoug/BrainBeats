@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/placeholder"
         android:layout_marginBottom="@dimen/album_art_title_margin_bottom"
-        android:scaleType="fitCenter" />
+        android:adjustViewBounds="true"/>
 
     <TextView
         android:id="@+id/album_title"

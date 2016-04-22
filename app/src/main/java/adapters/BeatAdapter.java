@@ -1,5 +1,7 @@
 package adapters;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.brainbeats.MainActivity;
 import com.brainbeats.R;
 import java.util.List;
 
@@ -21,7 +25,7 @@ public class BeatAdapter extends RecyclerView.Adapter<BeatAdapter.ViewHolder> {
     Context mAdapterContext;
     List<Beat> mBeats;
 
-    public BeatAdapter(Context context,List<Beat> data) {
+    public BeatAdapter(Context context, List<Beat> data) {
         mAdapterContext = context;
         mBeats = data;
     }
@@ -34,6 +38,13 @@ public class BeatAdapter extends RecyclerView.Adapter<BeatAdapter.ViewHolder> {
             super(v);
             mAlbumArtCover = (ImageView) v.findViewById(R.id.album_cover_art);
             mAlbumTitle = (TextView) v.findViewById(R.id.album_title);
+
+            mAlbumArtCover.setOnClickListener(new View.OnClickListener() { //Beat selected load detail screen
+                @Override
+                public void onClick(View v) {
+                    ((MainActivity) mAdapterContext).loadBeatDetailFragment();
+                }
+            });
         }
     }
 
