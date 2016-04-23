@@ -31,12 +31,10 @@
             </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/beats_grid"
+        <FrameLayout
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="?attr/actionBarSize">
-        </android.support.v7.widget.RecyclerView>
+            android:layout_height="match_parent"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

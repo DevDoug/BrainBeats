@@ -1,45 +1,29 @@
 package com.brainbeats;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.support.v7.widget.Toolbar;
-import java.util.ArrayList;
-import java.util.List;
-import adapters.BeatAdapter;
 import architecture.BaseActivity;
-import model.Beat;
-import utils.Constants;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements DashboardFragment.OnFragmentInteractionListener, DashboardDetailFragment.OnFragmentInteractionListener{
 
-    List<Beat> beatList = new ArrayList<>();
-    private RecyclerView mBeatsGrid;
-    private BeatAdapter mBeatAdapter;
-    private GridLayoutManager mBeatGridLayoutManager;
+    Fragment mDashboardFragment;
+    Fragment mDashboardDetailFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mBeatsGrid = (RecyclerView) findViewById(R.id.beats_grid);
-
         Toolbar mDashboardToolbar = getToolBar();
         mDashboardToolbar.setTitle(R.string.dashboard_title);
-
-        mBeatAdapter = new BeatAdapter(this,beatList);
-        mBeatGridLayoutManager = new GridLayoutManager(getApplicationContext(), Constants.GRID_SPAN_COUNT);
-        mBeatsGrid.setLayoutManager(mBeatGridLayoutManager);
-        mBeatsGrid.setAdapter(mBeatAdapter);
-
-        getAlbumData();
+        mDashboardFragment = new DashboardFragment();
+        mDashboardDetailFragment = new DashboardDetailFragment();
+        switchToDashboardFragment();
     }
 
     @Override
@@ -62,30 +46,24 @@ public class MainActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    //TODO: Replace dummy data with real data from sound cloud
-    public void getAlbumData(){
-        beatList.add(new Beat());
-        beatList.get(0).setBeatTitle("Focus");
-        beatList.get(0).setBeatAlbumCoverArt(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder));
-        beatList.add(new Beat());
-        beatList.get(1).setBeatTitle("Meditation");
-        beatList.get(1).setBeatAlbumCoverArt(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder));
-        beatList.add(new Beat());
-        beatList.get(2).setBeatTitle("Relaxation");
-        beatList.get(2).setBeatAlbumCoverArt(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder));
-        beatList.add(new Beat());
-        beatList.get(3).setBeatTitle("Yoga");
-        beatList.get(3).setBeatAlbumCoverArt(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder));
-        mBeatAdapter.notifyDataSetChanged();
+    public void switchToDashboardFragment(){
+        replaceFragment(mDashboardFragment, mDashboardFragment.getTag());
     }
 
 
     public void loadBeatDetailFragment(){
-/*        FragmentManager fragManager = getSupportFragmentManager();
-        DashboardDetailFragment dashDetailFragment = new DashboardDetailFragment();
-        FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
-        fragmentTransaction.add(dashDetailFragment, )*/
+        replaceFragment(mDashboardDetailFragment, mDashboardDetailFragment.getTag());
+    }
+
+    private void replaceFragment(Fragment fragment, String fragmentTag) {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragment, fragmentTag);
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
     }
 }
-
