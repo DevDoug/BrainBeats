@@ -8,4 +8,7 @@
     <color name="theme_secondary_text_color">#727272</color>
     <color name="theme_icons_color">#FFFFFF</color>
     <color name="theme_divider_color">#B6B6B6</color>
+
+    <color name="blue_horizontal_divider_background_color">#b3e4fb</color>
+
 </resources>
