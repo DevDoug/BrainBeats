@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
+        <item
+            android:id="@+id/dashboard"
+            android:icon="@drawable/ic_dashboard"
+            android:title="@string/nav_item_label_dashboard" />
+        <item
+            android:id="@+id/library"
+            android:icon="@drawable/ic_library_music"
+            android:title="@string/nav_item_label_library"/>
+        <item
+            android:id="@+id/mixer"
+            android:icon="@drawable/ic_album"
+            android:title="@string/nav_item_label_mixer"/>
+        <item
+            android:id="@+id/social"
+            android:icon="@drawable/ic_navview_social"
+            android:title="@string/nav_item_label_social"/>
+    </group>
+</menu>

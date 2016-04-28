@@ -1,0 +1,25 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:
+         https://developer.android.com/design/patterns/navigation-drawer.html -->
+    <dimen name="navigation_drawer_width">240dp</dimen>
+    <dimen name="album_title_text_size">16sp</dimen>
+
+    <!-- Dashboard screen dimens. -->
+    <dimen name="album_art_title_margin_bottom">10dp</dimen>
+    <dimen name="beat_grid_item_padding">5dp</dimen>
+
+    <!-- Nav drawer dimens. -->
+    <dimen name="nav_drawer_height">200dp</dimen>
+    <dimen name="navview_start_padding">16dp</dimen>
+    <dimen name="navview_end_padding">16dp</dimen>
+    <dimen name="navview_top_padding">16dp</dimen>
+    <dimen name="navview_header_bottom_padding">16dp</dimen>
+    <dimen name="navview_between_text_and_account_selector">16dp</dimen>
+    <dimen name="navview_account_list_top_padding">8dp</dimen>
+    <dimen name="navview_menu_item_top_bottom_padding">8dp</dimen>
+
+</resources>

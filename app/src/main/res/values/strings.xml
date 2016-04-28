@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">BrainBeats</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- App titles -->
+    <string name="dashboard_title">Dashboard</string>
+
+    <!-- Menu itmes-->
+    <string name="action_settings">Settings</string>
+
+    <!-- Navigation drawer items -->
+    <string name="nav_item_label_dashboard">Dashboard</string>
+    <string name="nav_item_label_library">Library</string>
+    <string name="nav_item_label_mixer">Mixer</string>
+    <string name="nav_item_label_social">Social</string>
+    <string name="navview_header_default_image_content_description">Navigation drawer default image</string>
+    <string name="nav_drawer_open_text">Nav Drawer Open</string>
+    <string name="nav_drawer_closed_text">Nav Drawer Closed</string>
+
+</resources>
