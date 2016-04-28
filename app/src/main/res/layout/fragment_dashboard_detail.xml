@@ -51,7 +51,26 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/blue_horizontal_divider_width"
         android:layout_below="@+id/play_song_seek_bar"
-        android:layout_marginTop="@dimen/fragment_content_item_top_margin" />
+        android:layout_marginTop="@dimen/fragment_content_item_top_margin"
+        android:id="@+id/include" />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/album_title_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/include"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true">
+    </android.support.v7.widget.RecyclerView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp" />
 
 </RelativeLayout>

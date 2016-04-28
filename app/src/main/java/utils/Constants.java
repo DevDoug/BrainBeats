@@ -14,6 +14,9 @@ public class Constants {
     public static final int NAVDRAWER_ITEM_LIBRARY = 1;
     public static final int NAVDRAWER_ITEM_MIXER = 2;
     public static final int NAVDRAWER_ITEM_SOCIAL = 3;
+    public static final int NAVDRAWER_ITEM_SETTINGS = 4;
+    public static final int NAVDRAWER_ITEM_ABOUT = 5;
+
 
     // Titles for navdrawer items (indices must correspond to the above)
     private static final int[] NAVDRAWER_TITLE_RES_ID = new int[]{

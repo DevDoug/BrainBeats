@@ -138,7 +138,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public  void toggleNavDrawerIcon(){
-        mDrawerToggle.setDrawerIndicatorEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void createNavDrawerItems() {

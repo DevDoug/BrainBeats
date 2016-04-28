@@ -2,20 +2,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group>
         <item
-            android:id="@+id/dashboard"
+            android:id="@+id/action_dashboard"
             android:icon="@drawable/ic_dashboard"
             android:title="@string/nav_item_label_dashboard" />
         <item
-            android:id="@+id/library"
+            android:id="@+id/action_library"
             android:icon="@drawable/ic_library_music"
             android:title="@string/nav_item_label_library"/>
         <item
-            android:id="@+id/mixer"
+            android:id="@+id/action_mixer"
             android:icon="@drawable/ic_album"
             android:title="@string/nav_item_label_mixer"/>
         <item
-            android:id="@+id/social"
+            android:id="@+id/action_social"
             android:icon="@drawable/ic_navview_social"
             android:title="@string/nav_item_label_social"/>
+        <item
+            android:id="@+id/action_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/nav_item_label_settings"/>
+        <item
+            android:id="@+id/action_info"
+            android:icon="@drawable/ic_info_outline"
+            android:title="@string/nav_item_label_info"/>
     </group>
 </menu>
