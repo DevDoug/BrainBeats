@@ -1,16 +1,33 @@
 package com.brainbeats;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import adapters.BeatAdapter;
+import model.Beat;
+import utils.Constants;
 
 public class DashboardDetailFragment extends Fragment {
     public static final String TAG = "DashboardDetailFragment";
 
+    List<Beat> beatList = new ArrayList<>();
+    private RecyclerView mAlbumTrackList;
+    private BeatAdapter mBeatAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
     private OnFragmentInteractionListener mListener;
 
     public DashboardDetailFragment() {
@@ -20,12 +37,51 @@ public class DashboardDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        // update the actionbar to show the up carat/affordance
+        //((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dashboard_detail, container, false);
+        View v = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        mAlbumTrackList = (RecyclerView) v.findViewById(R.id.beats_grid);
+        return v;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mBeatAdapter = new BeatAdapter(getContext(),beatList);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mAlbumTrackList.setLayoutManager(mLayoutManager);
+        mAlbumTrackList.setAdapter(mBeatAdapter);
+
+        getBeatData();
+    }
+
+    //TODO: Replace dummy data with real data from sound cloud
+    public void getBeatData(){
+        beatList.add(new Beat());
+        beatList.get(0).setBeatTitle("Focus");
+        beatList.add(new Beat());
+        beatList.get(1).setBeatTitle("Meditation");
+        beatList.add(new Beat());
+        beatList.get(2).setBeatTitle("Relaxation");
+        beatList.add(new Beat());
+        beatList.get(3).setBeatTitle("Yoga");
+        mBeatAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Get item selected and deal with it
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                //called when the up affordance/carat in actionbar is pressed
+                getActivity().onBackPressed();
+        }
+        return true;
     }
 
     public void onButtonPressed(Uri uri) {

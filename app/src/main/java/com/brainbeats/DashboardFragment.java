@@ -51,11 +51,11 @@ public class DashboardFragment extends Fragment {
         mBeatsGrid.setLayoutManager(mBeatGridLayoutManager);
         mBeatsGrid.setAdapter(mBeatAdapter);
 
-        getAlbumData();
+        getBeatData();
     }
 
     //TODO: Replace dummy data with real data from sound cloud
-    public void getAlbumData(){
+    public void getBeatData(){
         beatList.add(new Beat());
         beatList.get(0).setBeatTitle("Focus");
         beatList.get(0).setBeatAlbumCoverArt(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder));
