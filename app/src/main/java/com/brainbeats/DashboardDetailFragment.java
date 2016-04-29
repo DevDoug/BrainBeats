@@ -1,32 +1,28 @@
 package com.brainbeats;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import adapters.BeatAdapter;
+import adapters.BeatAlbumAdapter;
 import model.Beat;
-import utils.Constants;
 
 public class DashboardDetailFragment extends Fragment {
     public static final String TAG = "DashboardDetailFragment";
 
     List<Beat> beatList = new ArrayList<>();
     private RecyclerView mAlbumTrackList;
-    private BeatAdapter mBeatAdapter;
+    private BeatAlbumAdapter mBeatAlbumAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private OnFragmentInteractionListener mListener;
 
@@ -38,8 +34,6 @@ public class DashboardDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        // update the actionbar to show the up carat/affordance
-        //((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -52,10 +46,10 @@ public class DashboardDetailFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mBeatAdapter = new BeatAdapter(getContext(),beatList);
-        mLayoutManager = new LinearLayoutManager(getContext());
+        mBeatAlbumAdapter = new BeatAlbumAdapter(getContext(),beatList);
+        mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false);
         mAlbumTrackList.setLayoutManager(mLayoutManager);
-        mAlbumTrackList.setAdapter(mBeatAdapter);
+        mAlbumTrackList.setAdapter(mBeatAlbumAdapter);
 
         getBeatData();
     }
@@ -70,7 +64,7 @@ public class DashboardDetailFragment extends Fragment {
         beatList.get(2).setBeatTitle("Relaxation");
         beatList.add(new Beat());
         beatList.get(3).setBeatTitle("Yoga");
-        mBeatAdapter.notifyDataSetChanged();
+        mBeatAlbumAdapter.notifyDataSetChanged();
     }
 
     @Override
