@@ -11,5 +11,5 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/album_title_text_size"
         android:text="My sick beatzz"
-        android:gravity="center"/>
+        android:gravity="start"/>
 </RelativeLayout>

@@ -27,5 +27,10 @@
 
     <dimen name="blue_horizontal_divider_width">60dp</dimen>
     <dimen name="blue_horizontal_divider_title_text_size">21sp</dimen>
+    <dimen name="floaring_action_button_bottom_margin">20dp</dimen>
+    <dimen name="floaring_action_button_right_margin">20dp</dimen>
+    <dimen name="fob_elevation">8dp</dimen>
+    <dimen name="seek_bar_start_margin">28dp</dimen>
+    <dimen name="seek_bar_margin_left">28dp</dimen>
 
 </resources>

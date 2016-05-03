@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
-import adapters.BeatAdapter;
 import adapters.BeatAlbumAdapter;
 import model.Beat;
 
@@ -38,8 +37,8 @@ public class DashboardDetailFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_dashboard, container, false);
-        mAlbumTrackList = (RecyclerView) v.findViewById(R.id.beats_grid);
+        View v = inflater.inflate(R.layout.fragment_dashboard_detail, container, false);
+        mAlbumTrackList = (RecyclerView) v.findViewById(R.id.album_title_list);
         return v;
     }
 

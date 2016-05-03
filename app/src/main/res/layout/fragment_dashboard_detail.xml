@@ -42,8 +42,8 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/imageView2"
         android:layout_toRightOf="@+id/imageView2"
-        android:layout_marginLeft="28dp"
-        android:layout_marginStart="28dp"
+        android:layout_marginLeft="@dimen/seek_bar_margin_left"
+        android:layout_marginStart="@dimen/seek_bar_start_margin"
         android:layout_alignBottom="@+id/imageView2" />
 
     <include
@@ -52,14 +52,15 @@
         android:layout_height="@dimen/blue_horizontal_divider_width"
         android:layout_below="@+id/play_song_seek_bar"
         android:layout_marginTop="@dimen/fragment_content_item_top_margin"
-        android:id="@+id/include" />
+        android:id="@+id/blue_line_seperator" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/include"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/blue_line_seperator">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/album_title_list"
@@ -76,7 +77,8 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:src="@drawable/ic_add_white"
-        android:layout_marginBottom="20dp"
-        android:layout_marginRight="20dp" />
+        android:elevation="@dimen/fob_elevation"
+        android:layout_marginBottom="@dimen/floaring_action_button_bottom_margin"
+        android:layout_marginRight="@dimen/floaring_action_button_right_margin" />
 
 </RelativeLayout>

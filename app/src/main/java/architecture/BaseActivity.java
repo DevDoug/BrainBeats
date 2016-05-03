@@ -1,15 +1,30 @@
 package architecture;
 
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
+
+import com.brainbeats.DashboardFragment;
+import com.brainbeats.LibraryActivity;
+import com.brainbeats.MainActivity;
+import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
+import com.brainbeats.SettingsActivity;
+import com.brainbeats.SocialActivity;
+
 import utils.Constants;
 import java.util.ArrayList;
 
@@ -20,24 +35,19 @@ public class BaseActivity extends AppCompatActivity {
 
     private DrawerLayout mNavigationDrawer;
     private Toolbar mToolBar;
-    private ArrayList<Integer> mNavDrawerItems = new ArrayList<Integer>();
     public ActionBarDrawerToggle mDrawerToggle;
+    public NavigationView mNavView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            ab.setDisplayHomeAsUpEnabled(true);
-        }
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        getToolBar();
         setUpNavDrawer();
-        mDrawerToggle.syncState();
     }
 
     @Override
@@ -58,26 +68,51 @@ public class BaseActivity extends AppCompatActivity {
 
     public void setUpNavDrawer(){
         mNavigationDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mNavigationDrawer.setStatusBarBackgroundColor(getResources().getColor(R.color.theme_primary_dark_color));
+        mToolBar = (Toolbar) findViewById(R.id.toolbar);
+        mNavView = (NavigationView) findViewById(R.id.navView);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this,mNavigationDrawer, mToolBar, R.string.nav_drawer_open_text, R.string.nav_drawer_closed_text);
+        setSupportActionBar(mToolBar);
+        mDrawerToggle = new ActionBarDrawerToggle(this,  mNavigationDrawer, mToolBar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mNavigationDrawer.addDrawerListener(mDrawerToggle);
 
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mDrawerToggle.syncState();
-
-        if (mToolBar != null) {
-            mToolBar.setNavigationIcon(R.drawable.ic_ab_drawer);
-            mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mNavigationDrawer.openDrawer(GravityCompat.START);
+        mNavView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_dashboard:
+                        createBackStack(new Intent(getApplicationContext(), MainActivity.class));
+                        break;
+                    case R.id.action_library:
+                        createBackStack(new Intent(getApplicationContext(), LibraryActivity.class));
+                        break;
+                    case R.id.action_mixer:
+                        createBackStack(new Intent(getApplicationContext(), MixerActivity.class));
+                        break;
+                    case R.id.action_social:
+                        createBackStack(new Intent(getApplicationContext(), SocialActivity.class));
+                        break;
+                    case R.id.action_settings:
+                        createBackStack(new Intent(getApplicationContext(), SettingsActivity.class));
+                        break;
+                    default:
+                        return false;
                 }
-            });
-        }
+                return true;
+            }
+        });
 
-        populateNavDrawer();
+        mDrawerToggle.syncState();
+    }
+
+    public void createBackStack(Intent backStackIntent){
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+            TaskStackBuilder taskSstackBuilder = TaskStackBuilder.create(this);
+            taskSstackBuilder.addNextIntentWithParentStack(backStackIntent);
+            taskSstackBuilder.startActivities();
+        } else {
+            startActivity(backStackIntent);
+            finish();
+        }
     }
 
     public Toolbar getToolBar(){
@@ -95,13 +130,6 @@ public class BaseActivity extends AppCompatActivity {
         return mToolBar;
     }
 
-    private void populateNavDrawer() {
-        mNavDrawerItems.add(Constants.NAVDRAWER_ITEM_DASHBOARD);
-        mNavDrawerItems.add(Constants.NAVDRAWER_ITEM_LIBRARY);
-        mNavDrawerItems.add(Constants.NAVDRAWER_ITEM_MIXER);
-        mNavDrawerItems.add(Constants.NAVDRAWER_ITEM_SOCIAL);
-    }
-
     protected boolean isNavDrawerOpen() {
         return mNavigationDrawer != null && mNavigationDrawer.isDrawerOpen(GravityCompat.START);
     }
@@ -114,6 +142,5 @@ public class BaseActivity extends AppCompatActivity {
 
     public  void toggleNavDrawerIcon(){
         mDrawerToggle.setDrawerIndicatorEnabled(false);
-        mDrawerToggle.syncState();
     }
 }
