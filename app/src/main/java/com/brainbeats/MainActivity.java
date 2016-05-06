@@ -31,13 +31,6 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
         replaceFragment(mDashboardDetailFragment, mDashboardDetailFragment.getTag());
     }
 
-    private void replaceFragment(Fragment fragment, String fragmentTag) {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, fragment, fragmentTag);
-        fragmentTransaction.commit();
-    }
-
     @Override
     public void onFragmentInteraction(Uri uri) {
 

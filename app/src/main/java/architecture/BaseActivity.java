@@ -6,6 +6,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -102,6 +105,13 @@ public class BaseActivity extends AppCompatActivity {
         });
 
         mDrawerToggle.syncState();
+    }
+
+    public void replaceFragment(Fragment fragment, String fragmentTag) {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragment, fragmentTag);
+        fragmentTransaction.commit();
     }
 
     public void createBackStack(Intent backStackIntent){
