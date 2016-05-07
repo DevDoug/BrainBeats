@@ -7,12 +7,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-public class LibraryFragment extends Fragment {
+public class SocialFragment extends Fragment {
+
     private OnFragmentInteractionListener mListener;
 
-    public LibraryFragment() {
+    public SocialFragment() {
+        // Required empty public constructor
     }
 
     @Override
@@ -21,11 +22,8 @@ public class LibraryFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        TextView textView = new TextView(getActivity());
-        textView.setText(R.string.hello_blank_fragment);
-        return textView;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_social, container, false);
     }
 
     public void onButtonPressed(Uri uri) {
@@ -52,6 +50,7 @@ public class LibraryFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }
