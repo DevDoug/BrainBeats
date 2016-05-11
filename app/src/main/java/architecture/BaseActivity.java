@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,24 +11,17 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
-
-import com.brainbeats.DashboardFragment;
 import com.brainbeats.LibraryActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import com.brainbeats.SettingsActivity;
 import com.brainbeats.SocialActivity;
-
-import utils.Constants;
-import java.util.ArrayList;
 
 /**
  * Created by Douglas on 4/21/2016.
@@ -49,8 +41,8 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        getToolBar();
         setUpNavDrawer();
+        mDrawerToggle.syncState();
     }
 
     @Override
@@ -61,7 +53,7 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        //mDrawerToggle.setDrawerIndicatorEnabled(true);
         if (isNavDrawerOpen()) {
             closeNavDrawer();
         } else {
@@ -104,6 +96,8 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         mDrawerToggle.syncState();
     }
 
