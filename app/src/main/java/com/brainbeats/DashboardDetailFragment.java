@@ -37,7 +37,6 @@ public class DashboardDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-        getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }

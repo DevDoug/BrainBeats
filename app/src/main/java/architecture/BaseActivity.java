@@ -5,23 +5,30 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
+import android.view.ViewGroup;
+
 import com.brainbeats.LibraryActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import com.brainbeats.SettingsActivity;
 import com.brainbeats.SocialActivity;
+
+import adapters.ViewPagerAdapter;
 
 /**
  * Created by Douglas on 4/21/2016.
@@ -32,6 +39,8 @@ public class BaseActivity extends AppCompatActivity {
     private Toolbar mToolBar;
     public ActionBarDrawerToggle mDrawerToggle;
     public NavigationView mNavView;
+    public TabLayout mTabLayout;
+    public ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +62,7 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //mDrawerToggle.setDrawerIndicatorEnabled(true);
+       // mDrawerToggle.setDrawerIndicatorEnabled(true);
         if (isNavDrawerOpen()) {
             closeNavDrawer();
         } else {
@@ -65,7 +74,6 @@ public class BaseActivity extends AppCompatActivity {
         mNavigationDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToolBar = (Toolbar) findViewById(R.id.toolbar);
         mNavView = (NavigationView) findViewById(R.id.navView);
-
         setSupportActionBar(mToolBar);
         mDrawerToggle = new ActionBarDrawerToggle(this,  mNavigationDrawer, mToolBar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mNavigationDrawer.addDrawerListener(mDrawerToggle);
@@ -147,4 +155,5 @@ public class BaseActivity extends AppCompatActivity {
     public  void toggleNavDrawerIcon(){
         mDrawerToggle.setDrawerIndicatorEnabled(false);
     }
+
 }

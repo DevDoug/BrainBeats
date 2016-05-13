@@ -8,11 +8,9 @@ import android.graphics.Bitmap;
 public class Beat {
 
     private String mBeatTitle;
-
     private Bitmap mBeatAlbumCoverArt;
 
     public Beat(){
-
     }
 
     public String getBeatTitle() {
