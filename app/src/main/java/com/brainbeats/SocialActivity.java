@@ -17,10 +17,10 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
         mSocialFragment = new SocialFragment();
-        switchToLibraryFragment();
+        switchToSocialFragment();
     }
 
-    public void switchToLibraryFragment(){
+    public void switchToSocialFragment(){
         replaceFragment(mSocialFragment, mSocialFragment.getTag());
     }
 

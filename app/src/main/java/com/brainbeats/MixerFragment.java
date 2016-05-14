@@ -1,16 +1,36 @@
 package com.brainbeats;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import adapters.BeatAdapter;
+import adapters.MixerAdapter;
+import model.Beat;
+import utils.Constants;
 
 public class MixerFragment extends Fragment {
 
+    List<Beat> beatList = new ArrayList<>();
+    private RecyclerView mMixerList;
+    private MixerAdapter mMixerAdapter;
     private OnFragmentInteractionListener mListener;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     public MixerFragment() {
         // Required empty public constructor
@@ -23,7 +43,34 @@ public class MixerFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_mixer, container, false);
+        View v = inflater.inflate(R.layout.fragment_mixer, container, false);
+        mMixerList = (RecyclerView) v.findViewById(R.id.mixer_list);
+        ((TextView)v.findViewById(R.id.separator_title)).setText("History");
+        return v;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mMixerAdapter = new MixerAdapter(getContext(),beatList);
+        mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false);
+        mMixerList.setLayoutManager(mLayoutManager);
+        mMixerList.setAdapter(mMixerAdapter);
+
+        getBeatData();
+    }
+
+    //TODO: Replace dummy data with real data from sound cloud
+    public void getBeatData(){
+        beatList.add(new Beat());
+        beatList.get(0).setBeatTitle("Focus");
+        beatList.add(new Beat());
+        beatList.get(1).setBeatTitle("Meditation");
+        beatList.add(new Beat());
+        beatList.get(2).setBeatTitle("Relaxation");
+        beatList.add(new Beat());
+        beatList.get(3).setBeatTitle("Yoga");
+        mMixerAdapter.notifyDataSetChanged();
     }
 
     public void onButtonPressed(Uri uri) {

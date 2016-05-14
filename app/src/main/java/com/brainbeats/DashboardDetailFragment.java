@@ -13,10 +13,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.List;
 import adapters.BeatAlbumAdapter;
-import architecture.BaseActivity;
 import model.Beat;
 
 public class DashboardDetailFragment extends Fragment {
@@ -46,6 +47,7 @@ public class DashboardDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dashboard_detail, container, false);
         mAlbumTrackList = (RecyclerView) v.findViewById(R.id.album_title_list);
+        ((TextView)v.findViewById(R.id.separator_title)).setText("Album Name");
         return v;
     }
 
