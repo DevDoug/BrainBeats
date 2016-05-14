@@ -78,7 +78,7 @@
         android:layout_alignParentEnd="true"
         android:src="@drawable/ic_add_white"
         android:elevation="@dimen/fob_elevation"
-        android:layout_marginBottom="@dimen/floaring_action_button_bottom_margin"
-        android:layout_marginRight="@dimen/floaring_action_button_right_margin" />
+        android:layout_marginBottom="@dimen/floating_action_button_bottom_margin"
+        android:layout_marginRight="@dimen/floating_action_button_right_margin" />
 
 </RelativeLayout>

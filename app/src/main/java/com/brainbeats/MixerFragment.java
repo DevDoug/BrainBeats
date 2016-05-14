@@ -1,10 +1,14 @@
 package com.brainbeats;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -15,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +36,7 @@ public class MixerFragment extends Fragment {
     private MixerAdapter mMixerAdapter;
     private OnFragmentInteractionListener mListener;
     private RecyclerView.LayoutManager mLayoutManager;
+    public FloatingActionButton mAddNewBeatButton;
 
     public MixerFragment() {
         // Required empty public constructor
@@ -46,6 +52,7 @@ public class MixerFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_mixer, container, false);
         mMixerList = (RecyclerView) v.findViewById(R.id.mixer_list);
         ((TextView)v.findViewById(R.id.separator_title)).setText("History");
+        mAddNewBeatButton = (FloatingActionButton) v.findViewById(R.id.mixer_fob);
         return v;
     }
 
@@ -57,6 +64,12 @@ public class MixerFragment extends Fragment {
         mMixerList.setLayoutManager(mLayoutManager);
         mMixerList.setAdapter(mMixerAdapter);
 
+        mAddNewBeatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addNewBeatMix();
+            }
+        });
         getBeatData();
     }
 
@@ -71,6 +84,31 @@ public class MixerFragment extends Fragment {
         beatList.add(new Beat());
         beatList.get(3).setBeatTitle("Yoga");
         mMixerAdapter.notifyDataSetChanged();
+    }
+
+    public void addNewBeatMix(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(getContext().getString(R.string.new_beat_title));
+        builder.setItems(R.array.new_beat_options, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        Toast.makeText(getContext(),"Mixing from search", Toast.LENGTH_LONG).show();
+                        break;
+                    case 1:
+                        Toast.makeText(getContext(),"Mixing from popular", Toast.LENGTH_LONG).show();
+                        break;
+                    case 2:
+                        Toast.makeText(getContext(),"Mixing from library", Toast.LENGTH_LONG).show();
+                        break;
+                    case 3:
+                        Toast.makeText(getContext(),"Mixing from two songs", Toast.LENGTH_LONG).show();
+                        break;
+                }
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     public void onButtonPressed(Uri uri) {

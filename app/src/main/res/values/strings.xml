@@ -22,6 +22,14 @@
     <string name="nav_drawer_closed_text">Nav Drawer Closed</string>
     <string name="title_activity_settings">Settings</string>
 
+    <!-- Dialog Strings -->
+    <string name="new_beat_title">New Beat</string>
+    <string-array name="new_beat_options">
+        <item name="start_mixing_by_search">Start mixing by search</item>
+        <item name="start_mixing_from_popular_beat">Start mixing from a popular beat</item>
+        <item name="start_mixing_from_library">Start mixing from library</item>
+        <item name="start_mixing_from_two_songs">Start mixing from two songs</item>
+    </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
