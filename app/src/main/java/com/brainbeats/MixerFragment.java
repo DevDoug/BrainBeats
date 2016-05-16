@@ -29,7 +29,7 @@ import adapters.MixerAdapter;
 import model.Beat;
 import utils.Constants;
 
-public class MixerFragment extends Fragment {
+public class MixerFragment extends Fragment implements View.OnClickListener {
 
     List<Beat> beatList = new ArrayList<>();
     private RecyclerView mMixerList;
@@ -87,26 +87,19 @@ public class MixerFragment extends Fragment {
     }
 
     public void addNewBeatMix(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle(getContext().getString(R.string.new_beat_title));
-        builder.setItems(R.array.new_beat_options, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                        Toast.makeText(getContext(),"Mixing from search", Toast.LENGTH_LONG).show();
-                        break;
-                    case 1:
-                        Toast.makeText(getContext(),"Mixing from popular", Toast.LENGTH_LONG).show();
-                        break;
-                    case 2:
-                        Toast.makeText(getContext(),"Mixing from library", Toast.LENGTH_LONG).show();
-                        break;
-                    case 3:
-                        Toast.makeText(getContext(),"Mixing from two songs", Toast.LENGTH_LONG).show();
-                        break;
-                }
-            }
-        });
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), android.R.style.Theme_Material_Light_Dialog_Alert);
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View dialogView = (View) inflater.inflate(R.layout.custom_dialog_layout, null);
+        ((TextView) dialogView.findViewById(R.id.separator_title)).setText(getContext().getString(R.string.new_beat_title));
+        ((TextView)dialogView.findViewById(R.id.option_1)).setText(getResources().getStringArray(R.array.new_beat_options)[0]);
+        ((TextView)dialogView.findViewById(R.id.option_1)).setOnClickListener(this);
+        ((TextView)dialogView.findViewById(R.id.option_2)).setText(getResources().getStringArray(R.array.new_beat_options)[1]);
+        ((TextView)dialogView.findViewById(R.id.option_2)).setOnClickListener(this);
+        ((TextView)dialogView.findViewById(R.id.option_3)).setText(getResources().getStringArray(R.array.new_beat_options)[2]);
+        ((TextView)dialogView.findViewById(R.id.option_3)).setOnClickListener(this);
+        ((TextView)dialogView.findViewById(R.id.option_4)).setText(getResources().getStringArray(R.array.new_beat_options)[3]);
+        ((TextView)dialogView.findViewById(R.id.option_4)).setOnClickListener(this);
+        builder.setView(dialogView);
         AlertDialog alert = builder.create();
         alert.show();
     }
@@ -132,6 +125,24 @@ public class MixerFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.option_1:
+                Toast.makeText(getContext(), "Mixing from search", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.option_2:
+                Toast.makeText(getContext(), "Mixing from popular", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.option_3:
+                Toast.makeText(getContext(), "Mixing from library", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.option_4:
+                Toast.makeText(getContext(), "Mixing from two songs", Toast.LENGTH_LONG).show();
+                break;
+        }
     }
 
     public interface OnFragmentInteractionListener {
