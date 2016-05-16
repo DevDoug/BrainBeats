@@ -33,6 +33,5 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-
     }
 }

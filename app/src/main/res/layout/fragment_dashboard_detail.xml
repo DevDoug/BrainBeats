@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:text="Focus Beat One"
         android:textSize="@dimen/album_detail_title_text_size"
-        android:layout_marginTop="@dimen/fragment_content_margin_top"
+        android:layout_marginTop="@dimen/content_margin_top"
         android:gravity="center"
         android:id="@+id/textView" />
 
@@ -71,6 +71,7 @@
     </FrameLayout>
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_to_list_fob"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"

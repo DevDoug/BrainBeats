@@ -32,5 +32,7 @@
     <dimen name="fob_elevation">8dp</dimen>
     <dimen name="seek_bar_start_margin">28dp</dimen>
     <dimen name="seek_bar_margin_left">28dp</dimen>
+    <dimen name="content_margin_top">20dp</dimen>
+    <dimen name="list_item_padding">15dp</dimen>
 
 </resources>
