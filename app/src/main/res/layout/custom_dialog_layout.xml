@@ -12,37 +12,9 @@
         android:layout_below="@+id/play_song_seek_bar"
         android:id="@+id/blue_line_seperator" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Start mixing by search"
-        android:padding="15dp"
-        android:textSize="18sp"
-        android:id="@+id/option_1" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Start mixing by search"
-        android:textSize="18sp"
-        android:padding="15dp"
-        android:id="@+id/option_2" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Start mixing by search"
-        android:textSize="18sp"
-        android:padding="15dp"
-        android:id="@+id/option_3" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Start mixing by search"
-        android:textSize="18sp"
-        android:padding="15dp"
-        android:id="@+id/option_4" />
-
+    <ListView
+        android:id="@+id/options_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

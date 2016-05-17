@@ -2,6 +2,7 @@ package fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,10 +31,11 @@ import java.util.List;
 import adapters.BeatAlbumAdapter;
 import architecture.BaseActivity;
 import model.Beat;
+import utils.Constants;
 
 import static architecture.BaseActivity.navigateUpOrBack;
 
-public class DashboardDetailFragment extends Fragment implements View.OnClickListener {
+public class DashboardDetailFragment extends Fragment implements DialogInterface.OnClickListener{
     public static final String TAG = "DashboardDetailFragment";
 
     List<Beat> beatList = new ArrayList<>();
@@ -84,7 +86,7 @@ public class DashboardDetailFragment extends Fragment implements View.OnClickLis
         mFob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                displayAddToUserListDialog();
+                Constants.buildListDialogue(getContext(),getString(R.string.add_beat_to_user_list),R.array.add_beat_to_user_list_options,DashboardDetailFragment.this);
             }
         });
         getBeatData();
@@ -101,38 +103,6 @@ public class DashboardDetailFragment extends Fragment implements View.OnClickLis
         beatList.add(new Beat());
         beatList.get(3).setBeatTitle("Yoga");
         mBeatAlbumAdapter.notifyDataSetChanged();
-    }
-
-    public void displayAddToUserListDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), android.R.style.Theme_Material_Light_Dialog_Alert);
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View dialogView = (View) inflater.inflate(R.layout.custom_dialog_layout, null);
-        ((TextView) dialogView.findViewById(R.id.separator_title)).setText(getContext().getString(R.string.add_beat_to_user_list));
-        ((TextView)dialogView.findViewById(R.id.option_1)).setText(getResources().getStringArray(R.array.add_beat_to_user_list_options)[0]);
-        ((TextView)dialogView.findViewById(R.id.option_1)).setOnClickListener(this);
-        ((TextView)dialogView.findViewById(R.id.option_2)).setText(getResources().getStringArray(R.array.add_beat_to_user_list_options)[1]);
-        ((TextView)dialogView.findViewById(R.id.option_2)).setOnClickListener(this);
-        ((TextView)dialogView.findViewById(R.id.option_3)).setText(getResources().getStringArray(R.array.add_beat_to_user_list_options)[2]);
-        ((TextView)dialogView.findViewById(R.id.option_3)).setOnClickListener(this);
-        ((TextView)dialogView.findViewById(R.id.option_4)).setVisibility(View.GONE);
-        builder.setView(dialogView);
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.option_1:
-                Toast.makeText(getContext(), "Add to library", Toast.LENGTH_LONG).show();
-                break;
-            case R.id.option_2:
-                Toast.makeText(getContext(), "Add to favorites", Toast.LENGTH_LONG).show();
-                break;
-            case R.id.option_3:
-                Toast.makeText(getContext(), "Add to playlist", Toast.LENGTH_LONG).show();
-                break;
-        }
     }
 
     @Override
@@ -167,6 +137,21 @@ public class DashboardDetailFragment extends Fragment implements View.OnClickLis
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        switch (which) {
+            case 0:
+                Toast.makeText(getContext(), "Add to library", Toast.LENGTH_LONG).show();
+                break;
+            case 1:
+                Toast.makeText(getContext(), "Add to favorites", Toast.LENGTH_LONG).show();
+                break;
+            case 2:
+                Toast.makeText(getContext(), "Add to playlist", Toast.LENGTH_LONG).show();
+                break;
+        }
     }
 
     public interface OnFragmentInteractionListener {

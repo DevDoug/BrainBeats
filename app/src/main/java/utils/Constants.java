@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.brainbeats.R;
@@ -22,6 +24,8 @@ public class Constants {
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View dialogView = (View) inflater.inflate(R.layout.custom_dialog_layout, null);
         ((TextView) dialogView.findViewById(R.id.separator_title)).setText(title);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, android.R.id.text1,context.getResources().getStringArray(optionsId));
+        ((ListView) dialogView.findViewById(R.id.options_list)).setAdapter(adapter);
         builder.setView(dialogView);
         AlertDialog alert = builder.create();
         alert.show();
