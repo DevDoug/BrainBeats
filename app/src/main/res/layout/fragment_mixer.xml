@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.brainbeats.MixerFragment">
+    tools:context="fragments.MixerFragment">
 
     <include
         android:id="@+id/blue_line_seperator"
         layout="@layout/blue_horizontal_seperator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/blue_horizontal_divider_width" />
+        android:layout_height="@dimen/blue_horizontal_divider_height" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/mixer_list"

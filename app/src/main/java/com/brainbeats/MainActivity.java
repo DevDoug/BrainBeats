@@ -1,12 +1,12 @@
 package com.brainbeats;
 
 import android.net.Uri;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 
 import architecture.BaseActivity;
+import fragments.DashboardDetailFragment;
+import fragments.DashboardFragment;
 
 public class MainActivity extends BaseActivity implements DashboardFragment.OnFragmentInteractionListener, DashboardDetailFragment.OnFragmentInteractionListener{
 

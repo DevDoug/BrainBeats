@@ -30,7 +30,7 @@
         <item name="start_mixing_from_library">Start mixing from library</item>
         <item name="start_mixing_from_two_songs">Start mixing from two songs</item>
     </string-array>
-    
+
     <string name="add_beat_to_user_list">Add beat</string>
     <string-array name="add_beat_to_user_list_options">
         <item name="add_to_user_library">Library</item>

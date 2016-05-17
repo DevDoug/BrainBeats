@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import architecture.BaseActivity;
+import fragments.SettingFragment;
 
 public class SettingsActivity extends BaseActivity implements SettingFragment.OnFragmentInteractionListener {
 

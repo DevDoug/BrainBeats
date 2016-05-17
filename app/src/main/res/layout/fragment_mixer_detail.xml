@@ -31,23 +31,11 @@
         android:layout_alignParentBottom="true">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/album_title_list"
+            android:id="@+id/beat_mix_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
         </android.support.v7.widget.RecyclerView>
 
     </FrameLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/add_to_list_fob"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/ic_add_white"
-        android:elevation="@dimen/fob_elevation"
-        android:layout_marginBottom="@dimen/floating_action_button_bottom_margin"
-        android:layout_marginRight="@dimen/floating_action_button_right_margin" />
 
 </RelativeLayout>

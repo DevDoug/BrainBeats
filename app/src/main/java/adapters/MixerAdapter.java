@@ -5,7 +5,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.brainbeats.MainActivity;
+import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import java.util.List;
 import model.Beat;
@@ -24,11 +28,21 @@ public class MixerAdapter extends RecyclerView.Adapter<MixerAdapter.ViewHolder> 
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        RelativeLayout mContainer;
         TextView mAlbumTitle;
+
 
         public ViewHolder(View v) {
             super(v);
+            mContainer = (RelativeLayout) v.findViewById(R.id.mixer_item_container);
             mAlbumTitle = (TextView) v.findViewById(R.id.album_title);
+
+            mContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((MixerActivity) mAdapterContext).loadMixerDetailFragment();
+                }
+            });
         }
     }
 

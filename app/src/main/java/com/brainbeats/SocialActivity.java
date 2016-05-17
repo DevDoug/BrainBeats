@@ -1,12 +1,11 @@
 package com.brainbeats;
 
 import android.net.Uri;
-import android.preference.PreferenceFragment;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import architecture.BaseActivity;
+import fragments.SocialFragment;
 
 public class SocialActivity extends BaseActivity implements SocialFragment.OnFragmentInteractionListener {
 

@@ -25,7 +25,7 @@
     <dimen name="fragment_content_margin_top">55dp</dimen>
     <dimen name="fragment_content_item_top_margin">20dp</dimen>
 
-    <dimen name="blue_horizontal_divider_width">60dp</dimen>
+    <dimen name="blue_horizontal_divider_height">60dp</dimen>
     <dimen name="blue_horizontal_divider_title_text_size">21sp</dimen>
     <dimen name="floating_action_button_bottom_margin">20dp</dimen>
     <dimen name="floating_action_button_right_margin">20dp</dimen>
@@ -34,5 +34,7 @@
     <dimen name="seek_bar_margin_left">28dp</dimen>
     <dimen name="content_margin_top">20dp</dimen>
     <dimen name="list_item_padding">15dp</dimen>
+
+
 
 </resources>
