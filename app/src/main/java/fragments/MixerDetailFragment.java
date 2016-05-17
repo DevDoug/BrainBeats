@@ -84,6 +84,8 @@ public class MixerDetailFragment extends Fragment {
         mixerItemList.get(2).setMixItemTitle("Gamma");
         mixerItemList.add(new MixerItem());
         mixerItemList.get(3).setMixItemTitle("Theta");
+        mixerItemList.add(new MixerItem());
+        mixerItemList.get(4).setMixItemTitle("Add new");
         mMixerItemAdapter.notifyDataSetChanged();
     }
 }
