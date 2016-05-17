@@ -9,8 +9,7 @@
         android:id="@+id/beat_detail_header"
         layout="@layout/shared_beat_detail_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/blue_line_seperator">
+        android:layout_height="wrap_content">
     </include>
 
     <include
@@ -18,9 +17,10 @@
         layout="@layout/blue_horizontal_seperator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/blue_horizontal_divider_height"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/beat_detail_header"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="@dimen/content_margin_top"/>
 
     <FrameLayout
         android:layout_width="match_parent"

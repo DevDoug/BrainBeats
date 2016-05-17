@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/mixer_item_container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/list_item_padding"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/mix_item_title"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/album_title_text_size"
+        android:gravity="start"
+        android:text="Alpha" />
+
+    <ImageView
+        android:id="@+id/plus_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_add_circle_accent"
+        android:layout_alignTop="@+id/mix_item_title"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>

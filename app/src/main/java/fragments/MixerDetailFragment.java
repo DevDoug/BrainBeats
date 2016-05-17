@@ -3,10 +3,13 @@ package fragments;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +17,23 @@ import android.view.ViewGroup;
 
 import com.brainbeats.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import adapters.BeatAlbumAdapter;
+import adapters.MixItemAdapter;
+import model.Beat;
+import model.MixerItem;
+
 import static architecture.BaseActivity.navigateUpOrBack;
 
 
 public class MixerDetailFragment extends Fragment {
+
+    List<MixerItem> mixerItemList = new ArrayList<>();
+    private RecyclerView mMixerItemList;
+    private MixItemAdapter mMixerItemAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     public MixerDetailFragment() {
         // Required empty public constructor
@@ -25,8 +41,9 @@ public class MixerDetailFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_mixer_detail, container, false);
+        View v = inflater.inflate(R.layout.fragment_mixer_detail, container, false);
+        mMixerItemList = (RecyclerView) v.findViewById(R.id.beat_mix_item_list);
+        return v;
     }
 
     @Override
@@ -45,5 +62,28 @@ public class MixerDetailFragment extends Fragment {
                 navigateUpOrBack(getActivity(), fm);
             }
         });
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mMixerItemAdapter = new MixItemAdapter(getContext(),mixerItemList);
+        mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false);
+        mMixerItemList.setLayoutManager(mLayoutManager);
+        mMixerItemList.setAdapter(mMixerItemAdapter);
+        getMixerItemData();
+    }
+
+    //TODO: Replace dummy data with real data from sound cloud
+    public void getMixerItemData(){
+        mixerItemList.add(new MixerItem());
+        mixerItemList.get(0).setMixItemTitle("Alpha");
+        mixerItemList.add(new MixerItem());
+        mixerItemList.get(1).setMixItemTitle("Beta");
+        mixerItemList.add(new MixerItem());
+        mixerItemList.get(2).setMixItemTitle("Gamma");
+        mixerItemList.add(new MixerItem());
+        mixerItemList.get(3).setMixItemTitle("Theta");
+        mMixerItemAdapter.notifyDataSetChanged();
     }
 }

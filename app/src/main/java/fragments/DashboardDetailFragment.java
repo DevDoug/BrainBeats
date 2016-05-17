@@ -81,14 +81,12 @@ public class DashboardDetailFragment extends Fragment implements View.OnClickLis
         mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false);
         mAlbumTrackList.setLayoutManager(mLayoutManager);
         mAlbumTrackList.setAdapter(mBeatAlbumAdapter);
-
         mFob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 displayAddToUserListDialog();
             }
         });
-
         getBeatData();
     }
 
