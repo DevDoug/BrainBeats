@@ -38,6 +38,8 @@
         <item name="add_to_user_playlist">Playlist</item>
     </string-array>
 
+    <string name="add_sound_item_to_current_beat">Add new beat sound</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

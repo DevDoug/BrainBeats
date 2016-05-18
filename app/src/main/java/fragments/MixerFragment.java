@@ -18,6 +18,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +34,7 @@ import model.Beat;
 import utils.Constants;
 
 
-public class MixerFragment extends Fragment implements DialogInterface.OnClickListener {
+public class MixerFragment extends Fragment implements ListView.OnItemSelectedListener {
 
     List<Beat> beatList = new ArrayList<>();
     private RecyclerView mMixerList;
@@ -112,7 +114,7 @@ public class MixerFragment extends Fragment implements DialogInterface.OnClickLi
         mListener = null;
     }
 
-    @Override
+/*    @Override
     public void onClick(DialogInterface dialog, int which) {
         switch (which) {
             case 0:
@@ -128,6 +130,29 @@ public class MixerFragment extends Fragment implements DialogInterface.OnClickLi
                 Toast.makeText(getContext(), "Mixing from two songs", Toast.LENGTH_LONG).show();
                 break;
         }
+    }*/
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        switch (position) {
+            case 0:
+                Toast.makeText(getContext(), "Mixing from search", Toast.LENGTH_LONG).show();
+                break;
+            case 1:
+                Toast.makeText(getContext(), "Mixing from popular", Toast.LENGTH_LONG).show();
+                break;
+            case 2:
+                Toast.makeText(getContext(), "Mixing from library", Toast.LENGTH_LONG).show();
+                break;
+            case 3:
+                Toast.makeText(getContext(), "Mixing from two songs", Toast.LENGTH_LONG).show();
+                break;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 
     public interface OnFragmentInteractionListener {

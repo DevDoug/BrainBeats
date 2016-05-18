@@ -6,10 +6,19 @@
         <item name="colorAccent">@color/theme_accent_color</item>
         <item name="android:textColorPrimary">@color/theme_primary_text_color</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="android:listViewStyle">@style/ListViewStyle.Light</item>
     </style>
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
         <item name="color">@android:color/white</item>
+    </style>
+
+    <style name="ListViewStyle.Light" parent="android:style/Widget.ListView">
+        <item name="background">@android:color/white</item>
+        <item name="android:divider">@color/theme_primary_dark_color</item>
+        <item name="android:dividerHeight">.5dp</item>
+        <item name="android:drawSelectorOnTop">false</item>
+        <item name="android:cacheColorHint">#00000000</item>
     </style>
 </resources>

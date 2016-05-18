@@ -2,8 +2,6 @@ package adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +13,7 @@ import android.widget.TextView;
 import com.brainbeats.R;
 import java.util.List;
 import model.MixerItem;
+import utils.Constants;
 
 /**
  * Created by douglas on 5/16/2016.
@@ -41,7 +40,7 @@ public class MixItemAdapter extends RecyclerView.Adapter<MixItemAdapter.ViewHold
             mAddItemIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    createAddBeatMixItemDialog();
+                    Constants.buildImageListDialogue(mAdapterContext,mAdapterContext.getResources().getString(R.string.add_sound_item_to_current_beat));
                 }
             });
         }
@@ -64,16 +63,5 @@ public class MixItemAdapter extends RecyclerView.Adapter<MixItemAdapter.ViewHold
     @Override
     public int getItemCount() {
         return mMixerItems.size();
-    }
-
-    public void createAddBeatMixItemDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(mAdapterContext, android.R.style.Theme_Material_Light_Dialog_Alert);
-        View dialogView = LayoutInflater.from(mAdapterContext).inflate(R.layout.custom_dialog_layout, null);
-        ((TextView) dialogView.findViewById(R.id.separator_title)).setText(mAdapterContext.getString(R.string.new_beat_title));
-
-
-        builder.setView(dialogView);
-        AlertDialog alert = builder.create();
-        alert.show();
     }
 }

@@ -21,6 +21,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +37,7 @@ import utils.Constants;
 
 import static architecture.BaseActivity.navigateUpOrBack;
 
-public class DashboardDetailFragment extends Fragment implements DialogInterface.OnClickListener{
+public class DashboardDetailFragment extends Fragment implements  ListView.OnItemSelectedListener {
     public static final String TAG = "DashboardDetailFragment";
 
     List<Beat> beatList = new ArrayList<>();
@@ -139,7 +141,7 @@ public class DashboardDetailFragment extends Fragment implements DialogInterface
         mListener = null;
     }
 
-    @Override
+/*    @Override
     public void onClick(DialogInterface dialog, int which) {
         switch (which) {
             case 0:
@@ -152,6 +154,27 @@ public class DashboardDetailFragment extends Fragment implements DialogInterface
                 Toast.makeText(getContext(), "Add to playlist", Toast.LENGTH_LONG).show();
                 break;
         }
+    }*/
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        switch (position) {
+            case 0:
+                Toast.makeText(getContext(), "Add to library", Toast.LENGTH_LONG).show();
+                break;
+            case 1:
+                Toast.makeText(getContext(), "Add to favorites", Toast.LENGTH_LONG).show();
+                break;
+            case 2:
+                Toast.makeText(getContext(), "Add to playlist", Toast.LENGTH_LONG).show();
+                break;
+        }
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 
     public interface OnFragmentInteractionListener {
