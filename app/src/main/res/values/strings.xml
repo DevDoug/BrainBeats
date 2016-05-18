@@ -31,16 +31,17 @@
         <item name="start_mixing_from_two_songs">Start mixing from two songs</item>
     </string-array>
 
-    <string name="add_beat_to_user_list">Add beat</string>
+    <string name="add_beat_to_user_list">Add Beat To Collection</string>
     <string-array name="add_beat_to_user_list_options">
         <item name="add_to_user_library">Library</item>
         <item name="add_to_user_favorites">Favorites</item>
         <item name="add_to_user_playlist">Playlist</item>
     </string-array>
 
-    <string name="add_sound_item_to_current_beat">Add new beat sound</string>
+    <string name="add_sound_item_to_current_beat">Add New Beat Sound</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="beat_levels">Beat Levels</string>
 
 </resources>

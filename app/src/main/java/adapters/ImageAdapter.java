@@ -56,9 +56,6 @@ public class ImageAdapter extends BaseAdapter{
         ImageView imageView = (ImageView) convertView.findViewById(R.id.dialog_image_list_item);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             imageView.setImageDrawable(mAdapterContext.getDrawable(R.drawable.ic_music_note_black));
-            imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
         }
         return convertView;
     }

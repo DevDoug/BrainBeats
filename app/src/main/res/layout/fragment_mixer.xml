@@ -15,6 +15,7 @@
         android:id="@+id/mixer_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="@dimen/recycler_view_top_padding"
         android:layout_below="@+id/blue_line_seperator">
     </android.support.v7.widget.RecyclerView>
 

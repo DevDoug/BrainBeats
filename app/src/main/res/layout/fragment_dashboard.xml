@@ -7,6 +7,7 @@
         android:id="@+id/beats_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="@dimen/recycler_view_top_padding"
         android:layout_marginTop="@dimen/content_margin_top">
     </android.support.v7.widget.RecyclerView>
 </FrameLayout>

@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.brainbeats.R;
 
@@ -43,6 +44,7 @@ public class MixerDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mixer_detail, container, false);
         mMixerItemList = (RecyclerView) v.findViewById(R.id.beat_mix_item_list);
+        ((TextView)v.findViewById(R.id.separator_title)).setText(R.string.beat_levels);
         return v;
     }
 
