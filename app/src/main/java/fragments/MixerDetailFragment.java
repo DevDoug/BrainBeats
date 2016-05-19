@@ -15,19 +15,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import adapters.BeatAlbumAdapter;
 import adapters.MixItemAdapter;
-import model.Beat;
 import model.MixerItem;
-
-import static architecture.BaseActivity.navigateUpOrBack;
-
 
 public class MixerDetailFragment extends Fragment {
 
@@ -61,7 +54,7 @@ public class MixerDetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
-                navigateUpOrBack(getActivity(), fm);
+                ((MixerActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
             }
         });
     }

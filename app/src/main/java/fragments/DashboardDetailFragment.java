@@ -1,8 +1,6 @@
 package fragments;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,8 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -25,17 +21,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.brainbeats.MainActivity;
 import com.brainbeats.R;
-
 import java.util.ArrayList;
 import java.util.List;
 import adapters.BeatAlbumAdapter;
-import architecture.BaseActivity;
 import model.Beat;
 import utils.Constants;
-
-import static architecture.BaseActivity.navigateUpOrBack;
 
 public class DashboardDetailFragment extends Fragment implements  ListView.OnItemSelectedListener {
     public static final String TAG = "DashboardDetailFragment";
@@ -64,7 +56,7 @@ public class DashboardDetailFragment extends Fragment implements  ListView.OnIte
             @Override
             public void onClick(View view) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
-                navigateUpOrBack(getActivity(), fm);
+                ((MainActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
             }
         });
     }
