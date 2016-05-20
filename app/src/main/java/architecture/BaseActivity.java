@@ -149,6 +149,7 @@ public class BaseActivity extends AppCompatActivity {
     public void navigateUpOrBack(Activity currentActivity, FragmentManager fm) {
         if(fm.getBackStackEntryCount() >= 1){ //if there are active fragments go up if not go back
             fm.popBackStackImmediate();
+            getToolBar();
             mDrawerToggle.setDrawerIndicatorEnabled(true);
             mDrawerToggle.syncState();
         } else {
