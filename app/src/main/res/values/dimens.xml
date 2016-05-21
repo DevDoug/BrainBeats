@@ -22,20 +22,28 @@
     <dimen name="navview_between_text_and_account_selector">16dp</dimen>
     <dimen name="navview_account_list_top_padding">8dp</dimen>
     <dimen name="navview_menu_item_top_bottom_padding">8dp</dimen>
+
+    <dimen name="content_margin_top">20dp</dimen>
     <dimen name="fragment_content_margin_top">55dp</dimen>
     <dimen name="fragment_content_item_top_margin">20dp</dimen>
 
+    <!-- Divider dimens -->
     <dimen name="blue_horizontal_divider_height">60dp</dimen>
     <dimen name="blue_horizontal_divider_title_text_size">21sp</dimen>
+
+    <!-- Floating action button dimens -->
     <dimen name="floating_action_button_bottom_margin">20dp</dimen>
     <dimen name="floating_action_button_right_margin">20dp</dimen>
     <dimen name="fob_elevation">8dp</dimen>
+
     <dimen name="seek_bar_start_margin">28dp</dimen>
     <dimen name="seek_bar_margin_left">28dp</dimen>
-    <dimen name="content_margin_top">20dp</dimen>
     <dimen name="list_item_padding">15dp</dimen>
     <dimen name="add_beat_item_icon_padding">15dp</dimen>
     <dimen name="recycler_view_top_padding">10dp</dimen>
+
+    <!-- String size dimens -->
+    <dimen name="dialog_item_text_size">17sp</dimen>
 
 
 </resources>

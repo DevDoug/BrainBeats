@@ -11,13 +11,14 @@
         android:layout_height="wrap_content"
         app:tabGravity="fill"
         app:tabMode="fixed"
+        android:elevation="6dp"
         android:background="@color/theme_primary_color"
         app:tabIndicatorColor="@color/theme_accent_color"
-        app:tabTextColor="@color/theme_primary_text_color"/>
+        app:tabTextColor="@color/theme_primary_text_color"
+        android:backgroundTintMode="src_atop" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/base_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 </LinearLayout>

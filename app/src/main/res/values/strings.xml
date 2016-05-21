@@ -40,6 +40,14 @@
 
     <string name="add_sound_item_to_current_beat">Add New Beat Sound</string>
 
+    <!-- Tab Strings -->
+    <string-array name="library_tab_titles">
+        <item name="albums_list"> Albums</item>
+        <item name="songs_list">Songs</item>
+        <item name="artist_list">Artists</item>
+    </string-array>
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="beat_levels">Beat Levels</string>

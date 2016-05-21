@@ -3,8 +3,10 @@ package architecture;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -37,6 +39,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -96,6 +99,7 @@ public class BaseActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         mDrawerToggle.syncState();
+        mNavigationDrawer.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
     }
 
     public void replaceFragment(Fragment fragment, String fragmentTag) {
@@ -119,6 +123,7 @@ public class BaseActivity extends AppCompatActivity {
     public Toolbar getToolBar(){
         mToolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolBar);
+
         if (mToolBar != null) {
             mToolBar.setNavigationIcon(R.drawable.ic_navigation_drawer);
             mToolBar.setNavigationOnClickListener(new View.OnClickListener() {

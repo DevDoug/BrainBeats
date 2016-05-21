@@ -1,6 +1,7 @@
 package com.brainbeats;
 
 import android.net.Uri;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 
@@ -14,7 +15,7 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base);
+        setContentView(R.layout.activity_library);
         mLibraryFragment = new LibraryFragment();
         switchToLibraryFragment();
     }

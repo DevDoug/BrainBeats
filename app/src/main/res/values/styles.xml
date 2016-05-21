@@ -16,8 +16,7 @@
 
     <style name="ListViewStyle.Light" parent="android:style/Widget.ListView">
         <item name="background">@android:color/white</item>
-        <item name="android:divider">@color/theme_divider_color</item>
-        <item name="android:dividerHeight">.5dp</item>
+        <item name="android:divider">@color/blue_horizontal_divider_background_color</item>
         <item name="android:drawSelectorOnTop">false</item>
         <item name="android:cacheColorHint">#00000000</item>
     </style>

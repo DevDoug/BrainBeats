@@ -7,6 +7,10 @@
     <color name="theme_primary_text_color">#FFFFFF</color>
     <color name="theme_secondary_text_color">#727272</color>
     <color name="theme_icons_color">#FFFFFF</color>
-    <color name="theme_divider_color">#b3e4fb</color>
+
+    <!-- Horizontal divider colors -->
     <color name="blue_horizontal_divider_background_color">#b3e4fb</color>
+
+    <!-- Dialog colors -->
+    <color name="dialog_selected_color">#E1F5FE</color>
 </resources>
