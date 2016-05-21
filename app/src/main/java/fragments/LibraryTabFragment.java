@@ -3,6 +3,7 @@ package fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,8 @@ public class LibraryTabFragment extends Fragment {
     List<Beat> beatList;
     private RecyclerView mBeatListView;
     private LibraryAdapter mLibraryAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+
 
     public LibraryTabFragment() {
         // Required empty public constructor
@@ -52,6 +55,8 @@ public class LibraryTabFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mLibraryAdapter = new LibraryAdapter(getContext(),beatList);
+        mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false);
+        mBeatListView.setLayoutManager(mLayoutManager);
         mBeatListView.setAdapter(mLibraryAdapter);
     }
 }

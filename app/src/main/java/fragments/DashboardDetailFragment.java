@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainbeats.MainActivity;
@@ -29,7 +28,7 @@ import adapters.BeatAlbumAdapter;
 import model.Beat;
 import utils.Constants;
 
-public class DashboardDetailFragment extends Fragment implements  ListView.OnItemSelectedListener {
+public class DashboardDetailFragment extends Fragment implements  AdapterView.OnItemSelectedListener {
     public static final String TAG = "DashboardDetailFragment";
 
     List<Beat> beatList = new ArrayList<>();

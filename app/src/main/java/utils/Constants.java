@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
@@ -40,7 +41,7 @@ public class Constants {
         alert.show();
     }
 
-    public static void buildListDialogue(Context context, String title, int optionsId, ListView.OnItemSelectedListener listener){
+    public static void buildListDialogue(Context context, String title, int optionsId, AdapterView.OnItemSelectedListener listener){
         AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View dialogView = (View) inflater.inflate(R.layout.custom_list_dialog_layout, null);
