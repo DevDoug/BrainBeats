@@ -9,7 +9,6 @@
         layout="@layout/blue_horizontal_seperator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/blue_horizontal_divider_height"
-        android:layout_below="@+id/play_song_seek_bar"
         android:id="@+id/blue_line_seperator" />
 
     <GridView

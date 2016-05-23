@@ -9,12 +9,12 @@
         layout="@layout/blue_horizontal_seperator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/blue_horizontal_divider_height"
-        android:id="@+id/blue_line_seperator"
-        android:layout_marginBottom="5dp" />
+        android:id="@+id/blue_line_seperator" />
 
     <ListView
         android:id="@+id/options_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:descendantFocusability="beforeDescendants" />
 
 </LinearLayout>

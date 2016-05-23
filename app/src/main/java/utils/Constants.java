@@ -41,14 +41,14 @@ public class Constants {
         alert.show();
     }
 
-    public static void buildListDialogue(Context context, String title, int optionsId, AdapterView.OnItemSelectedListener listener){
+    public static void buildListDialogue(Context context, String title, int optionsId, AdapterView.OnItemClickListener listener){
         AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View dialogView = (View) inflater.inflate(R.layout.custom_list_dialog_layout, null);
         ((TextView) dialogView.findViewById(R.id.separator_title)).setText(title);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.dialog_list_item, R.id.dialog_item,context.getResources().getStringArray(optionsId));
         ((ListView) dialogView.findViewById(R.id.options_list)).setAdapter(adapter);
-        ((ListView) dialogView.findViewById(R.id.options_list)).setOnItemSelectedListener(listener);
+        ((ListView) dialogView.findViewById(R.id.options_list)).setOnItemClickListener(listener);
         builder.setView(dialogView);
         AlertDialog alert = builder.create();
         alert.show();

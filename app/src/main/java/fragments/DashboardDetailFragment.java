@@ -28,7 +28,7 @@ import adapters.BeatAlbumAdapter;
 import model.Beat;
 import utils.Constants;
 
-public class DashboardDetailFragment extends Fragment implements  AdapterView.OnItemSelectedListener {
+public class DashboardDetailFragment extends Fragment implements AdapterView.OnItemClickListener {
     public static final String TAG = "DashboardDetailFragment";
 
     List<Beat> beatList = new ArrayList<>();
@@ -79,7 +79,7 @@ public class DashboardDetailFragment extends Fragment implements  AdapterView.On
         mFob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Constants.buildListDialogue(getContext(),getString(R.string.add_beat_to_user_list),R.array.add_beat_to_user_list_options,DashboardDetailFragment.this);
+                Constants.buildListDialogue(getContext(), getString(R.string.add_beat_to_user_list), R.array.add_beat_to_user_list_options,DashboardDetailFragment.this);
             }
         });
         getBeatData();
@@ -132,23 +132,8 @@ public class DashboardDetailFragment extends Fragment implements  AdapterView.On
         mListener = null;
     }
 
-/*    @Override
-    public void onClick(DialogInterface dialog, int which) {
-        switch (which) {
-            case 0:
-                Toast.makeText(getContext(), "Add to library", Toast.LENGTH_LONG).show();
-                break;
-            case 1:
-                Toast.makeText(getContext(), "Add to favorites", Toast.LENGTH_LONG).show();
-                break;
-            case 2:
-                Toast.makeText(getContext(), "Add to playlist", Toast.LENGTH_LONG).show();
-                break;
-        }
-    }*/
-
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (position) {
             case 0:
                 Toast.makeText(getContext(), "Add to library", Toast.LENGTH_LONG).show();
@@ -160,12 +145,6 @@ public class DashboardDetailFragment extends Fragment implements  AdapterView.On
                 Toast.makeText(getContext(), "Add to playlist", Toast.LENGTH_LONG).show();
                 break;
         }
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
     }
 
     public interface OnFragmentInteractionListener {
