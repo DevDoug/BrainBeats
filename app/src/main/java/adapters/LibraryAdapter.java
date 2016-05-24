@@ -29,26 +29,17 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView mAlbumArtCover;
         TextView mAlbumTitle;
 
         public ViewHolder(View v) {
             super(v);
-            mAlbumArtCover = (ImageView) v.findViewById(R.id.album_cover_art);
             mAlbumTitle = (TextView) v.findViewById(R.id.album_title);
-
-            mAlbumArtCover.setOnClickListener(new View.OnClickListener() { //Beat selected load detail screen
-                @Override
-                public void onClick(View v) {
-                    ((MainActivity) mAdapterContext).loadBeatDetailFragment();
-                }
-            });
         }
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mAdapterContext).inflate(R.layout.beat_item, parent, false);
+        View view = LayoutInflater.from(mAdapterContext).inflate(R.layout.library_beat_item, parent, false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
@@ -56,7 +47,6 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.mAlbumTitle.setText(mBeats.get(position).getBeatTitle());
-        holder.mAlbumArtCover.setImageBitmap(mBeats.get(position).getBeatAlbumCoverArt());
     }
 
     @Override

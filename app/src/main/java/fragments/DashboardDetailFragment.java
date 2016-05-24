@@ -73,7 +73,7 @@ public class DashboardDetailFragment extends Fragment implements AdapterView.OnI
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mBeatAlbumAdapter = new BeatAlbumAdapter(getContext(),beatList);
-        mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false);
+        mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false);
         mAlbumTrackList.setLayoutManager(mLayoutManager);
         mAlbumTrackList.setAdapter(mBeatAlbumAdapter);
         mFob.setOnClickListener(new View.OnClickListener() {

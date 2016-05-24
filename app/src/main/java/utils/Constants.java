@@ -26,6 +26,7 @@ public class Constants {
     public static final String KEY_EXTRA_BEAT_LIST = "BeatInfo";
 
     public static final int GRID_SPAN_COUNT = 3;
+    public static final int BEAT_LEVEL_INCREASE_DIFFERENCE = 10;
     public static final int BEAT_ITEM_DRAWABLES[] = new int[]{R.drawable.ic_music_note_black, R.drawable.ic_music_note_black,
                                                               R.drawable.ic_music_note_black,  R.drawable.ic_music_note_black,
                                                               R.drawable.ic_music_note_black};

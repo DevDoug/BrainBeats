@@ -6,8 +6,6 @@
     <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:
          https://developer.android.com/design/patterns/navigation-drawer.html -->
     <dimen name="navigation_drawer_width">240dp</dimen>
-    <dimen name="album_title_text_size">16sp</dimen>
-    <dimen name="album_detail_title_text_size">26sp</dimen>
 
     <!-- Dashboard screen dimens. -->
     <dimen name="album_art_title_margin_bottom">10dp</dimen>
@@ -44,6 +42,9 @@
 
     <!-- String size dimens -->
     <dimen name="dialog_item_text_size">17sp</dimen>
+    <dimen name="album_title_text_size">17sp</dimen>
+    <dimen name="album_detail_title_text_size">26sp</dimen>
+    <dimen name="mixer_item_text_size">17sp</dimen>
 
 
 </resources>

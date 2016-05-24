@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/placeholder"
         android:layout_marginBottom="@dimen/album_art_title_margin_bottom"
+        android:contentDescription="@string/album_cover_art_image_description"
         android:adjustViewBounds="true"/>
 
     <TextView
@@ -19,7 +20,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/album_title_text_size"
-        android:text="My sick beatzz"
         android:gravity="center"
         android:layout_below="@+id/album_cover_art" />
 
