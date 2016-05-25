@@ -31,6 +31,10 @@ public class Constants {
                                                               R.drawable.ic_music_note_black,  R.drawable.ic_music_note_black,
                                                               R.drawable.ic_music_note_black};
 
+    //Sound Cloud
+    public static final String SOUND_CLOUD_CLIENT_ID = "6af4e9b999eaa63f5d797d466cdc4ccb";
+    public static final String API_URL = "https://api.soundcloud.com";
+
     public static void buildImageListDialogue(Context context, String title){
         AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();

@@ -65,7 +65,7 @@ public class MixItemAdapter extends RecyclerView.Adapter<MixItemAdapter.ViewHold
                     mProgressBar.setProgress(mProgressBar.getProgress() - Constants.BEAT_LEVEL_INCREASE_DIFFERENCE);
                     break;
                 case R.id.clear_icon:
-                    //remove this item
+                    removeItem(getAdapterPosition());
                     break;
             }
         }
@@ -93,5 +93,10 @@ public class MixItemAdapter extends RecyclerView.Adapter<MixItemAdapter.ViewHold
     @Override
     public int getItemCount() {
         return mMixerItems.size();
+    }
+
+    public void removeItem(int position) {
+        mMixerItems.remove(position);
+        notifyItemRemoved(position);
     }
 }

@@ -39,7 +39,6 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -126,6 +125,7 @@ public class BaseActivity extends AppCompatActivity {
 
         if (mToolBar != null) {
             mToolBar.setNavigationIcon(R.drawable.ic_navigation_drawer);
+            mToolBar.setTitle("test");
             mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

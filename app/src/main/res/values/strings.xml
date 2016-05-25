@@ -55,4 +55,7 @@
     <string name="increase_beat_amount_icon_content_description">Increase beat amount icon</string>
     <string name="decrease_beat_amount_icon_content_description">Increase Beat Amount</string>
 
+    <!--Error strings -->
+    <string name="unknown_volley_error">Unknown error.</string>
+
 </resources>
