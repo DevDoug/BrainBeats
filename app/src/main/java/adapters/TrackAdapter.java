@@ -43,7 +43,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder> 
             mAlbumArtCover.setOnClickListener(new View.OnClickListener() { //Beat selected load detail screen
                 @Override
                 public void onClick(View v) {
-                    ((MainActivity) mAdapterContext).loadBeatDetailFragment();
+                    ((MainActivity) mAdapterContext).loadBeatDetailFragment(mTracks.get(getAdapterPosition()));
                 }
             });
         }

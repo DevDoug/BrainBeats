@@ -18,19 +18,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
 import adapters.BeatAlbumAdapter;
+import entity.Track;
 import model.Beat;
 import utils.Constants;
 
 public class DashboardDetailFragment extends Fragment implements AdapterView.OnItemClickListener {
     public static final String TAG = "DashboardDetailFragment";
 
+    private TextView mTrackTitle;
+    private ImageView mAlbumCoverArt;
+    public Bundle mUserSelections;
     List<Beat> beatList = new ArrayList<>();
     private RecyclerView mAlbumTrackList;
     private BeatAlbumAdapter mBeatAlbumAdapter;
@@ -65,6 +72,8 @@ public class DashboardDetailFragment extends Fragment implements AdapterView.OnI
         View v = inflater.inflate(R.layout.fragment_dashboard_detail, container, false);
         mAlbumTrackList = (RecyclerView) v.findViewById(R.id.album_title_list);
         mFob = (FloatingActionButton) v.findViewById(R.id.add_to_list_fob);
+        mTrackTitle = (TextView) v.findViewById(R.id.track_title);
+        mAlbumCoverArt = (ImageView) v.findViewById(R.id.album_cover_art);
         ((TextView)v.findViewById(R.id.separator_title)).setText("Album Name");
         return v;
     }
@@ -82,7 +91,16 @@ public class DashboardDetailFragment extends Fragment implements AdapterView.OnI
                 Constants.buildListDialogue(getContext(), getString(R.string.add_beat_to_user_list), R.array.add_beat_to_user_list_options,DashboardDetailFragment.this);
             }
         });
+
+
         getBeatData();
+        mUserSelections = getArguments();
+
+        if(mUserSelections != null) {
+            Track selectedTrack = (Track) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_TRACK);
+            mTrackTitle.setText(selectedTrack.getTitle());
+            Picasso.with(getContext()).load(selectedTrack.getArtworkURL()).into(mAlbumCoverArt);
+        }
     }
 
     //TODO: Replace dummy data with real data from sound cloud

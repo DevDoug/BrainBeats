@@ -12,14 +12,14 @@
         android:textSize="@dimen/album_detail_title_text_size"
         android:layout_marginTop="@dimen/content_margin_top"
         android:gravity="center"
-        android:id="@+id/textView" />
+        android:id="@+id/track_title" />
 
     <ImageView
         android:id="@+id/album_cover_art"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:src="@drawable/placeholder"
-        android:layout_below="@+id/textView"
+        android:layout_below="@+id/track_title"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/fragment_content_item_top_margin"
         android:adjustViewBounds="true"/>
