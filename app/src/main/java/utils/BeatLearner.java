@@ -6,4 +6,14 @@ package utils;
  * on previus choice and other factors
  */
 public class BeatLearner {
+
+    public static BeatLearner mBeatLearnerInstance;
+    public boolean mHasStartedLearning;    //if false new user so we have data to work with
+
+    public static BeatLearner getInstance(){
+        if(mBeatLearnerInstance == null) {
+            mBeatLearnerInstance = new BeatLearner();
+        }
+        return mBeatLearnerInstance;
+    }
 }

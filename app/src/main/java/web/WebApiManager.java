@@ -1,25 +1,16 @@
 package web;
 
 import android.content.Context;
-import android.util.Log;
-
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
-import com.android.volley.toolbox.Volley;
 import com.brainbeats.R;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import utils.Constants;
 
 /**
@@ -27,14 +18,15 @@ import utils.Constants;
  */
 public class WebApiManager {
 
-    public static final int MY_SOCKET_TIMEOUT_MS   = 30000;
+    public static final int MY_SOCKET_TIMEOUT_MS = 30000;
 
     //Sound cloud API links
-    public static final String API_ROOT_URL        = "https://api.soundcloud.com";
-    public static final String API_TRACKS_URL      = "/tracks/";
+    public static final String API_ROOT_URL     = "https://api.soundcloud.com";
+    public static final String API_TRACKS_URL   = "/tracks/";
+    public static final String API_PLAYLIST_URL = "/playlists/";
 
     //Sound cloud API keys
-    public static final String KEY_ClIENT_ID = "client_id";
+    public static final String KEY_ClIENT_ID    = "client_id";
 
     public interface OnResponseListener {
         void onResponse(JSONObject object);
@@ -45,14 +37,24 @@ public class WebApiManager {
     }
 
     public static void getTrack(Context context, String trackId, final OnResponseListener responseListener, final OnErrorListener errorListener) {
-        HashMap<String,String> mParams = new HashMap<>();
-        mParams.put(KEY_ClIENT_ID,Constants.SOUND_CLOUD_CLIENT_ID);
-
+        HashMap<String, String> mParams = new HashMap<>();
+        mParams.put(KEY_ClIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
         String url = API_ROOT_URL + API_TRACKS_URL + trackId;
-
         try {
             JSONObject jsonRequest = new JSONObject();
-            sendRequest(context,Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
+            sendRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
+        } catch (Exception ex) {
+            errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
+        }
+    }
+
+    public static void getPlayList(Context context, String playlistId, final OnResponseListener responseListener, final OnErrorListener errorListener){
+        HashMap<String, String> mParams = new HashMap<>();
+        mParams.put(KEY_ClIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
+        String url = API_ROOT_URL + API_PLAYLIST_URL + playlistId;
+        try {
+            JSONObject jsonRequest = new JSONObject();
+            sendRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
         } catch (Exception ex) {
             errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
         }
@@ -103,7 +105,6 @@ public class WebApiManager {
                 return headers;
             }
         };
-
 
         request.setRetryPolicy(new DefaultRetryPolicy(
                 WebApiManager.MY_SOCKET_TIMEOUT_MS,

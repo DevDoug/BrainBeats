@@ -7,26 +7,16 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.brainbeats.LibraryActivity;
 import com.brainbeats.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import adapters.BeatAdapter;
 import adapters.ViewPagerAdapter;
-import fragments.LibraryTabFragment;
 import model.Beat;
-import utils.Constants;
 
 public class LibraryFragment extends Fragment {
 
