@@ -55,7 +55,29 @@ public class ImageAdapter extends BaseAdapter{
 
         ImageView imageView = (ImageView) convertView.findViewById(R.id.dialog_image_list_item);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            imageView.setImageDrawable(mAdapterContext.getDrawable(R.drawable.ic_music_note_black));
+            switch (position) {
+                case 0:
+                    imageView.setImageDrawable(mAdapterContext.getDrawable(R.drawable.ic_music_note_black));
+                    break;
+                case 1:
+                    imageView.setImageDrawable(mAdapterContext.getDrawable(R.drawable.ic_mic_none));
+                    break;
+                case 2:
+                    imageView.setImageDrawable(mAdapterContext.getDrawable(R.drawable.ic_album));
+                    break;
+                case 3:
+                    imageView.setImageDrawable(mAdapterContext.getDrawable(R.drawable.ic_album));
+                    break;
+                case 4:
+                    imageView.setImageDrawable(mAdapterContext.getDrawable(R.drawable.ic_album));
+                    break;
+                case 5:
+                    imageView.setImageDrawable(mAdapterContext.getDrawable(R.drawable.ic_album));
+                    break;
+                case 6:
+                    imageView.setImageDrawable(mAdapterContext.getDrawable(R.drawable.ic_album));
+                    break;
+            }
         }
         return convertView;
     }

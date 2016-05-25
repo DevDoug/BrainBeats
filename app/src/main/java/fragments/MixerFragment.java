@@ -47,7 +47,7 @@ public class MixerFragment extends Fragment implements AdapterView.OnItemClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mixer, container, false);
         mMixerList = (RecyclerView) v.findViewById(R.id.mixer_list);
-        ((TextView)v.findViewById(R.id.separator_title)).setText("History");
+        ((TextView)v.findViewById(R.id.separator_title)).setText(R.string.mixes);
         mAddNewBeatButton = (FloatingActionButton) v.findViewById(R.id.mixer_fob);
         return v;
     }
@@ -66,6 +66,7 @@ public class MixerFragment extends Fragment implements AdapterView.OnItemClickLi
                 Constants.buildListDialogue(getContext(),getString(R.string.new_beat_title),R.array.new_beat_options,MixerFragment.this);
             }
         });
+
         getBeatData();
     }
 

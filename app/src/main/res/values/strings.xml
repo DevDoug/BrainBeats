@@ -58,4 +58,6 @@
     <!--Error strings -->
     <string name="unknown_volley_error">Unknown error.</string>
 
+    <string name="mixes">Mixes</string>
+
 </resources>
