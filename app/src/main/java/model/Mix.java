@@ -7,12 +7,12 @@ import android.os.Parcelable;
 /**
  * Created by Douglas on 4/15/2016.
  */
-public class Beat implements Parcelable {
+public class Mix implements Parcelable {
 
     private String mBeatTitle;
     private Bitmap mBeatAlbumCoverArt;
 
-    public Beat(){
+    public Mix(){
     }
 
     public String getBeatTitle() {
@@ -31,20 +31,20 @@ public class Beat implements Parcelable {
         this.mBeatAlbumCoverArt = BeatAlbumCoverArt;
     }
 
-    protected Beat(Parcel in) {
+    protected Mix(Parcel in) {
         mBeatTitle = in.readString();
         mBeatAlbumCoverArt = in.readParcelable(Bitmap.class.getClassLoader());
     }
 
-    public static final Creator<Beat> CREATOR = new Creator<Beat>() {
+    public static final Creator<Mix> CREATOR = new Creator<Mix>() {
         @Override
-        public Beat createFromParcel(Parcel in) {
-            return new Beat(in);
+        public Mix createFromParcel(Parcel in) {
+            return new Mix(in);
         }
 
         @Override
-        public Beat[] newArray(int size) {
-            return new Beat[size];
+        public Mix[] newArray(int size) {
+            return new Mix[size];
         }
     };
 

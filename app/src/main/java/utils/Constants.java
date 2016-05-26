@@ -2,6 +2,7 @@ package utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 import com.brainbeats.R;
 
 import adapters.ImageAdapter;
+import data.MixContract;
+import model.Mix;
 
 /**
  * Created by Douglas on 4/20/2016.
@@ -35,6 +38,12 @@ public class Constants {
                                                               R.drawable.ic_music_note_black, R.drawable.ic_music_note_black,
                                                               R.drawable.ic_music_note_black, R.drawable.ic_music_note_black,
                                                               R.drawable.ic_music_note_black};
+
+    public static ContentValues createMixRecord(Mix mix) {
+        ContentValues values = new ContentValues();
+        values.put(MixContract.MixEntry.COLUMN_NAME_MIX_TITLE,mix.getBeatTitle());
+        return values;
+    }
 
     public static void buildImageListDialogue(Context context, String title){
         AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);

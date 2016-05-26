@@ -25,10 +25,14 @@
     <!-- Dialog Strings -->
     <string name="new_beat_title">New Beat</string>
     <string-array name="new_beat_options">
+        <item name="create_blank_beat">Create a new Beat</item>
+        <item name="create_beat_from_existing">Create a new beat from existing</item>
+    </string-array>
+
+    <string-array name="new_from_existing_beat_options">
         <item name="start_mixing_by_search">Start mixing by search</item>
         <item name="start_mixing_from_popular_beat">Start mixing from a popular beat</item>
         <item name="start_mixing_from_library">Start mixing from library</item>
-        <item name="start_mixing_from_two_songs">Start mixing from two songs</item>
     </string-array>
 
     <string name="add_beat_to_user_list">Add Beat To Collection</string>
@@ -59,5 +63,6 @@
     <string name="unknown_volley_error">Unknown error.</string>
 
     <string name="mixes">Mixes</string>
+    <string name="no_mixes_found_text">No mixes found</string>
 
 </resources>

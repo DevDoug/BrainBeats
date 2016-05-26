@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.brainbeats.R;
 import java.util.List;
-import model.Beat;
+import model.Mix;
 
 /**
  * Created by douglas on 4/29/2016.
@@ -16,11 +16,11 @@ import model.Beat;
 public class BeatAlbumAdapter extends RecyclerView.Adapter<BeatAlbumAdapter.ViewHolder>  {
 
     Context mAdapterContext;
-    List<Beat> mBeats;
+    List<Mix> mMices;
 
-    public BeatAlbumAdapter(Context context, List<Beat> data) {
+    public BeatAlbumAdapter(Context context, List<Mix> data) {
         mAdapterContext = context;
-        mBeats = data;
+        mMices = data;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -41,11 +41,11 @@ public class BeatAlbumAdapter extends RecyclerView.Adapter<BeatAlbumAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mAlbumTitle.setText(mBeats.get(position).getBeatTitle());
+        holder.mAlbumTitle.setText(mMices.get(position).getBeatTitle());
     }
 
     @Override
     public int getItemCount() {
-        return mBeats.size();
+        return mMices.size();
     }
 }

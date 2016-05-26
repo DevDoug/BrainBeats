@@ -5,15 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.brainbeats.MainActivity;
 import com.brainbeats.R;
 
 import java.util.List;
 
-import model.Beat;
+import model.Mix;
 
 /**
  * Created by douglas on 5/20/2016.
@@ -21,11 +19,11 @@ import model.Beat;
 public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.ViewHolder> {
 
     Context mAdapterContext;
-    List<Beat> mBeats;
+    List<Mix> mMices;
 
-    public LibraryAdapter(Context context, List<Beat> data) {
+    public LibraryAdapter(Context context, List<Mix> data) {
         mAdapterContext = context;
-        mBeats = data;
+        mMices = data;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -46,11 +44,11 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mAlbumTitle.setText(mBeats.get(position).getBeatTitle());
+        holder.mAlbumTitle.setText(mMices.get(position).getBeatTitle());
     }
 
     @Override
     public int getItemCount() {
-        return mBeats.size();
+        return mMices.size();
     }
 }

@@ -33,7 +33,7 @@ public class MixContract {
         public static final String COLUMN_NAME_MIX_ID = "mixid";
         public static final String COLUMN_NAME_MIX_TITLE = "mixitle";
 
-        public static Uri buildMovieUri(long id) {
+        public static Uri buildMixUriWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }

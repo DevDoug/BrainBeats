@@ -23,6 +23,9 @@
         android:id="@+id/empty_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/no_mixes_found_text"
+        android:textSize="26sp"
+        android:layout_centerInParent="true"
         android:visibility="gone"/>
 
     <android.support.design.widget.FloatingActionButton

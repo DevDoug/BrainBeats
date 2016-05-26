@@ -16,11 +16,11 @@ import com.brainbeats.R;
 import java.util.ArrayList;
 
 import adapters.ViewPagerAdapter;
-import model.Beat;
+import model.Mix;
 
 public class LibraryFragment extends Fragment {
 
-    ArrayList<Beat> beatList = new ArrayList<>();
+    ArrayList<Mix> mixList = new ArrayList<>();
     public TabLayout mTabLayout;
     public ViewPager mViewPager;
     private OnFragmentInteractionListener mListener;
@@ -77,22 +77,22 @@ public class LibraryFragment extends Fragment {
 
     public void setupViewPager() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
-        adapter.addFragment(LibraryTabFragment.newInstance(beatList), getResources().getStringArray(R.array.library_tab_titles)[0]);
-        adapter.addFragment(LibraryTabFragment.newInstance(beatList), getResources().getStringArray(R.array.library_tab_titles)[1]);
-        adapter.addFragment(LibraryTabFragment.newInstance(beatList), getResources().getStringArray(R.array.library_tab_titles)[2]);
+        adapter.addFragment(LibraryTabFragment.newInstance(mixList), getResources().getStringArray(R.array.library_tab_titles)[0]);
+        adapter.addFragment(LibraryTabFragment.newInstance(mixList), getResources().getStringArray(R.array.library_tab_titles)[1]);
+        adapter.addFragment(LibraryTabFragment.newInstance(mixList), getResources().getStringArray(R.array.library_tab_titles)[2]);
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
     //TODO: Replace dummy data with real data from sound cloud
     public void getBeatData(){
-        beatList.add(new Beat());
-        beatList.get(0).setBeatTitle("Focus");
-        beatList.add(new Beat());
-        beatList.get(1).setBeatTitle("Meditation");
-        beatList.add(new Beat());
-        beatList.get(2).setBeatTitle("Relaxation");
-        beatList.add(new Beat());
-        beatList.get(3).setBeatTitle("Yoga");
+        mixList.add(new Mix());
+        mixList.get(0).setBeatTitle("Focus");
+        mixList.add(new Mix());
+        mixList.get(1).setBeatTitle("Meditation");
+        mixList.add(new Mix());
+        mixList.get(2).setBeatTitle("Relaxation");
+        mixList.add(new Mix());
+        mixList.get(3).setBeatTitle("Yoga");
     }
 }

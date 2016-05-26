@@ -15,7 +15,6 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import entity.Track;
-import model.Beat;
 
 
 /**
@@ -40,7 +39,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder> 
             mAlbumArtCover = (ImageView) v.findViewById(R.id.album_cover_art);
             mTrackTitle = (TextView) v.findViewById(R.id.album_title);
 
-            mAlbumArtCover.setOnClickListener(new View.OnClickListener() { //Beat selected load detail screen
+            mAlbumArtCover.setOnClickListener(new View.OnClickListener() { //Mix selected load detail screen
                 @Override
                 public void onClick(View v) {
                     ((MainActivity) mAdapterContext).loadBeatDetailFragment(mTracks.get(getAdapterPosition()));

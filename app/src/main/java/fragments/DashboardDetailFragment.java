@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import adapters.BeatAlbumAdapter;
 import entity.Track;
-import model.Beat;
+import model.Mix;
 import utils.Constants;
 
 public class DashboardDetailFragment extends Fragment implements AdapterView.OnItemClickListener {
@@ -38,7 +38,7 @@ public class DashboardDetailFragment extends Fragment implements AdapterView.OnI
     private TextView mTrackTitle;
     private ImageView mAlbumCoverArt;
     public Bundle mUserSelections;
-    List<Beat> beatList = new ArrayList<>();
+    List<Mix> mixList = new ArrayList<>();
     private RecyclerView mAlbumTrackList;
     private BeatAlbumAdapter mBeatAlbumAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -81,7 +81,7 @@ public class DashboardDetailFragment extends Fragment implements AdapterView.OnI
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mBeatAlbumAdapter = new BeatAlbumAdapter(getContext(),beatList);
+        mBeatAlbumAdapter = new BeatAlbumAdapter(getContext(), mixList);
         mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false);
         mAlbumTrackList.setLayoutManager(mLayoutManager);
         mAlbumTrackList.setAdapter(mBeatAlbumAdapter);
@@ -105,14 +105,14 @@ public class DashboardDetailFragment extends Fragment implements AdapterView.OnI
 
     //TODO: Replace dummy data with real data from sound cloud
     public void getBeatData(){
-        beatList.add(new Beat());
-        beatList.get(0).setBeatTitle("Focus");
-        beatList.add(new Beat());
-        beatList.get(1).setBeatTitle("Meditation");
-        beatList.add(new Beat());
-        beatList.get(2).setBeatTitle("Relaxation");
-        beatList.add(new Beat());
-        beatList.get(3).setBeatTitle("Yoga");
+        mixList.add(new Mix());
+        mixList.get(0).setBeatTitle("Focus");
+        mixList.add(new Mix());
+        mixList.get(1).setBeatTitle("Meditation");
+        mixList.add(new Mix());
+        mixList.get(2).setBeatTitle("Relaxation");
+        mixList.add(new Mix());
+        mixList.get(3).setBeatTitle("Yoga");
         mBeatAlbumAdapter.notifyDataSetChanged();
     }
 
