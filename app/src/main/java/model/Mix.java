@@ -9,18 +9,31 @@ import android.os.Parcelable;
  */
 public class Mix implements Parcelable {
 
-    private String mBeatTitle;
+    private int mId;
+    private String mMixTitle;
+    private int mAlphaLevel;
+    private int mBetaLevel;
+    private int mGammaLevel;
+    private int mThetaLevel;
     private Bitmap mBeatAlbumCoverArt;
 
     public Mix(){
     }
 
-    public String getBeatTitle() {
-        return mBeatTitle;
+    public int getBeatId() {
+        return mId;
     }
 
-    public void setBeatTitle(String BeatTitle) {
-        this.mBeatTitle = BeatTitle;
+    public void setBeatId(int beatId) {
+        this.mId = beatId;
+    }
+
+    public String getBeatTitle() {
+        return mMixTitle;
+    }
+
+    public void setMixTitle(String BeatTitle) {
+        this.mMixTitle = BeatTitle;
     }
 
     public Bitmap getBeatAlbumCoverArt() {
@@ -31,8 +44,40 @@ public class Mix implements Parcelable {
         this.mBeatAlbumCoverArt = BeatAlbumCoverArt;
     }
 
+    public int getAlphaLevel() {
+        return mAlphaLevel;
+    }
+
+    public void setAlphaLevel(int AlphaLevel) {
+        this.mAlphaLevel = AlphaLevel;
+    }
+
+    public int getBetaLevel() {
+        return mBetaLevel;
+    }
+
+    public void setBetaLevel(int BetaLevel) {
+        this.mBetaLevel = BetaLevel;
+    }
+
+    public int getGammaLevel() {
+        return mGammaLevel;
+    }
+
+    public void setGammaLevel(int GammaLevel) {
+        this.mGammaLevel = GammaLevel;
+    }
+
+    public int getThetaLevel() {
+        return mThetaLevel;
+    }
+
+    public void setThetaLevel(int ThetaLevel) {
+        this.mThetaLevel = ThetaLevel;
+    }
+
     protected Mix(Parcel in) {
-        mBeatTitle = in.readString();
+        mMixTitle = in.readString();
         mBeatAlbumCoverArt = in.readParcelable(Bitmap.class.getClassLoader());
     }
 
@@ -55,7 +100,7 @@ public class Mix implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mBeatTitle);
+        dest.writeString(mMixTitle);
         dest.writeParcelable(mBeatAlbumCoverArt, flags);
     }
 }

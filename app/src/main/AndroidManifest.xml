@@ -24,8 +24,7 @@
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
         <provider
-            android:authorities="data.MixDbContentProvider"
-            android:multiprocess="true"
+            android:authorities="com.brainbeats"
             android:name="data.MixDbContentProvider"/>
     </application>
 </manifest>

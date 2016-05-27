@@ -87,12 +87,12 @@ public class LibraryFragment extends Fragment {
     //TODO: Replace dummy data with real data from sound cloud
     public void getBeatData(){
         mixList.add(new Mix());
-        mixList.get(0).setBeatTitle("Focus");
+        mixList.get(0).setMixTitle("Focus");
         mixList.add(new Mix());
-        mixList.get(1).setBeatTitle("Meditation");
+        mixList.get(1).setMixTitle("Meditation");
         mixList.add(new Mix());
-        mixList.get(2).setBeatTitle("Relaxation");
+        mixList.get(2).setMixTitle("Relaxation");
         mixList.add(new Mix());
-        mixList.get(3).setBeatTitle("Yoga");
+        mixList.get(3).setMixTitle("Yoga");
     }
 }

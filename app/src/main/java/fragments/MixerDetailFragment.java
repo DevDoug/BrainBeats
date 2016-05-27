@@ -17,10 +17,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
 import adapters.MixItemAdapter;
+import entity.Track;
+import model.Mix;
 import model.MixerItem;
+import utils.Constants;
 
 public class MixerDetailFragment extends Fragment {
 
@@ -28,6 +33,8 @@ public class MixerDetailFragment extends Fragment {
     private RecyclerView mMixerItemList;
     private MixItemAdapter mMixerItemAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    public Bundle mUserSelections;
+    public TextView mMixTitle;
 
     public MixerDetailFragment() {
         // Required empty public constructor
@@ -37,6 +44,7 @@ public class MixerDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mixer_detail, container, false);
         mMixerItemList = (RecyclerView) v.findViewById(R.id.beat_mix_item_list);
+        mMixTitle = (TextView) v.findViewById(R.id.track_title);
         ((TextView)v.findViewById(R.id.separator_title)).setText(R.string.beat_levels);
         return v;
     }
@@ -66,19 +74,30 @@ public class MixerDetailFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false);
         mMixerItemList.setLayoutManager(mLayoutManager);
         mMixerItemList.setAdapter(mMixerItemAdapter);
-        getMixerItemData();
+
+        mUserSelections = getArguments();
+
+        if(mUserSelections != null) {
+            Mix selectedMix = (Mix) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_MIX);
+            mMixTitle.setText(selectedMix.getBeatTitle());
+            getMixerItemData(selectedMix);
+        }
     }
 
     //TODO: Replace dummy data with real data from sound cloud
-    public void getMixerItemData(){
+    public void getMixerItemData(Mix mix){
         mixerItemList.add(new MixerItem());
         mixerItemList.get(0).setMixItemTitle("Alpha");
+        mixerItemList.get(0).setMixItemLevel(mix.getAlphaLevel());
         mixerItemList.add(new MixerItem());
         mixerItemList.get(1).setMixItemTitle("Beta");
+        mixerItemList.get(1).setMixItemLevel(mix.getBetaLevel());
         mixerItemList.add(new MixerItem());
         mixerItemList.get(2).setMixItemTitle("Gamma");
+        mixerItemList.get(2).setMixItemLevel(mix.getGammaLevel());
         mixerItemList.add(new MixerItem());
         mixerItemList.get(3).setMixItemTitle("Theta");
+        mixerItemList.get(3).setMixItemLevel(mix.getThetaLevel());
         mixerItemList.add(new MixerItem());
         mixerItemList.get(4).setMixItemTitle("Add new");
         mMixerItemAdapter.notifyDataSetChanged();

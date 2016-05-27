@@ -5,13 +5,14 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/dialog_text_background"
     android:padding="@dimen/list_item_padding">
 
     <TextView
         android:id="@+id/album_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/album_title_text_size"
-        android:text="My sick beatzz"
+        android:textSize="@dimen/dialog_item_text_size"
+        android:textColor="@color/theme_secondary_text_color"
         android:gravity="start"/>
 </RelativeLayout>

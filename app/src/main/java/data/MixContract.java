@@ -15,7 +15,7 @@ public class MixContract {
     }
 
     // The "Content authority" is a name for the entire content provider.
-    public static final String CONTENT_AUTHORITY = "com.brainbeats.mixes";
+    public static final String CONTENT_AUTHORITY = "com.brainbeats";
 
     // Use CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
@@ -30,8 +30,11 @@ public class MixContract {
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX;
 
         public static final String TABLE_NAME = "mix";
-        public static final String COLUMN_NAME_MIX_ID = "mixid";
-        public static final String COLUMN_NAME_MIX_TITLE = "mixitle";
+        public static final String COLUMN_NAME_MIX_TITLE         = "mixtitle";
+        public static final String COLUMN_NAME_MIX_ALPHA_LEVEL   = "alphalevel";
+        public static final String COLUMN_NAME_MIX_BETA_LEVEL    = "betalevel";
+        public static final String COLUMN_NAME_MIX_GAMMA_LEVEL   = "gammalevel";
+        public static final String COLUMN_NAME_MIX_THETA_LEVEL   = "thetalevel";
 
         public static Uri buildMixUriWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

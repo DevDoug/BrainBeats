@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import java.util.List;
+
+import data.MixContract;
 import model.Mix;
 
 /**
@@ -20,8 +22,11 @@ import model.Mix;
  */
 public class MixerAdapter extends CursorAdapter {
 
+    Context mAdapterContext;
+
     public MixerAdapter(Context context, Cursor cursor, int flags) {
         super(context, cursor, 0);
+        mAdapterContext = context;
     }
 
     @Override
@@ -30,6 +35,9 @@ public class MixerAdapter extends CursorAdapter {
     }
 
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(View view, Context context, final Cursor cursor) {
+        TextView titleText = (TextView) view.findViewById(R.id.album_title);
+        RelativeLayout container = (RelativeLayout) view.findViewById(R.id.mixer_item_container);
+        titleText.setText(cursor.getString(cursor.getColumnIndexOrThrow(MixContract.MixEntry.COLUMN_NAME_MIX_TITLE)));
     }
 }
