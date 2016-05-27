@@ -105,10 +105,10 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
             case 0:
                 Mix m = new Mix();
                 m.setMixTitle("New mix");
-                m.setAlphaLevel(1);
-                m.setBetaLevel(1);
-                m.setGammaLevel(1);
-                m.setThetaLevel(1);
+                m.setAlphaLevel(50);
+                m.setBetaLevel(50);
+                m.setGammaLevel(50);
+                m.setThetaLevel(50);
                 getActivity().getContentResolver().insert(MixContract.MixEntry.CONTENT_URI,Constants.buildMixRecord(m));
                 mAddOptionsDialog.dismiss();
                 break;

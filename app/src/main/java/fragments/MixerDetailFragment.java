@@ -29,7 +29,7 @@ import utils.Constants;
 
 public class MixerDetailFragment extends Fragment {
 
-    List<MixerItem> mixerItemList = new ArrayList<>();
+    List<MixerItem> mixerItemList;
     private RecyclerView mMixerItemList;
     private MixItemAdapter mMixerItemAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -70,6 +70,8 @@ public class MixerDetailFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mixerItemList = new ArrayList<>();
+
         mMixerItemAdapter = new MixItemAdapter(getContext(),mixerItemList);
         mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false);
         mMixerItemList.setLayoutManager(mLayoutManager);
