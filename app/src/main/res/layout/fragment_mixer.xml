@@ -15,10 +15,9 @@
         android:id="@+id/mixer_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="@dimen/recycler_view_top_padding"
+        android:background="@android:color/white"
         android:layout_below="@+id/blue_line_seperator"
-        android:descendantFocusability="beforeDescendants"
-        >
+        android:descendantFocusability="beforeDescendants">
     </ListView>
 
     <TextView

@@ -1,6 +1,8 @@
 package fragments;
 
 import android.app.AlertDialog;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -65,7 +67,7 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Cursor c = mMixerAdapter.getCursor();
-                ((MixerActivity) getActivity()).loadMixerDetailFragment(Constants.buildMixFromCursor(c,position));
+                ((MixerActivity) getActivity()).loadMixerDetailFragment(Constants.buildMixFromCursor(getContext(),c,position));
             }
         });
         mAddNewBeatButton.setOnClickListener(new View.OnClickListener() {
@@ -103,13 +105,10 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (position) {
             case 0:
-                Mix m = new Mix();
-                m.setMixTitle("New mix");
-                m.setAlphaLevel(50);
-                m.setBetaLevel(50);
-                m.setGammaLevel(50);
-                m.setThetaLevel(50);
-                getActivity().getContentResolver().insert(MixContract.MixEntry.CONTENT_URI,Constants.buildMixRecord(m));
+                Mix defaultMix = Constants.buildNewDefaultMixRecord(getContext());
+                Uri returnRow = getActivity().getContentResolver().insert(MixContract.MixEntry.CONTENT_URI,Constants.buildMixRecord(defaultMix));
+                long returnRowId = ContentUris.parseId(returnRow);
+                getActivity().getContentResolver().bulkInsert(MixContract.MixItemsEntry.CONTENT_URI,Constants.buildMixItemsBulkRecord(returnRowId,defaultMix.getMixItems()));
                 mAddOptionsDialog.dismiss();
                 break;
             case 1:

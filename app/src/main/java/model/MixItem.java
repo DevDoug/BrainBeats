@@ -3,13 +3,23 @@ package model;
 /**
  * Created by douglas on 5/16/2016.
  */
-public class MixerItem {
+public class MixItem {
 
-    String mMixItemTitle;
+    private long mMixItemId;
 
-    int mMixItemLevel;
+    private String mMixItemTitle;
 
-    public MixerItem(){
+    private int mMixItemLevel;
+
+    public MixItem(){
+    }
+
+    public long getMixItemId() {
+        return mMixItemId;
+    }
+
+    public void setMixItemId(long mixItemId) {
+        this.mMixItemId = mixItemId;
     }
 
     public String getMixItemTitle() {

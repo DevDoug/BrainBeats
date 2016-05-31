@@ -4,81 +4,69 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+
 /**
  * Created by Douglas on 4/15/2016.
  */
 public class Mix implements Parcelable {
 
-    private int mId;
+    private long mId;
     private String mMixTitle;
-    private int mAlphaLevel;
-    private int mBetaLevel;
-    private int mGammaLevel;
-    private int mThetaLevel;
-    private Bitmap mBeatAlbumCoverArt;
+    private String mBeatAlbumCoverArtSource;
+    private ArrayList<MixItem> mMixItems;
 
     public Mix(){
     }
 
-    public int getBeatId() {
+    public long getMixId() {
         return mId;
     }
 
-    public void setBeatId(int beatId) {
-        this.mId = beatId;
+    public void setMixId(long mixId) {
+        this.mId = mixId;
     }
 
     public String getBeatTitle() {
         return mMixTitle;
     }
 
-    public void setMixTitle(String BeatTitle) {
-        this.mMixTitle = BeatTitle;
+    public void setMixTitle(String beatTitle) {
+        this.mMixTitle = beatTitle;
     }
 
-    public Bitmap getBeatAlbumCoverArt() {
-        return mBeatAlbumCoverArt;
+    public String getBeatAlbumCoverArt() {
+        return mBeatAlbumCoverArtSource;
     }
 
-    public void setBeatAlbumCoverArt(Bitmap BeatAlbumCoverArt) {
-        this.mBeatAlbumCoverArt = BeatAlbumCoverArt;
+    public void setBeatAlbumCoverArt(String beatAlbumCoverArtSource) {
+        this.mBeatAlbumCoverArtSource = beatAlbumCoverArtSource;
     }
 
-    public int getAlphaLevel() {
-        return mAlphaLevel;
+    public ArrayList<MixItem> getMixItems() {
+        return mMixItems;
     }
 
-    public void setAlphaLevel(int AlphaLevel) {
-        this.mAlphaLevel = AlphaLevel;
+    public void setMixItems(ArrayList<MixItem> mixItems) {
+        this.mMixItems = mixItems;
     }
 
-    public int getBetaLevel() {
-        return mBetaLevel;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void setBetaLevel(int BetaLevel) {
-        this.mBetaLevel = BetaLevel;
-    }
-
-    public int getGammaLevel() {
-        return mGammaLevel;
-    }
-
-    public void setGammaLevel(int GammaLevel) {
-        this.mGammaLevel = GammaLevel;
-    }
-
-    public int getThetaLevel() {
-        return mThetaLevel;
-    }
-
-    public void setThetaLevel(int ThetaLevel) {
-        this.mThetaLevel = ThetaLevel;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(mId);
+        dest.writeString(mMixTitle);
+        dest.writeString(mBeatAlbumCoverArtSource);
     }
 
     protected Mix(Parcel in) {
+        mId = in.readLong();
         mMixTitle = in.readString();
-        mBeatAlbumCoverArt = in.readParcelable(Bitmap.class.getClassLoader());
+        mBeatAlbumCoverArtSource = in.readString();
     }
 
     public static final Creator<Mix> CREATOR = new Creator<Mix>() {
@@ -92,15 +80,4 @@ public class Mix implements Parcelable {
             return new Mix[size];
         }
     };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mMixTitle);
-        dest.writeParcelable(mBeatAlbumCoverArt, flags);
-    }
 }

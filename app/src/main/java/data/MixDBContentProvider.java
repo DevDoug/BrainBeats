@@ -20,6 +20,7 @@ public class MixDbContentProvider extends ContentProvider {
     private static final SQLiteQueryBuilder sMixByIDQueryBuilder;
 
     static final int MIX = 100;
+    static final int MIXITEM = 200;
 
     static{
         sMixByIDQueryBuilder = new SQLiteQueryBuilder();
@@ -31,6 +32,7 @@ public class MixDbContentProvider extends ContentProvider {
 
         // For each type of URI you want to add, create a corresponding code.
         matcher.addURI(authority, MixContract.PATH_MIX, MIX);
+        matcher.addURI(authority, MixContract.PATH_MIX_ITEM, MIXITEM);
         return matcher;
     }
 
@@ -47,6 +49,18 @@ public class MixDbContentProvider extends ContentProvider {
             case MIX: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         MixContract.MixEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
+            case MIXITEM: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        MixContract.MixItemsEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -81,7 +95,6 @@ public class MixDbContentProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         Uri returnUri;
-
         switch (match) {
             case MIX: {
                 long _id = db.insert(MixContract.MixEntry.TABLE_NAME, null, values);
@@ -130,6 +143,9 @@ public class MixDbContentProvider extends ContentProvider {
             case MIX:
                 rowsUpdated = db.update(MixContract.MixEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
+            case MIXITEM:
+                rowsUpdated = db.update(MixContract.MixItemsEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -159,6 +175,22 @@ public class MixDbContentProvider extends ContentProvider {
                 }
                 getContext().getContentResolver().notifyChange(uri, null);
                 return returnCount;
+            case MIXITEM:
+                db.beginTransaction();
+                int returnCountMixItem = 0;
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(MixContract.MixItemsEntry.TABLE_NAME, null, value);
+                        if(_id != -1){
+                            returnCountMixItem++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCountMixItem;
             default:
                 return super.bulkInsert(uri, values);
         }

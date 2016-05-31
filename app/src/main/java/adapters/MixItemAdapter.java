@@ -1,8 +1,6 @@
 package adapters;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +11,7 @@ import android.widget.TextView;
 
 import com.brainbeats.R;
 import java.util.List;
-import model.MixerItem;
+import model.MixItem;
 import utils.Constants;
 
 /**
@@ -22,11 +20,11 @@ import utils.Constants;
 public class MixItemAdapter extends RecyclerView.Adapter<MixItemAdapter.ViewHolder> {
 
     Context mAdapterContext;
-    List<MixerItem> mMixerItems;
+    List<MixItem> mMixItems;
 
-    public MixItemAdapter(Context context, List<MixerItem> data) {
+    public MixItemAdapter(Context context, List<MixItem> data) {
         mAdapterContext = context;
-        mMixerItems = data;
+        mMixItems = data;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -59,9 +57,11 @@ public class MixItemAdapter extends RecyclerView.Adapter<MixItemAdapter.ViewHold
                     Constants.buildImageListDialogue(mAdapterContext,mAdapterContext.getResources().getString(R.string.add_sound_item_to_current_beat));
                     break;
                 case R.id.increase_icon:
+                    mMixItems.get(getAdapterPosition()).setMixItemLevel(mMixItems.get(getAdapterPosition()).getMixItemLevel() + Constants.BEAT_LEVEL_INCREASE_DIFFERENCE);
                     mProgressBar.incrementProgressBy(Constants.BEAT_LEVEL_INCREASE_DIFFERENCE);
                     break;
                 case R.id.minus_icon:
+                    mMixItems.get(getAdapterPosition()).setMixItemLevel(mProgressBar.getProgress() - Constants.BEAT_LEVEL_INCREASE_DIFFERENCE);
                     mProgressBar.setProgress(mProgressBar.getProgress() - Constants.BEAT_LEVEL_INCREASE_DIFFERENCE);
                     break;
                 case R.id.clear_icon:
@@ -80,10 +80,10 @@ public class MixItemAdapter extends RecyclerView.Adapter<MixItemAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mMixerItemTitle.setText(mMixerItems.get(position).getMixItemTitle());
-        holder.mProgressBar.setProgress(mMixerItems.get(position).getMixItemLevel());
+        holder.mMixerItemTitle.setText(mMixItems.get(position).getMixItemTitle());
+        holder.mProgressBar.setProgress(mMixItems.get(position).getMixItemLevel());
 
-        if(position == mMixerItems.size() - 1) { // set the last row to be an add new item
+        if(position == mMixItems.size() - 1) { // set the last row to be an add new item
             holder.mRemoveBeatItemIcon.setVisibility(View.INVISIBLE);
             holder.mSubtractBeatLevelIcon.setVisibility(View.INVISIBLE);
             holder.mIncreaseBeatLevelIcon.setVisibility(View.GONE);
@@ -94,11 +94,11 @@ public class MixItemAdapter extends RecyclerView.Adapter<MixItemAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return mMixerItems.size();
+        return mMixItems.size();
     }
 
     public void removeItem(int position) {
-        mMixerItems.remove(position);
+        mMixItems.remove(position);
         notifyItemRemoved(position);
     }
 }

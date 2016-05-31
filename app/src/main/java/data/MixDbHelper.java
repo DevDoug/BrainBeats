@@ -11,7 +11,7 @@ import model.Mix;
  */
 public class MixDbHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 5;
     public static final String DATABASE_NAME = "Mix.db";
 
     public static final String COLUMN_TYPE_INT_NULL       = " INTEGER";
@@ -29,19 +29,29 @@ public class MixDbHelper extends SQLiteOpenHelper {
         // Create mix table
         final String CREATE_TABLE_MIX = "CREATE TABLE " + MixContract.MixEntry.TABLE_NAME + " (" +
                         MixContract.MixEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        MixContract.MixEntry.COLUMN_NAME_MIX_TITLE       + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
-                        MixContract.MixEntry.COLUMN_NAME_MIX_ALPHA_LEVEL + COLUMN_TYPE_INT_NULL  + COMMA_SEPERATOR +
-                        MixContract.MixEntry.COLUMN_NAME_MIX_BETA_LEVEL  + COLUMN_TYPE_INT_NULL  + COMMA_SEPERATOR +
-                        MixContract.MixEntry.COLUMN_NAME_MIX_GAMMA_LEVEL + COLUMN_TYPE_INT_NULL  + COMMA_SEPERATOR +
-                        MixContract.MixEntry.COLUMN_NAME_MIX_THETA_LEVEL + COLUMN_TYPE_INT_NULL  +
+                        MixContract.MixEntry.COLUMN_NAME_MIX_TITLE + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
+                        MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL + COLUMN_TYPE_TEXT_NULL +
                         " );";
 
+        final String CREATE_TABLE_MIX_ITEMS = "CREATE TABLE " + MixContract.MixItemsEntry.TABLE_NAME + " (" +
+                        MixContract.MixItemsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_TITLE + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
+                        MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_LEVEL + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
+                        MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + " INTEGER NOT NULL," +
+
+
+                // Set up the Mix Items fk column as a foreign key to movie table.
+                        " FOREIGN KEY (" + MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + ") REFERENCES " +
+                        MixContract.MixEntry.TABLE_NAME + " (" + MixContract.MixEntry._ID + "));";
+
         db.execSQL(CREATE_TABLE_MIX);
+        db.execSQL(CREATE_TABLE_MIX_ITEMS);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + MixContract.MixEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS" + MixContract.MixItemsEntry.TABLE_NAME);
         onCreate(db);
     }
 }

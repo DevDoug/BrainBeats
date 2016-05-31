@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,9 +16,14 @@ import android.widget.TextView;
 
 import com.brainbeats.R;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 import adapters.ImageAdapter;
 import data.MixContract;
 import model.Mix;
+import model.MixItem;
 
 /**
  * Created by Douglas on 4/20/2016.
@@ -34,30 +40,73 @@ public class Constants {
 
     public static final int GRID_SPAN_COUNT = 3;
     public static final int BEAT_LEVEL_INCREASE_DIFFERENCE = 10;
+    public static final int MIX_ITEM_DEFAULT_LEVEL = 50;
     public static final int BEAT_ITEM_DRAWABLES[] = new int[]{R.drawable.ic_music_note_black, R.drawable.ic_music_note_black,
                                                               R.drawable.ic_music_note_black, R.drawable.ic_music_note_black,
                                                               R.drawable.ic_music_note_black, R.drawable.ic_music_note_black,
                                                               R.drawable.ic_music_note_black};
 
-    public static Mix buildMixFromCursor(Cursor cursor, int position) {
+    public static Mix buildMixFromCursor(Context context,Cursor cursor, int position) {
         cursor.moveToPosition(position);
         Mix mix = new Mix();
+        mix.setMixId(cursor.getLong(cursor.getColumnIndex(MixContract.MixEntry._ID)));
         mix.setMixTitle(cursor.getString(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_MIX_TITLE)));
-        mix.setAlphaLevel(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_MIX_ALPHA_LEVEL)));
-        mix.setBetaLevel(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_MIX_BETA_LEVEL)));
-        mix.setGammaLevel(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_MIX_GAMMA_LEVEL)));
-        mix.setThetaLevel(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_MIX_THETA_LEVEL)));
+        String whereClause = MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + "= ?";
+        String[] whereArgs = new String[] {
+                " " + cursor.getLong(cursor.getColumnIndex(MixContract.MixEntry._ID)),
+        };
+        Cursor mixItemsCursor = context.getContentResolver().query(MixContract.MixItemsEntry.CONTENT_URI, null,whereClause,whereArgs,null); // get the mix items associated with this mix
+        mixItemsCursor.moveToFirst();
+        ArrayList<MixItem> mixItems = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            MixItem mixItem = new MixItem();
+            mixItem.setMixItemId(mixItemsCursor.getLong(mixItemsCursor.getColumnIndex(MixContract.MixItemsEntry._ID)));
+            mixItem.setMixItemTitle(mixItemsCursor.getString(mixItemsCursor.getColumnIndex(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_TITLE)));
+            mixItem.setMixItemLevel(mixItemsCursor.getInt(mixItemsCursor.getColumnIndex(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_LEVEL)));
+            mixItems.add(mixItem);
+            mixItemsCursor.moveToNext();
+        }
+        mix.setMixItems(mixItems);
         return mix;
     }
 
     public static ContentValues buildMixRecord(Mix mix) {
         ContentValues values = new ContentValues();
         values.put(MixContract.MixEntry.COLUMN_NAME_MIX_TITLE, mix.getBeatTitle());
-        values.put(MixContract.MixEntry.COLUMN_NAME_MIX_ALPHA_LEVEL, mix.getAlphaLevel());
-        values.put(MixContract.MixEntry.COLUMN_NAME_MIX_BETA_LEVEL, mix.getBetaLevel());
-        values.put(MixContract.MixEntry.COLUMN_NAME_MIX_GAMMA_LEVEL, mix.getGammaLevel());
-        values.put(MixContract.MixEntry.COLUMN_NAME_MIX_THETA_LEVEL, mix.getThetaLevel());
+        values.put(MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL, mix.getBeatAlbumCoverArt());
         return values;
+    }
+
+    public static ContentValues buildMixItemsRecord(long mixId,MixItem mixitem){
+        ContentValues values = new ContentValues();
+        values.put(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_TITLE,mixitem.getMixItemTitle());
+        values.put(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_LEVEL,mixitem.getMixItemLevel());
+        values.put(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY,mixId);
+        return values;
+    }
+
+    public static ContentValues[] buildMixItemsBulkRecord(long mixId,ArrayList<MixItem> mixitems) {
+        ContentValues[] contentValues = new ContentValues[mixitems.size()];
+        for (int i = 0; i < mixitems.size(); i++) {
+            contentValues[i] = buildMixItemsRecord(mixId,mixitems.get(i));
+        }
+        return contentValues;
+    }
+
+    public static Mix buildNewDefaultMixRecord(Context context) {
+        Mix defaultMix = new Mix();
+        defaultMix.setMixTitle(context.getString(R.string.default_mix_title));
+        defaultMix.setBeatAlbumCoverArt(context.getString(R.string.default_mix_album_art_url));
+        ArrayList<MixItem> defaultMixItems = new ArrayList<>();
+        for(int i = 0; i < context.getResources().getStringArray(R.array.default_mix_items).length; i++){
+            MixItem item = new MixItem();
+            item.setMixItemTitle(context.getResources().getStringArray(R.array.default_mix_items)[i]);
+            item.setMixItemLevel(MIX_ITEM_DEFAULT_LEVEL);
+            defaultMixItems.add(item);
+        }
+        defaultMix.setMixItems(defaultMixItems);
+
+        return defaultMix;
     }
 
     public static void buildImageListDialogue(Context context, String title) {

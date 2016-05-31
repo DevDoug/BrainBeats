@@ -37,7 +37,6 @@ public class MixerAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, final Cursor cursor) {
         TextView titleText = (TextView) view.findViewById(R.id.album_title);
-        RelativeLayout container = (RelativeLayout) view.findViewById(R.id.mixer_item_container);
         titleText.setText(cursor.getString(cursor.getColumnIndexOrThrow(MixContract.MixEntry.COLUMN_NAME_MIX_TITLE)));
     }
 }

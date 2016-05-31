@@ -17,24 +17,24 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 import adapters.MixItemAdapter;
-import entity.Track;
+import data.MixContract;
 import model.Mix;
-import model.MixerItem;
+import model.MixItem;
 import utils.Constants;
 
 public class MixerDetailFragment extends Fragment {
 
-    List<MixerItem> mixerItemList;
+    List<MixItem> mixItemList = new ArrayList<>();
     private RecyclerView mMixerItemList;
     private MixItemAdapter mMixerItemAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     public Bundle mUserSelections;
     public TextView mMixTitle;
+    public Mix mSelectedMix;
 
     public MixerDetailFragment() {
         // Required empty public constructor
@@ -62,6 +62,17 @@ public class MixerDetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
+                String[] args = {
+                        String.valueOf(mSelectedMix.getMixId()),
+                };
+                ((MixerActivity) getActivity()).getContentResolver().update(MixContract.MixEntry.CONTENT_URI,Constants.buildMixRecord(mSelectedMix),getResources().getString(R.string.db_id_field) + mSelectedMix.getMixId(), null);
+                for (int i = 0; i < mSelectedMix.getMixItems().size(); i++) {
+                    MixItem item = mSelectedMix.getMixItems().get(i);
+                    ((MixerActivity) getActivity()).getContentResolver().update(MixContract.MixItemsEntry.CONTENT_URI,
+                            Constants.buildMixItemsRecord(mSelectedMix.getMixId(),item),
+                            getResources().getString(R.string.db_id_field) + item.getMixItemId(),
+                            null);
+                }
                 ((MixerActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
             }
         });
@@ -70,38 +81,20 @@ public class MixerDetailFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mixerItemList = new ArrayList<>();
+        mUserSelections = getArguments();
+        if(mUserSelections != null) {
+            mSelectedMix = (Mix) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_MIX);
+            mMixTitle.setText(mSelectedMix.getBeatTitle());
+            mixItemList = mSelectedMix.getMixItems();
+            MixItem addNewMix = new MixItem();
+            addNewMix.setMixItemTitle("Add New");
+            mixItemList.add(addNewMix);
+        }
 
-        mMixerItemAdapter = new MixItemAdapter(getContext(),mixerItemList);
+        mMixerItemAdapter = new MixItemAdapter(getContext(), mixItemList);
         mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false);
         mMixerItemList.setLayoutManager(mLayoutManager);
         mMixerItemList.setAdapter(mMixerItemAdapter);
-
-        mUserSelections = getArguments();
-
-        if(mUserSelections != null) {
-            Mix selectedMix = (Mix) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_MIX);
-            mMixTitle.setText(selectedMix.getBeatTitle());
-            getMixerItemData(selectedMix);
-        }
-    }
-
-    //TODO: Replace dummy data with real data from sound cloud
-    public void getMixerItemData(Mix mix){
-        mixerItemList.add(new MixerItem());
-        mixerItemList.get(0).setMixItemTitle("Alpha");
-        mixerItemList.get(0).setMixItemLevel(mix.getAlphaLevel());
-        mixerItemList.add(new MixerItem());
-        mixerItemList.get(1).setMixItemTitle("Beta");
-        mixerItemList.get(1).setMixItemLevel(mix.getBetaLevel());
-        mixerItemList.add(new MixerItem());
-        mixerItemList.get(2).setMixItemTitle("Gamma");
-        mixerItemList.get(2).setMixItemLevel(mix.getGammaLevel());
-        mixerItemList.add(new MixerItem());
-        mixerItemList.get(3).setMixItemTitle("Theta");
-        mixerItemList.get(3).setMixItemLevel(mix.getThetaLevel());
-        mixerItemList.add(new MixerItem());
-        mixerItemList.get(4).setMixItemTitle("Add new");
         mMixerItemAdapter.notifyDataSetChanged();
     }
 }
