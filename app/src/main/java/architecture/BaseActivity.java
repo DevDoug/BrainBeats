@@ -125,7 +125,6 @@ public class BaseActivity extends AppCompatActivity {
 
         if (mToolBar != null) {
             mToolBar.setNavigationIcon(R.drawable.ic_navigation_drawer);
-            mToolBar.setTitle("test");
             mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -152,11 +151,13 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void navigateUpOrBack(Activity currentActivity, FragmentManager fm) {
-        if(fm.getBackStackEntryCount() >= 1){ //if there are active fragments go up if not go back
+        if(fm.getBackStackEntryCount() > 1){ //if there are active fragments go up if not go back
             fm.popBackStackImmediate();
-            getToolBar();
-            mDrawerToggle.setDrawerIndicatorEnabled(true);
-            mDrawerToggle.syncState();
+            if(fm.getBackStackEntryCount() == 1) {
+                getToolBar();
+                mDrawerToggle.setDrawerIndicatorEnabled(true);
+                mDrawerToggle.syncState();
+            }
         } else {
             currentActivity.onBackPressed();
         }

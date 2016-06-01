@@ -22,6 +22,10 @@ public class Track implements Parcelable {
     @SerializedName("artwork_url")
     private String mArtworkURL;
 
+    public Track(){
+
+    }
+
     protected Track(Parcel in) {
         mTitle = in.readString();
         mID = in.readInt();
@@ -31,6 +35,10 @@ public class Track implements Parcelable {
 
     public String getTitle() {
         return mTitle;
+    }
+
+    public void setTitle(String title){
+        this.mTitle = title;
     }
 
     public int getID() {

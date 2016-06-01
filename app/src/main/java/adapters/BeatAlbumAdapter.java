@@ -16,11 +16,11 @@ import model.Mix;
 public class BeatAlbumAdapter extends RecyclerView.Adapter<BeatAlbumAdapter.ViewHolder>  {
 
     Context mAdapterContext;
-    List<Mix> mMices;
+    List<Mix> mMixes;
 
     public BeatAlbumAdapter(Context context, List<Mix> data) {
         mAdapterContext = context;
-        mMices = data;
+        mMixes = data;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -41,11 +41,11 @@ public class BeatAlbumAdapter extends RecyclerView.Adapter<BeatAlbumAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mAlbumTitle.setText(mMices.get(position).getBeatTitle());
+        holder.mAlbumTitle.setText(mMixes.get(position).getBeatTitle());
     }
 
     @Override
     public int getItemCount() {
-        return mMices.size();
+        return mMixes.size();
     }
 }

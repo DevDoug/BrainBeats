@@ -34,6 +34,7 @@ public class Constants {
     public static final String KEY_EXTRA_BEAT_LIST = "BeatInfo";
     public static final String KEY_EXTRA_SELECTED_TRACK = "SelectedTrack";
     public static final String KEY_EXTRA_SELECTED_MIX = "SelectedMix";
+    public static final String KEY_EXTRA_SEARCH_KEYWORD = "SearchKeyword";
 
     //Sound Cloud
     public static final String SOUND_CLOUD_CLIENT_ID = "6af4e9b999eaa63f5d797d466cdc4ccb";

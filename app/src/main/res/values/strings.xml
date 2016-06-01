@@ -23,16 +23,17 @@
     <string name="title_activity_settings">Settings</string>
 
     <!-- Dialog Strings -->
-    <string name="new_beat_title">New Beat</string>
+    <string name="new_beat_title">New Mix</string>
     <string-array name="new_beat_options">
-        <item name="create_blank_beat">Create a new Beat</item>
-        <item name="create_beat_from_existing">Create a new beat from existing</item>
+        <item name="create_blank_beat">Create a new mix.</item>
+        <item name="create_beat_from_existing">Create a new beat from existing.</item>
     </string-array>
 
+    <string name="create_beat_from_title">Create A New Mix From</string>
     <string-array name="new_from_existing_beat_options">
-        <item name="start_mixing_by_search">Start mixing by search</item>
-        <item name="start_mixing_from_popular_beat">Start mixing from a popular beat</item>
-        <item name="start_mixing_from_library">Start mixing from library</item>
+        <item name="start_mixing_by_search">Start mixing by search.</item>
+        <item name="start_mixing_from_popular_beat">Start mixing from a popular beat.</item>
+        <item name="start_mixing_from_library">Start mixing from library.</item>
     </string-array>
 
     <string name="add_beat_to_user_list">Add Beat To Collection</string>
@@ -59,8 +60,6 @@
         <item name="theta_option">Theta</item>
     </string-array>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="beat_levels">Beat Levels</string>
     <string name="album_cover_art_image_description">Album cover art</string>
     <string name="increase_beat_amount_icon_content_description">Increase beat amount icon</string>
@@ -73,5 +72,16 @@
     <string name="no_mixes_found_text">No mixes found</string>
     <string name="default_mix_title">New Mix</string>
     <string name="db_id_field">_id=</string>
+
+    <string-array name="beat_categories">
+        <item name="focus">Focus</item>
+        <item name="relaxation">Relaxation</item>
+        <item name="meditation">Meditation</item>
+        <item name="stress">Stress</item>
+        <item name="creativity">Creativity</item>
+        <item name="study">Study</item>
+        <item name="sleep">Sleep</item>
+        <item name="brain_function">Brain Function</item>
+    </string-array>
 
 </resources>

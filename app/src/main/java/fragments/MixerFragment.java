@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.brainbeats.LibraryActivity;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import adapters.MixerAdapter;
@@ -112,7 +114,24 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
                 mAddOptionsDialog.dismiss();
                 break;
             case 1:
-                Toast.makeText(getContext(), "Creating from resource", Toast.LENGTH_LONG).show();
+                mAddOptionsDialog.dismiss();
+                mAddOptionsDialog = Constants.buildListDialogue(getContext(),getString(R.string.create_beat_from_title),R.array.new_from_existing_beat_options, new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        switch (position) {
+                            case 0:
+                                Toast.makeText(getContext(), "Creating from resource", Toast.LENGTH_LONG).show();
+                                break;
+                            case 1:
+                                Toast.makeText(getContext(), "Creating from resource", Toast.LENGTH_LONG).show();
+                                break;
+                            case 2:
+                                Intent libraryIntent = new Intent(getContext(), LibraryActivity.class);
+                                startActivity(libraryIntent);
+                                break;
+                        }
+                    }
+                });
                 break;
         }
     }

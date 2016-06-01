@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +36,7 @@ import utils.Constants;
 public class DashboardDetailFragment extends Fragment implements AdapterView.OnItemClickListener {
     public static final String TAG = "DashboardDetailFragment";
 
-    private TextView mTrackTitle;
+    private EditText mTrackTitle;
     private ImageView mAlbumCoverArt;
     public Bundle mUserSelections;
     List<Mix> mixList = new ArrayList<>();
@@ -54,7 +55,7 @@ public class DashboardDetailFragment extends Fragment implements AdapterView.OnI
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+/*        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         Drawable up = DrawableCompat.wrap(ContextCompat.getDrawable(getContext(), R.drawable.ic_up));
         DrawableCompat.setTint(up, getResources().getColor(R.color.theme_primary_text_color));
         toolbar.setNavigationIcon(up);
@@ -64,7 +65,7 @@ public class DashboardDetailFragment extends Fragment implements AdapterView.OnI
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 ((MainActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
             }
-        });
+        });*/
     }
 
     @Override
@@ -72,7 +73,7 @@ public class DashboardDetailFragment extends Fragment implements AdapterView.OnI
         View v = inflater.inflate(R.layout.fragment_dashboard_detail, container, false);
         mAlbumTrackList = (RecyclerView) v.findViewById(R.id.album_title_list);
         mFob = (FloatingActionButton) v.findViewById(R.id.add_to_list_fob);
-        mTrackTitle = (TextView) v.findViewById(R.id.track_title);
+        mTrackTitle = (EditText) v.findViewById(R.id.track_title);
         mAlbumCoverArt = (ImageView) v.findViewById(R.id.album_cover_art);
         ((TextView)v.findViewById(R.id.separator_title)).setText("Album Name");
         return v;
@@ -91,7 +92,6 @@ public class DashboardDetailFragment extends Fragment implements AdapterView.OnI
                 Constants.buildListDialogue(getContext(), getString(R.string.add_beat_to_user_list), R.array.add_beat_to_user_list_options,DashboardDetailFragment.this);
             }
         });
-
 
         getBeatData();
         mUserSelections = getArguments();

@@ -16,16 +16,15 @@ import java.util.List;
 
 import entity.Track;
 
-
 /**
- * Created by Douglas on 4/13/2016.
+ * Created by douglas on 5/31/2016.
  */
-public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder> {
+public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.ViewHolder> {
 
     Context mAdapterContext;
     List<Track> mTracks;
 
-    public TrackAdapter(Context context, List<Track> data) {
+    public SearchMusicAdapter(Context context, List<Track> data) {
         mAdapterContext = context;
         mTracks = data;
     }
@@ -42,7 +41,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder> 
             mAlbumArtCover.setOnClickListener(new View.OnClickListener() { //Mix selected load detail screen
                 @Override
                 public void onClick(View v) {
-                    ((MainActivity) mAdapterContext).loadBeatDetailFragment(mTracks.get(getAdapterPosition()));
+                    ((MainActivity) mAdapterContext).loadRefinedBeatList(mTracks.get(getAdapterPosition()).getTitle());
                 }
             });
         }
@@ -56,25 +55,11 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
-        final TextView textView = (TextView) holder.mTrackTitle;
-        if (mTracks.get(position).getArtworkURL() == null ||mTracks.get(position).getArtworkURL().isEmpty()) {
-            holder.mAlbumArtCover.setImageDrawable(mAdapterContext.getDrawable(R.drawable.placeholder));
-            textView.setText(mTracks.get(position).getTitle());
-        }
-        else {
-            Picasso.with(mAdapterContext)
-                    .load(mTracks.get(position)
-                            .getArtworkURL()).into(holder.mAlbumArtCover, new com.squareup.picasso.Callback(){
-                @Override
-                public void onSuccess() {
-                    textView.setText(mTracks.get(position).getTitle());
-                }
-                @Override
-                public void onError() {
-                }
-            });
-        }
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.mTrackTitle.setText(mTracks.get(position).getTitle());
+        holder.mAlbumArtCover.setImageDrawable(mAdapterContext.getDrawable(R.drawable.placeholder));
+
+        //Picasso.with(mAdapterContext).load(mTracks.get(position).getArtworkURL()).into(holder.mAlbumArtCover);
     }
 
     @Override

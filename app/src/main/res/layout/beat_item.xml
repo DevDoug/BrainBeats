@@ -21,6 +21,8 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/album_title_text_size"
         android:gravity="center"
+        android:singleLine="true"
+        android:ellipsize="end"
         android:layout_below="@+id/album_cover_art" />
 
 </RelativeLayout>

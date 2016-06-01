@@ -7,11 +7,13 @@ import architecture.BaseActivity;
 import entity.Track;
 import fragments.DashboardDetailFragment;
 import fragments.DashboardFragment;
+import fragments.DashboardSongListFragment;
 import utils.Constants;
 
-public class MainActivity extends BaseActivity implements DashboardFragment.OnFragmentInteractionListener, DashboardDetailFragment.OnFragmentInteractionListener{
+public class MainActivity extends BaseActivity implements DashboardFragment.OnFragmentInteractionListener, DashboardSongListFragment.OnFragmentInteractionListener, DashboardDetailFragment.OnFragmentInteractionListener{
 
     Fragment mDashboardFragment;
+    Fragment mDashboardSongListFragment;
     Fragment mDashboardDetailFragment;
     Bundle mUserSelections;
 
@@ -20,6 +22,7 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
         mDashboardFragment = new DashboardFragment();
+        mDashboardSongListFragment = new DashboardSongListFragment();
         mDashboardDetailFragment = new DashboardDetailFragment();
         switchToDashboardFragment();
 
@@ -30,6 +33,13 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
 
     public void switchToDashboardFragment(){
         replaceFragment(mDashboardFragment, mDashboardFragment.getTag());
+    }
+
+    public void loadRefinedBeatList(String searchParam){
+        toggleNavDrawerIcon();
+        mUserSelections.putString(Constants.KEY_EXTRA_SEARCH_KEYWORD,searchParam);
+        mDashboardSongListFragment.setArguments(mUserSelections);
+        replaceFragment(mDashboardSongListFragment, mDashboardSongListFragment.getTag());
     }
 
     public void loadBeatDetailFragment(Track track){

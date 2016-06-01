@@ -15,14 +15,17 @@ import android.view.ViewGroup;
 import com.android.volley.VolleyError;
 import com.brainbeats.R;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import adapters.SearchMusicAdapter;
 import adapters.TrackAdapter;
 import entity.Playlists;
 import entity.Track;
@@ -34,10 +37,10 @@ public class DashboardFragment extends Fragment {
 
     public static final String TAG = "DashboardFragment";
 
-    List<Track> trackList = new ArrayList<>();
     private RecyclerView mTrackGrid;
-    private TrackAdapter mTrackAdapter;
+    private SearchMusicAdapter mTrackAdapter;
     private GridLayoutManager mBeatGridLayoutManager;
+    List<Track> trackList = new ArrayList<>();
     private OnFragmentInteractionListener mListener;
 
     public DashboardFragment() {
@@ -52,43 +55,25 @@ public class DashboardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dashboard, container, false);
-        mTrackGrid = (RecyclerView) v.findViewById(R.id.beats_grid);
+        mTrackGrid = (RecyclerView) v.findViewById(R.id.category_grid);
         return v;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getBeatData();
-    }
-
-    //TODO: Replace dummy data with real data from sound cloud
-    public void getBeatData() {
-        if (!BeatLearner.getInstance().mHasStartedLearning) { // user does not have any tracks yet
-            String defaultPlaylistID = "405726";
-            WebApiManager.getPlayList(getContext(), defaultPlaylistID, new WebApiManager.OnResponseListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Gson gson = new Gson();
-                            Type token = new TypeToken<Playlists>() {}.getType();
-                            Playlists playlist = gson.fromJson(response.toString(), token);
-                            if (playlist != null) {
-                                trackList = playlist.getPlaylistTracks();
-                                mTrackAdapter = new TrackAdapter(getContext(), trackList);
-                                mBeatGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
-                                mTrackGrid.setLayoutManager(mBeatGridLayoutManager);
-                                mTrackGrid.setAdapter(mTrackAdapter);
-                                mTrackAdapter.notifyDataSetChanged();
-                            }
-                        }
-                    }, new WebApiManager.OnErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.i(getClass().getSimpleName(), "Response = " + error.toString());
-                        }
-                    }
-            );
+        ArrayList<Track> trackCategory = new ArrayList<>();
+        for(int i = 0; i < getResources().getStringArray(R.array.beat_categories).length;i++){
+            Track  defaultTrack = new Track();
+            defaultTrack.setTitle(getResources().getStringArray(R.array.beat_categories)[i]);
+            trackCategory.add(defaultTrack);
         }
+        trackList = trackCategory;
+        mTrackAdapter = new SearchMusicAdapter(getContext(), trackList);
+        mBeatGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
+        mTrackGrid.setLayoutManager(mBeatGridLayoutManager);
+        mTrackGrid.setAdapter(mTrackAdapter);
+        mTrackAdapter.notifyDataSetChanged();
     }
 
     // TODO: Rename method, update argument and hook method into UI event

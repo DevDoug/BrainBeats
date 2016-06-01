@@ -5,9 +5,12 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.brainbeats.R;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,23 +35,28 @@ public class WebApiManager {
         void onResponse(JSONObject object);
     }
 
+    public interface OnArrayResponseListener {
+        void onArrayResponse(JSONArray array);
+    }
+
     public interface OnErrorListener {
         void onErrorResponse(VolleyError error);
     }
 
-    public static void getTrack(Context context, String trackId, final OnResponseListener responseListener, final OnErrorListener errorListener) {
+    public static void searchTrackWithKeyword(Context context, String searchKeyword, final OnArrayResponseListener responseListener, final OnErrorListener errorListener) {
         HashMap<String, String> mParams = new HashMap<>();
         mParams.put(KEY_ClIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
-        String url = API_ROOT_URL + API_TRACKS_URL + trackId;
+        mParams.put("q",searchKeyword);
+        String url = API_ROOT_URL + API_TRACKS_URL;
         try {
-            JSONObject jsonRequest = new JSONObject();
+            JSONArray jsonRequest = new JSONArray();
             sendRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
         } catch (Exception ex) {
             errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
         }
     }
 
-    public static void getPlayList(Context context, String playlistId, final OnResponseListener responseListener, final OnErrorListener errorListener){
+ /*   public static void getPlayList(Context context, String playlistId, final OnResponseListener responseListener, final OnErrorListener errorListener){
         HashMap<String, String> mParams = new HashMap<>();
         mParams.put(KEY_ClIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
         String url = API_ROOT_URL + API_PLAYLIST_URL + playlistId;
@@ -58,14 +66,15 @@ public class WebApiManager {
         } catch (Exception ex) {
             errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
         }
-    }
+    }*/
 
-    public static void sendRequest(Context context, int method, final String url, final HashMap<String, String> urlParams, final JSONObject requestParam, final OnResponseListener onResponseListener, final OnErrorListener onErrorListener) {
-        JsonRequest request = new JsonObjectRequest(method, url, requestParam, new Response.Listener<JSONObject>() {
+    public static void sendRequest(Context context, int method, final String url, final HashMap<String, String> urlParams, final JSONArray requestParam, final OnArrayResponseListener onArrayResponseListener, final OnErrorListener onErrorListener) {
+        JsonRequest request = new JsonArrayRequest(method, url, requestParam, new Response.Listener<JSONArray>() {
 
             @Override
-            public void onResponse(JSONObject response) {
-                onResponseListener.onResponse(response);
+            public void onResponse(JSONArray response) {
+                onArrayResponseListener.onArrayResponse(response);
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -99,7 +108,7 @@ public class WebApiManager {
                 //NOTE: Code in here need to be replicated in the other case below (in case of JsonObjectRequest).
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
-                headers.put(KEY_ClIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
+                //headers.put(KEY_ClIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
                 //TODO: Add more headers here if needed.
 
                 return headers;
