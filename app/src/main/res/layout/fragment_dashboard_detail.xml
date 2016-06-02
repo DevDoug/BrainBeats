@@ -1,54 +1,76 @@
-<RelativeLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="fragments.DashboardDetailFragment">
 
-    <include
-        android:id="@+id/beat_detail_header"
-        layout="@layout/shared_beat_detail_view"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    </include>
 
-    <include
-        android:id="@+id/blue_line_seperator"
-        layout="@layout/blue_horizontal_seperator"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/blue_horizontal_divider_height"
-        android:layout_below="@+id/beat_detail_header"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="@dimen/content_margin_top"/>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/blue_line_seperator"
-        android:layout_alignParentBottom="true">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/album_title_list"
+        <TextView
+            android:id="@+id/track_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/recycler_view_top_padding">
-        </android.support.v7.widget.RecyclerView>
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="25dp"
+            android:background="@android:color/transparent"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:paddingEnd="25dp"
+            android:paddingStart="25dp"
+            android:singleLine="true"
+            android:text="Focus Beat One"
+            android:textColor="@color/theme_secondary_text_color"
+            android:textSize="@dimen/album_detail_title_text_size" />
 
-    </FrameLayout>
+        <include
+            android:id="@+id/beat_detail_header"
+            layout="@layout/shared_beat_detail_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/track_title" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/add_to_list_fob"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/ic_add_white"
-        android:elevation="@dimen/fob_elevation"
-        android:layout_marginBottom="@dimen/floating_action_button_bottom_margin"
-        android:layout_marginRight="@dimen/floating_action_button_right_margin" />
+        <include
+            android:id="@+id/blue_line_seperator"
+            layout="@layout/blue_horizontal_seperator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/blue_horizontal_divider_height"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/beat_detail_header"
+            android:layout_marginTop="@dimen/content_margin_top" />
 
-</RelativeLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/blue_line_seperator">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/album_title_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/recycler_view_top_padding"/>
+
+        </FrameLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_to_list_fob"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="@dimen/floating_action_button_bottom_margin"
+            android:layout_marginRight="@dimen/floating_action_button_right_margin"
+            android:elevation="@dimen/fob_elevation"
+            android:src="@drawable/ic_add_white" />
+
+    </RelativeLayout>
+</ScrollView>

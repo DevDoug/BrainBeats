@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.brainbeats.MixerActivity;
@@ -63,18 +64,20 @@ public class MixerDetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
-                String[] args = {
-                        String.valueOf(mSelectedMix.getMixId()),
-                };
                 mSelectedMix.setMixTitle(mMixTitle.getText().toString());
                 ((MixerActivity) getActivity()).getContentResolver().update(MixContract.MixEntry.CONTENT_URI,Constants.buildMixRecord(mSelectedMix),getResources().getString(R.string.db_id_field) + mSelectedMix.getMixId(), null);
                 for (int i = 0; i < mSelectedMix.getMixItems().size(); i++) {
                     MixItem item = mSelectedMix.getMixItems().get(i);
-                    ((MixerActivity) getActivity()).getContentResolver().update(MixContract.MixItemsEntry.CONTENT_URI,
-                            Constants.buildMixItemsRecord(mSelectedMix.getMixId(),item),
+                    ((MixerActivity) getActivity()).getContentResolver().update(
+                            MixContract.MixItemsEntry.CONTENT_URI,
+                            Constants.buildMixItemsRecord(mSelectedMix.getMixId(), item),
                             getResources().getString(R.string.db_id_field) + item.getMixItemId(),
                             null);
                 }
+                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
+                if(getActivity().getCurrentFocus() != null) //
+                    inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+
                 ((MixerActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
             }
         });
@@ -88,9 +91,9 @@ public class MixerDetailFragment extends Fragment {
             mSelectedMix = (Mix) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_MIX);
             mMixTitle.setText(mSelectedMix.getBeatTitle());
             mixItemList = mSelectedMix.getMixItems();
-            MixItem addNewMix = new MixItem();
+/*            MixItem addNewMix = new MixItem();
             addNewMix.setMixItemTitle("Add New");
-            mixItemList.add(addNewMix);
+            mixItemList.add(addNewMix);*/
         }
 
         mMixerItemAdapter = new MixItemAdapter(getContext(), mixItemList);

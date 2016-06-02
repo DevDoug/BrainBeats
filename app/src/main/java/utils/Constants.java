@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
@@ -59,7 +60,7 @@ public class Constants {
         Cursor mixItemsCursor = context.getContentResolver().query(MixContract.MixItemsEntry.CONTENT_URI, null,whereClause,whereArgs,null); // get the mix items associated with this mix
         mixItemsCursor.moveToFirst();
         ArrayList<MixItem> mixItems = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < mixItemsCursor.getCount(); i++) {
             MixItem mixItem = new MixItem();
             mixItem.setMixItemId(mixItemsCursor.getLong(mixItemsCursor.getColumnIndex(MixContract.MixItemsEntry._ID)));
             mixItem.setMixItemTitle(mixItemsCursor.getString(mixItemsCursor.getColumnIndex(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_TITLE)));

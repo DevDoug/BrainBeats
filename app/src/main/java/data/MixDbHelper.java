@@ -51,7 +51,7 @@ public class MixDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + MixContract.MixEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS" + MixContract.MixItemsEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MixContract.MixItemsEntry.TABLE_NAME);
         onCreate(db);
     }
 }

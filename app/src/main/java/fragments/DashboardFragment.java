@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.volley.VolleyError;
+import com.brainbeats.MainActivity;
 import com.brainbeats.R;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -50,6 +51,9 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ((MainActivity) getActivity()).getToolBar();
+
     }
 
     @Override

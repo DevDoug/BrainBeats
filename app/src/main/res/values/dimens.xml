@@ -43,7 +43,7 @@
     <!-- String size dimens -->
     <dimen name="dialog_item_text_size">17sp</dimen>
     <dimen name="album_title_text_size">16sp</dimen>
-    <dimen name="album_detail_title_text_size">26sp</dimen>
+    <dimen name="album_detail_title_text_size">23sp</dimen>
     <dimen name="mixer_item_text_size">17sp</dimen>
 
 

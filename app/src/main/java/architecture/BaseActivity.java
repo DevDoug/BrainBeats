@@ -104,7 +104,10 @@ public class BaseActivity extends AppCompatActivity {
     public void replaceFragment(Fragment fragment, String fragmentTag) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, fragment, fragmentTag).addToBackStack(fragmentTag);
+        fragmentTransaction.replace(R.id.fragment_container, fragment, fragmentTag);
+        if (fm.getFragments() != null) {
+            fragmentTransaction.addToBackStack(fragmentTag);
+        }
         fragmentTransaction.commit();
     }
 
@@ -151,9 +154,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void navigateUpOrBack(Activity currentActivity, FragmentManager fm) {
-        if(fm.getBackStackEntryCount() > 1){ //if there are active fragments go up if not go back
+        if(fm.getBackStackEntryCount() >= 1){ //if there are active fragments go up if not go back
             fm.popBackStackImmediate();
-            if(fm.getBackStackEntryCount() == 1) {
+            if(fm.getBackStackEntryCount() == 0){
                 getToolBar();
                 mDrawerToggle.setDrawerIndicatorEnabled(true);
                 mDrawerToggle.syncState();

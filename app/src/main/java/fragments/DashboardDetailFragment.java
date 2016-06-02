@@ -36,7 +36,7 @@ import utils.Constants;
 public class DashboardDetailFragment extends Fragment implements AdapterView.OnItemClickListener {
     public static final String TAG = "DashboardDetailFragment";
 
-    private EditText mTrackTitle;
+    private TextView mTrackTitle;
     private ImageView mAlbumCoverArt;
     public Bundle mUserSelections;
     List<Mix> mixList = new ArrayList<>();
@@ -54,18 +54,6 @@ public class DashboardDetailFragment extends Fragment implements AdapterView.OnI
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
-/*        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-        Drawable up = DrawableCompat.wrap(ContextCompat.getDrawable(getContext(), R.drawable.ic_up));
-        DrawableCompat.setTint(up, getResources().getColor(R.color.theme_primary_text_color));
-        toolbar.setNavigationIcon(up);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                ((MainActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
-            }
-        });*/
     }
 
     @Override
@@ -73,7 +61,7 @@ public class DashboardDetailFragment extends Fragment implements AdapterView.OnI
         View v = inflater.inflate(R.layout.fragment_dashboard_detail, container, false);
         mAlbumTrackList = (RecyclerView) v.findViewById(R.id.album_title_list);
         mFob = (FloatingActionButton) v.findViewById(R.id.add_to_list_fob);
-        mTrackTitle = (EditText) v.findViewById(R.id.track_title);
+        mTrackTitle = (TextView) v.findViewById(R.id.track_title);
         mAlbumCoverArt = (ImageView) v.findViewById(R.id.album_cover_art);
         ((TextView)v.findViewById(R.id.separator_title)).setText("Album Name");
         return v;
