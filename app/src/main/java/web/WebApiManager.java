@@ -9,6 +9,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.brainbeats.R;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,11 +29,14 @@ public class WebApiManager {
     public static final String API_TRACKS_URL   = "/tracks/";
     public static final String API_PLAYLIST_URL = "/playlists/";
 
+    //Sound cloud API links version 2
+    public static final String API_VERSION_TWO_RELATED_TRACKS_URL = "https://api-v2.soundcloud.com/tracks/102113299/related";
+
     //Sound cloud API keys
     public static final String KEY_ClIENT_ID    = "client_id";
 
-    public interface OnResponseListener {
-        void onResponse(JSONObject object);
+    public interface OnObjectResponseListener {
+        void onObjectResponse(JSONObject object);
     }
 
     public interface OnArrayResponseListener {
@@ -50,7 +54,19 @@ public class WebApiManager {
         String url = API_ROOT_URL + API_TRACKS_URL;
         try {
             JSONArray jsonRequest = new JSONArray();
-            sendRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
+            sendArrayRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
+        } catch (Exception ex) {
+            errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
+        }
+    }
+
+    public static void getRelatedTracks(Context context, final OnObjectResponseListener responseListener, final OnErrorListener errorListener){
+        HashMap<String, String> mParams = new HashMap<>();
+        mParams.put(KEY_ClIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
+        String url = API_VERSION_TWO_RELATED_TRACKS_URL;
+        try {
+            JSONObject jsonRequest = new JSONObject();
+            sendObjectRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
         } catch (Exception ex) {
             errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
         }
@@ -62,15 +78,14 @@ public class WebApiManager {
         String url = API_ROOT_URL + API_PLAYLIST_URL + playlistId;
         try {
             JSONObject jsonRequest = new JSONObject();
-            sendRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
+            sendArrayRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
         } catch (Exception ex) {
             errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
         }
     }*/
 
-    public static void sendRequest(Context context, int method, final String url, final HashMap<String, String> urlParams, final JSONArray requestParam, final OnArrayResponseListener onArrayResponseListener, final OnErrorListener onErrorListener) {
+    public static void sendArrayRequest(Context context, int method, final String url, final HashMap<String, String> urlParams, final JSONArray requestParam, final OnArrayResponseListener onArrayResponseListener, final OnErrorListener onErrorListener) {
         JsonRequest request = new JsonArrayRequest(method, url, requestParam, new Response.Listener<JSONArray>() {
-
             @Override
             public void onResponse(JSONArray response) {
                 onArrayResponseListener.onArrayResponse(response);
@@ -108,9 +123,6 @@ public class WebApiManager {
                 //NOTE: Code in here need to be replicated in the other case below (in case of JsonObjectRequest).
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
-                //headers.put(KEY_ClIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
-                //TODO: Add more headers here if needed.
-
                 return headers;
             }
         };
@@ -122,4 +134,53 @@ public class WebApiManager {
         SingletonVolley.getInstance(context).addToRequestQueue(request);
     }
 
+    public static void sendObjectRequest(Context context, int method, final String url, final HashMap<String, String> urlParams, final JSONObject requestParam, final OnObjectResponseListener listener, final OnErrorListener onErrorListener) {
+        JsonRequest request = new JsonObjectRequest(method, url, requestParam, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                listener.onObjectResponse(response);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                onErrorListener.onErrorResponse(error);
+            }
+        }) {
+            //Note: Need to override this method to put params in the URL, because JsonObjectRequest does not call getParams().
+            @Override
+            public String getUrl() {
+                //NOTE: Code in here need to be replicated in the other case below (in case of JsonObjectRequest).
+                StringBuilder stringBuilder = new StringBuilder(url);
+                if (urlParams != null && urlParams.size() > 0) {
+                    int i = 1;
+                    for (Map.Entry<String, String> entry : urlParams.entrySet()) {
+                        if (i == 1) {
+                            stringBuilder.append("?" + entry.getKey() + "=" + entry.getValue());
+                        } else {
+                            stringBuilder.append("&" + entry.getKey() + "=" + entry.getValue());
+                        }
+                        i++;
+                    }
+                }
+
+                String url = stringBuilder.toString();
+                return url;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                //headers.put(KEY_ClIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
+                return headers;
+            }
+        };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                WebApiManager.MY_SOCKET_TIMEOUT_MS,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        SingletonVolley.getInstance(context).addToRequestQueue(request);
+    }
 }

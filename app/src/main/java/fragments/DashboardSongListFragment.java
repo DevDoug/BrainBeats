@@ -1,5 +1,6 @@
 package fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -87,12 +88,16 @@ public class DashboardSongListFragment extends Fragment {
         getBeatData();
     }
 
-    //TODO: Replace dummy data with real data from sound cloud
     public void getBeatData() {
         if (!BeatLearner.getInstance().mHasStartedLearning) { // user does not have any tracks yet
+            final ProgressDialog loadingMusicDialog = new ProgressDialog(getContext());
+            loadingMusicDialog.setCancelable(false);
+            loadingMusicDialog.setMessage(getString(R.string.loading_message));
+            loadingMusicDialog.show();
             WebApiManager.searchTrackWithKeyword(getContext(), mSearchKeyword, new WebApiManager.OnArrayResponseListener() {
                 @Override
                 public void onArrayResponse(JSONArray array) {
+                    loadingMusicDialog.dismiss();
                     Gson gson = new Gson();
                     Type token = new TypeToken<List<Track>>() {}.getType();
                     List<Track> trackList = gson.fromJson(array.toString(), token);

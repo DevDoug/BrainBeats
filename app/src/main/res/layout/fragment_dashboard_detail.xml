@@ -20,8 +20,8 @@
             android:background="@android:color/transparent"
             android:ellipsize="end"
             android:gravity="center"
-            android:paddingEnd="25dp"
-            android:paddingStart="25dp"
+            android:paddingEnd="45dp"
+            android:paddingStart="45dp"
             android:singleLine="true"
             android:text="Focus Beat One"
             android:textColor="@color/theme_secondary_text_color"
@@ -44,33 +44,24 @@
             android:layout_below="@+id/beat_detail_header"
             android:layout_marginTop="@dimen/content_margin_top" />
 
-        <FrameLayout
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/album_title_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/blue_line_seperator">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/album_title_list"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="@dimen/recycler_view_top_padding"/>
-
-        </FrameLayout>
+            android:layout_height="match_parent"
+            android:layout_below="@+id/blue_line_seperator"
+            android:paddingTop="@dimen/recycler_view_top_padding"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/add_to_list_fob"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="@dimen/floating_action_button_bottom_margin"
+            android:visibility="invisible"
             android:layout_marginRight="@dimen/floating_action_button_right_margin"
+            android:layout_marginBottom="@dimen/floating_action_button_right_margin"
             android:elevation="@dimen/fob_elevation"
-            android:src="@drawable/ic_add_white" />
+            android:src="@drawable/ic_add_white"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
 </ScrollView>

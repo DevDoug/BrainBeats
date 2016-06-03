@@ -8,19 +8,20 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.brainbeats.R;
 import java.util.List;
-import model.Mix;
+
+import entity.Collection;
 
 /**
  * Created by douglas on 4/29/2016.
  */
-public class BeatAlbumAdapter extends RecyclerView.Adapter<BeatAlbumAdapter.ViewHolder>  {
+public class RelatedTracksAdapter extends RecyclerView.Adapter<RelatedTracksAdapter.ViewHolder>  {
 
     Context mAdapterContext;
-    List<Mix> mMixes;
+    List<Collection> mCollection;
 
-    public BeatAlbumAdapter(Context context, List<Mix> data) {
+    public RelatedTracksAdapter(Context context, List<Collection> data) {
         mAdapterContext = context;
-        mMixes = data;
+        mCollection = data;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -41,11 +42,11 @@ public class BeatAlbumAdapter extends RecyclerView.Adapter<BeatAlbumAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mAlbumTitle.setText(mMixes.get(position).getBeatTitle());
+        holder.mAlbumTitle.setText(mCollection.get(position).getTitle());
     }
 
     @Override
     public int getItemCount() {
-        return mMixes.size();
+        return mCollection.size();
     }
 }

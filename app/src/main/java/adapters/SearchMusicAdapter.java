@@ -59,7 +59,7 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
         holder.mTrackTitle.setText(mTracks.get(position).getTitle());
         holder.mAlbumArtCover.setImageDrawable(mAdapterContext.getDrawable(R.drawable.placeholder));
 
-        //Picasso.with(mAdapterContext).load(mTracks.get(position).getArtworkURL()).into(holder.mAlbumArtCover);
+        //Picasso.with(mAdapterContext).load(mCollection.get(position).getArtworkURL()).into(holder.mAlbumArtCover);
     }
 
     @Override

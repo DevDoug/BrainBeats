@@ -72,6 +72,7 @@
     <string name="no_mixes_found_text">No mixes found</string>
     <string name="default_mix_title">New Mix</string>
     <string name="db_id_field">_id=</string>
+    <string name="suggested_tracks">Suggested Tracks</string>
 
     <string-array name="beat_categories">
         <item name="focus">Focus</item>
@@ -84,4 +85,5 @@
         <item name="brain_function">Brain Function</item>
     </string-array>
 
+    <string name="loading_message">Loading</string>
 </resources>

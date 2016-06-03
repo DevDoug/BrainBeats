@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.brainbeats">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.brainbeats">
 
+    <permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
 
     <application
         android:allowBackup="true"
@@ -23,8 +28,13 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
+
         <provider
-            android:authorities="com.brainbeats"
-            android:name="data.MixDbContentProvider"/>
+            android:name="data.MixDbContentProvider"
+            android:authorities="com.brainbeats" />
+
+        <service android:name="service.AudioService" />
+
     </application>
+
 </manifest>

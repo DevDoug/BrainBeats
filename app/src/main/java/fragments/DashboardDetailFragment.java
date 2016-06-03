@@ -1,48 +1,58 @@
 package fragments;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.brainbeats.MainActivity;
+
+import com.android.volley.VolleyError;
 import com.brainbeats.R;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import adapters.BeatAlbumAdapter;
+import adapters.RelatedTracksAdapter;
+import entity.Collection;
+import entity.RelatedTracksResponse;
 import entity.Track;
 import model.Mix;
+import service.AudioService;
 import utils.Constants;
+import web.WebApiManager;
 
 public class DashboardDetailFragment extends Fragment implements AdapterView.OnItemClickListener {
     public static final String TAG = "DashboardDetailFragment";
 
     private TextView mTrackTitle;
     private ImageView mAlbumCoverArt;
+    private ImageButton mPlaySongButton;
     public Bundle mUserSelections;
-    List<Mix> mixList = new ArrayList<>();
+
+    public List<Collection> mCollections = new ArrayList<>();
     private RecyclerView mAlbumTrackList;
-    private BeatAlbumAdapter mBeatAlbumAdapter;
+    private RelatedTracksAdapter mRelatedTracksAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
     private OnFragmentInteractionListener mListener;
     public FloatingActionButton mFob;
 
@@ -63,45 +73,60 @@ public class DashboardDetailFragment extends Fragment implements AdapterView.OnI
         mFob = (FloatingActionButton) v.findViewById(R.id.add_to_list_fob);
         mTrackTitle = (TextView) v.findViewById(R.id.track_title);
         mAlbumCoverArt = (ImageView) v.findViewById(R.id.album_cover_art);
-        ((TextView)v.findViewById(R.id.separator_title)).setText("Album Name");
+        //mPlaySongButton = (ImageButton) v.findViewById(R.id.play_song_button);
+        ((TextView)v.findViewById(R.id.separator_title)).setText(R.string.suggested_tracks);
         return v;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mBeatAlbumAdapter = new BeatAlbumAdapter(getContext(), mixList);
-        mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false);
-        mAlbumTrackList.setLayoutManager(mLayoutManager);
-        mAlbumTrackList.setAdapter(mBeatAlbumAdapter);
+
+        mUserSelections = getArguments();
+        if(mUserSelections != null) {
+            Track selectedTrack = (Track) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_TRACK);
+            mTrackTitle.setText(selectedTrack.getTitle());
+            Picasso.with(getContext()).load(selectedTrack.getArtworkURL()).into(mAlbumCoverArt);
+        }
+
+        WebApiManager.getRelatedTracks(getContext(), new WebApiManager.OnObjectResponseListener() {
+            @Override
+            public void onObjectResponse(JSONObject object) {
+                Log.i(getClass().getSimpleName(), "Response = " + object.toString());
+                Gson gson = new Gson();
+                Type token = new TypeToken<RelatedTracksResponse>() {
+                }.getType();
+                try {
+                    RelatedTracksResponse relatedTracks = gson.fromJson(object.toString(), token);
+                    mCollections = relatedTracks.getCollection();
+                    mRelatedTracksAdapter = new RelatedTracksAdapter(getContext(), mCollections);
+                    mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false);
+                    mAlbumTrackList.setLayoutManager(mLayoutManager);
+                    mAlbumTrackList.setAdapter(mRelatedTracksAdapter);
+                    mFob.setVisibility(View.VISIBLE);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }, new WebApiManager.OnErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(getClass().getSimpleName(), "Response = " + error.toString());
+            }
+        });
+
+/*        mPlaySongButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().startService(new Intent(getContext(), AudioService.class));
+            }
+        });*/
         mFob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Constants.buildListDialogue(getContext(), getString(R.string.add_beat_to_user_list), R.array.add_beat_to_user_list_options,DashboardDetailFragment.this);
             }
         });
-
-        getBeatData();
-        mUserSelections = getArguments();
-
-        if(mUserSelections != null) {
-            Track selectedTrack = (Track) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_TRACK);
-            mTrackTitle.setText(selectedTrack.getTitle());
-            Picasso.with(getContext()).load(selectedTrack.getArtworkURL()).into(mAlbumCoverArt);
-        }
-    }
-
-    //TODO: Replace dummy data with real data from sound cloud
-    public void getBeatData(){
-        mixList.add(new Mix());
-        mixList.get(0).setMixTitle("Focus");
-        mixList.add(new Mix());
-        mixList.get(1).setMixTitle("Meditation");
-        mixList.add(new Mix());
-        mixList.get(2).setMixTitle("Relaxation");
-        mixList.add(new Mix());
-        mixList.get(3).setMixTitle("Yoga");
-        mBeatAlbumAdapter.notifyDataSetChanged();
     }
 
     @Override
