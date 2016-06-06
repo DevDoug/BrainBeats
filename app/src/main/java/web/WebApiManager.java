@@ -25,9 +25,13 @@ public class WebApiManager {
     public static final int MY_SOCKET_TIMEOUT_MS = 30000;
 
     //Sound cloud API links
-    public static final String API_ROOT_URL     = "https://api.soundcloud.com";
-    public static final String API_TRACKS_URL   = "/tracks/";
-    public static final String API_PLAYLIST_URL = "/playlists/";
+    public static final String API_CONNECT_URL      = "https://soundcloud.com/connect";
+    public static final String API_OAUTH            = "https://api.soundcloud.com/oauth2/token";
+    public static final String API_ROOT_URL         = "https://api.soundcloud.com";
+    public static final String API_TRACKS_URL       = "/tracks/";
+    public static final String API_PLAYLIST_URL     = "/playlists/";
+    public static final String API_USER_URL         = "/users/";
+    public static final String API_FAVORITES_URL    = "/favorites";
 
     //Sound cloud API links version 2
     public static final String API_VERSION_TWO_RELATED_TRACKS_URL = "https://api-v2.soundcloud.com/tracks/102113299/related";
@@ -47,10 +51,26 @@ public class WebApiManager {
         void onErrorResponse(VolleyError error);
     }
 
+    public static void getAccessToken(Context context, final OnObjectResponseListener responseListener, final OnErrorListener errorListener){
+        HashMap<String, String> mParams = new HashMap<>();
+        mParams.put(KEY_ClIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
+        mParams.put("client_secret","09e8c5b6f91e2ab440b9137008d2d32c");
+        mParams.put("redirect_uri","BrainBeats://soundcloud/callback");
+
+        String url = API_CONNECT_URL;
+        try {
+            JSONObject jsonRequest = new JSONObject();
+            sendObjectRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
+        } catch (Exception ex) {
+            errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
+        }
+    }
+
     public static void searchTrackWithKeyword(Context context, String searchKeyword, final OnArrayResponseListener responseListener, final OnErrorListener errorListener) {
         HashMap<String, String> mParams = new HashMap<>();
         mParams.put(KEY_ClIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
         mParams.put("q",searchKeyword);
+
         String url = API_ROOT_URL + API_TRACKS_URL;
         try {
             JSONArray jsonRequest = new JSONArray();
@@ -60,13 +80,53 @@ public class WebApiManager {
         }
     }
 
-    public static void getRelatedTracks(Context context, final OnObjectResponseListener responseListener, final OnErrorListener errorListener){
+    public static void getRelatedTracks(Context context, final OnObjectResponseListener responseListener, final OnErrorListener errorListener) {
         HashMap<String, String> mParams = new HashMap<>();
         mParams.put(KEY_ClIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
+
         String url = API_VERSION_TWO_RELATED_TRACKS_URL;
         try {
             JSONObject jsonRequest = new JSONObject();
             sendObjectRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
+        } catch (Exception ex) {
+            errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
+        }
+    }
+
+    public static void getUserTracks(Context context, String userID, final OnArrayResponseListener responseListener, final OnErrorListener errorListener) {
+        HashMap<String, String> mParams = new HashMap<>();
+        mParams.put(KEY_ClIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
+
+        String url = API_ROOT_URL + API_USER_URL + userID + API_TRACKS_URL;
+        try {
+            JSONArray jsonRequest = new JSONArray();
+            sendArrayRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
+        } catch (Exception ex) {
+            errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
+        }
+    }
+
+    public static void getUserPlaylists(Context context, String userID,final OnArrayResponseListener responseListener, final OnErrorListener errorListener) {
+        HashMap<String, String> mParams = new HashMap<>();
+        mParams.put(KEY_ClIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
+
+        String url = API_ROOT_URL + API_USER_URL + userID + API_PLAYLIST_URL;
+        try {
+            JSONArray jsonRequest = new JSONArray();
+            sendArrayRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
+        } catch (Exception ex) {
+            errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
+        }
+    }
+
+    public static void getUserFavorites(Context context, String userID,final OnArrayResponseListener responseListener, final OnErrorListener errorListener) {
+        HashMap<String, String> mParams = new HashMap<>();
+        mParams.put(KEY_ClIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
+
+        String url = API_ROOT_URL + API_USER_URL + userID + API_FAVORITES_URL;
+        try {
+            JSONArray jsonRequest = new JSONArray();
+            sendArrayRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
         } catch (Exception ex) {
             errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
         }

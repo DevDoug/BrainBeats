@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     tools:context="fragments.DashboardDetailFragment">
 
     <RelativeLayout
@@ -27,12 +28,88 @@
             android:textColor="@color/theme_secondary_text_color"
             android:textSize="@dimen/album_detail_title_text_size" />
 
-        <include
+        <RelativeLayout
             android:id="@+id/beat_detail_header"
-            layout="@layout/shared_beat_detail_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/track_title" />
+            android:layout_below="@+id/track_title" >
+
+            <ImageView
+                android:id="@+id/album_cover_art"
+                android:layout_width="300dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="@dimen/fragment_content_item_top_margin"
+                android:src="@drawable/placeholder"
+                android:adjustViewBounds="true"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+
+            <SeekBar
+                android:id="@+id/play_song_seek_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/album_cover_art"
+                android:layout_marginLeft="@dimen/seek_bar_margin_left"
+                android:layout_marginStart="@dimen/seek_bar_start_margin"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="@dimen/seek_bar_margin_left" />
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/play_song_button"
+                android:src="@drawable/ic_play_circle"
+                android:layout_marginLeft="32dp"
+                android:layout_below="@+id/play_song_seek_bar"
+                android:layout_centerHorizontal="true" />
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/pause_song_button"
+                android:src="@drawable/ic_pause_circle"
+                android:layout_marginLeft="32dp"
+                android:layout_below="@+id/play_song_seek_bar"
+                android:layout_centerHorizontal="true"
+                android:visibility="invisible" />
+
+            <ImageView
+                android:id="@+id/skip_backward_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_skip_previous"
+                android:layout_below="@+id/play_song_seek_bar"
+                android:layout_marginLeft="32dp"
+                android:layout_toStartOf="@+id/play_song_button" />
+
+            <ImageView
+                android:id="@+id/shuffle__button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_shuffle"
+                android:layout_below="@+id/play_song_seek_bar"
+                android:layout_toStartOf="@+id/skip_backward_button" />
+
+
+            <ImageView
+                android:id="@+id/skip_forward_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_skip_next"
+                android:layout_below="@+id/play_song_seek_bar"
+                android:layout_marginLeft="32dp"
+                android:layout_toEndOf="@+id/play_song_button" />
+
+            <ImageView
+                android:id="@+id/repeat_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_repeat"
+                android:layout_below="@+id/play_song_seek_bar"
+                android:layout_marginLeft="32dp"
+                android:layout_toEndOf="@+id/skip_forward_button" />
+
+        </RelativeLayout>
 
         <include
             android:id="@+id/blue_line_seperator"
@@ -54,7 +131,7 @@
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/add_to_list_fob"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:visibility="invisible"
             android:layout_marginRight="@dimen/floating_action_button_right_margin"
             android:layout_marginBottom="@dimen/floating_action_button_right_margin"

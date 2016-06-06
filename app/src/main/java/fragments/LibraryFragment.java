@@ -7,20 +7,32 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.VolleyError;
 import com.brainbeats.R;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import adapters.ViewPagerAdapter;
-import model.Mix;
+import entity.Track;
+import entity.UserPlaylistsResponse;
+import entity.UserTrackResponse;
+import web.WebApiManager;
 
 public class LibraryFragment extends Fragment {
 
-    ArrayList<Mix> mixList = new ArrayList<>();
+    ArrayList<Track> mTrackList = new ArrayList<>();
+    ArrayList<Track> mTrackPlayList = new ArrayList<>();
+    ArrayList<Track> mFavoriteTrackList = new ArrayList<>();
     public TabLayout mTabLayout;
     public ViewPager mViewPager;
     private OnFragmentInteractionListener mListener;
@@ -31,7 +43,9 @@ public class LibraryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getBeatData();
+        getUserSongs();
+        getUserPlaylist();
+        getUserFavorites();
     }
 
     @Override
@@ -77,22 +91,89 @@ public class LibraryFragment extends Fragment {
 
     public void setupViewPager() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
-        adapter.addFragment(LibraryTabFragment.newInstance(mixList), getResources().getStringArray(R.array.library_tab_titles)[0]);
-        adapter.addFragment(LibraryTabFragment.newInstance(mixList), getResources().getStringArray(R.array.library_tab_titles)[1]);
-        adapter.addFragment(LibraryTabFragment.newInstance(mixList), getResources().getStringArray(R.array.library_tab_titles)[2]);
+        adapter.addFragment(LibraryTabFragment.newInstance(mTrackList), getResources().getStringArray(R.array.library_tab_titles)[0]);
+        adapter.addFragment(LibraryTabFragment.newInstance(mTrackPlayList), getResources().getStringArray(R.array.library_tab_titles)[1]);
+        adapter.addFragment(LibraryTabFragment.newInstance(mFavoriteTrackList), getResources().getStringArray(R.array.library_tab_titles)[2]);
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
     //TODO: Replace dummy data with real data from sound cloud
-    public void getBeatData(){
-        mixList.add(new Mix());
-        mixList.get(0).setMixTitle("Focus");
-        mixList.add(new Mix());
-        mixList.get(1).setMixTitle("Meditation");
-        mixList.add(new Mix());
-        mixList.get(2).setMixTitle("Relaxation");
-        mixList.add(new Mix());
-        mixList.get(3).setMixTitle("Yoga");
+    public ArrayList<Track> getUserSongs() {
+        WebApiManager.getUserTracks(getContext(), "3207", new WebApiManager.OnArrayResponseListener() {
+            @Override
+            public void onArrayResponse(JSONArray array) {
+                Log.i(getClass().getSimpleName(), "Response = " + array.toString());
+                Gson gson = new Gson();
+                Type token = new TypeToken<ArrayList<UserTrackResponse>>() {
+                }.getType();
+                try {
+                    ArrayList<UserTrackResponse> userTracks = gson.fromJson(array.toString(), token);
+                    for(int i = 0; i < userTracks.size();i++){
+                        Track tempTrack = new Track();
+                        tempTrack.setTitle(userTracks.get(i).getTitle());
+                        mTrackList.add(tempTrack);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }, new WebApiManager.OnErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.toString();
+            }
+        });
+        return null;
+    }
+
+    public void getUserPlaylist() {
+        WebApiManager.getUserPlaylists(getContext(), "3207", new WebApiManager.OnArrayResponseListener() {
+            @Override
+            public void onArrayResponse(JSONArray array) {
+                Log.i(getClass().getSimpleName(), "Response = " + array.toString());
+                Gson gson = new Gson();
+                Type token = new TypeToken<ArrayList<UserPlaylistsResponse>>() {
+                }.getType();
+                try {
+                    ArrayList<UserPlaylistsResponse> userPlaylists = gson.fromJson(array.toString(), token);
+                    mTrackPlayList = (ArrayList<Track>) userPlaylists.get(0).getTracks();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }, new WebApiManager.OnErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(getClass().getSimpleName(), "Response = " + error.toString());
+            }
+        });
+    }
+
+    public void getUserFavorites() {
+        WebApiManager.getUserFavorites(getContext(), "3207", new WebApiManager.OnArrayResponseListener() {
+            @Override
+            public void onArrayResponse(JSONArray array) {
+                Log.i(getClass().getSimpleName(), "Response = " + array.toString());
+                Gson gson = new Gson();
+                Type token = new TypeToken<ArrayList<UserTrackResponse>>() {
+                }.getType();
+                try {
+                    ArrayList<UserTrackResponse> userTracks = gson.fromJson(array.toString(), token);
+                    for(int i = 0; i < userTracks.size();i++){
+                        Track tempTrack = new Track();
+                        tempTrack.setTitle(userTracks.get(i).getTitle());
+                        mFavoriteTrackList.add(tempTrack);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }, new WebApiManager.OnErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(getClass().getSimpleName(), "Response = " + error.toString());
+            }
+        });
     }
 }

@@ -21,6 +21,7 @@ public class MixDbContentProvider extends ContentProvider {
 
     static final int MIX = 100;
     static final int MIXITEM = 200;
+    static final int USER = 300;
 
     static{
         sMixByIDQueryBuilder = new SQLiteQueryBuilder();
@@ -33,6 +34,7 @@ public class MixDbContentProvider extends ContentProvider {
         // For each type of URI you want to add, create a corresponding code.
         matcher.addURI(authority, MixContract.PATH_MIX, MIX);
         matcher.addURI(authority, MixContract.PATH_MIX_ITEM, MIXITEM);
+        matcher.addURI(authority, MixContract.PATH_USER, USER);
         return matcher;
     }
 
@@ -46,7 +48,7 @@ public class MixDbContentProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
-            case MIX: {
+            case MIX:
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         MixContract.MixEntry.TABLE_NAME,
                         projection,
@@ -57,8 +59,7 @@ public class MixDbContentProvider extends ContentProvider {
                         sortOrder
                 );
                 break;
-            }
-            case MIXITEM: {
+            case MIXITEM:
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         MixContract.MixItemsEntry.TABLE_NAME,
                         projection,
@@ -69,7 +70,17 @@ public class MixDbContentProvider extends ContentProvider {
                         sortOrder
                 );
                 break;
-            }
+            case USER:
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        MixContract.UserEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -85,6 +96,10 @@ public class MixDbContentProvider extends ContentProvider {
         switch (match) {
             case MIX:
                 return MixContract.MixEntry.CONTENT_TYPE;
+            case MIXITEM:
+                return MixContract.MixItemsEntry.CONTENT_TYPE;
+            case USER:
+                return MixContract.UserEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -96,14 +111,27 @@ public class MixDbContentProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         Uri returnUri;
         switch (match) {
-            case MIX: {
+            case MIX:
                 long _id = db.insert(MixContract.MixEntry.TABLE_NAME, null, values);
                 if ( _id > 0 )
                     returnUri = MixContract.MixEntry.buildMixUriWithId(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
-            }
+            case MIXITEM:
+                long _idMixItem = db.insert(MixContract.MixItemsEntry.TABLE_NAME, null, values);
+                if ( _idMixItem > 0 )
+                    returnUri = MixContract.MixItemsEntry.buildMixItemUriWithId(_idMixItem);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            case USER:
+                long _idUser = db.insert(MixContract.UserEntry.TABLE_NAME, null, values);
+                if ( _idUser > 0 )
+                    returnUri = MixContract.UserEntry.buildUserUriWithId(_idUser);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -127,6 +155,10 @@ public class MixDbContentProvider extends ContentProvider {
                 rowsDeleted = db.delete(
                         MixContract.MixItemsEntry.TABLE_NAME, selection, selectionArgs);
                 break;
+            case USER:
+                rowsDeleted = db.delete(
+                        MixContract.UserEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -149,6 +181,9 @@ public class MixDbContentProvider extends ContentProvider {
                 break;
             case MIXITEM:
                 rowsUpdated = db.update(MixContract.MixItemsEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case USER:
+                rowsUpdated = db.update(MixContract.UserEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

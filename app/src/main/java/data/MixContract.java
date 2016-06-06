@@ -23,6 +23,7 @@ public class MixContract {
     // Possible paths (appended to base content URI for possible URI's)
     public static final String PATH_MIX        = "mix";
     public static final String PATH_MIX_ITEM   = "mixitem";
+    public static final String PATH_USER       = "user";
 
     /* Inner class that defines the table contents for Mix entries */
     public static final class MixEntry implements BaseColumns {
@@ -44,12 +45,25 @@ public class MixContract {
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_ITEM;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_ITEM;
 
-        public static final String TABLE_NAME                        = "mixitem";
-        public static final String COLUMN_NAME_MIX_ITEM_TITLE        = "mixitemtitle";
-        public static final String COLUMN_NAME_MIX_ITEM_LEVEL        = "level";
-        public static final String COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY = "mixitemforeignkey";
+        public static final String TABLE_NAME                         = "mixitem";
+        public static final String COLUMN_NAME_MIX_ITEM_TITLE         = "mixitemtitle";
+        public static final String COLUMN_NAME_MIX_ITEM_LEVEL         = "level";
+        public static final String COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY  = "mixitemforeignkey";
 
         public static Uri buildMixItemUriWithId(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
+    public static final class UserEntry implements BaseColumns {
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_USER).build();
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_USER;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_USER;
+
+        public static final String TABLE_NAME                         = "user";
+        public static final String COLUMN_NAME_USER_NAME              = "username";
+
+        public static Uri buildUserUriWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }

@@ -44,14 +44,21 @@ public class MixDbHelper extends SQLiteOpenHelper {
                         " FOREIGN KEY (" + MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + ") REFERENCES " +
                         MixContract.MixEntry.TABLE_NAME + " (" + MixContract.MixEntry._ID + "));";
 
+        final String CREATE_TABLE_USER = "CREATE TABLE " + MixContract.UserEntry.TABLE_NAME + " (" +
+                        MixContract.UserEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        MixContract.UserEntry.COLUMN_NAME_USER_NAME + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
+                        " );";
+
         db.execSQL(CREATE_TABLE_MIX);
         db.execSQL(CREATE_TABLE_MIX_ITEMS);
+        db.execSQL(CREATE_TABLE_USER);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + MixContract.MixEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MixContract.MixItemsEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MixContract.UserEntry.TABLE_NAME);
         onCreate(db);
     }
 }

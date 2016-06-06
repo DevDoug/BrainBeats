@@ -22,8 +22,10 @@ public class Track implements Parcelable {
     @SerializedName("artwork_url")
     private String mArtworkURL;
 
-    public Track(){
+    @SerializedName("duration")
+    private int mDuration;
 
+    public Track(){
     }
 
     protected Track(Parcel in) {
@@ -31,6 +33,7 @@ public class Track implements Parcelable {
         mID = in.readInt();
         mStreamURL = in.readString();
         mArtworkURL = in.readString();
+        mDuration = in.readInt();
     }
 
     public String getTitle() {
@@ -53,6 +56,14 @@ public class Track implements Parcelable {
         return mArtworkURL;
     }
 
+    public int getDuration() {
+        return mDuration;
+    }
+
+    public void setDuration(int duration) {
+        this.mDuration = duration;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -64,6 +75,7 @@ public class Track implements Parcelable {
         dest.writeInt(mID);
         dest.writeString(mStreamURL);
         dest.writeString(mArtworkURL);
+        dest.writeInt(mDuration);
     }
 
     public static final Creator<Track> CREATOR = new Creator<Track>() {

@@ -9,8 +9,10 @@ import android.widget.TextView;
 
 import com.brainbeats.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import entity.Track;
 import model.Mix;
 
 /**
@@ -19,11 +21,11 @@ import model.Mix;
 public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.ViewHolder> {
 
     Context mAdapterContext;
-    List<Mix> mMices;
+    ArrayList<Track> tracks;
 
-    public LibraryAdapter(Context context, List<Mix> data) {
+    public LibraryAdapter(Context context,  ArrayList<Track> data) {
         mAdapterContext = context;
-        mMices = data;
+        tracks = data;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -44,11 +46,11 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mAlbumTitle.setText(mMices.get(position).getBeatTitle());
+        holder.mAlbumTitle.setText(tracks.get(position).getTitle());
     }
 
     @Override
     public int getItemCount() {
-        return mMices.size();
+        return tracks.size();
     }
 }

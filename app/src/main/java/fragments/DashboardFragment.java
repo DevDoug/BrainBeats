@@ -1,6 +1,11 @@
 package fragments;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,8 +14,15 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.GridView;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.brainbeats.MainActivity;
@@ -26,8 +38,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import adapters.ImageAdapter;
 import adapters.SearchMusicAdapter;
 import adapters.TrackAdapter;
+import architecture.AccountManager;
 import entity.Playlists;
 import entity.Track;
 import utils.BeatLearner;
@@ -51,9 +65,8 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         ((MainActivity) getActivity()).getToolBar();
-
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -61,6 +74,22 @@ public class DashboardFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_dashboard, container, false);
         mTrackGrid = (RecyclerView) v.findViewById(R.id.category_grid);
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_dashboard, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Get item selected and deal with it
+        switch (item.getItemId()) {
+            case R.id.action_login:
+                doLogin();
+        }
+        return true;
     }
 
     @Override
@@ -102,6 +131,10 @@ public class DashboardFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public void doLogin(){
+        Constants.buildWebDialog(getContext());
     }
 
     public interface OnFragmentInteractionListener {

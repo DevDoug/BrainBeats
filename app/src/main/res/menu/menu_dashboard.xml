@@ -4,9 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.brainbeats.DashboardActivity" >
 
+
     <item
-        android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+        android:id="@+id/action_login"
+        android:title="@string/action_login"
         android:orderInCategory="100"
         app:showAsAction="never" />
+
+<!--    <item
+        android:id="@+id/action_share"
+        android:title="@string/action_share"
+        android:orderInCategory="99"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_favorite"
+        android:title="@string/action_favorite"
+        android:orderInCategory="98"
+        app:showAsAction="never" />-->
 </menu>

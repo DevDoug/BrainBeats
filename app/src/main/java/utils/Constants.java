@@ -2,13 +2,18 @@ package utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
@@ -22,9 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapters.ImageAdapter;
+import architecture.AccountManager;
 import data.MixContract;
 import model.Mix;
 import model.MixItem;
+import web.WebApiManager;
 
 /**
  * Created by Douglas on 4/20/2016.
@@ -109,6 +116,51 @@ public class Constants {
         defaultMix.setMixItems(defaultMixItems);
 
         return defaultMix;
+    }
+
+    public static void buildWebDialog(final Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
+        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+        View dialogView = (View) inflater.inflate(R.layout.custom_web_view_dialog_layout, null);
+        final ProgressDialog progressDialog = new ProgressDialog(context);
+        WebView webView = (WebView) dialogView.findViewById(R.id.webView);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl(WebApiManager.API_CONNECT_URL + "?client_id=" + Constants.SOUND_CLOUD_CLIENT_ID + "&redirect_uri=" + "http://localhost" + "&response_type=token&display=popup");
+        webView.setWebViewClient(new WebViewClient() {
+            boolean authComplete = false;
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon){
+                super.onPageStarted(view, url, favicon);
+                progressDialog.setMessage("Connecting SoundCloud");
+                progressDialog.show();
+            }
+            String authCode="";
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                progressDialog.dismiss();
+                Log.i("URLLLL", url);
+                if (url.contains("access_token=") && authComplete != true) {
+                    for(int t=32; t <url.length();t++){
+                        if(!(url.charAt(t) == '&'))
+                            authCode = authCode+url.charAt(t);
+                        else
+                            break;
+                    }
+                    Log.i("CODE true", "CODE : " + authCode);
+                    authComplete = true;
+                    AccountManager.getInstance(context).setAccessToken(authCode);
+                }else if(url.contains("error=access_denied")){
+                    Log.i("CODE false", "ACCESS_DENIED_HERE");
+                    authComplete = true;
+                    progressDialog.dismiss();
+                }
+            }
+        });
+        webView.requestFocusFromTouch();
+        builder.setView(dialogView);
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     public static void buildImageListDialogue(Context context, String title) {

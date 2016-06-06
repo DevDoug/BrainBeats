@@ -58,18 +58,18 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final TextView textView = (TextView) holder.mTrackTitle;
-        if (mTracks.get(position).getArtworkURL() == null ||mTracks.get(position).getArtworkURL().isEmpty()) {
+        if (mTracks.get(position).getArtworkURL() == null || mTracks.get(position).getArtworkURL().isEmpty()) {
             holder.mAlbumArtCover.setImageDrawable(mAdapterContext.getDrawable(R.drawable.placeholder));
             textView.setText(mTracks.get(position).getTitle());
-        }
-        else {
+        } else {
             Picasso.with(mAdapterContext)
                     .load(mTracks.get(position)
-                            .getArtworkURL()).into(holder.mAlbumArtCover, new com.squareup.picasso.Callback(){
+                            .getArtworkURL()).into(holder.mAlbumArtCover, new com.squareup.picasso.Callback() {
                 @Override
                 public void onSuccess() {
                     textView.setText(mTracks.get(position).getTitle());
                 }
+
                 @Override
                 public void onError() {
                 }

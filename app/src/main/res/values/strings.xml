@@ -9,6 +9,9 @@
 
     <!-- Menu itmes-->
     <string name="action_settings">Settings</string>
+    <string name="action_login">Login to Sound Cloud</string>
+    <string name="action_favorite">Favorite</string>
+    <string name="action_share">Share</string>
 
     <!-- Navigation drawer items -->
     <string name="nav_item_label_dashboard">Dashboard</string>
@@ -47,9 +50,9 @@
 
     <!-- Tab Strings -->
     <string-array name="library_tab_titles">
-        <item name="albums_list">Albums</item>
-        <item name="songs_list">Songs</item>
-        <item name="artist_list">Artists</item>
+        <item name="song_list">Songs</item>
+        <item name="play_list">PlayList</item>
+        <item name="group_list">Groups</item>
     </string-array>
 
     <string name="default_mix_album_art_url">https:\default</string>

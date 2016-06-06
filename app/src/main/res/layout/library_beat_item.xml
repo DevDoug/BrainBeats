@@ -8,14 +8,16 @@
 
     <TextView
         android:id="@+id/album_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:ellipsize="end"
         android:textSize="@dimen/album_title_text_size"
         android:layout_weight=".9"
         android:text="My sick beatzz" />
 
     <ImageView
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/mix_beat"
         android:layout_weight=".1"

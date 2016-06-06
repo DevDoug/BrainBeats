@@ -12,12 +12,12 @@ import com.brainbeats.R;
 import java.util.ArrayList;
 import java.util.List;
 import adapters.LibraryAdapter;
-import model.Mix;
+import entity.Track;
 import utils.Constants;
 
 public class LibraryTabFragment extends Fragment {
 
-    List<Mix> mixList;
+    ArrayList<Track> trackList;
     private RecyclerView mBeatListView;
     private LibraryAdapter mLibraryAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -27,7 +27,7 @@ public class LibraryTabFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static LibraryTabFragment newInstance(ArrayList<Mix> data) {
+    public static LibraryTabFragment newInstance(ArrayList<Track> data) {
         LibraryTabFragment tabFragment = new LibraryTabFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(Constants.KEY_EXTRA_BEAT_LIST,data);
@@ -40,7 +40,7 @@ public class LibraryTabFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if (args != null) {
-            mixList = args.getParcelableArrayList(Constants.KEY_EXTRA_BEAT_LIST);
+            trackList = args.getParcelableArrayList(Constants.KEY_EXTRA_BEAT_LIST);
         }
     }
 
@@ -54,7 +54,7 @@ public class LibraryTabFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mLibraryAdapter = new LibraryAdapter(getContext(), mixList);
+        mLibraryAdapter = new LibraryAdapter(getContext(), trackList);
         mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false);
         mBeatListView.setLayoutManager(mLayoutManager);
         mBeatListView.setAdapter(mLibraryAdapter);
