@@ -33,6 +33,7 @@ public class LibraryFragment extends Fragment {
     ArrayList<Track> mTrackList = new ArrayList<>();
     ArrayList<Track> mTrackPlayList = new ArrayList<>();
     ArrayList<Track> mFavoriteTrackList = new ArrayList<>();
+
     public TabLayout mTabLayout;
     public ViewPager mViewPager;
     private OnFragmentInteractionListener mListener;
@@ -105,11 +106,10 @@ public class LibraryFragment extends Fragment {
             public void onArrayResponse(JSONArray array) {
                 Log.i(getClass().getSimpleName(), "Response = " + array.toString());
                 Gson gson = new Gson();
-                Type token = new TypeToken<ArrayList<UserTrackResponse>>() {
-                }.getType();
+                Type token = new TypeToken<ArrayList<UserTrackResponse>>() {}.getType();
                 try {
                     ArrayList<UserTrackResponse> userTracks = gson.fromJson(array.toString(), token);
-                    for(int i = 0; i < userTracks.size();i++){
+                    for (int i = 0; i < userTracks.size(); i++) {
                         Track tempTrack = new Track();
                         tempTrack.setTitle(userTracks.get(i).getTitle());
                         mTrackList.add(tempTrack);
@@ -164,6 +164,7 @@ public class LibraryFragment extends Fragment {
                         Track tempTrack = new Track();
                         tempTrack.setTitle(userTracks.get(i).getTitle());
                         mFavoriteTrackList.add(tempTrack);
+                        notifyAll();
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();

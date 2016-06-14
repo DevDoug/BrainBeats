@@ -12,9 +12,9 @@ import utils.Constants;
 
 public class MainActivity extends BaseActivity implements DashboardFragment.OnFragmentInteractionListener, DashboardSongListFragment.OnFragmentInteractionListener, DashboardDetailFragment.OnFragmentInteractionListener{
 
-    Fragment mDashboardFragment;
-    Fragment mDashboardSongListFragment;
-    Fragment mDashboardDetailFragment;
+    public Fragment mDashboardFragment;
+    public Fragment mDashboardSongListFragment;
+    public Fragment mDashboardDetailFragment;
     Bundle mUserSelections;
 
     @Override

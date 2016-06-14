@@ -1,9 +1,12 @@
 package fragments;
 
 
+import android.app.Dialog;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -22,13 +25,15 @@ import com.brainbeats.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import adapters.ImageAdapter;
 import adapters.MixItemAdapter;
 import data.MixContract;
 import model.Mix;
 import model.MixItem;
 import utils.Constants;
 
-public class MixerDetailFragment extends Fragment {
+public class MixerDetailFragment extends Fragment implements ImageAdapter.DialogImageSelectedListener {
 
     List<MixItem> mixItemList = new ArrayList<>();
     private RecyclerView mMixerItemList;
@@ -37,6 +42,8 @@ public class MixerDetailFragment extends Fragment {
     public Bundle mUserSelections;
     public EditText mMixTitle;
     public Mix mSelectedMix;
+
+    Dialog mDialog;
 
     public MixerDetailFragment() {
         // Required empty public constructor
@@ -87,19 +94,56 @@ public class MixerDetailFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mUserSelections = getArguments();
-        if(mUserSelections != null) {
+        if (mUserSelections != null) {
             mSelectedMix = (Mix) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_MIX);
             mMixTitle.setText(mSelectedMix.getBeatTitle());
             mixItemList = mSelectedMix.getMixItems();
-/*            MixItem addNewMix = new MixItem();
+
+            MixItem addNewMix = new MixItem();
             addNewMix.setMixItemTitle("Add New");
-            mixItemList.add(addNewMix);*/
+            mixItemList.add(addNewMix);
         }
 
-        mMixerItemAdapter = new MixItemAdapter(getContext(), mixItemList);
-        mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false);
+        mMixerItemAdapter = new MixItemAdapter(getContext(), mixItemList, this);
+        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mMixerItemList.setLayoutManager(mLayoutManager);
         mMixerItemList.setAdapter(mMixerItemAdapter);
         mMixerItemAdapter.notifyDataSetChanged();
+    }
+
+    public void showAddBeatItemDialog(){
+        mDialog = Constants.buildImageListDialogue(getContext(), getContext().getResources().getString(R.string.add_sound_item_to_current_beat), this);
+    }
+
+    @Override
+    public void dialogImageSelected(int position) {
+        MixItem item = new MixItem();
+        switch (position) {
+            case 0:
+                item.setMixItemTitle(getContext().getResources().getStringArray(R.array.default_mix_items)[0]);
+                mDialog.dismiss();
+                break;
+            case 1:
+                item.setMixItemTitle(getContext().getResources().getStringArray(R.array.default_mix_items)[1]);
+                mMixerItemAdapter.notifyDataSetChanged();
+                mDialog.dismiss();
+                break;
+            case 2:
+                item.setMixItemTitle(getContext().getResources().getStringArray(R.array.default_mix_items)[2]);
+                mMixerItemAdapter.notifyDataSetChanged();
+                mDialog.dismiss();
+                break;
+            case 3:
+                item.setMixItemTitle(getContext().getResources().getStringArray(R.array.default_mix_items)[3]);
+                mMixerItemAdapter.notifyDataSetChanged();
+                mDialog.dismiss();
+                break;
+        }
+        item.setMixItemLevel(Constants.MIX_ITEM_DEFAULT_LEVEL);
+        Uri returnRow = getContext().getContentResolver().insert(MixContract.MixItemsEntry.CONTENT_URI,Constants.buildMixItemsRecord(mSelectedMix.getMixId(),item));
+        mixItemList.add(0,item);
+        mMixerItemList.setAdapter(mMixerItemAdapter);
+        mMixerItemAdapter.notifyDataSetChanged();
+
     }
 }

@@ -1,5 +1,6 @@
 package fragments;
 
+import android.accounts.AccountManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -52,21 +53,27 @@ import entity.RelatedTracksResponse;
 import entity.Track;
 import model.Mix;
 import service.AudioService;
+import utils.BeatLearner;
 import utils.Constants;
 import web.WebApiManager;
 
-public class DashboardDetailFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class DashboardDetailFragment extends Fragment implements RelatedTracksAdapter.OnRelatedTrackUpdateListener, View.OnClickListener, AdapterView.OnItemClickListener {
+
     public static final String TAG = "DashboardDetailFragment";
 
     private TextView mTrackTitle;
     private ImageView mAlbumCoverArt;
     private ImageView mPlaySongButton;
     private ImageView mPauseSongButton;
+    private ImageView mSkipBackwardButton;
+    private ImageView mSkipForwardButton;
     private ImageView mLoopSongButton;
+
     public  Bundle mUserSelections;
     public AudioService mAudioService;
     boolean mBound = false;
-    private Track mSelectedTrack;
+
+    public Track mSelectedTrack;
     public  List<Collection> mCollections = new ArrayList<>();
     private RecyclerView mAlbumTrackList;
     private RelatedTracksAdapter mRelatedTracksAdapter;
@@ -108,14 +115,21 @@ public class DashboardDetailFragment extends Fragment implements AdapterView.OnI
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dashboard_detail, container, false);
         mAlbumTrackList = (RecyclerView) v.findViewById(R.id.album_title_list);
-        mFob = (FloatingActionButton) v.findViewById(R.id.add_to_list_fob);
         mTrackTitle = (TextView) v.findViewById(R.id.track_title);
         mAlbumCoverArt = (ImageView) v.findViewById(R.id.album_cover_art);
         mPlaySongButton = (ImageView) v.findViewById(R.id.play_song_button);
-        mPauseSongButton = (ImageView) v.findViewById(R.id.pause_song_button);
+        //mPauseSongButton = (ImageView) v.findViewById(R.id.pause_song_button);
+        mSkipBackwardButton = (ImageView) v.findViewById(R.id.skip_backward_button);
+        mSkipForwardButton = (ImageView) v.findViewById(R.id.skip_forward_button);
         mLoopSongButton = (ImageView) v.findViewById(R.id.repeat_button);
         mPlayTrackSeekBar = (SeekBar) v.findViewById(R.id.play_song_seek_bar);
         ((TextView)v.findViewById(R.id.separator_title)).setText(R.string.suggested_tracks);
+
+        mPlaySongButton.setOnClickListener(this);
+        mSkipBackwardButton.setOnClickListener(this);
+        mSkipForwardButton.setOnClickListener(this);
+        mLoopSongButton.setOnClickListener(this);
+
         return v;
     }
 
@@ -128,77 +142,24 @@ public class DashboardDetailFragment extends Fragment implements AdapterView.OnI
             mSelectedTrack = (Track) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_TRACK);
             mTrackTitle.setText(mSelectedTrack.getTitle());
             Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
+            loadRelatedTracks();
         }
 
-        WebApiManager.getRelatedTracks(getContext(), new WebApiManager.OnObjectResponseListener() {
-            @Override
-            public void onObjectResponse(JSONObject object) {
-                Log.i(getClass().getSimpleName(), "Response = " + object.toString());
-                Gson gson = new Gson();
-                Type token = new TypeToken<RelatedTracksResponse>() {
-                }.getType();
-                try {
-                    RelatedTracksResponse relatedTracks = gson.fromJson(object.toString(), token);
-                    mCollections = relatedTracks.getCollection();
-                    mRelatedTracksAdapter = new RelatedTracksAdapter(getContext(), mCollections);
-                    mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false);
-                    mAlbumTrackList.setLayoutManager(mLayoutManager);
-                    mAlbumTrackList.setAdapter(mRelatedTracksAdapter);
-                    mFob.setVisibility(View.VISIBLE);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }, new WebApiManager.OnErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(getClass().getSimpleName(), "Response = " + error.toString());
-            }
-        });
-
-        mPlaySongButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mBound) {
-                    mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
-                    mAudioService.setProgressIndicator(mPlayTrackSeekBar, mSelectedTrack.getDuration());
-                    mPlaySongButton.setVisibility(View.GONE);
-                    mPauseSongButton.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
-        mPauseSongButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mBound) {
-                    mAudioService.pauseSong();
-                    mPauseSongButton.setVisibility(View.GONE);
-                    mPlaySongButton.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
-        mLoopSongButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mBound)
-                    mAudioService.setSongLooping(true);
-            }
-        });
-
-        mFob.setOnClickListener(new View.OnClickListener() {
+/*        mFob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Constants.buildListDialogue(getContext(), getString(R.string.add_beat_to_user_list), R.array.add_beat_to_user_list_options,DashboardDetailFragment.this);
             }
-        });
+        });*/
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_dashboard, menu);
+        if (!architecture.AccountManager.getInstance(getContext()).isLoggedIn())
+            inflater.inflate(R.menu.menu_dashboard, menu);
+        else
+            inflater.inflate(R.menu.menu_dashboard_detail, menu);
     }
 
     @Override
@@ -208,6 +169,38 @@ public class DashboardDetailFragment extends Fragment implements AdapterView.OnI
             case android.R.id.home:
                 //called when the up affordance/carat in actionbar is pressed
                 getActivity().onBackPressed();
+            case R.id.action_favorite:
+                WebApiManager.putUserFavorite(getContext(), architecture.AccountManager.getInstance(getContext()).getUserId(), String.valueOf(mSelectedTrack.getID()), new WebApiManager.OnObjectResponseListener() {
+                    @Override
+                    public void onObjectResponse(JSONObject object) {
+                        object.toString();
+                    }
+                }, new WebApiManager.OnErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.toString();
+                    }
+                });
+                break;
+            case R.id.action_library:
+                WebApiManager.putUserTrack(getContext(), String.valueOf(mSelectedTrack.getID()), new WebApiManager.OnObjectResponseListener() {
+
+                    @Override
+                    public void onObjectResponse(JSONObject object) {
+                        object.toString();
+                    }
+                }, new WebApiManager.OnErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String errorRespomse = new String(error.networkResponse.data);
+                        error.printStackTrace();
+                    }
+                });
+                break;
+            case R.id.action_share:
+                Toast.makeText(getContext(), "Share track", Toast.LENGTH_LONG).show();
+                break;
+
         }
         return true;
     }
@@ -239,16 +232,82 @@ public class DashboardDetailFragment extends Fragment implements AdapterView.OnI
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (position) {
             case 0:
-                Toast.makeText(getContext(), "Add to library", Toast.LENGTH_LONG).show();
+                WebApiManager.putUserTrack(getContext(), String.valueOf(mSelectedTrack.getID()), new WebApiManager.OnObjectResponseListener() {
 
+                    @Override
+                    public void onObjectResponse(JSONObject object) {
+                        object.toString();
+                    }
+                }, new WebApiManager.OnErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.toString();
+                    }
+                });
                 break;
             case 1:
-                Toast.makeText(getContext(), "Add to favorites", Toast.LENGTH_LONG).show();
+                WebApiManager.putUserFavorite(getContext(), "3207", String.valueOf(mSelectedTrack.getID()), new WebApiManager.OnObjectResponseListener() {
+                    @Override
+                    public void onObjectResponse(JSONObject object) {
+                        object.toString();
+                    }
+                }, new WebApiManager.OnErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.toString();
+                    }
+                });
                 break;
             case 2:
                 Toast.makeText(getContext(), "Add to playlist", Toast.LENGTH_LONG).show();
                 break;
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.play_song_button:
+                if (mBound) {
+                    if (mAudioService.mPlayer.isPlaying()) {
+                        mAudioService.pauseSong();
+                        mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
+                    } else {
+                        mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
+                        mAudioService.setProgressIndicator(mPlayTrackSeekBar, mSelectedTrack.getDuration());
+                        mPlaySongButton.setImageResource(R.drawable.ic_play_circle);
+                    }
+                }
+                break;
+            case R.id.skip_backward_button:
+                BeatLearner.getInstance().loadLastBeat();
+                break;
+            case R.id.skip_forward_button:
+                BeatLearner.getInstance().loadNextRecommendedBeat();
+                break;
+            case R.id.repeat_button:
+                if (mBound) {
+                    if (!mAudioService.mPlayer.isLooping()) {
+                        mAudioService.setSongLooping(true);
+                        mLoopSongButton.setImageResource(R.drawable.ic_repeat);
+                    } else {
+                        mAudioService.setSongLooping(false);
+                        mLoopSongButton.setImageResource(R.drawable.ic_repeat_off);
+                    }
+                }
+                break;
+            case R.id.shuffle__button:
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void relatedTrackUpdated(Track track) {
+        mSelectedTrack = track;
+        mTrackTitle.setText(mSelectedTrack.getTitle());
+        Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
     }
 
     public interface OnFragmentInteractionListener {
@@ -269,4 +328,32 @@ public class DashboardDetailFragment extends Fragment implements AdapterView.OnI
             mBound = false;
         }
     };
+
+    public void loadRelatedTracks(){
+        WebApiManager.getRelatedTracks(getContext(), new WebApiManager.OnObjectResponseListener() {
+            @Override
+            public void onObjectResponse(JSONObject object) {
+                Log.i(getClass().getSimpleName(), "Response = " + object.toString());
+                Gson gson = new Gson();
+                Type token = new TypeToken<RelatedTracksResponse>() {
+                }.getType();
+                try {
+                    RelatedTracksResponse relatedTracks = gson.fromJson(object.toString(), token);
+                    mCollections = relatedTracks.getCollection();
+                    mRelatedTracksAdapter = new RelatedTracksAdapter(getContext(), mCollections, DashboardDetailFragment.this);
+                    mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false);
+                    mAlbumTrackList.setLayoutManager(mLayoutManager);
+                    mAlbumTrackList.setAdapter(mRelatedTracksAdapter);
+                    mRelatedTracksAdapter.notifyDataSetChanged();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }, new WebApiManager.OnErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(getClass().getSimpleName(), "Response = " + error.toString());
+            }
+        });
+    }
 }

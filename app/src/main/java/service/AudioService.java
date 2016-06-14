@@ -11,10 +11,6 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.widget.SeekBar;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.HashMap;
-
 import utils.Constants;
 import web.WebApiManager;
 
@@ -68,7 +64,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
             mPlayer.start();
         } else {
             try {
-                mPlayer.setDataSource(getApplicationContext(), songPath.buildUpon().appendQueryParameter(WebApiManager.KEY_ClIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID).build());
+                mPlayer.setDataSource(getApplicationContext(), songPath.buildUpon().appendQueryParameter(WebApiManager.SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID).build());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -105,11 +101,9 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
                                     mPlayer.seekTo(progress);
                                 }
                             }
-
                             @Override
                             public void onStartTrackingTouch(SeekBar seekBar) {
                             }
-
                             @Override
                             public void onStopTrackingTouch(SeekBar seekBar) {
                             }

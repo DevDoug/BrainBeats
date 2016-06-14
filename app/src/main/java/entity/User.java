@@ -30,4 +30,12 @@ public class User {
 
     @SerializedName("avatar_url")
     private String avatarUrl;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }

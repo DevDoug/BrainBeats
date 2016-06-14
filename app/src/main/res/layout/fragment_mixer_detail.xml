@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     tools:context="fragments.DashboardDetailFragment">
 
     <RelativeLayout
@@ -75,21 +76,13 @@
             android:layout_alignParentStart="true"
             android:layout_marginTop="@dimen/content_margin_top"/>
 
-        <FrameLayout
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/beat_mix_item_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_below="@+id/blue_line_seperator"
-            android:layout_alignParentBottom="true">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/beat_mix_item_list"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="@dimen/recycler_view_top_padding">
-            </android.support.v7.widget.RecyclerView>
-
-        </FrameLayout>
-
+            android:paddingTop="@dimen/recycler_view_top_padding">
+        </android.support.v7.widget.RecyclerView>
     </RelativeLayout>
 </ScrollView>

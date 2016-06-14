@@ -52,6 +52,18 @@ public class Track implements Parcelable {
         return mStreamURL;
     }
 
+    public void setID(int id) {
+        this.mID = id;
+    }
+
+    public void setStreamURL(String streamURL) {
+        this.mStreamURL = streamURL;
+    }
+
+    public void setArtworkURL(String artworkURL) {
+        this.mArtworkURL = artworkURL;
+    }
+
     public String getArtworkURL() {
         return mArtworkURL;
     }
