@@ -34,6 +34,7 @@ public class Constants {
 
     //= Keys for bundles and extras =============================================
     public static final String KEY_EXTRA_BEAT_LIST = "BeatInfo";
+    public static final String KEY_LIBRARY_DATA_TYPE = "LibraryDataType";
     public static final String KEY_EXTRA_SELECTED_TRACK = "SelectedTrack";
     public static final String KEY_EXTRA_SELECTED_MIX = "SelectedMix";
     public static final String KEY_EXTRA_SEARCH_KEYWORD = "SearchKeyword";
@@ -56,6 +57,22 @@ public class Constants {
         private int mCode;
 
         private AudioServiceRepeatType(int code) {
+            mCode = code;
+        }
+
+        public int getCode() {
+            return mCode;
+        }
+    }
+
+    public enum LibraryDataType {
+        Songs(0),
+        Playlists(1),
+        Favorites(2);
+
+        private int mCode;
+
+        private LibraryDataType(int code) {
             mCode = code;
         }
 

@@ -27,6 +27,7 @@ import architecture.AccountManager;
 import entity.Track;
 import entity.UserPlaylistsResponse;
 import entity.UserTrackResponse;
+import utils.Constants;
 import web.WebApiManager;
 
 public class LibraryFragment extends Fragment {
@@ -58,9 +59,6 @@ public class LibraryFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getUserSongs();
-        getUserPlaylist();
-        getUserFavorites();
         setupViewPager();
     }
 
@@ -93,88 +91,10 @@ public class LibraryFragment extends Fragment {
 
     public void setupViewPager() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
-        adapter.addFragment(LibraryTabFragment.newInstance(mTrackList), getResources().getStringArray(R.array.library_tab_titles)[0]);
-        adapter.addFragment(LibraryTabFragment.newInstance(mTrackPlayList), getResources().getStringArray(R.array.library_tab_titles)[1]);
-        adapter.addFragment(LibraryTabFragment.newInstance(mFavoriteTrackList), getResources().getStringArray(R.array.library_tab_titles)[2]);
+        adapter.addFragment(LibraryTabFragment.newInstance(Constants.LibraryDataType.Songs), getResources().getStringArray(R.array.library_tab_titles)[0]);
+        adapter.addFragment(LibraryTabFragment.newInstance(Constants.LibraryDataType.Playlists), getResources().getStringArray(R.array.library_tab_titles)[1]);
+        adapter.addFragment(LibraryTabFragment.newInstance(Constants.LibraryDataType.Favorites), getResources().getStringArray(R.array.library_tab_titles)[2]);
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);
-    }
-
-    //TODO: Replace dummy data with real data from sound cloud
-    public ArrayList<Track> getUserSongs() {
-        WebApiManager.getUserTracks(getContext(), AccountManager.getInstance(getContext()).getUserId(), new WebApiManager.OnArrayResponseListener() {
-            @Override
-            public void onArrayResponse(JSONArray array) {
-                Log.i(getClass().getSimpleName(), "Response = " + array.toString());
-                Gson gson = new Gson();
-                Type token = new TypeToken<ArrayList<UserTrackResponse>>() {}.getType();
-                try {
-                    ArrayList<UserTrackResponse> userTracks = gson.fromJson(array.toString(), token);
-                    for (int i = 0; i < userTracks.size(); i++) {
-                        Track tempTrack = new Track();
-                        tempTrack.setTitle(userTracks.get(i).getTitle());
-                        mTrackList.add(tempTrack);
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }, new WebApiManager.OnErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.toString();
-            }
-        });
-        return null;
-    }
-
-    public void getUserPlaylist() {
-        WebApiManager.getUserPlaylists(getContext(), AccountManager.getInstance(getContext()).getUserId(), new WebApiManager.OnArrayResponseListener() {
-            @Override
-            public void onArrayResponse(JSONArray array) {
-                Log.i(getClass().getSimpleName(), "Response = " + array.toString());
-                Gson gson = new Gson();
-                Type token = new TypeToken<ArrayList<UserPlaylistsResponse>>() {
-                }.getType();
-                try {
-                    ArrayList<UserPlaylistsResponse> userPlaylists = gson.fromJson(array.toString(), token);
-                    mTrackPlayList = (ArrayList<Track>) userPlaylists.get(0).getTracks();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }, new WebApiManager.OnErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(getClass().getSimpleName(), "Response = " + error.toString());
-            }
-        });
-    }
-
-    public void getUserFavorites() {
-        WebApiManager.getUserFavorites(getContext(), AccountManager.getInstance(getContext()).getUserId(), new WebApiManager.OnArrayResponseListener() {
-            @Override
-            public void onArrayResponse(JSONArray array) {
-                Log.i(getClass().getSimpleName(), "Response = " + array.toString());
-                Gson gson = new Gson();
-                Type token = new TypeToken<ArrayList<UserTrackResponse>>() {
-                }.getType();
-                try {
-                    ArrayList<UserTrackResponse> userTracks = gson.fromJson(array.toString(), token);
-                    for(int i = 0; i < userTracks.size();i++){
-                        Track tempTrack = new Track();
-                        tempTrack.setTitle(userTracks.get(i).getTitle());
-                        mFavoriteTrackList.add(tempTrack);
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }, new WebApiManager.OnErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(getClass().getSimpleName(), "Response = " + error.toString());
-            }
-        });
     }
 }
