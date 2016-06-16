@@ -111,28 +111,29 @@ public class DashboardFragment extends Fragment {
         mTrackGrid.setAdapter(mTrackAdapter);
         mTrackAdapter.notifyDataSetChanged();
 
-        WebApiManager.getSoundCloudUser(getContext(), AccountManager.getInstance(getContext()).getAccessToken(), new WebApiManager.OnObjectResponseListener() {
-            @Override
-            public void onObjectResponse(JSONObject object) {
-                object.toString();
-                Log.i(getClass().getSimpleName(), "Response = " + object.toString());
-                Gson gson = new Gson();
-                Type token = new TypeToken<User>(){}.getType();
-                try {
-                    User user = gson.fromJson(object.toString(), token);
-                    AccountManager.getInstance(getContext()).setUserId(String.valueOf(user.getId()));
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+        if(!AccountManager.getInstance(getContext()).isLoggedIn() && AccountManager.getInstance(getContext()).getAccessToken() != null) {
+            WebApiManager.getSoundCloudUser(getContext(), AccountManager.getInstance(getContext()).getAccessToken(), new WebApiManager.OnObjectResponseListener() {
+                @Override
+                public void onObjectResponse(JSONObject object) {
+                    object.toString();
+                    Log.i(getClass().getSimpleName(), "Response = " + object.toString());
+                    Gson gson = new Gson();
+                    Type token = new TypeToken<User>(){}.getType();
+                    try {
+                        User user = gson.fromJson(object.toString(), token);
+                        AccountManager.getInstance(getContext()).setUserId(String.valueOf(user.getId()));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
                 }
-
-            }
-        }, new WebApiManager.OnErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.toString();
-            }
-        });
-
+            }, new WebApiManager.OnErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.toString();
+                }
+            });
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event

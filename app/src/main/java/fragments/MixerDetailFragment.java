@@ -3,10 +3,15 @@ package fragments;
 
 import android.app.Dialog;
 import android.graphics.drawable.Drawable;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -19,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
@@ -32,6 +38,7 @@ import data.MixContract;
 import model.Mix;
 import model.MixItem;
 import utils.Constants;
+import utils.MixManager;
 
 public class MixerDetailFragment extends Fragment implements ImageAdapter.DialogImageSelectedListener {
 
@@ -42,6 +49,16 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
     public Bundle mUserSelections;
     public EditText mMixTitle;
     public Mix mSelectedMix;
+    ImageView mPlayMixButton;
+    private CoordinatorLayout mCoordinatorLayout;
+
+    private final int duration = 3; // seconds
+    private final int sampleRate = 8000;
+    private final int numSamples = duration * sampleRate;
+    private final double sample[] = new double[numSamples];
+    private final double freqOfTone = 440; // hz
+    private final byte generatedSnd[] = new byte[2 * numSamples];
+    Handler handler = new Handler();
 
     Dialog mDialog;
 
@@ -54,6 +71,8 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
         View v = inflater.inflate(R.layout.fragment_mixer_detail, container, false);
         mMixerItemList = (RecyclerView) v.findViewById(R.id.beat_mix_item_list);
         mMixTitle = (EditText) v.findViewById(R.id.track_title);
+        mCoordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.main_content_coordinator_layout);
+        mPlayMixButton = (ImageView) v.findViewById(R.id.play_song_button);
         ((TextView)v.findViewById(R.id.separator_title)).setText(R.string.beat_levels);
         return v;
     }
@@ -109,6 +128,13 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
         mMixerItemList.setLayoutManager(mLayoutManager);
         mMixerItemList.setAdapter(mMixerItemAdapter);
         mMixerItemAdapter.notifyDataSetChanged();
+
+        mPlayMixButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playMix();
+            }
+        });
     }
 
     public void showAddBeatItemDialog(){
@@ -125,25 +151,46 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
                 break;
             case 1:
                 item.setMixItemTitle(getContext().getResources().getStringArray(R.array.default_mix_items)[1]);
-                mMixerItemAdapter.notifyDataSetChanged();
                 mDialog.dismiss();
                 break;
             case 2:
                 item.setMixItemTitle(getContext().getResources().getStringArray(R.array.default_mix_items)[2]);
-                mMixerItemAdapter.notifyDataSetChanged();
                 mDialog.dismiss();
                 break;
             case 3:
                 item.setMixItemTitle(getContext().getResources().getStringArray(R.array.default_mix_items)[3]);
-                mMixerItemAdapter.notifyDataSetChanged();
                 mDialog.dismiss();
                 break;
         }
         item.setMixItemLevel(Constants.MIX_ITEM_DEFAULT_LEVEL);
-        Uri returnRow = getContext().getContentResolver().insert(MixContract.MixItemsEntry.CONTENT_URI,Constants.buildMixItemsRecord(mSelectedMix.getMixId(),item));
-        mixItemList.add(0,item);
-        mMixerItemList.setAdapter(mMixerItemAdapter);
-        mMixerItemAdapter.notifyDataSetChanged();
+        boolean mixItemExists = false;
+        for(MixItem mix : mixItemList) {
+            if(mix.getMixItemTitle().equalsIgnoreCase(item.getMixItemTitle())) {
+                mixItemExists = true;
+            }
+        }
 
+        if (!mixItemExists) {
+            Uri returnRow = getContext().getContentResolver().insert(MixContract.MixItemsEntry.CONTENT_URI, Constants.buildMixItemsRecord(mSelectedMix.getMixId(), item));
+            mixItemList.add(0, item);
+            mMixerItemList.setAdapter(mMixerItemAdapter);
+            mMixerItemAdapter.notifyDataSetChanged();
+        } else {
+            Snackbar errorSnack = Snackbar.make(mCoordinatorLayout, String.format(getContext().getString(R.string.mix_item_exists_snack_message), item.getMixItemTitle()), Snackbar.LENGTH_LONG);
+            errorSnack.show();
+        }
+    }
+
+    public void playMix(){
+        final Thread thread = new Thread(new Runnable() {
+            public void run() {
+                handler.post(new Runnable() {
+                    public void run() {
+                        MixManager.getInstance(getContext()).playMix((ArrayList<MixItem>) mixItemList);
+                    }
+                });
+            }
+        });
+        thread.start();
     }
 }

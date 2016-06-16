@@ -52,7 +52,7 @@
     <string-array name="library_tab_titles">
         <item name="song_list">Songs</item>
         <item name="play_list">PlayList</item>
-        <item name="group_list">Groups</item>
+        <item name="favorite_list">Favorites</item>
     </string-array>
 
     <string name="default_mix_album_art_url">https:\default</string>
@@ -89,4 +89,9 @@
     </string-array>
 
     <string name="loading_message">Loading</string>
+    <string name="song_added_to_favorites_snack_message">Song added to Favorites</string>
+    <string name="mix_item_exists_snack_message" formatted="false">This mix already contains %s</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

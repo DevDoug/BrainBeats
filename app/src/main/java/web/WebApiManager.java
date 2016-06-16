@@ -1,6 +1,8 @@
 package web;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -14,6 +16,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
+
+import architecture.AccountManager;
 import utils.Constants;
 
 /**
@@ -150,6 +154,7 @@ public class WebApiManager {
     public static void putUserFavorite(Context context, String userId, String trackID, final OnObjectResponseListener responseListener, final OnErrorListener errorListener) {
         HashMap<String, String> mParams = new HashMap<>();
         mParams.put(SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
+        mParams.put(SOUND_CLOUD_API_KEY_OAUTH_TOKEN, AccountManager.getInstance(context).getAccessToken());
 
         String url = API_ROOT_URL + API_USER_URL + userId + API_FAVORITES_URL + trackID;
         try {
@@ -239,7 +244,6 @@ public class WebApiManager {
             @Override
             public void onResponse(JSONObject response) {
                 listener.onObjectResponse(response);
-
             }
         }, new Response.ErrorListener() {
             @Override

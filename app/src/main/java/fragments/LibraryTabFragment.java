@@ -22,7 +22,6 @@ public class LibraryTabFragment extends Fragment {
     private LibraryAdapter mLibraryAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-
     public LibraryTabFragment() {
         // Required empty public constructor
     }

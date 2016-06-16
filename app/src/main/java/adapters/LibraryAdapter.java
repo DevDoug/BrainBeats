@@ -5,7 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.brainbeats.R;
 
@@ -30,10 +32,19 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView mAlbumTitle;
+        ImageView mMixTrack;
 
         public ViewHolder(View v) {
             super(v);
             mAlbumTitle = (TextView) v.findViewById(R.id.album_title);
+            mMixTrack = (ImageView) v.findViewById(R.id.mix_beat);
+
+            mMixTrack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mAdapterContext,"Mixing Track",Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 

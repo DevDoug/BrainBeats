@@ -23,6 +23,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import adapters.ViewPagerAdapter;
+import architecture.AccountManager;
 import entity.Track;
 import entity.UserPlaylistsResponse;
 import entity.UserTrackResponse;
@@ -44,9 +45,6 @@ public class LibraryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getUserSongs();
-        getUserPlaylist();
-        getUserFavorites();
     }
 
     @Override
@@ -54,13 +52,16 @@ public class LibraryFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_library, container, false);
         mTabLayout = (TabLayout) v.findViewById(R.id.tab_layout);
         mViewPager = (ViewPager) v.findViewById(R.id.base_viewpager);
-        setupViewPager();
         return v;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        getUserSongs();
+        getUserPlaylist();
+        getUserFavorites();
+        setupViewPager();
     }
 
     public void onButtonPressed(Uri uri) {
@@ -101,7 +102,7 @@ public class LibraryFragment extends Fragment {
 
     //TODO: Replace dummy data with real data from sound cloud
     public ArrayList<Track> getUserSongs() {
-        WebApiManager.getUserTracks(getContext(), "3207", new WebApiManager.OnArrayResponseListener() {
+        WebApiManager.getUserTracks(getContext(), AccountManager.getInstance(getContext()).getUserId(), new WebApiManager.OnArrayResponseListener() {
             @Override
             public void onArrayResponse(JSONArray array) {
                 Log.i(getClass().getSimpleName(), "Response = " + array.toString());
@@ -128,7 +129,7 @@ public class LibraryFragment extends Fragment {
     }
 
     public void getUserPlaylist() {
-        WebApiManager.getUserPlaylists(getContext(), "3207", new WebApiManager.OnArrayResponseListener() {
+        WebApiManager.getUserPlaylists(getContext(), AccountManager.getInstance(getContext()).getUserId(), new WebApiManager.OnArrayResponseListener() {
             @Override
             public void onArrayResponse(JSONArray array) {
                 Log.i(getClass().getSimpleName(), "Response = " + array.toString());
@@ -151,7 +152,7 @@ public class LibraryFragment extends Fragment {
     }
 
     public void getUserFavorites() {
-        WebApiManager.getUserFavorites(getContext(), "3207", new WebApiManager.OnArrayResponseListener() {
+        WebApiManager.getUserFavorites(getContext(), AccountManager.getInstance(getContext()).getUserId(), new WebApiManager.OnArrayResponseListener() {
             @Override
             public void onArrayResponse(JSONArray array) {
                 Log.i(getClass().getSimpleName(), "Response = " + array.toString());
@@ -164,7 +165,6 @@ public class LibraryFragment extends Fragment {
                         Track tempTrack = new Track();
                         tempTrack.setTitle(userTracks.get(i).getTitle());
                         mFavoriteTrackList.add(tempTrack);
-                        notifyAll();
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();

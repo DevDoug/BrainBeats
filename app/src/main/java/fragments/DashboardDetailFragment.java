@@ -1,18 +1,16 @@
 package fragments;
 
-import android.accounts.AccountManager;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,17 +21,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.brainbeats.MainActivity;
-import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -44,30 +38,27 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import adapters.RelatedTracksAdapter;
 import entity.Collection;
 import entity.RelatedTracksResponse;
 import entity.Track;
-import model.Mix;
 import service.AudioService;
 import utils.BeatLearner;
 import utils.Constants;
 import web.WebApiManager;
 
-public class DashboardDetailFragment extends Fragment implements RelatedTracksAdapter.OnRelatedTrackUpdateListener, View.OnClickListener, AdapterView.OnItemClickListener {
+public class DashboardDetailFragment extends Fragment implements RelatedTracksAdapter.OnRelatedTrackUpdateListener, View.OnClickListener {
 
     public static final String TAG = "DashboardDetailFragment";
 
     private TextView mTrackTitle;
     private ImageView mAlbumCoverArt;
     private ImageView mPlaySongButton;
-    private ImageView mPauseSongButton;
     private ImageView mSkipBackwardButton;
     private ImageView mSkipForwardButton;
     private ImageView mLoopSongButton;
+    private CoordinatorLayout mCoordinatorLayout;
 
     public  Bundle mUserSelections;
     public AudioService mAudioService;
@@ -118,11 +109,11 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
         mTrackTitle = (TextView) v.findViewById(R.id.track_title);
         mAlbumCoverArt = (ImageView) v.findViewById(R.id.album_cover_art);
         mPlaySongButton = (ImageView) v.findViewById(R.id.play_song_button);
-        //mPauseSongButton = (ImageView) v.findViewById(R.id.pause_song_button);
         mSkipBackwardButton = (ImageView) v.findViewById(R.id.skip_backward_button);
         mSkipForwardButton = (ImageView) v.findViewById(R.id.skip_forward_button);
         mLoopSongButton = (ImageView) v.findViewById(R.id.repeat_button);
         mPlayTrackSeekBar = (SeekBar) v.findViewById(R.id.play_song_seek_bar);
+        mCoordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.main_content_coordinator_layout);
         ((TextView)v.findViewById(R.id.separator_title)).setText(R.string.suggested_tracks);
 
         mPlaySongButton.setOnClickListener(this);
@@ -173,18 +164,19 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
                 WebApiManager.putUserFavorite(getContext(), architecture.AccountManager.getInstance(getContext()).getUserId(), String.valueOf(mSelectedTrack.getID()), new WebApiManager.OnObjectResponseListener() {
                     @Override
                     public void onObjectResponse(JSONObject object) {
-                        object.toString();
+                        Snackbar createdSnack = Snackbar.make(mCoordinatorLayout, R.string.song_added_to_favorites_snack_message, Snackbar.LENGTH_LONG);
+                        createdSnack.show();
                     }
                 }, new WebApiManager.OnErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        error.toString();
+                        String errorMessage = new String(error.networkResponse.data);
+                        Log.i("",errorMessage);
                     }
                 });
                 break;
             case R.id.action_library:
                 WebApiManager.putUserTrack(getContext(), String.valueOf(mSelectedTrack.getID()), new WebApiManager.OnObjectResponseListener() {
-
                     @Override
                     public void onObjectResponse(JSONObject object) {
                         object.toString();
@@ -229,53 +221,17 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        switch (position) {
-            case 0:
-                WebApiManager.putUserTrack(getContext(), String.valueOf(mSelectedTrack.getID()), new WebApiManager.OnObjectResponseListener() {
-
-                    @Override
-                    public void onObjectResponse(JSONObject object) {
-                        object.toString();
-                    }
-                }, new WebApiManager.OnErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.toString();
-                    }
-                });
-                break;
-            case 1:
-                WebApiManager.putUserFavorite(getContext(), "3207", String.valueOf(mSelectedTrack.getID()), new WebApiManager.OnObjectResponseListener() {
-                    @Override
-                    public void onObjectResponse(JSONObject object) {
-                        object.toString();
-                    }
-                }, new WebApiManager.OnErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.toString();
-                    }
-                });
-                break;
-            case 2:
-                Toast.makeText(getContext(), "Add to playlist", Toast.LENGTH_LONG).show();
-                break;
-        }
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.play_song_button:
                 if (mBound) {
                     if (mAudioService.mPlayer.isPlaying()) {
                         mAudioService.pauseSong();
-                        mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
+                        mPlaySongButton.setImageResource(R.drawable.ic_play_circle);
                     } else {
+                        mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
                         mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
                         mAudioService.setProgressIndicator(mPlayTrackSeekBar, mSelectedTrack.getDuration());
-                        mPlaySongButton.setImageResource(R.drawable.ic_play_circle);
                     }
                 }
                 break;
