@@ -8,7 +8,7 @@
 
         <CheckBoxPreference
             android:key="checkBoxPref"
-            android:title="check it out"
+            android:title="Go incognito"
             android:summary="click this little box"/>
 
     </PreferenceCategory>

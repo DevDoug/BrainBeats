@@ -2,21 +2,27 @@ package com.brainbeats;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
-
-import java.util.List;
-
+import android.support.v4.app.Fragment;
 import architecture.BaseActivity;
 import fragments.SettingFragment;
 
-public class SettingsActivity extends PreferenceActivity {
+public class SettingsActivity extends BaseActivity implements SettingFragment.OnFragmentInteractionListener {
+
+    public Fragment mSettingsFragment;
+
     @Override
-    public void onBuildHeaders(List<Header> target) {
-        loadHeadersFromResource(R.xml.headers_preference, target);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_base);
+        mSettingsFragment = new SettingFragment();
+        switchToSettingsFragment();
+    }
+
+    public void switchToSettingsFragment(){
+        replaceFragment(mSettingsFragment, mSettingsFragment.getTag());
     }
 
     @Override
-    protected boolean isValidFragment(String fragmentName) {
-        return SettingFragment.class.getName().equals(fragmentName);
+    public void onFragmentInteraction(Uri uri) {
     }
 }
