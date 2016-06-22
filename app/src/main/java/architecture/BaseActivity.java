@@ -31,7 +31,7 @@ import com.brainbeats.SocialActivity;
  */
 public class BaseActivity extends AppCompatActivity {
 
-    private DrawerLayout mNavigationDrawer;
+    public DrawerLayout mNavigationDrawer;
     public Toolbar mToolBar;
     public ActionBarDrawerToggle mDrawerToggle;
     public NavigationView mNavView;

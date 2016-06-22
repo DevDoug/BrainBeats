@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.brainbeats.MainActivity;
+import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -43,11 +44,10 @@ import adapters.ImageAdapter;
 import adapters.SearchMusicAdapter;
 import adapters.TrackAdapter;
 import architecture.AccountManager;
+import data.MixContract;
 import entity.Playlists;
 import entity.Track;
 import entity.User;
-import entity.UserTrackResponse;
-import utils.BeatLearner;
 import utils.Constants;
 import web.WebApiManager;
 
@@ -122,6 +122,13 @@ public class DashboardFragment extends Fragment {
                     try {
                         User user = gson.fromJson(object.toString(), token);
                         AccountManager.getInstance(getContext()).setUserId(String.valueOf(user.getId()));
+                        Uri rowID = ((MainActivity) getActivity()).getContentResolver().insert(MixContract.UserEntry.CONTENT_URI,Constants.buildUserRecord(user)); //create a new brain beats user to record and share mixes
+                        if(rowID== null)
+                            Log.i(getClass().getSimpleName(), "Success");
+                        else
+                            Log.i(getClass().getSimpleName(), "Fail");
+
+
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -210,8 +217,6 @@ public class DashboardFragment extends Fragment {
                 Toast.makeText(getActivity(), "Oh no! " + description, Toast.LENGTH_SHORT).show();
             }
         });
-
-        String s = AccountManager.getInstance(getContext()).getAccessToken();
     }
 
     public interface OnFragmentInteractionListener {

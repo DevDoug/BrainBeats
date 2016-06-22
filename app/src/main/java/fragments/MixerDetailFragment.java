@@ -42,25 +42,17 @@ import utils.MixManager;
 
 public class MixerDetailFragment extends Fragment implements ImageAdapter.DialogImageSelectedListener {
 
-    List<MixItem> mixItemList = new ArrayList<>();
+    private List<MixItem> mixItemList = new ArrayList<>();
     private RecyclerView mMixerItemList;
     private MixItemAdapter mMixerItemAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     public Bundle mUserSelections;
     public EditText mMixTitle;
     public Mix mSelectedMix;
-    ImageView mPlayMixButton;
+    private ImageView mPlayMixButton;
     private CoordinatorLayout mCoordinatorLayout;
-
-    private final int duration = 3; // seconds
-    private final int sampleRate = 8000;
-    private final int numSamples = duration * sampleRate;
-    private final double sample[] = new double[numSamples];
-    private final double freqOfTone = 440; // hz
-    private final byte generatedSnd[] = new byte[2 * numSamples];
-    Handler handler = new Handler();
-
-    Dialog mDialog;
+    private Handler handler = new Handler();
+    private Dialog mDialog;
 
     public MixerDetailFragment() {
         // Required empty public constructor

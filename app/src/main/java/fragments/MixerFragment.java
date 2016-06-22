@@ -168,7 +168,6 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 
     public interface OnFragmentInteractionListener {

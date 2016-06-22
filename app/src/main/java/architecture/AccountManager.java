@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
+import android.support.annotation.BoolRes;
 
 import com.brainbeats.BuildConfig;
+
+import utils.Constants;
 
 /**
  * Created by douglas on 6/5/2016.
@@ -19,6 +22,7 @@ public class AccountManager  {
     public static final String PACKAGE_NAME                         = BuildConfig.APPLICATION_ID;   //"com.brainbeats";
     private static final String BRAIN_BEATS_AUTH_TOKEN              = PACKAGE_NAME + ".BRAIN_BEATS_AUTH_TOKEN";
     private static final String BRAIN_BEATS_SOUND_CLOUD_USER_ID     = PACKAGE_NAME + ".BRAIN_BEATS_SOUND_CLOUD_USER_ID";
+
 
     private AccountManager(Context context){
         this.mContext = context;
@@ -62,6 +66,19 @@ public class AccountManager  {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(BRAIN_BEATS_SOUND_CLOUD_USER_ID, userId);
+        editor.commit();
+    }
+
+    public boolean getIsIncognito() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        boolean isIncog = sharedPreferences.getBoolean(Constants.KEY_EXTRA_IS_INCOGNITO_PREF, false);
+        return isIncog;
+    }
+
+    public void isInCognito(boolean isIncog){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constants.KEY_EXTRA_IS_INCOGNITO_PREF, isIncog);
         editor.commit();
     }
 }

@@ -5,9 +5,19 @@ package model;
  */
 public class User {
 
+    private int mUserId;
     private String mUserName;
 
+    public int getmUserId() {
+        return mUserId;
+    }
+
+    public void setmUserId(int mUserId) {
+        this.mUserId = mUserId;
+    }
+
     public User(){
+
     }
 
     public String getUserName() {

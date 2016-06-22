@@ -1,8 +1,11 @@
 package com.brainbeats;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+
+import architecture.AccountManager;
 import architecture.BaseActivity;
 import entity.Track;
 import fragments.DashboardDetailFragment;
@@ -28,6 +31,12 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
 
         if (mUserSelections == null) {
             mUserSelections = new Bundle();
+        }
+
+        if (!AccountManager.getInstance(this).isLoggedIn()) { //if the user has not created an account load login activity
+            Intent loginIntent = new Intent(this, LoginActivity.class);
+            startActivity(loginIntent);
+            finish();
         }
     }
 

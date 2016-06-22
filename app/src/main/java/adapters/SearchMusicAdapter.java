@@ -58,8 +58,6 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.mTrackTitle.setText(mTracks.get(position).getTitle());
         holder.mAlbumArtCover.setImageDrawable(mAdapterContext.getDrawable(R.drawable.placeholder));
-
-        //Picasso.with(mAdapterContext).load(mCollection.get(position).getArtworkURL()).into(holder.mAlbumArtCover);
     }
 
     @Override

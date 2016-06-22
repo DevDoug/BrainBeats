@@ -25,6 +25,7 @@ import architecture.AccountManager;
 import data.MixContract;
 import model.Mix;
 import model.MixItem;
+import model.User;
 import web.WebApiManager;
 
 /**
@@ -38,6 +39,9 @@ public class Constants {
     public static final String KEY_EXTRA_SELECTED_TRACK = "SelectedTrack";
     public static final String KEY_EXTRA_SELECTED_MIX = "SelectedMix";
     public static final String KEY_EXTRA_SEARCH_KEYWORD = "SearchKeyword";
+
+    //Shared Preferences
+    public static final String KEY_EXTRA_IS_INCOGNITO_PREF = "IsIncognito";
 
     //Sound Cloud
     public static final String SOUND_CLOUD_CLIENT_ID       = "6af4e9b999eaa63f5d797d466cdc4ccb";
@@ -79,6 +83,12 @@ public class Constants {
         public int getCode() {
             return mCode;
         }
+    }
+
+    public static ContentValues buildUserRecord(entity.User user){
+        ContentValues values = new ContentValues();
+        values.put(MixContract.UserEntry.COLUMN_NAME_USER_NAME, user.getUsername());
+        return values;
     }
 
     public static Mix buildMixFromCursor(Context context,Cursor cursor, int position) {

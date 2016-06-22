@@ -16,14 +16,13 @@ public class MixDbContentProvider extends ContentProvider {
     // The URI Matcher used by this content provider.
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private MixDbHelper mOpenHelper;
-
     private static final SQLiteQueryBuilder sMixByIDQueryBuilder;
 
-    static final int MIX = 100;
-    static final int MIXITEM = 200;
-    static final int USER = 300;
+    static final int MIX      = 100;
+    static final int MIXITEM  = 200;
+    static final int USER     = 300;
 
-    static{
+    static {
         sMixByIDQueryBuilder = new SQLiteQueryBuilder();
     }
 
@@ -113,21 +112,21 @@ public class MixDbContentProvider extends ContentProvider {
         switch (match) {
             case MIX:
                 long _id = db.insert(MixContract.MixEntry.TABLE_NAME, null, values);
-                if ( _id > 0 )
+                if (_id > 0)
                     returnUri = MixContract.MixEntry.buildMixUriWithId(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case MIXITEM:
                 long _idMixItem = db.insert(MixContract.MixItemsEntry.TABLE_NAME, null, values);
-                if ( _idMixItem > 0 )
+                if (_idMixItem > 0)
                     returnUri = MixContract.MixItemsEntry.buildMixItemUriWithId(_idMixItem);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case USER:
                 long _idUser = db.insert(MixContract.UserEntry.TABLE_NAME, null, values);
-                if ( _idUser > 0 )
+                if (_idUser > 0)
                     returnUri = MixContract.UserEntry.buildUserUriWithId(_idUser);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
@@ -145,7 +144,7 @@ public class MixDbContentProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         int rowsDeleted;
         // this makes delete all rows return the number of rows deleted
-        if ( null == selection ) selection = "1";
+        if (null == selection) selection = "1";
         switch (match) {
             case MIX:
                 rowsDeleted = db.delete(
@@ -220,7 +219,7 @@ public class MixDbContentProvider extends ContentProvider {
                 try {
                     for (ContentValues value : values) {
                         long _id = db.insert(MixContract.MixItemsEntry.TABLE_NAME, null, value);
-                        if(_id != -1){
+                        if (_id != -1) {
                             returnCountMixItem++;
                         }
                     }
