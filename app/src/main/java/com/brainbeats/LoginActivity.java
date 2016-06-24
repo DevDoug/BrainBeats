@@ -4,6 +4,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -24,8 +25,12 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import architecture.AccountManager;
 import data.MixContract;
 import data.MixDbHelper;
 
@@ -57,7 +62,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_ACTION_NEXT || id == EditorInfo.IME_ACTION_GO || id == EditorInfo.IME_NULL) {
                     attemptLogin();
                     return true;
                 }
@@ -74,9 +79,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
         mProgressView = findViewById(R.id.login_progress);
 
-        mPasswordView.addTextChangedListener(new TextWatcher() { //if the user exists
+        mEmailView.addTextChangedListener(new TextWatcher() { //if the user exists
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() >= 4) {
@@ -88,17 +95,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             null
                     );
 
-                    String message = "Register";
+                    String message = getString(R.string.register_text);
                     assert userCursor != null;
                     if (userCursor.getCount() >= 1) {
                         userCursor.moveToFirst();
                         while (!userCursor.isAfterLast()) {
                             String userName = userCursor.getString(userCursor.getColumnIndexOrThrow(MixContract.UserEntry.COLUMN_NAME_USER_NAME));
                             if (userName.equals(mEmailView.getText().toString())) { //user exists
-                                message = "Login";
+                                message = getString(R.string.login_text);
                                 break;
                             } else
-                                message = "Register";
+                                message = getString(R.string.register_text);
 
                             userCursor.moveToNext();
                         }
@@ -106,8 +113,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     mEmailSignInButton.setText(message);
                 }
             }
+
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
     }
 
@@ -162,7 +171,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             //showProgress(true);
-            mAuthTask = new UserLoginTask(this,email, password);
+            mAuthTask = new UserLoginTask(this, email, password);
             mAuthTask.execute((Void) null);
         }
     }
@@ -203,7 +212,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {}
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+    }
 
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
@@ -224,7 +234,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private final String mEmail;
         private final String mPassword;
 
-        UserLoginTask(Context context,String email, String password) {
+        UserLoginTask(Context context, String email, String password) {
             mContext = context;
             mEmail = email;
             mPassword = password;
@@ -234,23 +244,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Boolean doInBackground(Void... params) {
             Cursor userCursor = getContentResolver().query(
                     MixContract.UserEntry.CONTENT_URI, //Get users
-                    new String[]{MixContract.UserEntry.COLUMN_NAME_USER_NAME},  //return everything
+                    null,  //return everything
                     MixContract.UserEntry.COLUMN_NAME_USER_NAME + MixDbHelper.WHERE_CLAUSE_EQUAL,
                     new String[]{mEmail},
                     null
             );
 
+            userCursor.moveToFirst();
             while (!userCursor.isAfterLast()) {
                 String userName = userCursor.getString(userCursor.getColumnIndexOrThrow(MixContract.UserEntry.COLUMN_NAME_USER_NAME));
                 if (userName.equals(mEmail)) {
-                    String userPassword = userCursor.getString(userCursor.getColumnIndexOrThrow(MixContract.UserEntry.COLUMN_NAME_USER_NAME));
+                    String userPassword = userCursor.getString(userCursor.getColumnIndexOrThrow(MixContract.UserEntry.COLUMN_NAME_USER_PASSWORD));
                     return userPassword.equals(mPassword);
                 }
                 userCursor.moveToNext();
             }
 
             // TODO: register the new account here.
-
             //if we have reached this point and not returned a false this user username does not exist so create a new account
             ContentValues values = new ContentValues();
             values.put(MixContract.UserEntry.COLUMN_NAME_USER_NAME, mEmail);
@@ -258,11 +268,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             Uri returnRow = getContentResolver().insert(MixContract.UserEntry.CONTENT_URI, values);
             long returnRowId = ContentUris.parseId(returnRow);
 
-            if(returnRowId != -1)
+            if (returnRowId != -1) {
                 return true;
-            else
+            } else {
+                Toast.makeText(mContext, "Account Creation Failed", Toast.LENGTH_LONG).show();
                 return false; //specify account creation failed here.
-
+            }
         }
 
         @Override
@@ -272,7 +283,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             if (success) {
                 finish();
                 Intent dashboardIntent = new Intent(mContext, MainActivity.class);
-                dashboardIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                AccountManager.getInstance(mContext).setUserId(mEmail);
                 startActivity(dashboardIntent);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

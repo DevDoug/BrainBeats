@@ -16,9 +16,9 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_library"
-        android:title="Add to library"
-        android:orderInCategory="97"
-        app:showAsAction="never" />
+        android:id="@+id/action_logout"
+        android:title="Log Off"
+        android:orderInCategory="101"
+        app:showAsAction="never"/>
 
 </menu>

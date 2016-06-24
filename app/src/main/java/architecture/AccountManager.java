@@ -1,12 +1,12 @@
 package architecture;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
-import android.support.annotation.BoolRes;
 
 import com.brainbeats.BuildConfig;
+import com.brainbeats.LoginActivity;
 
 import utils.Constants;
 
@@ -21,7 +21,7 @@ public class AccountManager  {
 
     public static final String PACKAGE_NAME                         = BuildConfig.APPLICATION_ID;   //"com.brainbeats";
     private static final String BRAIN_BEATS_AUTH_TOKEN              = PACKAGE_NAME + ".BRAIN_BEATS_AUTH_TOKEN";
-    private static final String BRAIN_BEATS_SOUND_CLOUD_USER_ID     = PACKAGE_NAME + ".BRAIN_BEATS_SOUND_CLOUD_USER_ID";
+    private static final String BRAIN_BEATS_USER_ID                 = PACKAGE_NAME + ".BRAIN_BEATS_USER_ID";
 
 
     private AccountManager(Context context){
@@ -58,14 +58,21 @@ public class AccountManager  {
 
     public String getUserId() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String userId = sharedPreferences.getString(BRAIN_BEATS_SOUND_CLOUD_USER_ID, null);
+        String userId = sharedPreferences.getString(BRAIN_BEATS_USER_ID, null);
         return userId;
     }
 
     public void setUserId(String userId){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(BRAIN_BEATS_SOUND_CLOUD_USER_ID, userId);
+        editor.putString(BRAIN_BEATS_USER_ID, userId);
+        editor.commit();
+    }
+
+    public void removeUserId() {
+        SharedPreferences appPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = appPreferences.edit();
+        editor.remove(BRAIN_BEATS_USER_ID);
         editor.commit();
     }
 
@@ -80,5 +87,9 @@ public class AccountManager  {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(Constants.KEY_EXTRA_IS_INCOGNITO_PREF, isIncog);
         editor.commit();
+    }
+
+    public void forceLogout(Context context){
+        removeUserId();
     }
 }

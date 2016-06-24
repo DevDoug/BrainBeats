@@ -107,4 +107,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="register_text">Register</string>
+    <string name="login_text">Login</string>
+    <string name="error_playing_song_message">There was a problem playing this song</string>
 </resources>

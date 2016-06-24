@@ -5,9 +5,9 @@
     tools:context="com.brainbeats.DashboardActivity" >
 
     <item
-        android:id="@+id/action_login"
-        android:title="@string/action_login"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
+        android:id="@+id/action_logout"
+        android:title="Log Off"
+        android:orderInCategory="101"
+        app:showAsAction="never"/>
 
 </menu>

@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
 import com.brainbeats.LibraryActivity;
+import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
@@ -61,6 +62,19 @@ public class BaseActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Get item selected and deal with it
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                AccountManager.getInstance(this).forceLogout(this);
+                Intent loginIntent = new Intent(this,LoginActivity.class);
+                startActivity(loginIntent);
+                break;
+        }
+        return true;
     }
 
     public void setUpNavDrawer(){

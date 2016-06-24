@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
@@ -87,20 +89,21 @@ public class DashboardFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Get item selected and deal with it
+/*        // Get item selected and deal with it
         switch (item.getItemId()) {
             case R.id.action_login:
                 doLogin();
-        }
-        return true;
+                break;
+        }*/
+        return false;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ArrayList<Track> trackCategory = new ArrayList<>();
-        for(int i = 0; i < getResources().getStringArray(R.array.beat_categories).length;i++){
-            Track  defaultTrack = new Track();
+        for (int i = 0; i < getResources().getStringArray(R.array.beat_categories).length; i++) {
+            Track defaultTrack = new Track();
             defaultTrack.setTitle(getResources().getStringArray(R.array.beat_categories)[i]);
             trackCategory.add(defaultTrack);
         }
@@ -110,37 +113,6 @@ public class DashboardFragment extends Fragment {
         mTrackGrid.setLayoutManager(mBeatGridLayoutManager);
         mTrackGrid.setAdapter(mTrackAdapter);
         mTrackAdapter.notifyDataSetChanged();
-
-        if(!AccountManager.getInstance(getContext()).isLoggedIn() && AccountManager.getInstance(getContext()).getAccessToken() != null) {
-            WebApiManager.getSoundCloudUser(getContext(), AccountManager.getInstance(getContext()).getAccessToken(), new WebApiManager.OnObjectResponseListener() {
-                @Override
-                public void onObjectResponse(JSONObject object) {
-                    object.toString();
-                    Log.i(getClass().getSimpleName(), "Response = " + object.toString());
-                    Gson gson = new Gson();
-                    Type token = new TypeToken<User>(){}.getType();
-                    try {
-                        User user = gson.fromJson(object.toString(), token);
-                        AccountManager.getInstance(getContext()).setUserId(String.valueOf(user.getId()));
-                        Uri rowID = ((MainActivity) getActivity()).getContentResolver().insert(MixContract.UserEntry.CONTENT_URI,Constants.buildUserRecord(user)); //create a new brain beats user to record and share mixes
-                        if(rowID== null)
-                            Log.i(getClass().getSimpleName(), "Success");
-                        else
-                            Log.i(getClass().getSimpleName(), "Fail");
-
-
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-
-                }
-            }, new WebApiManager.OnErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    error.toString();
-                }
-            });
-        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -165,58 +137,6 @@ public class DashboardFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    public void doLogin(){
-        mTrackGrid.setVisibility(View.GONE);
-        final ProgressDialog progressDialog = new ProgressDialog(getContext());
-        final WebView webView = (WebView) getActivity().findViewById(R.id.webView);
-        webView.setVisibility(View.VISIBLE);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setUseWideViewPort(true);
-        webView.requestFocus();
-        webView.requestFocusFromTouch();
-        webView.requestFocus(View.FOCUS_DOWN);
-
-        String urlToken = WebApiManager.API_CONNECT_URL + "?client_id=" + Constants.SOUND_CLOUD_CLIENT_ID + "&redirect_uri=" + "http://localhost" + "&response_type=token";
-        String urlAccessToken = WebApiManager.API_OAUTH + "?client_id=" + Constants.SOUND_CLOUD_CLIENT_ID + "&client_secret=" + Constants.SOUND_CLOUD_CLIENT_SECRET +
-                "&redirect_uri=" + "http://localhost" + "&grant_type=authorization_code" + "code" + AccountManager.getInstance(getContext()).getAccessToken();
-
-        webView.loadUrl(urlToken);
-        webView.setWebViewClient(new WebViewClient() {
-            boolean authComplete = false;
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon){
-                super.onPageStarted(view, url, favicon);
-                progressDialog.setMessage("Connecting SoundCloud");
-                progressDialog.show();
-            }
-            String authCode="";
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                progressDialog.dismiss();
-                Log.i("URLLLL", url);
-                if (url.contains("access_token=") && authComplete != true) {
-                    for(int t=32; t <url.length();t++){
-                        if(!(url.charAt(t) == '&'))
-                            authCode = authCode+url.charAt(t);
-                        else
-                            break;
-                    }
-                    Log.i("CODE true", "CODE : " + authCode);
-                    authComplete = true;
-                    AccountManager.getInstance(getContext()).setAccessToken(authCode);
-                }else if(url.contains("error=access_denied")){
-                    Log.i("CODE false", "ACCESS_DENIED_HERE");
-                    authComplete = true;
-                    progressDialog.dismiss();
-                }
-            }
-            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                Toast.makeText(getActivity(), "Oh no! " + description, Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     public interface OnFragmentInteractionListener {

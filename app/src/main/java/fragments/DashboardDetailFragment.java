@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
 import com.google.gson.Gson;
@@ -40,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapters.RelatedTracksAdapter;
+import architecture.AccountManager;
 import entity.Collection;
 import entity.RelatedTracksResponse;
 import entity.Track;
@@ -175,24 +177,14 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
                     }
                 });
                 break;
-            case R.id.action_library:
-                WebApiManager.putUserTrack(getContext(), String.valueOf(mSelectedTrack.getID()), new WebApiManager.OnObjectResponseListener() {
-                    @Override
-                    public void onObjectResponse(JSONObject object) {
-                        object.toString();
-                    }
-                }, new WebApiManager.OnErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        String errorRespomse = new String(error.networkResponse.data);
-                        error.printStackTrace();
-                    }
-                });
-                break;
             case R.id.action_share:
                 Toast.makeText(getContext(), "Share track", Toast.LENGTH_LONG).show();
                 break;
-
+            case R.id.action_logout:
+                AccountManager.getInstance(getContext()).forceLogout(getContext());
+                Intent loginIntent = new Intent(getContext(),LoginActivity.class);
+                startActivity(loginIntent);
+                break;
         }
         return true;
     }
@@ -253,6 +245,7 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
                 }
                 break;
             case R.id.shuffle__button:
+
                 break;
             default:
                 break;
@@ -264,6 +257,12 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
         mSelectedTrack = track;
         mTrackTitle.setText(mSelectedTrack.getTitle());
         Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
+        mAudioService.stopSong();
+
+        if(mSelectedTrack.getStreamURL() != null)
+            mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
+        else
+            Snackbar.make(mCoordinatorLayout,mAudioService.getString(R.string.error_playing_song_message),Snackbar.LENGTH_LONG).show();
     }
 
     public interface OnFragmentInteractionListener {

@@ -68,6 +68,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+
             mPlayer.prepareAsync();
         }
     }
@@ -82,6 +83,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void stopSong(){
+        mPlayer.stop();
     }
 
     public void setProgressIndicator(final SeekBar bar,final int duration) {
