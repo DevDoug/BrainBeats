@@ -27,12 +27,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import architecture.AccountManager;
 import data.MixContract;
 import data.MixDbHelper;
+import utils.Constants;
+import web.WebApiManager;
 
 /**
  * A login screen that offers login via email/password.
@@ -49,6 +53,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private Button mLoginButton;
+    private Button mSoundCloudLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +62,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mLoginButton = (Button) findViewById(R.id.email_sign_in_button);
+        mPasswordView = (EditText) findViewById(R.id.password);
+        mProgressView = findViewById(R.id.login_progress);
+        mSoundCloudLogin = (Button) findViewById(R.id.sound_cloud_sign_in_button);
+
         populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -70,15 +80,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        final Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        mLoginButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
         });
-        mProgressView = findViewById(R.id.login_progress);
+        mSoundCloudLogin.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attemptSoundCloudLogin();
+            }
+        });
 
+        final Button signInButton = mLoginButton;
         mEmailView.addTextChangedListener(new TextWatcher() { //if the user exists
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -110,7 +125,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             userCursor.moveToNext();
                         }
                     }
-                    mEmailSignInButton.setText(message);
+                    signInButton.setText(message);
                 }
             }
 
@@ -173,6 +188,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             //showProgress(true);
             mAuthTask = new UserLoginTask(this, email, password);
             mAuthTask.execute((Void) null);
+        }
+    }
+
+    public void attemptSoundCloudLogin(){
+        String authSoundCloudURL = WebApiManager.API_CONNECT_URL + "?client_id=" + Constants.SOUND_CLOUD_CLIENT_ID + "&redirect_uri=" + "com.brainbeats.FROM_BROWSER" + "&response_type=token";
+        Intent viewIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(authSoundCloudURL));
+        if (viewIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(viewIntent);
         }
     }
 

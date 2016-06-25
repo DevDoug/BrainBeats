@@ -258,6 +258,7 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
         mTrackTitle.setText(mSelectedTrack.getTitle());
         Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
         mAudioService.stopSong();
+        mAudioService.mPlayer.reset();
 
         if(mSelectedTrack.getStreamURL() != null)
             mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
