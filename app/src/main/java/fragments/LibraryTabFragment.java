@@ -9,17 +9,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.brainbeats.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import org.json.JSONArray;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import adapters.LibraryAdapter;
 import architecture.AccountManager;
 import entity.Track;
@@ -35,6 +34,7 @@ public class LibraryTabFragment extends Fragment {
     private LibraryAdapter mLibraryAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private int mDataType;
+    public String mFilter = "";
 
     public LibraryTabFragment() {
         // Required empty public constructor
@@ -83,7 +83,7 @@ public class LibraryTabFragment extends Fragment {
             public void onArrayResponse(JSONArray array) {
                 Log.i(getClass().getSimpleName(), "Response = " + array.toString());
                 Gson gson = new Gson();
-                Type token = new TypeToken<ArrayList<UserTrackResponse>>() {}.getType();
+                Type token = new TypeToken<ArrayList<UserTrackResponse>>(){}.getType();
                 try {
                     ArrayList<UserTrackResponse> userTracks = gson.fromJson(array.toString(), token);
                     for (int i = 0; i < userTracks.size(); i++) {
@@ -91,6 +91,16 @@ public class LibraryTabFragment extends Fragment {
                         tempTrack.setTitle(userTracks.get(i).getTitle());
                         trackList.add(tempTrack);
                     }
+
+                    if(!mFilter.equalsIgnoreCase(""))
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                            Stream<Track> trackStream = trackList.stream().filter(t -> t.getTitle().equalsIgnoreCase(mFilter));
+                            trackList = (ArrayList<Track>) trackStream;
+                        } else {
+                            Log.i("test",mFilter);
+                        }
+                    //trackList = trackList.stream.filter(p -> p.getAge() > 16).collect(Collectors.toList());
+
                     setTrackList();
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -164,5 +174,9 @@ public class LibraryTabFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false);
         mBeatListView.setLayoutManager(mLayoutManager);
         mBeatListView.setAdapter(mLibraryAdapter);
+    }
+
+    public void updateFilterParams(String params){
+        mFilter = params;
     }
 }

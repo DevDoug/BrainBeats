@@ -1,20 +1,25 @@
 package fragments;
 
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.volley.VolleyError;
+import com.brainbeats.LoginActivity;
 import com.brainbeats.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -44,7 +49,6 @@ public class LibraryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -59,12 +63,6 @@ public class LibraryFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setupViewPager();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_library, menu);
     }
 
     public void onButtonPressed(Uri uri) {
@@ -101,5 +99,10 @@ public class LibraryFragment extends Fragment {
         adapter.addFragment(LibraryTabFragment.newInstance(Constants.LibraryDataType.Favorites), getResources().getStringArray(R.array.library_tab_titles)[2]);
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);
+    }
+
+    public void updateTabFilter(String query){
+        LibraryTabFragment frag = (LibraryTabFragment) ((ViewPagerAdapter)mViewPager.getAdapter()).getItem(mViewPager.getCurrentItem());
+        frag.updateFilterParams(query);
     }
 }

@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -20,12 +19,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import com.brainbeats.R;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import adapters.ImageAdapter;
 import architecture.AccountManager;
 import data.MixContract;
+import entity.SoundCloudUser;
 import model.Mix;
 import model.MixItem;
-import model.User;
 import web.WebApiManager;
 
 /**
@@ -34,11 +35,14 @@ import web.WebApiManager;
 public class Constants {
 
     //= Keys for bundles and extras =============================================
-    public static final String KEY_EXTRA_BEAT_LIST = "BeatInfo";
-    public static final String KEY_LIBRARY_DATA_TYPE = "LibraryDataType";
-    public static final String KEY_EXTRA_SELECTED_TRACK = "SelectedTrack";
-    public static final String KEY_EXTRA_SELECTED_MIX = "SelectedMix";
-    public static final String KEY_EXTRA_SEARCH_KEYWORD = "SearchKeyword";
+    public static final String KEY_EXTRA_BEAT_LIST       = "BeatInfo";
+    public static final String KEY_LIBRARY_DATA_TYPE     = "LibraryDataType";
+    public static final String KEY_EXTRA_SELECTED_TRACK  = "SelectedTrack";
+    public static final String KEY_EXTRA_SELECTED_MIX    = "SelectedMix";
+    public static final String KEY_EXTRA_SEARCH_KEYWORD  = "SearchKeyword";
+
+    //Hash map keys
+    public static final String HASH_KEY_ACCESS_TOKEN     = "access_token";
 
     //Shared Preferences
     public static final String KEY_EXTRA_IS_INCOGNITO_PREF = "IsIncognito";
@@ -85,9 +89,9 @@ public class Constants {
         }
     }
 
-    public static ContentValues buildUserRecord(entity.User user){
+    public static ContentValues buildUserRecord(SoundCloudUser soundCloudUser){
         ContentValues values = new ContentValues();
-        values.put(MixContract.UserEntry.COLUMN_NAME_USER_NAME, user.getUsername());
+        values.put(MixContract.UserEntry.COLUMN_NAME_USER_NAME, soundCloudUser.getUsername());
         return values;
     }
 
@@ -228,4 +232,22 @@ public class Constants {
         alert.show();
         return alert;
     }
+
+    public static HashMap<String,String> mapQueryParams(String fragmentString){
+        HashMap<String, String> queryMap = new HashMap<>();
+        String[] paramList = fragmentString.split("#");
+        String[] params = paramList[0].split("&");
+
+        for (int i = 0; i < params.length; i++) {
+            String key = params[i].split("=")[0];
+            String value = params[i].split("=")[1];
+            queryMap.put(key, value);
+        }
+        return queryMap;
+    }
+
+    public static String generateEncryptedPass(){
+        return "Password1";
+    }
+
 }

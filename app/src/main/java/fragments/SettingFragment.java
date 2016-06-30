@@ -18,7 +18,6 @@ public class SettingFragment extends Fragment {
     public static final String TAG = "SettingsFragment";
 
     public CheckBox mIncogCheckBox;
-
     private OnFragmentInteractionListener mListener;
 
     public SettingFragment() {

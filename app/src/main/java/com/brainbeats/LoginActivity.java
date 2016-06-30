@@ -4,7 +4,6 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -16,6 +15,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,14 +27,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import com.android.volley.VolleyError;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import architecture.AccountManager;
 import data.MixContract;
 import data.MixDbHelper;
+import entity.RelatedTracksResponse;
+import entity.SoundCloudUser;
 import utils.Constants;
 import web.WebApiManager;
 
@@ -55,6 +63,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
     private Button mLoginButton;
     private Button mSoundCloudLogin;
+
+
+    public static final String OAUTH_CALLBACK_SCHEME = "brainbeats";
+    public static final String OAUTH_CALLBACK_HOST = "soundcloud/callback";
+    public static final String CALLBACK_URL = OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
+
+    static final int LOGIN_TO_SOUNDCLOUD = 1;  // The request code
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,11 +208,78 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     public void attemptSoundCloudLogin(){
-        String authSoundCloudURL = WebApiManager.API_CONNECT_URL + "?client_id=" + Constants.SOUND_CLOUD_CLIENT_ID + "&redirect_uri=" + "com.brainbeats.FROM_BROWSER" + "&response_type=token";
-        Intent viewIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(authSoundCloudURL));
-        if (viewIntent.resolveActivity(getPackageManager()) != null) {
-            startActivity(viewIntent);
-        }
+        String authSoundCloudURL = WebApiManager.API_CONNECT_URL + "?client_id=" + Constants.SOUND_CLOUD_CLIENT_ID + "&redirect_uri=" + CALLBACK_URL + "&response_type=token";
+        Intent loginIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(authSoundCloudURL));
+        loginIntent.addCategory(Intent.CATEGORY_DEFAULT);
+        loginIntent.addCategory(Intent.CATEGORY_BROWSABLE);
+        startActivity(loginIntent);
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Uri returnData = intent.getData();
+        String uriFrag = returnData.getFragment();
+        HashMap<String,String> map = Constants.mapQueryParams(uriFrag);
+
+        AccountManager.getInstance(this).setAccessToken(map.get(Constants.HASH_KEY_ACCESS_TOKEN));
+        WebApiManager.getSoundCloudUser(this, map.get(Constants.HASH_KEY_ACCESS_TOKEN), new WebApiManager.OnObjectResponseListener() {
+            @Override
+            public void onObjectResponse(JSONObject object) {
+                Log.i(getClass().getSimpleName(), "Response = " + object.toString());
+                Gson gson = new Gson();
+                Type token = new TypeToken<SoundCloudUser>() {
+                }.getType();
+                try {
+                    SoundCloudUser soundCloudUser = gson.fromJson(object.toString(), token);
+
+                    Cursor userCursor = getContentResolver().query(
+                            MixContract.UserEntry.CONTENT_URI, //Get users
+                            null,  //return everything
+                            MixContract.UserEntry.COLUMN_NAME_USER_NAME + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                            new String[]{soundCloudUser.getUsername()},
+                            null
+                    );
+
+                    userCursor.moveToFirst();
+                    while (!userCursor.isAfterLast()) {
+                        String userName = userCursor.getString(userCursor.getColumnIndexOrThrow(MixContract.UserEntry.COLUMN_NAME_USER_NAME));
+                        if (userName.equals(soundCloudUser.getUsername())) { // this sound cloud user already exists in the Brain Beats system
+                            finish();
+                            Intent dashboardIntent = new Intent(LoginActivity.this, MainActivity.class);
+                            AccountManager.getInstance(LoginActivity.this).setUserId(String.valueOf(soundCloudUser.getId()));
+                            startActivity(dashboardIntent);
+                        }
+                        userCursor.moveToNext();
+                    }
+
+                    //if we have reached this point and not returned a false this user username does not exist so create a new account
+                    ContentValues values = new ContentValues();
+                    values.put(MixContract.UserEntry.COLUMN_NAME_USER_NAME, soundCloudUser.getUsername());
+                    values.put(MixContract.UserEntry.COLUMN_NAME_USER_PASSWORD, Constants.generateEncryptedPass());
+                    values.put(MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID, soundCloudUser.getId());
+                    Uri returnRow = getContentResolver().insert(MixContract.UserEntry.CONTENT_URI, values);
+                    long returnRowId = ContentUris.parseId(returnRow);
+
+                    if (returnRowId != -1) { //new user create with sound cloud if success login
+                        finish();
+                        Intent dashboardIntent = new Intent(LoginActivity.this, MainActivity.class);
+                        AccountManager.getInstance(LoginActivity.this).setUserId(String.valueOf(soundCloudUser.getId()));
+                        startActivity(dashboardIntent);
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Account Creation Failed", Toast.LENGTH_LONG).show();
+                    }
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }, new WebApiManager.OnErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.toString();
+            }
+        });
     }
 
     private boolean isEmailValid(String email) {

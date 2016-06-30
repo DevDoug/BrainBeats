@@ -1,57 +1,31 @@
 package fragments;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.GridView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.VolleyError;
 import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
-import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import adapters.ImageAdapter;
 import adapters.SearchMusicAdapter;
-import adapters.TrackAdapter;
 import architecture.AccountManager;
-import data.MixContract;
-import entity.Playlists;
 import entity.Track;
-import entity.User;
 import utils.Constants;
-import web.WebApiManager;
 
 public class DashboardFragment extends Fragment {
 
@@ -83,18 +57,18 @@ public class DashboardFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_dashboard, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-/*        // Get item selected and deal with it
         switch (item.getItemId()) {
-            case R.id.action_login:
-                doLogin();
+            case R.id.action_logout:
+                AccountManager.getInstance(getContext()).forceLogout(getContext());
+                Intent loginIntent = new Intent(getContext(),LoginActivity.class);
+                startActivity(loginIntent);
                 break;
-        }*/
+        }
         return false;
     }
 

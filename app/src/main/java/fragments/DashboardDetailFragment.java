@@ -8,12 +8,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -60,6 +63,7 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
     private ImageView mSkipBackwardButton;
     private ImageView mSkipForwardButton;
     private ImageView mLoopSongButton;
+    private ShareActionProvider mShareActionProvider;
     private CoordinatorLayout mCoordinatorLayout;
 
     public  Bundle mUserSelections;
@@ -69,7 +73,7 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
     public Track mSelectedTrack;
     public  List<Collection> mCollections = new ArrayList<>();
     private RecyclerView mAlbumTrackList;
-    private RelatedTracksAdapter mRelatedTracksAdapter;
+    public RelatedTracksAdapter mRelatedTracksAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     private SeekBar mPlayTrackSeekBar;
@@ -135,33 +139,36 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
             mSelectedTrack = (Track) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_TRACK);
             mTrackTitle.setText(mSelectedTrack.getTitle());
             Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
-            loadRelatedTracks();
         }
 
-/*        mFob.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Constants.buildListDialogue(getContext(), getString(R.string.add_beat_to_user_list), R.array.add_beat_to_user_list_options,DashboardDetailFragment.this);
-            }
-        });*/
+        mRelatedTracksAdapter = new RelatedTracksAdapter(getContext(), mCollections, DashboardDetailFragment.this);
+        mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false);
+        mAlbumTrackList.setLayoutManager(mLayoutManager);
+        mAlbumTrackList.setAdapter(mRelatedTracksAdapter);
+
+        loadRelatedTracks(mSelectedTrack.getID());
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        if (!architecture.AccountManager.getInstance(getContext()).isLoggedIn())
-            inflater.inflate(R.menu.menu_dashboard, menu);
-        else
-            inflater.inflate(R.menu.menu_dashboard_detail, menu);
+        inflater.inflate(R.menu.menu_dashboard_detail, menu);
+        // Locate MenuItem with ShareActionProvider
+        MenuItem item = menu.findItem(R.id.menu_share);
+        // Fetch and store ShareActionProvider
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+        shareIntent.setType("text/plain");
+        mShareActionProvider.setShareIntent(shareIntent);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Get item selected and deal with it
         switch (item.getItemId()) {
             case android.R.id.home:
-                //called when the up affordance/carat in actionbar is pressed
                 getActivity().onBackPressed();
+                break;
             case R.id.action_favorite:
                 WebApiManager.putUserFavorite(getContext(), architecture.AccountManager.getInstance(getContext()).getUserId(), String.valueOf(mSelectedTrack.getID()), new WebApiManager.OnObjectResponseListener() {
                     @Override
@@ -174,11 +181,10 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
                     public void onErrorResponse(VolleyError error) {
                         String errorMessage = new String(error.networkResponse.data);
                         Log.i("",errorMessage);
+                        Snackbar createdSnack = Snackbar.make(mCoordinatorLayout, R.string.error_favoriting_message, Snackbar.LENGTH_LONG);
+                        createdSnack.show();
                     }
                 });
-                break;
-            case R.id.action_share:
-                Toast.makeText(getContext(), "Share track", Toast.LENGTH_LONG).show();
                 break;
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
@@ -186,7 +192,7 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
                 startActivity(loginIntent);
                 break;
         }
-        return true;
+        return false;
     }
 
     public void onButtonPressed(Uri uri) {
@@ -245,7 +251,6 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
                 }
                 break;
             case R.id.shuffle__button:
-
                 break;
             default:
                 break;
@@ -258,8 +263,7 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
         mTrackTitle.setText(mSelectedTrack.getTitle());
         Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
         mAudioService.stopSong();
-        mAudioService.mPlayer.reset();
-
+        mAudioService.mIsPaused = false;
         if(mSelectedTrack.getStreamURL() != null)
             mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
         else
@@ -285,8 +289,8 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
         }
     };
 
-    public void loadRelatedTracks(){
-        WebApiManager.getRelatedTracks(getContext(), new WebApiManager.OnObjectResponseListener() {
+    public void loadRelatedTracks(int trackId){
+        WebApiManager.getRelatedTracks(getContext(), String.valueOf(trackId), new WebApiManager.OnObjectResponseListener() {
             @Override
             public void onObjectResponse(JSONObject object) {
                 Log.i(getClass().getSimpleName(), "Response = " + object.toString());
@@ -297,10 +301,7 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
                     RelatedTracksResponse relatedTracks = gson.fromJson(object.toString(), token);
                     mCollections = relatedTracks.getCollection();
                     mRelatedTracksAdapter = new RelatedTracksAdapter(getContext(), mCollections, DashboardDetailFragment.this);
-                    mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false);
-                    mAlbumTrackList.setLayoutManager(mLayoutManager);
                     mAlbumTrackList.setAdapter(mRelatedTracksAdapter);
-                    mRelatedTracksAdapter.notifyDataSetChanged();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

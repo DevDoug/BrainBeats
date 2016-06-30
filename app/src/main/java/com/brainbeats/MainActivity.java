@@ -4,11 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
-
 import architecture.AccountManager;
 import architecture.BaseActivity;
 import entity.Track;
@@ -17,7 +12,7 @@ import fragments.DashboardFragment;
 import fragments.DashboardSongListFragment;
 import utils.Constants;
 
-public class MainActivity extends BaseActivity implements DashboardFragment.OnFragmentInteractionListener, DashboardSongListFragment.OnFragmentInteractionListener, DashboardDetailFragment.OnFragmentInteractionListener{
+public class MainActivity extends BaseActivity implements DashboardFragment.OnFragmentInteractionListener, DashboardSongListFragment.OnFragmentInteractionListener, DashboardDetailFragment.OnFragmentInteractionListener {
 
     public Fragment mDashboardFragment;
     public Fragment mDashboardSongListFragment;
@@ -44,20 +39,20 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
         }
     }
 
-    public void switchToDashboardFragment(){
+    public void switchToDashboardFragment() {
         replaceFragment(mDashboardFragment, mDashboardFragment.getTag());
     }
 
-    public void loadRefinedBeatList(String searchParam){
+    public void loadRefinedBeatList(String searchParam) {
         toggleNavDrawerIcon();
-        mUserSelections.putString(Constants.KEY_EXTRA_SEARCH_KEYWORD,searchParam);
+        mUserSelections.putString(Constants.KEY_EXTRA_SEARCH_KEYWORD, searchParam);
         mDashboardSongListFragment.setArguments(mUserSelections);
         replaceFragment(mDashboardSongListFragment, mDashboardSongListFragment.getTag());
     }
 
-    public void loadBeatDetailFragment(Track track){
+    public void loadBeatDetailFragment(Track track) {
         toggleNavDrawerIcon();
-        mUserSelections.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK,track);
+        mUserSelections.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, track);
         mDashboardDetailFragment.setArguments(mUserSelections);
         replaceFragment(mDashboardDetailFragment, mDashboardDetailFragment.getTag());
     }
@@ -66,3 +61,4 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     public void onFragmentInteraction(Uri uri) {
     }
 }
+

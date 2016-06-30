@@ -60,6 +60,7 @@ public class MixContract {
         public static final String TABLE_NAME                         = "user";
         public static final String COLUMN_NAME_USER_NAME              = "username";
         public static final String COLUMN_NAME_USER_PASSWORD          = "password";
+        public static final String COLUMN_NAME_USER_SOUND_CLOUD_ID    = "soundcloudid";
 
         public static Uri buildUserUriWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

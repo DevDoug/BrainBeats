@@ -103,8 +103,8 @@ public class UserPlaylistsResponse {
     @SerializedName("streamable")
     private Boolean streamable;
 
-    @SerializedName("user")
-    private User user;
+    @SerializedName("soundCloudUser")
+    private SoundCloudUser soundCloudUser;
 
     @SerializedName("embeddable_by")
     private String embeddableBy;
@@ -361,12 +361,12 @@ public class UserPlaylistsResponse {
         this.streamable = streamable;
     }
 
-    public User getUser() {
-        return user;
+    public SoundCloudUser getSoundCloudUser() {
+        return soundCloudUser;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setSoundCloudUser(SoundCloudUser soundCloudUser) {
+        this.soundCloudUser = soundCloudUser;
     }
 
     public String getEmbeddableBy() {

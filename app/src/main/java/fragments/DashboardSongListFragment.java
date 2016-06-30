@@ -2,6 +2,7 @@ package fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import com.android.volley.VolleyError;
+import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
 import com.google.gson.Gson;
@@ -29,6 +31,7 @@ import org.json.JSONArray;
 import java.lang.reflect.Type;
 import java.util.List;
 import adapters.TrackAdapter;
+import architecture.AccountManager;
 import entity.Track;
 import utils.BeatLearner;
 import utils.Constants;
@@ -60,12 +63,18 @@ public class DashboardSongListFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_dashboard, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                AccountManager.getInstance(getContext()).forceLogout(getContext());
+                Intent loginIntent = new Intent(getContext(),LoginActivity.class);
+                startActivity(loginIntent);
+                break;
+        }
         return false;
     }
 

@@ -4,6 +4,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
 
 import com.brainbeats.R;
 
@@ -46,5 +48,12 @@ public class MixerActivity extends BaseActivity implements MixerFragment.OnFragm
         mUserSelections.putParcelable(Constants.KEY_EXTRA_SELECTED_MIX,mix);
         mMixerDetailFragment.setArguments(mUserSelections);
         replaceFragment(mMixerDetailFragment, mMixerDetailFragment.getTag());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_dashboard, menu);
+        return true;
     }
 }

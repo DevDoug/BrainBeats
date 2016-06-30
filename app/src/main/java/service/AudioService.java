@@ -9,6 +9,8 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.widget.SeekBar;
 
 import utils.Constants;
@@ -22,6 +24,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     private Handler mHandler = new Handler();
     int mProgressStatus = 0;
     int mSongDuration = 0;
+    private SeekBar mSeekbar;
 
     public AudioService() {
     }
@@ -45,13 +48,20 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        mp.start();
+        mPlayer.start();
         mSongDuration = mp.getDuration();
     }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        mp.stop();
+        if(mp.isLooping()) {
+            mp.seekTo(0);
+            mSeekbar.setProgress(0);
+            LocalBroadcastManager broadcaster = LocalBroadcastManager.getInstance(getApplicationContext());
+            Intent songCompleteBroadcast = new Intent();
+            songCompleteBroadcast.setAction("Song Complete");
+            broadcaster.sendBroadcast(songCompleteBroadcast);
+        }
     }
 
     @Override
@@ -86,6 +96,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void setProgressIndicator(final SeekBar bar,final int duration) {
+        mSeekbar = bar;
         bar.setMax(duration);
         bar.setIndeterminate(false);
         new Thread(new Runnable() {

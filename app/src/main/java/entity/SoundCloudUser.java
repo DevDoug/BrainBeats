@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by douglas on 5/24/2016.
  */
-public class User {
+public class SoundCloudUser {
 
     @SerializedName("id")
     private Integer id;

@@ -57,7 +57,8 @@ public class MixDbHelper extends SQLiteOpenHelper {
         final String CREATE_TABLE_USER = "CREATE TABLE " + MixContract.UserEntry.TABLE_NAME + " (" +
                         MixContract.UserEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                         MixContract.UserEntry.COLUMN_NAME_USER_NAME + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
-                        MixContract.UserEntry.COLUMN_NAME_USER_PASSWORD + COLUMN_TYPE_TEXT_NOT_NULL +
+                        MixContract.UserEntry.COLUMN_NAME_USER_PASSWORD + COLUMN_TYPE_TEXT_NOT_NULL + COMMA_SEPERATOR +
+                        MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + COLUMN_TYPE_TEXT_NULL +
                         " );";
 
         db.execSQL(CREATE_TABLE_MIX);

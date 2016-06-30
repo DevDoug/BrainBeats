@@ -14,7 +14,7 @@ public class Track implements Parcelable {
     private String mTitle;
 
     @SerializedName("id")
-    private int mID;
+    public int mID;
 
     @SerializedName("stream_url")
     private String mStreamURL;

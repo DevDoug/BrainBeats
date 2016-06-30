@@ -64,19 +64,6 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Get item selected and deal with it
-        switch (item.getItemId()) {
-            case R.id.action_logout:
-                AccountManager.getInstance(this).forceLogout(this);
-                Intent loginIntent = new Intent(this,LoginActivity.class);
-                startActivity(loginIntent);
-                break;
-        }
-        return true;
-    }
-
     public void setUpNavDrawer(){
         mNavigationDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavView = (NavigationView) findViewById(R.id.navView);

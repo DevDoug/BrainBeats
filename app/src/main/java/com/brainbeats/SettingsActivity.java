@@ -3,6 +3,7 @@ package com.brainbeats;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import architecture.AccountManager;
@@ -37,6 +38,13 @@ public class SettingsActivity extends BaseActivity implements SettingFragment.On
                 //called when the up affordance/carat in actionbar is pressed
                 AccountManager.getInstance(this).isInCognito(((SettingFragment)mSettingsFragment).mIncogCheckBox.isChecked());
         }
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_dashboard, menu);
         return true;
     }
 

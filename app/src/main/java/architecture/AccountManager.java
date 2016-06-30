@@ -1,12 +1,10 @@
 package architecture;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.brainbeats.BuildConfig;
-import com.brainbeats.LoginActivity;
 
 import utils.Constants;
 
@@ -20,7 +18,7 @@ public class AccountManager  {
     private static boolean mIsConnected;
 
     public static final String PACKAGE_NAME                         = BuildConfig.APPLICATION_ID;   //"com.brainbeats";
-    private static final String BRAIN_BEATS_AUTH_TOKEN              = PACKAGE_NAME + ".BRAIN_BEATS_AUTH_TOKEN";
+    private static final String SOUND_CLOUD_AUTH_TOKEN = PACKAGE_NAME + ".SOUND_CLOUD_AUTH_TOKEN";
     private static final String BRAIN_BEATS_USER_ID                 = PACKAGE_NAME + ".BRAIN_BEATS_USER_ID";
 
 
@@ -45,14 +43,14 @@ public class AccountManager  {
 
     public String getAccessToken(){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String token = sharedPreferences.getString(BRAIN_BEATS_AUTH_TOKEN, null);
+        String token = sharedPreferences.getString(SOUND_CLOUD_AUTH_TOKEN, null);
         return token;
     }
 
     public void setAccessToken(String token){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(BRAIN_BEATS_AUTH_TOKEN, token);
+        editor.putString(SOUND_CLOUD_AUTH_TOKEN, token);
         editor.commit();
     }
 

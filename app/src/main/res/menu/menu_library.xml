@@ -5,16 +5,15 @@
 
     <item
         android:id="@+id/action_search"
-        android:title="Search"
+        android:title="@string/search_hint"
         android:icon="@drawable/abc_ic_search_api_mtrl_alpha"
-        android:orderInCategory="99"
-        app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="ifRoom|collapseActionView" />
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView" />
 
     <item
-        android:id="@+id/action_logoff"
-        android:title="Log off from sound cloud"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
+        android:id="@+id/action_logout"
+        android:title="Log Off"
+        android:orderInCategory="101"
+        app:showAsAction="never"/>
 
 </menu>

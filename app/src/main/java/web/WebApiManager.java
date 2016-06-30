@@ -2,6 +2,7 @@ package web;
 
 import android.content.Context;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -27,6 +28,8 @@ public class WebApiManager {
 
     public static final int MY_SOCKET_TIMEOUT_MS = 30000;
 
+    public static final String API_CONNECT_URL_FORMATED      = "https://soundcloud.com/connect";
+
     //Sound cloud API links
     public static final String API_CONNECT_URL       = "https://soundcloud.com/connect";
     public static final String API_OAUTH             = "https://api.soundcloud.com/oauth2/token";
@@ -38,7 +41,8 @@ public class WebApiManager {
     public static final String API_ME_URL            = "/me";
 
     //Sound cloud API links version 2
-    public static final String API_VERSION_TWO_RELATED_TRACKS_URL = "https://api-v2.soundcloud.com/tracks/102113299/related";
+    public static final String API_VERSION_TWO_BASE_URL = "https://api-v2.soundcloud.com/tracks";
+    public static final String API_VERSION_TWO_RELATED_TRACKS_URL = "/%s/related";
 
     //Sound cloud API keys
     public static final String SOUND_CLOUD_API_KEY_CLIENT_ID     = "client_id";
@@ -86,11 +90,15 @@ public class WebApiManager {
         }
     }
 
-    public static void getRelatedTracks(Context context, final OnObjectResponseListener responseListener, final OnErrorListener errorListener) {
+    public static void getRelatedTracks(Context context, String urlPart, final OnObjectResponseListener responseListener, final OnErrorListener errorListener) {
         HashMap<String, String> mParams = new HashMap<>();
         mParams.put(SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
 
-        String url = API_VERSION_TWO_RELATED_TRACKS_URL;
+        String url = API_VERSION_TWO_BASE_URL + API_VERSION_TWO_RELATED_TRACKS_URL;
+        if (urlPart != null) {
+            url = String.format(url, urlPart);
+        }
+
         try {
             JSONObject jsonRequest = new JSONObject();
             sendObjectRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
