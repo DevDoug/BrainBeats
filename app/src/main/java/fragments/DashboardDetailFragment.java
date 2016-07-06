@@ -158,7 +158,7 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "Check out this track" + (mSelectedTrack == null ? mSelectedTrack.getTitle() : ""));
         shareIntent.setType("text/plain");
         mShareActionProvider.setShareIntent(shareIntent);
     }
@@ -229,7 +229,7 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
                     } else {
                         mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
                         mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
-                        mAudioService.setProgressIndicator(mPlayTrackSeekBar, mSelectedTrack.getDuration());
+                        mAudioService.setProgressIndicator(mPlaySongButton,mPlayTrackSeekBar, mSelectedTrack.getDuration());
                     }
                 }
                 break;

@@ -9,9 +9,14 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.support.annotation.UiThread;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SeekBar;
+
+import com.brainbeats.R;
 
 import utils.Constants;
 import web.WebApiManager;
@@ -25,6 +30,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     int mProgressStatus = 0;
     int mSongDuration = 0;
     private SeekBar mSeekbar;
+    private ImageView mPlayButton;
 
     public AudioService() {
     }
@@ -57,10 +63,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         if(mp.isLooping()) {
             mp.seekTo(0);
             mSeekbar.setProgress(0);
-            LocalBroadcastManager broadcaster = LocalBroadcastManager.getInstance(getApplicationContext());
-            Intent songCompleteBroadcast = new Intent();
-            songCompleteBroadcast.setAction("Song Complete");
-            broadcaster.sendBroadcast(songCompleteBroadcast);
+            updateUI();
         }
     }
 
@@ -95,8 +98,9 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         mPlayer.stop();
     }
 
-    public void setProgressIndicator(final SeekBar bar,final int duration) {
+    public void setProgressIndicator(ImageView playPauseStop, final SeekBar bar, final int duration) {
         mSeekbar = bar;
+        mPlayButton = playPauseStop;
         bar.setMax(duration);
         bar.setIndeterminate(false);
         new Thread(new Runnable() {
@@ -130,5 +134,10 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     public class AudioBinder extends Binder{
         public AudioService getService() {return AudioService.this;}
+    }
+
+    @UiThread
+    public void updateUI(){
+       // mPlayButton.setImageResource(R.drawable.ic_pause_circle);
     }
 }
