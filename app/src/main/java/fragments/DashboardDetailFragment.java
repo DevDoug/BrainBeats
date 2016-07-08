@@ -264,10 +264,12 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
         Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
         mAudioService.stopSong();
         mAudioService.mIsPaused = false;
-        if(mSelectedTrack.getStreamURL() != null)
+        if (mSelectedTrack.getStreamURL() != null) {
+            mSelectedTrack.setStreamURL("https://api.soundcloud.com/tracks/5106125/stream?client_id=6af4e9b999eaa63f5d797d466cdc4ccb");
             mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
-        else
-            Snackbar.make(mCoordinatorLayout,mAudioService.getString(R.string.error_playing_song_message),Snackbar.LENGTH_LONG).show();
+            mAudioService.setProgressIndicator(mPlaySongButton, mPlayTrackSeekBar, mSelectedTrack.getDuration());
+        } else
+            Snackbar.make(mCoordinatorLayout, mAudioService.getString(R.string.error_playing_song_message), Snackbar.LENGTH_LONG).show();
     }
 
     public interface OnFragmentInteractionListener {

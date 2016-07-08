@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.brainbeats.R;
@@ -18,6 +19,7 @@ import org.json.JSONArray;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import adapters.LibraryAdapter;
 import architecture.AccountManager;
@@ -35,6 +37,7 @@ public class LibraryTabFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private int mDataType;
     public String mFilter = "";
+    private TextView mEmptyDataPlaceholder;
 
     public LibraryTabFragment() {
         // Required empty public constructor
@@ -61,6 +64,7 @@ public class LibraryTabFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_library_tab, container, false);
         mBeatListView = (RecyclerView) v.findViewById(R.id.library_content_list);
+        mEmptyDataPlaceholder = (TextView) v.findViewById(R.id.no_data_placeholder);
         return v;
     }
 
@@ -99,7 +103,6 @@ public class LibraryTabFragment extends Fragment {
                         } else {
                             Log.i("test",mFilter);
                         }
-                    //trackList = trackList.stream.filter(p -> p.getAge() > 16).collect(Collectors.toList());
 
                     setTrackList();
                 } catch (Exception ex) {
@@ -107,12 +110,12 @@ public class LibraryTabFragment extends Fragment {
                 }
             }
 
-        }, new WebApiManager.OnErrorListener() {
+        }, new WebApiManager.OnErrorListener(){
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.toString();
             }
-        }) ;
+        });
         return null;
     }
 
@@ -169,11 +172,19 @@ public class LibraryTabFragment extends Fragment {
         });
     }
 
-    public void setTrackList(){
-        mLibraryAdapter = new LibraryAdapter(getContext(), trackList);
-        mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false);
-        mBeatListView.setLayoutManager(mLayoutManager);
-        mBeatListView.setAdapter(mLibraryAdapter);
+    public void setTrackList() {
+        if (trackList.size() != 0) {
+            mLibraryAdapter = new LibraryAdapter(getContext(), trackList);
+            mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            mBeatListView.setLayoutManager(mLayoutManager);
+            mBeatListView.setAdapter(mLibraryAdapter);
+            mEmptyDataPlaceholder.setVisibility(View.INVISIBLE);
+            mBeatListView.setVisibility(View.VISIBLE);
+        } else { //display no data view
+            mBeatListView.setVisibility(View.INVISIBLE);
+            mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
+            mEmptyDataPlaceholder.setText("No songs found.");
+        }
     }
 
     public void updateFilterParams(String params){

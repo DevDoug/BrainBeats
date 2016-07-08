@@ -77,6 +77,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
             mPlayer.start();
         } else {
             try {
+                mPlayer.reset();
                 mPlayer.setDataSource(getApplicationContext(), songPath.buildUpon().appendQueryParameter(WebApiManager.SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID).build());
                 mPlayer.prepareAsync();
             } catch (Exception ex) {

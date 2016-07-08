@@ -14,11 +14,9 @@ import com.brainbeats.R;
  */
 public class UserProfileFragment extends Fragment {
 
-
     public UserProfileFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
