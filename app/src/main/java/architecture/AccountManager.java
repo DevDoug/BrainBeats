@@ -83,6 +83,20 @@ public class AccountManager  {
         editor.commit();
     }
 
+    public void setLastSongPlayed(String tracTitle){
+        SharedPreferences appPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = appPreferences.edit();
+        editor.putString("Last Song", tracTitle);
+        editor.commit();
+
+    }
+
+    public String getLastSongPlayed() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String userId = sharedPreferences.getString("Last Song", null);
+        return userId;
+    }
+
     public boolean getIsIncognito() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         boolean isIncog = sharedPreferences.getBoolean(Constants.KEY_EXTRA_IS_INCOGNITO_PREF, false);
