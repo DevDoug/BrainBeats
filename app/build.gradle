@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'BrainTacos'
             keyPassword 'tacos123'
-            storeFile file('C:/Users/douglas/Desktop/DougsKeys')
+            storeFile file("../DougsKey")
             storePassword 'tacos123'
         }
     }
