@@ -12,6 +12,7 @@
         android:layout_marginTop="@dimen/fragment_content_item_top_margin"
         android:src="@drawable/placeholder"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/content_description_image_placeholder"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 

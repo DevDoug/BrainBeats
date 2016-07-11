@@ -41,6 +41,15 @@ public class AccountManager  {
         return result;
     }
 
+    public boolean isConnnectedToSoundCloud(){
+        boolean result = false;
+        String accessToken = getAccessToken();
+        if(accessToken != null){
+            result = true;
+        }
+        return result;
+    }
+
     public String getAccessToken(){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         String token = sharedPreferences.getString(SOUND_CLOUD_AUTH_TOKEN, null);

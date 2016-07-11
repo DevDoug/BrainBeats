@@ -91,8 +91,6 @@
     <string name="song_added_to_favorites_snack_message">Song added to Favorites</string>
     <string name="mix_item_exists_snack_message" formatted="false">This mix already contains %s</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
@@ -108,11 +106,25 @@
     <string name="register_text">Register</string>
     <string name="login_text">Login</string>
     <string name="error_playing_song_message">There was a problem playing this song.</string>
+    <string name="forgot_password">Forgot Password ?</string>
 
     <!-- Error message strings -->
     <string name="error_favoriting_message">There was a problem favoriting this track.</string>
 
-    <!-- Error message strings -->
     <string name="search_hint">Search</string>
+    <string name="please_sign_in_to_sound_cloud_dialog">Please sign in to sound cloud before using this feature.</string>
+
+    <!-- Content descriptions -->
+    <string name="content_description_image_placeholder">Place holder image</string>
+    <string name="content_description_shuffle_button">Shuffle button</string>
+    <string name="content_description_play_prev_button">Play previous button</string>
+    <string name="content_description_play_button">Play button</string>
+    <string name="content_description_play_next_button">Play next button</string>
+    <string name="content_description_repeat_button">Repeat button</string>
+
+    <string name="no_songs_placeholder">No songs yet.</string>
+
+
+    <string name="log_in_using_sound_cloud">Log in using Sound Cloud.</string>
 
 </resources>

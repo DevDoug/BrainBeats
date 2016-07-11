@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -17,6 +18,8 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.brainbeats.R;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -231,6 +234,28 @@ public class Constants {
         AlertDialog alert = builder.create();
         alert.show();
         return alert;
+    }
+
+    public static AlertDialog buildConfirmDialog(Context context, String title) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
+        builder.setTitle(title);
+        builder.setMessage(context.getString(R.string.please_sign_in_to_sound_cloud_dialog));
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setPositiveButton("connect to sound cloud", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Toast.makeText(context, "set up log in to sound cloud link",Toast.LENGTH_LONG).show();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+        return alert;
+
     }
 
     public static HashMap<String,String> mapQueryParams(String fragmentString){

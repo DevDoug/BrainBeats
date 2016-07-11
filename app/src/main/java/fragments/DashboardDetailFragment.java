@@ -181,8 +181,12 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
                     public void onErrorResponse(VolleyError error) {
                         String errorMessage = new String(error.networkResponse.data);
                         Log.i("",errorMessage);
-                        Snackbar createdSnack = Snackbar.make(mCoordinatorLayout, R.string.error_favoriting_message, Snackbar.LENGTH_LONG);
-                        createdSnack.show();
+                        if(AccountManager.getInstance(getContext()).isConnnectedToSoundCloud()) { //if the user is auhorized to use sound cloud there was an issue
+                            Snackbar createdSnack = Snackbar.make(mCoordinatorLayout, R.string.error_favoriting_message, Snackbar.LENGTH_LONG);
+                            createdSnack.show();
+                        } else { //otherwise have them connect to soundclou
+                            Constants.buildConfirmDialog(getContext(),"Log in to sound cloud");
+                        }
                     }
                 });
                 break;

@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/mixer_item_text_size"
         android:maxLength="20"
-        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
         android:gravity="start" />
 
     <ProgressBar
@@ -26,7 +26,7 @@
         android:maxHeight="10dip"
         android:minHeight="10dip"
         android:progress="50"
-        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
         android:progressDrawable="@drawable/progress_bar_background"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/mix_item_title" />
@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_clear"
-        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
         android:layout_toEndOf="@+id/beat_level_bar" />
 
     <ImageView
@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_remove_circle"
-        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
         android:contentDescription="@string/decrease_beat_amount_icon_content_description"
         android:layout_toEndOf="@+id/clear_icon" />
 
