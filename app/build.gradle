@@ -1,9 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'BrainTacos'
+            keyPassword 'tacos123'
+            storeFile file('C:/Users/douglas/Desktop/DougsKeys')
+            storePassword 'tacos123'
+        }
+    }
     compileSdkVersion 24
     buildToolsVersion '24'
-
     defaultConfig {
         applicationId "com.brainbeats"
         minSdkVersion 21
