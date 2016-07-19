@@ -113,7 +113,7 @@ public class DashboardSongListFragment extends Fragment {
     }
 
     public void getBeatData() {
-        if (!BeatLearner.getInstance().mHasStartedLearning) { // user does not have any tracks yet
+        if (!BeatLearner.getInstance().mHasStartedLearning) { // user does not have any tracks yet.
             final ProgressDialog loadingMusicDialog = new ProgressDialog(getContext());
             loadingMusicDialog.setCancelable(false);
             loadingMusicDialog.setMessage(getString(R.string.loading_message));

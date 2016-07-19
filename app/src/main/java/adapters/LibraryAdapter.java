@@ -16,6 +16,7 @@ import java.util.List;
 
 import entity.Track;
 import model.Mix;
+import utils.MixManager;
 
 /**
  * Created by douglas on 5/20/2016.
@@ -42,7 +43,9 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.ViewHold
             mMixTrack.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    MixManager.getInstance(mAdapterContext).createMixFromExistingTrack(tracks.get(getAdapterPosition()));
                     Toast.makeText(mAdapterContext,"Mixing Track",Toast.LENGTH_LONG).show();
+
                 }
             });
         }

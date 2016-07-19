@@ -126,5 +126,6 @@
 
 
     <string name="log_in_using_sound_cloud">Log in using Sound Cloud.</string>
+    <string name="no_current_songs_message">No songs found.</string>
 
 </resources>

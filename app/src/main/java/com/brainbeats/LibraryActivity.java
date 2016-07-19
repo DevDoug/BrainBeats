@@ -22,6 +22,7 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
     Fragment mLibraryFragment;
     private SearchView mSearchView;
     private MenuItem searchMenuItem;
+    String mQueryText;
     SearchView.OnQueryTextListener listener;
 
     @Override
@@ -34,9 +35,8 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
         listener = new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                LibraryFragment frag = (LibraryFragment) mLibraryFragment;
-                frag.updateTabFilter(query);
-                return false;
+                mQueryText = query;
+                return true;
             }
 
             @Override

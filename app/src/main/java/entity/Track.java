@@ -25,6 +25,12 @@ public class Track implements Parcelable {
     @SerializedName("duration")
     private int mDuration;
 
+    @SerializedName("downloadable")
+    private boolean mDownloadable;
+
+    @SerializedName("download_url")
+    private String mDownloadUrl;
+
     public Track(){
     }
 
@@ -34,6 +40,8 @@ public class Track implements Parcelable {
         mStreamURL = in.readString();
         mArtworkURL = in.readString();
         mDuration = in.readInt();
+        mDownloadable = in.readByte() != 0;
+        mDownloadUrl = in.readString();
     }
 
     public String getTitle() {
@@ -76,6 +84,22 @@ public class Track implements Parcelable {
         this.mDuration = duration;
     }
 
+    public boolean getDownloadable() {
+        return mDownloadable;
+    }
+
+    public void setDownloadable(boolean isDownloadable) {
+        this.mDownloadable = isDownloadable;
+    }
+
+    public String getDownloadUrl() {
+        return mDownloadUrl;
+    }
+
+    public void setDownloadUrl(String mDownloadUrl) {
+        this.mDownloadUrl = mDownloadUrl;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -88,6 +112,8 @@ public class Track implements Parcelable {
         dest.writeString(mStreamURL);
         dest.writeString(mArtworkURL);
         dest.writeInt(mDuration);
+        dest.writeByte((byte) (mDownloadable ? 1 : 0));
+        dest.writeString(mDownloadUrl);
     }
 
     public static final Creator<Track> CREATOR = new Creator<Track>() {

@@ -31,6 +31,8 @@ import web.WebApiManager;
 
 public class LibraryTabFragment extends Fragment {
 
+    private static final int VOLLEY_LOADER = 0;
+
     ArrayList<Track> trackList;
     private RecyclerView mBeatListView;
     private LibraryAdapter mLibraryAdapter;
@@ -47,6 +49,7 @@ public class LibraryTabFragment extends Fragment {
         LibraryTabFragment tabFragment = new LibraryTabFragment();
         Bundle args = new Bundle();
         args.putInt(Constants.KEY_LIBRARY_DATA_TYPE,dataType.getCode());
+        //args.putString(Constants.KEY_EXTRA_LIBRARY_FILTER_TEXT,tabFilter);
         tabFragment.setArguments(args);
         return tabFragment;
     }
@@ -54,6 +57,7 @@ public class LibraryTabFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Bundle args = getArguments();
         if (args != null) {
             mDataType = args.getInt(Constants.KEY_LIBRARY_DATA_TYPE);
@@ -183,7 +187,7 @@ public class LibraryTabFragment extends Fragment {
         } else { //display no data view
             mBeatListView.setVisibility(View.INVISIBLE);
             mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
-            mEmptyDataPlaceholder.setText("No songs found.");
+            mEmptyDataPlaceholder.setText(R.string.no_current_songs_message);
         }
     }
 

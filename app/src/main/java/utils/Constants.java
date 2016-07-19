@@ -38,11 +38,12 @@ import web.WebApiManager;
 public class Constants {
 
     //= Keys for bundles and extras =============================================
-    public static final String KEY_EXTRA_BEAT_LIST       = "BeatInfo";
-    public static final String KEY_LIBRARY_DATA_TYPE     = "LibraryDataType";
-    public static final String KEY_EXTRA_SELECTED_TRACK  = "SelectedTrack";
-    public static final String KEY_EXTRA_SELECTED_MIX    = "SelectedMix";
-    public static final String KEY_EXTRA_SEARCH_KEYWORD  = "SearchKeyword";
+    public static final String KEY_EXTRA_BEAT_LIST           = "BeatInfo";
+    public static final String KEY_LIBRARY_DATA_TYPE         = "LibraryDataType";
+    public static final String KEY_EXTRA_LIBRARY_FILTER_TEXT = "Filter";
+    public static final String KEY_EXTRA_SELECTED_TRACK      = "SelectedTrack";
+    public static final String KEY_EXTRA_SELECTED_MIX        = "SelectedMix";
+    public static final String KEY_EXTRA_SEARCH_KEYWORD      = "SearchKeyword";
 
     //Hash map keys
     public static final String HASH_KEY_ACCESS_TOKEN     = "access_token";

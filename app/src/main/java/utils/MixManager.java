@@ -4,9 +4,11 @@ import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.util.Log;
 
 import java.util.ArrayList;
 
+import entity.Track;
 import model.Mix;
 import model.MixItem;
 
@@ -30,6 +32,13 @@ public class MixManager {
             mInstance = new MixManager(context);
         }
         return mInstance;
+    }
+
+    public void createMixFromExistingTrack(Track track){
+        if(track.getDownloadable())
+            Log.i("downlaoadable","true");
+            //file = downloadSoundCloudAssetSourceFile(track.getDownloadUrl());
+
     }
 
     public void playMix(ArrayList<MixItem> mixItems) {

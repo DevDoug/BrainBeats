@@ -202,7 +202,7 @@ public class WebApiManager {
             @Override
             public void onResponse(JSONArray response) {
                 onArrayResponseListener.onArrayResponse(response);
-
+                response.toString();
             }
         }, new Response.ErrorListener() {
             @Override

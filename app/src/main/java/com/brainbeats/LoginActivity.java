@@ -64,13 +64,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private Button mLoginButton;
     private Button mSoundCloudLogin;
 
-
     public static final String OAUTH_CALLBACK_SCHEME = "brainbeats";
     public static final String OAUTH_CALLBACK_HOST = "soundcloud/callback";
     public static final String CALLBACK_URL = OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
 
-    static final int LOGIN_TO_SOUNDCLOUD = 1;  // The request code
-
+    public static final int LOGIN_TO_SOUNDCLOUD = 1;  // The request code
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
