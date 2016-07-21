@@ -61,6 +61,9 @@ public class Constants {
     public static final int BEAT_ITEM_DRAWABLES[] = new int[]{R.drawable.ic_alpha, R.drawable.ic_beta,
                                                               R.drawable.ic_google, R.drawable.ic_theta,};
 
+    //Loader Types
+    public static final int SOCIAL_LOADER  = 101;
+
     public enum AudioServiceRepeatType {
         RepeatOff(0),
         RepeatOne(1),

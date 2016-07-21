@@ -45,7 +45,6 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
     private List<MixItem> mixItemList = new ArrayList<>();
     private RecyclerView mMixerItemList;
     private MixItemAdapter mMixerItemAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
     public Bundle mUserSelections;
     public EditText mMixTitle;
     public Mix mSelectedMix;
@@ -115,7 +114,7 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
         }
 
         mMixerItemAdapter = new MixItemAdapter(getContext(), mixItemList, this);
-        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mMixerItemList.setLayoutManager(mLayoutManager);
         mMixerItemList.setAdapter(mMixerItemAdapter);
         mMixerItemAdapter.notifyDataSetChanged();
