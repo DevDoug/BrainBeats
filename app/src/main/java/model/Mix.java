@@ -35,11 +35,11 @@ public class Mix implements Parcelable {
         this.mMixTitle = beatTitle;
     }
 
-    public String getBeatAlbumCoverArt() {
+    public String getMixAlbumCoverArt() {
         return mBeatAlbumCoverArtSource;
     }
 
-    public void setBeatAlbumCoverArt(String beatAlbumCoverArtSource) {
+    public void setMixAlbumCoverArt(String beatAlbumCoverArtSource) {
         this.mBeatAlbumCoverArtSource = beatAlbumCoverArtSource;
     }
 

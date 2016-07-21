@@ -42,6 +42,7 @@ public class MixDbHelper extends SQLiteOpenHelper {
                         MixContract.MixEntry.COLUMN_NAME_MIX_TITLE + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
                         MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
                         MixContract.MixEntry.COLUMN_NAME_MIX_RATING + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
+                        MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
                         MixContract.MixEntry.COLUMN_NAME_MIX_USER_ID + COLUMN_TYPE_INT_NOT_NULL + COMMA_SEPERATOR +
 
                         // Set up the Mix Items fk column as a foreign key to movie table.

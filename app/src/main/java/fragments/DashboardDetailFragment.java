@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -45,9 +46,12 @@ import java.util.List;
 
 import adapters.RelatedTracksAdapter;
 import architecture.AccountManager;
+import data.MixContract;
+import data.MixDbHelper;
 import entity.Collection;
 import entity.RelatedTracksResponse;
 import entity.Track;
+import model.Mix;
 import service.AudioService;
 import utils.BeatLearner;
 import utils.Constants;
@@ -190,6 +194,18 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
                     }
                 });
                 break;
+            case R.id.action_rate:
+                Cursor soundCloudCursor = getActivity().getContentResolver().query(
+                        MixContract.MixEntry.CONTENT_URI, //Get users
+                        null,  //return everything
+                        MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                        new String[]{String.valueOf(mSelectedTrack.getID())},
+                        null
+                );
+
+
+/*                Mix mix = Constants.buildMixRecordFromTrack(mSelectedTrack);
+                Uri updateUri = getActivity().getContentResolver().update(MixContract.MixEntry.CONTENT_URI,)*/
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
                 Intent loginIntent = new Intent(getContext(),LoginActivity.class);

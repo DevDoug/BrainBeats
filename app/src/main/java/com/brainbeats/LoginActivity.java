@@ -140,6 +140,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         }
                     }
                     signInButton.setText(message);
+                    userCursor.close();
                 }
             }
 
@@ -239,16 +240,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             null
                     );
 
-                    userCursor.moveToFirst();
-                    while (!userCursor.isAfterLast()) {
-                        String userName = userCursor.getString(userCursor.getColumnIndexOrThrow(MixContract.UserEntry.COLUMN_NAME_USER_NAME));
-                        if (userName.equals(soundCloudUser.getUsername())) { // this sound cloud user already exists in the Brain Beats system
-                            finish();
-                            Intent dashboardIntent = new Intent(LoginActivity.this, MainActivity.class);
-                            AccountManager.getInstance(LoginActivity.this).setUserId(String.valueOf(soundCloudUser.getId()));
-                            startActivity(dashboardIntent);
+                    if (userCursor != null) {
+                        userCursor.moveToFirst();
+
+                        while (!userCursor.isAfterLast()) {
+                            String userName = userCursor.getString(userCursor.getColumnIndexOrThrow(MixContract.UserEntry.COLUMN_NAME_USER_NAME));
+                            if (userName.equals(soundCloudUser.getUsername())) { // this sound cloud user already exists in the Brain Beats system
+                                finish();
+                                Intent dashboardIntent = new Intent(LoginActivity.this, MainActivity.class);
+                                AccountManager.getInstance(LoginActivity.this).setUserId(String.valueOf(soundCloudUser.getId()));
+                                startActivity(dashboardIntent);
+                            }
+                            userCursor.moveToNext();
                         }
-                        userCursor.moveToNext();
+
+                        userCursor.close();
                     }
 
                     //if we have reached this point and not returned a false this user username does not exist so create a new account
@@ -354,17 +360,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     null
             );
 
-            userCursor.moveToFirst();
-            while (!userCursor.isAfterLast()) {
-                String userName = userCursor.getString(userCursor.getColumnIndexOrThrow(MixContract.UserEntry.COLUMN_NAME_USER_NAME));
-                if (userName.equals(mEmail)) {
-                    String userPassword = userCursor.getString(userCursor.getColumnIndexOrThrow(MixContract.UserEntry.COLUMN_NAME_USER_PASSWORD));
-                    return userPassword.equals(mPassword);
+            if (userCursor != null) {
+                userCursor.moveToFirst();
+
+                while (!userCursor.isAfterLast()) {
+                    String userName = userCursor.getString(userCursor.getColumnIndexOrThrow(MixContract.UserEntry.COLUMN_NAME_USER_NAME));
+                    if (userName.equals(mEmail)) {
+                        String userPassword = userCursor.getString(userCursor.getColumnIndexOrThrow(MixContract.UserEntry.COLUMN_NAME_USER_PASSWORD));
+                        return userPassword.equals(mPassword);
+                    }
+                    userCursor.moveToNext();
                 }
-                userCursor.moveToNext();
+
+                userCursor.close();
             }
 
-            // TODO: register the new account here.
             //if we have reached this point and not returned a false this user username does not exist so create a new account
             ContentValues values = new ContentValues();
             values.put(MixContract.UserEntry.COLUMN_NAME_USER_NAME, mEmail);

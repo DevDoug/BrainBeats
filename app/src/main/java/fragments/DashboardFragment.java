@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
@@ -35,6 +37,7 @@ public class DashboardFragment extends Fragment {
     private SearchMusicAdapter mTrackAdapter;
     private GridLayoutManager mBeatGridLayoutManager;
     List<Track> trackList = new ArrayList<>();
+    FloatingActionButton mAddCategoryFab;
     private OnFragmentInteractionListener mListener;
 
     public DashboardFragment() {
@@ -52,6 +55,13 @@ public class DashboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dashboard, container, false);
         mTrackGrid = (RecyclerView) v.findViewById(R.id.category_grid);
+        mAddCategoryFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_fab_with_listview);
+        mAddCategoryFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), "Add Category !", Toast.LENGTH_SHORT).show();
+            }
+        });
         return v;
     }
 

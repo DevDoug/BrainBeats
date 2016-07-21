@@ -2,17 +2,12 @@ package utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
@@ -25,12 +20,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import adapters.ImageAdapter;
-import architecture.AccountManager;
 import data.MixContract;
 import entity.SoundCloudUser;
+import entity.Track;
 import model.Mix;
 import model.MixItem;
-import web.WebApiManager;
 
 /**
  * Created by Douglas on 4/20/2016.
@@ -102,6 +96,13 @@ public class Constants {
         return values;
     }
 
+    public static Mix buildMixRecordFromTrack(Track track){
+        Mix mix = new Mix();
+        mix.setMixTitle(track.getTitle());
+        mix.setMixAlbumCoverArt(track.getArtworkURL());
+        return null;
+    }
+
     public static Mix buildMixFromCursor(Context context,Cursor cursor, int position) {
         cursor.moveToPosition(position);
         Mix mix = new Mix();
@@ -129,7 +130,7 @@ public class Constants {
     public static ContentValues buildMixRecord(Mix mix) {
         ContentValues values = new ContentValues();
         values.put(MixContract.MixEntry.COLUMN_NAME_MIX_TITLE, mix.getBeatTitle());
-        values.put(MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL, mix.getBeatAlbumCoverArt());
+        values.put(MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL, mix.getMixAlbumCoverArt());
         return values;
     }
 
@@ -152,7 +153,7 @@ public class Constants {
     public static Mix buildNewDefaultMixRecord(Context context) {
         Mix defaultMix = new Mix();
         defaultMix.setMixTitle(context.getString(R.string.default_mix_title));
-        defaultMix.setBeatAlbumCoverArt(context.getString(R.string.default_mix_album_art_url));
+        defaultMix.setMixAlbumCoverArt(context.getString(R.string.default_mix_album_art_url));
         ArrayList<MixItem> defaultMixItems = new ArrayList<>();
         for(int i = 0; i < context.getResources().getStringArray(R.array.default_mix_items).length; i++){
             MixItem item = new MixItem();
