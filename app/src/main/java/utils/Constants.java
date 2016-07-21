@@ -165,53 +165,16 @@ public class Constants {
         return defaultMix;
     }
 
-    public static void buildWebDialog(final Context context) {
+    public static AlertDialog buildRatingDialog(Context context, String title, final ImageAdapter.DialogImageSelectedListener selectionListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-
-        View dialogView = (View) inflater.inflate(R.layout.custom_web_view_dialog_layout, null);
-        final ProgressDialog progressDialog = new ProgressDialog(context);
-        WebView webView = (WebView) dialogView.findViewById(R.id.webView);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setUseWideViewPort(true);
-        webView.requestFocus();
-        webView.requestFocusFromTouch();
-        webView.requestFocus(View.FOCUS_DOWN);
-        webView.loadUrl(WebApiManager.API_CONNECT_URL + "?client_id=" + Constants.SOUND_CLOUD_CLIENT_ID + "&redirect_uri=" + "http://localhost" + "&response_type=token");
-        webView.setWebViewClient(new WebViewClient() {
-            boolean authComplete = false;
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon){
-                super.onPageStarted(view, url, favicon);
-                progressDialog.setMessage("Connecting SoundCloud");
-                progressDialog.show();
-            }
-            String authCode="";
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                progressDialog.dismiss();
-                Log.i("URLLLL", url);
-                if (url.contains("access_token=") && authComplete != true) {
-                    for(int t=32; t <url.length();t++){
-                        if(!(url.charAt(t) == '&'))
-                            authCode = authCode+url.charAt(t);
-                        else
-                            break;
-                    }
-                    Log.i("CODE true", "CODE : " + authCode);
-                    authComplete = true;
-                    AccountManager.getInstance(context).setAccessToken(authCode);
-                }else if(url.contains("error=access_denied")){
-                    Log.i("CODE false", "ACCESS_DENIED_HERE");
-                    authComplete = true;
-                    progressDialog.dismiss();
-                }
-            }
-        });
+        View dialogView = (View) inflater.inflate(R.layout.custom_image_list_dialog_layout, null);
+        ((TextView) dialogView.findViewById(R.id.separator_title)).setText(title);
+        ((GridView) dialogView.findViewById(R.id.options_list)).setAdapter(new ImageAdapter(context,selectionListener));
         builder.setView(dialogView);
         AlertDialog alert = builder.create();
         alert.show();
+        return alert;
     }
 
     public static AlertDialog buildImageListDialogue(Context context, String title, final ImageAdapter.DialogImageSelectedListener selectionListener) {
@@ -259,7 +222,6 @@ public class Constants {
         AlertDialog alert = builder.create();
         alert.show();
         return alert;
-
     }
 
     public static HashMap<String,String> mapQueryParams(String fragmentString){

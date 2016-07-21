@@ -14,6 +14,9 @@ public class MixDbHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 6;
     public static final String DATABASE_NAME = "Mix.db";
 
+    //Common sql statments.
+    public static final String CREATE_TABLE               = "CREATE TABLE ";
+    public static final String INTEGER_PRIMARY_KEY_AUTO_INCREMENT = " INTEGER PRIMARY KEY AUTOINCREMENT,";
     public static final String COLUMN_TYPE_INT_NULL       = " INTEGER";
     public static final String COLUMN_TYPE_INT_NOT_NULL   = " INTEGER";
     public static final String COLUMN_TYPE_TEXT_NULL      = " TEXT";
@@ -34,18 +37,19 @@ public class MixDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Create mix table
-        final String CREATE_TABLE_MIX = "CREATE TABLE " + MixContract.MixEntry.TABLE_NAME + " (" +
-                        MixContract.MixEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+        final String CREATE_TABLE_MIX = CREATE_TABLE + MixContract.MixEntry.TABLE_NAME + " (" +
+                        MixContract.MixEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
                         MixContract.MixEntry.COLUMN_NAME_MIX_TITLE + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
                         MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
+                        MixContract.MixEntry.COLUMN_NAME_MIX_RATING + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
                         MixContract.MixEntry.COLUMN_NAME_MIX_USER_ID + COLUMN_TYPE_INT_NOT_NULL + COMMA_SEPERATOR +
 
                         // Set up the Mix Items fk column as a foreign key to movie table.
                         " FOREIGN KEY (" + MixContract.MixEntry.COLUMN_NAME_MIX_USER_ID + ") REFERENCES " +
                         MixContract.UserEntry.TABLE_NAME + " (" + MixContract.UserEntry._ID + "));";
 
-        final String CREATE_TABLE_MIX_ITEMS = "CREATE TABLE " + MixContract.MixItemsEntry.TABLE_NAME + " (" +
-                        MixContract.MixItemsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+        final String CREATE_TABLE_MIX_ITEMS = CREATE_TABLE + MixContract.MixItemsEntry.TABLE_NAME + " (" +
+                        MixContract.MixItemsEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
                         MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_TITLE + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
                         MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_LEVEL + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
                         MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + COLUMN_TYPE_INT_NOT_NULL + COMMA_SEPERATOR +
@@ -54,8 +58,8 @@ public class MixDbHelper extends SQLiteOpenHelper {
                         " FOREIGN KEY (" + MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + ") REFERENCES " +
                         MixContract.MixEntry.TABLE_NAME + " (" + MixContract.MixEntry._ID + "));";
 
-        final String CREATE_TABLE_USER = "CREATE TABLE " + MixContract.UserEntry.TABLE_NAME + " (" +
-                        MixContract.UserEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+        final String CREATE_TABLE_USER = CREATE_TABLE + MixContract.UserEntry.TABLE_NAME + " (" +
+                        MixContract.UserEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
                         MixContract.UserEntry.COLUMN_NAME_USER_NAME + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
                         MixContract.UserEntry.COLUMN_NAME_USER_PASSWORD + COLUMN_TYPE_TEXT_NOT_NULL + COMMA_SEPERATOR +
                         MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + COLUMN_TYPE_TEXT_NULL +
