@@ -74,7 +74,6 @@
     <string name="mixes">Mixes</string>
     <string name="no_mixes_found_text">No mixes found</string>
     <string name="default_mix_title">New Mix</string>
-    <string name="db_id_field">_id=</string>
     <string name="suggested_tracks">Suggested Tracks</string>
 
     <string-array name="beat_categories">
@@ -125,5 +124,6 @@
     <string name="no_songs_placeholder">No songs yet.</string>
     <string name="log_in_using_sound_cloud">Log in using Sound Cloud.</string>
     <string name="no_current_songs_message">No songs found.</string>
+    <string name="sound_cloud_login_message">Log in to sound cloud</string>
 
 </resources>

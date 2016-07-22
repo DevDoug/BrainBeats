@@ -15,20 +15,24 @@ public class MixDbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Mix.db";
 
     //Common sql statments.
-    public static final String CREATE_TABLE               = "CREATE TABLE ";
-    public static final String INTEGER_PRIMARY_KEY_AUTO_INCREMENT = " INTEGER PRIMARY KEY AUTOINCREMENT,";
-    public static final String COLUMN_TYPE_INT_NULL       = " INTEGER";
-    public static final String COLUMN_TYPE_INT_NOT_NULL   = " INTEGER";
-    public static final String COLUMN_TYPE_TEXT_NULL      = " TEXT";
-    public static final String COLUMN_TYPE_TEXT_NOT_NULL  = " TEXT NOT NULL";
-    public static final String COMMA_SEPERATOR            = ",";
+    public static final String CREATE_TABLE                         = "CREATE TABLE ";
+    public static final String INTEGER_PRIMARY_KEY_AUTO_INCREMENT   = " INTEGER PRIMARY KEY AUTOINCREMENT,";
+    public static final String COLUMN_TYPE_INT_NULL                 = " INTEGER";
+    public static final String COLUMN_TYPE_INT_NOT_NULL             = " INTEGER";
+    public static final String COLUMN_TYPE_TEXT_NULL                = " TEXT";
+    public static final String COLUMN_TYPE_TEXT_NOT_NULL            = " TEXT NOT NULL";
+    public static final String COMMA_SEPERATOR                      = ",";
 
     //Query params
-    public static final String WHERE_CLAUSE_LIKE          = "LIKE ?";
-    public static final String WHERE_CLAUSE_EQUAL         = " = ? ";
+    public static final String WHERE_CLAUSE_LIKE                    = "LIKE ?";
+    public static final String WHERE_CLAUSE_EQUAL                   = " = ? ";
+
+    //Db lookup fields
+    public static final String DB_ID_FIELD                          = "_id";
+    public static final String DB_SC_ID_FIELD                       = "_sc";
 
     //Sort Types
-    public static final String DB_SORT_TYPE_DESC          = " DESC";
+    public static final String DB_SORT_TYPE_DESC                    = " DESC";
 
     public MixDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

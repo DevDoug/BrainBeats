@@ -76,7 +76,7 @@ public class MixItemAdapter extends RecyclerView.Adapter<MixItemAdapter.ViewHold
                     int position = getAdapterPosition();
                     long removeMixID = mMixItems.get(position).getMixItemId();
                     removeItem(position);
-                    mAdapterContext.getContentResolver().delete(MixContract.MixItemsEntry.CONTENT_URI,mAdapterContext.getResources().getString(R.string.db_id_field) + removeMixID,null);
+                    mAdapterContext.getContentResolver().delete(MixContract.MixItemsEntry.CONTENT_URI,MixDbHelper.DB_ID_FIELD + removeMixID,null);
                     break;
             }
         }

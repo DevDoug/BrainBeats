@@ -15,6 +15,7 @@ public class Mix implements Parcelable {
     private String mMixTitle;
     private String mBeatAlbumCoverArtSource;
     private ArrayList<MixItem> mMixItems;
+    private int mSoundCloudId;
 
     public Mix(){
     }
@@ -51,6 +52,14 @@ public class Mix implements Parcelable {
         this.mMixItems = mixItems;
     }
 
+    public int getSoundCloudId() {
+        return mSoundCloudId;
+    }
+
+    public void setSoundCloudId(int soundCloudId) {
+        this.mSoundCloudId = mSoundCloudId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -61,12 +70,14 @@ public class Mix implements Parcelable {
         dest.writeLong(mId);
         dest.writeString(mMixTitle);
         dest.writeString(mBeatAlbumCoverArtSource);
+        dest.writeInt(mSoundCloudId);
     }
 
     protected Mix(Parcel in) {
         mId = in.readLong();
         mMixTitle = in.readString();
         mBeatAlbumCoverArtSource = in.readString();
+        mSoundCloudId = in.readInt();
     }
 
     public static final Creator<Mix> CREATOR = new Creator<Mix>() {

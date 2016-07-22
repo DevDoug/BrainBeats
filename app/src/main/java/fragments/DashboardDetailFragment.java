@@ -1,6 +1,9 @@
 package fragments;
 
+import android.accounts.Account;
 import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -84,6 +87,15 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
     private OnFragmentInteractionListener mListener;
     public FloatingActionButton mFob;
 
+    //Feilds for testing sync adapter
+    // An account type, in the form of a domain name
+    public static final String ACCOUNT_TYPE = "com.example.android.datasync";
+    // The account name
+    public static final String ACCOUNT = "dummyaccount";
+    // Instance fields
+    Account mAccount;
+
+
     public DashboardDetailFragment() {
         // Required empty public constructor
     }
@@ -92,6 +104,9 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        mAccount = CreateSyncAccount(getContext());
+
     }
 
     @Override
@@ -123,8 +138,7 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
         mSkipForwardButton = (ImageView) v.findViewById(R.id.skip_forward_button);
         mLoopSongButton = (ImageView) v.findViewById(R.id.repeat_button);
         mPlayTrackSeekBar = (SeekBar) v.findViewById(R.id.play_song_seek_bar);
-        mCoordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.main_content_coordinator_layout);
-        ((TextView)v.findViewById(R.id.separator_title)).setText(R.string.suggested_tracks);
+        ((TextView) v.findViewById(R.id.separator_title)).setText(R.string.suggested_tracks);
 
         mPlaySongButton.setOnClickListener(this);
         mSkipBackwardButton.setOnClickListener(this);
@@ -139,14 +153,14 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
         super.onActivityCreated(savedInstanceState);
 
         mUserSelections = getArguments();
-        if(mUserSelections != null) {
+        if (mUserSelections != null) {
             mSelectedTrack = (Track) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_TRACK);
             mTrackTitle.setText(mSelectedTrack.getTitle());
             Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
         }
 
         mRelatedTracksAdapter = new RelatedTracksAdapter(getContext(), mCollections, DashboardDetailFragment.this);
-        mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL, false);
+        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mAlbumTrackList.setLayoutManager(mLayoutManager);
         mAlbumTrackList.setAdapter(mRelatedTracksAdapter);
 
@@ -174,41 +188,37 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
                 getActivity().onBackPressed();
                 break;
             case R.id.action_favorite:
-                WebApiManager.putUserFavorite(getContext(), architecture.AccountManager.getInstance(getContext()).getUserId(), String.valueOf(mSelectedTrack.getID()), new WebApiManager.OnObjectResponseListener() {
-                    @Override
-                    public void onObjectResponse(JSONObject object) {
-                        Snackbar createdSnack = Snackbar.make(mCoordinatorLayout, R.string.song_added_to_favorites_snack_message, Snackbar.LENGTH_LONG);
-                        createdSnack.show();
-                    }
-                }, new WebApiManager.OnErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        String errorMessage = new String(error.networkResponse.data);
-                        Log.i("",errorMessage);
-                        if(AccountManager.getInstance(getContext()).isConnnectedToSoundCloud()) { //if the user is auhorized to use sound cloud there was an issue
-                            Snackbar createdSnack = Snackbar.make(mCoordinatorLayout, R.string.error_favoriting_message, Snackbar.LENGTH_LONG);
-                            createdSnack.show();
-                        } else { //otherwise have them connect to soundclou
-                            Constants.buildConfirmDialog(getContext(),"Log in to sound cloud");
-                        }
-                    }
-                });
+                Bundle settingsBundle = new Bundle();
+                settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+                settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+                settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_TRACK_ID,mSelectedTrack.getID());
+                ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
                 break;
             case R.id.action_rate:
                 Cursor soundCloudCursor = getActivity().getContentResolver().query(
-                        MixContract.MixEntry.CONTENT_URI, //Get users
+                        MixContract.MixEntry.CONTENT_URI, //Get mixes
                         null,  //return everything
                         MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
                         new String[]{String.valueOf(mSelectedTrack.getID())},
                         null
                 );
 
-
-/*                Mix mix = Constants.buildMixRecordFromTrack(mSelectedTrack);
-                Uri updateUri = getActivity().getContentResolver().update(MixContract.MixEntry.CONTENT_URI,)*/
+                //if there is a mix record that contains this tracks sc id then update that record.
+                if ((soundCloudCursor != null ? soundCloudCursor.getCount() : 0) != 0){
+                    int returnId = getActivity().getContentResolver().update(MixContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(Constants.buildMixRecordFromTrack(mSelectedTrack)), MixDbHelper.DB_SC_ID_FIELD + mSelectedTrack.getID(), null);
+                    Log.i("info","transaction complete");
+                }
+                else{
+                    Uri result = getActivity().getContentResolver().insert(MixContract.MixEntry.CONTENT_URI,Constants.buildMixRecord(Constants.buildMixRecordFromTrack(mSelectedTrack)));
+                    if(ContentUris.parseId(result) != -1)
+                        Log.i("info","transaction complete");
+                    else
+                        Log.i("info","transaction failed");
+                }
+                break;
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
-                Intent loginIntent = new Intent(getContext(),LoginActivity.class);
+                Intent loginIntent = new Intent(getContext(), LoginActivity.class);
                 startActivity(loginIntent);
                 break;
         }
@@ -334,5 +344,37 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
                 Log.i(getClass().getSimpleName(), "Response = " + error.toString());
             }
         });
+    }
+
+    /**
+     * Create a new dummy account for the sync adapter
+     *
+     * @param context The application context
+     */
+    public static Account CreateSyncAccount(Context context) {
+        // Create the account type and default account
+        Account newAccount = new Account(ACCOUNT, ACCOUNT_TYPE);
+        // Get an instance of the Android account manager
+        android.accounts.AccountManager accountManager = (android.accounts.AccountManager) context.getSystemService(context.ACCOUNT_SERVICE);
+        /*
+         * Add the account and account type, no password or user data
+         * If successful, return the Account object, otherwise report an error.
+         */
+        if (accountManager.addAccountExplicitly(newAccount, null, null)) {
+            /*
+             * If you don't set android:syncable="true" in
+             * in your <provider> element in the manifest,
+             * then call context.setIsSyncable(account, AUTHORITY, 1)
+             * here.
+             */
+            return newAccount;
+
+        } else {
+            /*
+             * The account exists or some other error occurred. Log this, report it,
+             * or handle it internally.
+             */
+            return null;
+        }
     }
 }

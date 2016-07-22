@@ -38,6 +38,7 @@ public class Constants {
     public static final String KEY_EXTRA_SELECTED_TRACK      = "SelectedTrack";
     public static final String KEY_EXTRA_SELECTED_MIX        = "SelectedMix";
     public static final String KEY_EXTRA_SEARCH_KEYWORD      = "SearchKeyword";
+    public static final String KEY_EXTRA_SELECTED_TRACK_ID   = "TrackId";
 
     //Hash map keys
     public static final String HASH_KEY_ACCESS_TOKEN     = "access_token";
@@ -54,7 +55,6 @@ public class Constants {
     public static final int MIX_ITEM_DEFAULT_LEVEL = 50;
     public static final int BEAT_ITEM_DRAWABLES[] = new int[]{R.drawable.ic_alpha, R.drawable.ic_beta,
                                                               R.drawable.ic_google, R.drawable.ic_theta,};
-
     //Loader Types
     public static final int SOCIAL_LOADER  = 101;
 
@@ -100,7 +100,8 @@ public class Constants {
         Mix mix = new Mix();
         mix.setMixTitle(track.getTitle());
         mix.setMixAlbumCoverArt(track.getArtworkURL());
-        return null;
+        mix.setSoundCloudId(track.getID());
+        return mix;
     }
 
     public static Mix buildMixFromCursor(Context context,Cursor cursor, int position) {

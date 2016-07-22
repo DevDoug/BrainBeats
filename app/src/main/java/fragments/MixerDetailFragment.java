@@ -35,6 +35,7 @@ import java.util.List;
 import adapters.ImageAdapter;
 import adapters.MixItemAdapter;
 import data.MixContract;
+import data.MixDbHelper;
 import model.Mix;
 import model.MixItem;
 import utils.Constants;
@@ -82,13 +83,13 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
             public void onClick(View view) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 mSelectedMix.setMixTitle(mMixTitle.getText().toString());
-                ((MixerActivity) getActivity()).getContentResolver().update(MixContract.MixEntry.CONTENT_URI,Constants.buildMixRecord(mSelectedMix),getResources().getString(R.string.db_id_field) + mSelectedMix.getMixId(), null);
+                ((MixerActivity) getActivity()).getContentResolver().update(MixContract.MixEntry.CONTENT_URI,Constants.buildMixRecord(mSelectedMix), MixDbHelper.DB_ID_FIELD + mSelectedMix.getMixId(), null);
                 for (int i = 0; i < mSelectedMix.getMixItems().size(); i++) {
                     MixItem item = mSelectedMix.getMixItems().get(i);
                     ((MixerActivity) getActivity()).getContentResolver().update(
                             MixContract.MixItemsEntry.CONTENT_URI,
                             Constants.buildMixItemsRecord(mSelectedMix.getMixId(), item),
-                            getResources().getString(R.string.db_id_field) + item.getMixItemId(),
+                            MixDbHelper.DB_ID_FIELD + item.getMixItemId(),
                             null);
                 }
                 InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
