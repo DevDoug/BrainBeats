@@ -82,5 +82,14 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_provider" />
         </receiver>
+        <receiver android:name="com.brainbeats.MainActivity$UpdateUIReciever">
+            <intent-filter>
+                <action android:name="ShowSnackBarDialog"/>
+            </intent-filter>
+        </receiver>
+
+
+
+
     </application>
 </manifest>

@@ -31,6 +31,9 @@ public class Track implements Parcelable {
     @SerializedName("download_url")
     private String mDownloadUrl;
 
+    @SerializedName("user_favorite")
+    private boolean mUserFavorite;
+
     public Track(){
     }
 
@@ -42,6 +45,7 @@ public class Track implements Parcelable {
         mDuration = in.readInt();
         mDownloadable = in.readByte() != 0;
         mDownloadUrl = in.readString();
+       // mUserFavorite = in.read();
     }
 
     public String getTitle() {
@@ -100,6 +104,13 @@ public class Track implements Parcelable {
         this.mDownloadUrl = mDownloadUrl;
     }
 
+    public boolean getIsFavorite(){
+        return mUserFavorite;
+    }
+
+    public void setUserFavorite(boolean favorite){
+        mUserFavorite = favorite;
+    }
     @Override
     public int describeContents() {
         return 0;

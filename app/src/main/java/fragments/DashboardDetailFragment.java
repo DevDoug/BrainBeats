@@ -1,6 +1,7 @@
 package fragments;
 
 import android.accounts.Account;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -12,7 +13,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -31,7 +31,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.brainbeats.LoginActivity;
@@ -54,7 +53,6 @@ import data.MixDbHelper;
 import entity.Collection;
 import entity.RelatedTracksResponse;
 import entity.Track;
-import model.Mix;
 import service.AudioService;
 import utils.BeatLearner;
 import utils.Constants;
@@ -104,8 +102,7 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
-        mAccount = CreateSyncAccount(getContext());
+        mAccount = CreateSyncAccount(getActivity());
 
     }
 
@@ -114,7 +111,7 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
         super.onStart();
         // Bind to LocalService
         Intent intent = new Intent(getContext(), AudioService.class);
-        ((MainActivity) getActivity()).bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        ((MainActivity) getContext()).bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -122,7 +119,7 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
         super.onStop();
         // Unbind from the service
         if (mBound) {
-            ((MainActivity) getActivity()).unbindService(mConnection);
+            ((MainActivity) getContext()).unbindService(mConnection);
             mBound = false;
         }
     }
@@ -192,6 +189,7 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
                 settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
                 settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
                 settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_TRACK_ID,mSelectedTrack.getID());
+                settingsBundle.putString(Constants.KEY_EXTRA_SELECTED_TRACK_TITLE,mSelectedTrack.getTitle());
                 ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
                 break;
             case R.id.action_rate:
@@ -374,7 +372,8 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
              * The account exists or some other error occurred. Log this, report it,
              * or handle it internally.
              */
-            return null;
+
+            return accountManager.getAccountsByType(ACCOUNT_TYPE)[0];
         }
     }
 }

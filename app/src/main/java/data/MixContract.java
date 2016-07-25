@@ -31,6 +31,7 @@ public class MixContract {
         public static final String COLUMN_NAME_MIX_TITLE              = "mixtitle";
         public static final String COLUMN_NAME_MIX_ALBUM_ART_URL      = "albumarturl";
         public static final String COLUMN_NAME_MIX_RATING             = "mixrating";
+        public static final String COLUMN_NAME_IS_FAVORITE            = "isfavorite";
         public static final String COLUMN_NAME_SOUND_CLOUD_ID         = "soundcloudid";
         public static final String COLUMN_NAME_MIX_USER_ID            = "userid";
 

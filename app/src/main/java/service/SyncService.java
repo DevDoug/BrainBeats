@@ -8,7 +8,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-import web.BrainBeatsSyncAdapter;
+import web.FavoritesSyncAdapter;
 
 /**
  * Define a Service that returns an IBinder for the
@@ -17,7 +17,7 @@ import web.BrainBeatsSyncAdapter;
  */
 public class SyncService extends Service {
     // Storage for an instance of the sync adapter
-    private static BrainBeatsSyncAdapter sSyncAdapter = null;
+    private static FavoritesSyncAdapter sSyncAdapter = null;
     // Object to use as a thread-safe lock
     private static final Object sSyncAdapterLock = new Object();
     /*
@@ -32,7 +32,7 @@ public class SyncService extends Service {
          */
         synchronized (sSyncAdapterLock) {
             if (sSyncAdapter == null) {
-                sSyncAdapter = new BrainBeatsSyncAdapter(getApplicationContext(), true);
+                sSyncAdapter = new FavoritesSyncAdapter(getApplicationContext(), true);
             }
         }
     }

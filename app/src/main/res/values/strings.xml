@@ -108,7 +108,10 @@
     <string name="forgot_password">Forgot Password ?</string>
 
     <!-- Error message strings -->
-    <string name="error_favoriting_message">There was a problem favoriting this track.</string>
+    <string name="error_favoriting_message">There was a problem favoriting this mix.</string>
+    <string name="error_rating_message">There was a problem rating this mix.</string>
+    <string name="error_unkown_message">An unexpected error occurred.</string>
+
 
     <string name="search_hint">Search</string>
     <string name="please_sign_in_to_sound_cloud_dialog">Please sign in to sound cloud before using this feature.</string>
@@ -125,5 +128,6 @@
     <string name="log_in_using_sound_cloud">Log in using Sound Cloud.</string>
     <string name="no_current_songs_message">No songs found.</string>
     <string name="sound_cloud_login_message">Log in to sound cloud</string>
+    <string name="login_to_sound_cloud_title">Log in to sound cloud.</string>
 
 </resources>

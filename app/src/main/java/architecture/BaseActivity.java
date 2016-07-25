@@ -1,6 +1,9 @@
 package architecture;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -19,6 +22,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
+
 import com.brainbeats.LibraryActivity;
 import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;

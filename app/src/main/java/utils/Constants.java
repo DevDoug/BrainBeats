@@ -6,6 +6,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -32,13 +34,15 @@ import model.MixItem;
 public class Constants {
 
     //= Keys for bundles and extras =============================================
-    public static final String KEY_EXTRA_BEAT_LIST           = "BeatInfo";
-    public static final String KEY_LIBRARY_DATA_TYPE         = "LibraryDataType";
-    public static final String KEY_EXTRA_LIBRARY_FILTER_TEXT = "Filter";
-    public static final String KEY_EXTRA_SELECTED_TRACK      = "SelectedTrack";
-    public static final String KEY_EXTRA_SELECTED_MIX        = "SelectedMix";
-    public static final String KEY_EXTRA_SEARCH_KEYWORD      = "SearchKeyword";
-    public static final String KEY_EXTRA_SELECTED_TRACK_ID   = "TrackId";
+    public static final String KEY_EXTRA_BEAT_LIST              = "BeatInfo";
+    public static final String KEY_LIBRARY_DATA_TYPE            = "LibraryDataType";
+    public static final String KEY_EXTRA_LIBRARY_FILTER_TEXT    = "Filter";
+    public static final String KEY_EXTRA_SELECTED_TRACK         = "SelectedTrack";
+    public static final String KEY_EXTRA_SELECTED_MIX           = "SelectedMix";
+    public static final String KEY_EXTRA_SEARCH_KEYWORD         = "SearchKeyword";
+    public static final String KEY_EXTRA_SELECTED_TRACK_ID      = "TrackId";
+    public static final String KEY_EXTRA_SELECTED_TRACK_TITLE   = "Title";
+
 
     //Hash map keys
     public static final String HASH_KEY_ACCESS_TOKEN     = "access_token";
@@ -55,6 +59,12 @@ public class Constants {
     public static final int MIX_ITEM_DEFAULT_LEVEL = 50;
     public static final int BEAT_ITEM_DRAWABLES[] = new int[]{R.drawable.ic_alpha, R.drawable.ic_beta,
                                                               R.drawable.ic_google, R.drawable.ic_theta,};
+
+    public static final Uri NOT_LOGGED_IN_TO_SOUNDCLOUD_URI = Uri.parse("nonsoundclouduser://");
+    public static final Uri FAVORITE_SUCCESS_URI = Uri.parse("favorite:/success/");
+    public static final Uri FAVORITE_ERROR_URI = Uri.parse("favorite://");
+    public static final Uri RATE_ERROR_URI = Uri.parse("rate://");
+
     //Loader Types
     public static final int SOCIAL_LOADER  = 101;
 
@@ -100,6 +110,7 @@ public class Constants {
         Mix mix = new Mix();
         mix.setMixTitle(track.getTitle());
         mix.setMixAlbumCoverArt(track.getArtworkURL());
+        mix.setMixItemFavorite((track.getIsFavorite()) ? 1:0);
         mix.setSoundCloudId(track.getID());
         return mix;
     }
@@ -109,6 +120,9 @@ public class Constants {
         Mix mix = new Mix();
         mix.setMixId(cursor.getLong(cursor.getColumnIndex(MixContract.MixEntry._ID)));
         mix.setMixTitle(cursor.getString(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_MIX_TITLE)));
+        mix.setMixAlbumCoverArt(cursor.getString(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL)));
+        //mix.setMixItemFavorite(cursor.ge(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE)));
+        mix.setSoundCloudId(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID)));
         String whereClause = MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + "= ?";
         String[] whereArgs = new String[] {
                 " " + cursor.getLong(cursor.getColumnIndex(MixContract.MixEntry._ID)),
@@ -132,6 +146,10 @@ public class Constants {
         ContentValues values = new ContentValues();
         values.put(MixContract.MixEntry.COLUMN_NAME_MIX_TITLE, mix.getBeatTitle());
         values.put(MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL, mix.getMixAlbumCoverArt());
+        values.put(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE, mix.getMixItemFavorite());
+        values.put(MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID, mix.getSoundCloudId());
+        Log.i("Track Sound Cloud Id", String.valueOf(mix.getSoundCloudId()));
+
         return values;
     }
 
