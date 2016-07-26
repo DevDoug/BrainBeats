@@ -11,22 +11,27 @@
         app:actionProviderClass="android.support.v7.widget.ShareActionProvider" />
 
     <item
+        android:id="@+id/action_add_to_library"
+        android:title="Add to library"
+        android:orderInCategory="95"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/action_favorite"
         android:title="@string/action_favorite"
-        android:orderInCategory="98"
+        android:orderInCategory="96"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_rate"
         android:title="Rate"
-        android:orderInCategory="98"
+        android:orderInCategory="97"
         app:showAsAction="never"/>
-
 
     <item
         android:id="@+id/action_logout"
         android:title="Log Off"
-        android:orderInCategory="101"
+        android:orderInCategory="98"
         app:showAsAction="never"/>
 
 </menu>

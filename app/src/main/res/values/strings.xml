@@ -7,7 +7,7 @@
     <!-- App titles -->
     <string name="dashboard_title">Dashboard</string>
 
-    <!-- Menu itmes-->
+    <!-- Menu items-->
     <string name="action_settings">Settings</string>
     <string name="action_login">Login to Sound Cloud</string>
     <string name="action_favorite">Favorite</string>
@@ -87,7 +87,8 @@
     </string-array>
 
     <string name="loading_message">Loading</string>
-    <string name="song_added_to_favorites_snack_message">Song added to Favorites</string>
+    <string name="song_added_to_favorites_snack_message">Song added to Favorites.</string>
+    <string name="song_added_to_library_snack_message">Song added to Library.</string>
     <string name="mix_item_exists_snack_message" formatted="false">This mix already contains %s</string>
 
     <string name="title_activity_login">Sign in</string>
@@ -109,9 +110,10 @@
 
     <!-- Error message strings -->
     <string name="error_favoriting_message">There was a problem favoriting this mix.</string>
+    <string name="error_this_mix_is_already_a_favorite">This mix is already a favorite.</string>
+    <string name="error_this_mix_is_already_in_library">This mix is already in your library.</string>
     <string name="error_rating_message">There was a problem rating this mix.</string>
     <string name="error_unkown_message">An unexpected error occurred.</string>
-
 
     <string name="search_hint">Search</string>
     <string name="please_sign_in_to_sound_cloud_dialog">Please sign in to sound cloud before using this feature.</string>

@@ -1,6 +1,5 @@
 package model;
 
-import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -14,7 +13,7 @@ public class Mix implements Parcelable {
     private long mId;
     private String mMixTitle;
     private String mBeatAlbumCoverArtSource;
-    private int mMixItemFavorite;
+    private int mMixFavorite;
     private int mMixRating;
     private ArrayList<MixItem> mMixItems;
     private int mSoundCloudId;
@@ -46,12 +45,12 @@ public class Mix implements Parcelable {
         this.mBeatAlbumCoverArtSource = beatAlbumCoverArtSource;
     }
 
-    public int getMixItemFavorite() {
-        return mMixItemFavorite;
+    public int getMixFavorite() {
+        return mMixFavorite;
     }
 
-    public void setMixItemFavorite(int mixItemFavorite) {
-        this.mMixItemFavorite = mixItemFavorite;
+    public void setMixFavorite(int mixItemFavorite) {
+        this.mMixFavorite = mixItemFavorite;
     }
 
     public int getMixRating(){

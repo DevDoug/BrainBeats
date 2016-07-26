@@ -8,7 +8,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-import web.FavoritesSyncAdapter;
+import web.MixSyncAdapter;
 
 /**
  * Define a Service that returns an IBinder for the
@@ -17,7 +17,7 @@ import web.FavoritesSyncAdapter;
  */
 public class SyncService extends Service {
     // Storage for an instance of the sync adapter
-    private static FavoritesSyncAdapter sSyncAdapter = null;
+    private static MixSyncAdapter sSyncAdapter = null;
     // Object to use as a thread-safe lock
     private static final Object sSyncAdapterLock = new Object();
     /*
@@ -32,7 +32,7 @@ public class SyncService extends Service {
          */
         synchronized (sSyncAdapterLock) {
             if (sSyncAdapter == null) {
-                sSyncAdapter = new FavoritesSyncAdapter(getApplicationContext(), true);
+                sSyncAdapter = new MixSyncAdapter(getApplicationContext(), true);
             }
         }
     }

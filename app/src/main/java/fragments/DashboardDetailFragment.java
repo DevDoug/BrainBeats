@@ -111,7 +111,7 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
         super.onStart();
         // Bind to LocalService
         Intent intent = new Intent(getContext(), AudioService.class);
-        ((MainActivity) getContext()).bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        getContext().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
         super.onStop();
         // Unbind from the service
         if (mBound) {
-            ((MainActivity) getContext()).unbindService(mConnection);
+            getContext().unbindService(mConnection);
             mBound = false;
         }
     }
@@ -180,39 +180,28 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Bundle settingsBundle = new Bundle();
+        settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_TRACK_ID,mSelectedTrack.getID());
+        settingsBundle.putString(Constants.KEY_EXTRA_SELECTED_TRACK_TITLE,mSelectedTrack.getTitle());
+        settingsBundle.putString(Constants.KEY_EXTRA_SELECTED_TRACK_ALBUM_COVER_ART,mSelectedTrack.getArtworkURL());
+        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+
         switch (item.getItemId()) {
             case android.R.id.home:
                 getActivity().onBackPressed();
                 break;
+            case R.id.action_add_to_library:
+                settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_UPDATE_TRACK_ACTION,0);
+                ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
+                break;
             case R.id.action_favorite:
-                Bundle settingsBundle = new Bundle();
-                settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-                settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-                settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_TRACK_ID,mSelectedTrack.getID());
-                settingsBundle.putString(Constants.KEY_EXTRA_SELECTED_TRACK_TITLE,mSelectedTrack.getTitle());
+                settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_UPDATE_TRACK_ACTION,1);
                 ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
                 break;
             case R.id.action_rate:
-                Cursor soundCloudCursor = getActivity().getContentResolver().query(
-                        MixContract.MixEntry.CONTENT_URI, //Get mixes
-                        null,  //return everything
-                        MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
-                        new String[]{String.valueOf(mSelectedTrack.getID())},
-                        null
-                );
-
-                //if there is a mix record that contains this tracks sc id then update that record.
-                if ((soundCloudCursor != null ? soundCloudCursor.getCount() : 0) != 0){
-                    int returnId = getActivity().getContentResolver().update(MixContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(Constants.buildMixRecordFromTrack(mSelectedTrack)), MixDbHelper.DB_SC_ID_FIELD + mSelectedTrack.getID(), null);
-                    Log.i("info","transaction complete");
-                }
-                else{
-                    Uri result = getActivity().getContentResolver().insert(MixContract.MixEntry.CONTENT_URI,Constants.buildMixRecord(Constants.buildMixRecordFromTrack(mSelectedTrack)));
-                    if(ContentUris.parseId(result) != -1)
-                        Log.i("info","transaction complete");
-                    else
-                        Log.i("info","transaction failed");
-                }
+                settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_UPDATE_TRACK_ACTION,2);
+                ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
                 break;
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
@@ -353,7 +342,7 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
         // Create the account type and default account
         Account newAccount = new Account(ACCOUNT, ACCOUNT_TYPE);
         // Get an instance of the Android account manager
-        android.accounts.AccountManager accountManager = (android.accounts.AccountManager) context.getSystemService(context.ACCOUNT_SERVICE);
+        android.accounts.AccountManager accountManager = (android.accounts.AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
         /*
          * Add the account and account type, no password or user data
          * If successful, return the Account object, otherwise report an error.

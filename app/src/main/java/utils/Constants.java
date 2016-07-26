@@ -34,15 +34,19 @@ import model.MixItem;
 public class Constants {
 
     //= Keys for bundles and extras =============================================
-    public static final String KEY_EXTRA_BEAT_LIST              = "BeatInfo";
-    public static final String KEY_LIBRARY_DATA_TYPE            = "LibraryDataType";
-    public static final String KEY_EXTRA_LIBRARY_FILTER_TEXT    = "Filter";
-    public static final String KEY_EXTRA_SELECTED_TRACK         = "SelectedTrack";
-    public static final String KEY_EXTRA_SELECTED_MIX           = "SelectedMix";
-    public static final String KEY_EXTRA_SEARCH_KEYWORD         = "SearchKeyword";
-    public static final String KEY_EXTRA_SELECTED_TRACK_ID      = "TrackId";
-    public static final String KEY_EXTRA_SELECTED_TRACK_TITLE   = "Title";
-
+    public static final String KEY_EXTRA_BEAT_LIST                          = "BeatInfo";
+    public static final String KEY_LIBRARY_DATA_TYPE                        = "LibraryDataType";
+    public static final String KEY_EXTRA_LIBRARY_FILTER_TEXT                = "Filter";
+    public static final String KEY_EXTRA_SELECTED_TRACK                     = "SelectedTrack";
+    public static final String KEY_EXTRA_SELECTED_MIX                       = "SelectedMix";
+    public static final String KEY_EXTRA_SEARCH_KEYWORD                     = "SearchKeyword";
+    public static final String KEY_EXTRA_SELECTED_TRACK_ID                  = "TrackId";
+    public static final String KEY_EXTRA_SELECTED_TRACK_TITLE               = "Title";
+    public static final String KEY_EXTRA_SELECTED_TRACK_ALBUM_COVER_ART     = "CoverArt";
+    public static final String KEY_EXTRA_SELECTED_TRACK_FAVORITE            = "IsFavorite";
+    public static final String KEY_EXTRA_SELECTED_TRACK_RATING              = "Rating";
+    public static final String KEY_EXTRA_SELECTED_TRACK_SOUND_CLOUD_ID      = "SoundCloudId";
+    public static final String KEY_EXTRA_SELECTED_UPDATE_TRACK_ACTION       = "UpdateTrackAction";
 
     //Hash map keys
     public static final String HASH_KEY_ACCESS_TOKEN     = "access_token";
@@ -61,9 +65,12 @@ public class Constants {
                                                               R.drawable.ic_google, R.drawable.ic_theta,};
 
     public static final Uri NOT_LOGGED_IN_TO_SOUNDCLOUD_URI = Uri.parse("nonsoundclouduser://");
-    public static final Uri FAVORITE_SUCCESS_URI = Uri.parse("favorite:/success/");
+    public static final Uri ADDED_TO_LIBRARY_URI = Uri.parse("library://success");
+    public static final Uri LIBRARY_ALREADY_URI = Uri.parse("library://already");
+    public static final Uri FAVORITE_SUCCESS_URI = Uri.parse("favorite://success");
     public static final Uri FAVORITE_ERROR_URI = Uri.parse("favorite://");
-    public static final Uri RATE_ERROR_URI = Uri.parse("rate://");
+    public static final Uri FAVORITE_ALREADY_URI = Uri.parse("favorite://error/already/favorite");
+    public static final Uri RATE_ERROR_URI = Uri.parse("rate://error");
 
     //Loader Types
     public static final int SOCIAL_LOADER  = 101;
@@ -75,7 +82,7 @@ public class Constants {
 
         private int mCode;
 
-        private AudioServiceRepeatType(int code) {
+        AudioServiceRepeatType(int code) {
             mCode = code;
         }
 
@@ -91,7 +98,7 @@ public class Constants {
 
         private int mCode;
 
-        private LibraryDataType(int code) {
+        LibraryDataType(int code) {
             mCode = code;
         }
 
@@ -110,7 +117,7 @@ public class Constants {
         Mix mix = new Mix();
         mix.setMixTitle(track.getTitle());
         mix.setMixAlbumCoverArt(track.getArtworkURL());
-        mix.setMixItemFavorite((track.getIsFavorite()) ? 1:0);
+        mix.setMixFavorite((track.getIsFavorite()) ? 1:0);
         mix.setSoundCloudId(track.getID());
         return mix;
     }
@@ -121,7 +128,7 @@ public class Constants {
         mix.setMixId(cursor.getLong(cursor.getColumnIndex(MixContract.MixEntry._ID)));
         mix.setMixTitle(cursor.getString(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_MIX_TITLE)));
         mix.setMixAlbumCoverArt(cursor.getString(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL)));
-        //mix.setMixItemFavorite(cursor.ge(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE)));
+        mix.setMixFavorite(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE)));
         mix.setSoundCloudId(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID)));
         String whereClause = MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + "= ?";
         String[] whereArgs = new String[] {
@@ -146,10 +153,8 @@ public class Constants {
         ContentValues values = new ContentValues();
         values.put(MixContract.MixEntry.COLUMN_NAME_MIX_TITLE, mix.getBeatTitle());
         values.put(MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL, mix.getMixAlbumCoverArt());
-        values.put(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE, mix.getMixItemFavorite());
+        values.put(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE, mix.getMixFavorite());
         values.put(MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID, mix.getSoundCloudId());
-        Log.i("Track Sound Cloud Id", String.valueOf(mix.getSoundCloudId()));
-
         return values;
     }
 
@@ -188,7 +193,7 @@ public class Constants {
     public static AlertDialog buildRatingDialog(Context context, String title, final ImageAdapter.DialogImageSelectedListener selectionListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View dialogView = (View) inflater.inflate(R.layout.custom_image_list_dialog_layout, null);
+        View dialogView = inflater.inflate(R.layout.custom_image_list_dialog_layout, null);
         ((TextView) dialogView.findViewById(R.id.separator_title)).setText(title);
         ((GridView) dialogView.findViewById(R.id.options_list)).setAdapter(new ImageAdapter(context,selectionListener));
         builder.setView(dialogView);
@@ -200,7 +205,7 @@ public class Constants {
     public static AlertDialog buildImageListDialogue(Context context, String title, final ImageAdapter.DialogImageSelectedListener selectionListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View dialogView = (View) inflater.inflate(R.layout.custom_image_list_dialog_layout, null);
+        View dialogView = inflater.inflate(R.layout.custom_image_list_dialog_layout, null);
         ((TextView) dialogView.findViewById(R.id.separator_title)).setText(title);
         ((GridView) dialogView.findViewById(R.id.options_list)).setAdapter(new ImageAdapter(context,selectionListener));
         builder.setView(dialogView);
@@ -212,7 +217,7 @@ public class Constants {
     public static AlertDialog buildListDialogue(Context context, String title, int optionsId, AdapterView.OnItemClickListener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View dialogView = (View) inflater.inflate(R.layout.custom_list_dialog_layout, null);
+        View dialogView = inflater.inflate(R.layout.custom_list_dialog_layout, null);
         ((TextView) dialogView.findViewById(R.id.separator_title)).setText(title);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.dialog_list_item, R.id.dialog_item, context.getResources().getStringArray(optionsId));
         ((ListView) dialogView.findViewById(R.id.options_list)).setAdapter(adapter);
