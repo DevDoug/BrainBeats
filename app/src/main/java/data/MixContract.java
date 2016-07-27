@@ -18,9 +18,11 @@ public class MixContract {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     // Possible paths (appended to base content URI for possible URI's)
-    public static final String PATH_MIX        = "mix";
-    public static final String PATH_MIX_ITEM   = "mixitem";
-    public static final String PATH_USER       = "user";
+    public static final String PATH_MIX                 = "mix";
+    public static final String PATH_MIX_ITEM            = "mixitem";
+    public static final String PATH_USER                = "user";
+    public static final String PATH_RELATED_MIX         = "relatedmix";
+    public static final String PATH_MIX_PLAYLIST        = "playlist";
 
     public static final class MixEntry implements BaseColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_MIX).build();
@@ -48,7 +50,7 @@ public class MixContract {
         public static final String TABLE_NAME                         = "mixitem";
         public static final String COLUMN_NAME_MIX_ITEM_TITLE         = "mixitemtitle";
         public static final String COLUMN_NAME_MIX_ITEM_LEVEL         = "mixlevel";
-        public static final String COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY  = "mixitemforeignkey";
+        public static final String COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY    = "mixitemforeignkey";
 
         public static Uri buildMixItemUriWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
@@ -69,5 +71,32 @@ public class MixContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
+
+    public static final class RelatedMixesEntry implements BaseColumns{
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_RELATED_MIX).build();
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_RELATED_MIX;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_RELATED_MIX;
+
+        public static final String TABLE_NAME                           = "relatedmixes";
+        public static final String COLUMN_NAME_MIX_ID                        = "mixid";
+
+        public static Uri buildRelatedMixesUriWithId(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
+    public static final class MixPlaylistEntry implements BaseColumns{
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_MIX_PLAYLIST).build();
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_PLAYLIST;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_PLAYLIST;
+
+        public static final String TABLE_NAME                           = "playlists";
+        public static final String COLUMN_NAME_PLAYLIST_TITLE                       = "playlisttitle";
+
+        public static Uri buildPlaylistUriWithId(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
 
 }

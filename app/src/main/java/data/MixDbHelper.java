@@ -64,6 +64,16 @@ public class MixDbHelper extends SQLiteOpenHelper {
                         " FOREIGN KEY (" + MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + ") REFERENCES " +
                         MixContract.MixEntry.TABLE_NAME + " (" + MixContract.MixEntry._ID + "));";
 
+        final String CREATE_TABLE_RELATED_MIX = CREATE_TABLE + MixContract.RelatedMixesEntry.TABLE_NAME + " (" +
+                        MixContract.RelatedMixesEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
+                        MixContract.RelatedMixesEntry.COLUMN_NAME_MIX_ID + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
+                        " );";
+
+        final String CREATE_TABLE_PLAYLIST = CREATE_TABLE + MixContract.RelatedMixesEntry.TABLE_NAME + " (" +
+                        MixContract.MixPlaylistEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
+                        MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
+                        " );";
+
         final String CREATE_TABLE_USER = CREATE_TABLE + MixContract.UserEntry.TABLE_NAME + " (" +
                         MixContract.UserEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
                         MixContract.UserEntry.COLUMN_NAME_USER_NAME + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
@@ -73,6 +83,8 @@ public class MixDbHelper extends SQLiteOpenHelper {
 
         db.execSQL(CREATE_TABLE_MIX);
         db.execSQL(CREATE_TABLE_MIX_ITEMS);
+        db.execSQL(CREATE_TABLE_RELATED_MIX);
+        db.execSQL(CREATE_TABLE_PLAYLIST);
         db.execSQL(CREATE_TABLE_USER);
     }
 
@@ -80,6 +92,8 @@ public class MixDbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + MixContract.MixEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MixContract.MixItemsEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MixContract.RelatedMixesEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MixContract.MixPlaylistEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MixContract.UserEntry.TABLE_NAME);
         onCreate(db);
     }
