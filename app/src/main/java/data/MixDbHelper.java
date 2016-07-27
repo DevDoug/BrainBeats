@@ -4,8 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import model.Mix;
-
 /**
  * Created by douglas on 5/25/2016.
  */
@@ -47,6 +45,7 @@ public class MixDbHelper extends SQLiteOpenHelper {
                         MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
                         MixContract.MixEntry.COLUMN_NAME_MIX_RATING + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
                         MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
+                        MixContract.MixEntry.COLUMN_NAME_MIX_PLAYLIST_ID + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
                         MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
                         MixContract.MixEntry.COLUMN_NAME_MIX_USER_ID + COLUMN_TYPE_INT_NOT_NULL + COMMA_SEPERATOR +
 
@@ -64,14 +63,17 @@ public class MixDbHelper extends SQLiteOpenHelper {
                         " FOREIGN KEY (" + MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + ") REFERENCES " +
                         MixContract.MixEntry.TABLE_NAME + " (" + MixContract.MixEntry._ID + "));";
 
-        final String CREATE_TABLE_RELATED_MIX = CREATE_TABLE + MixContract.RelatedMixesEntry.TABLE_NAME + " (" +
-                        MixContract.RelatedMixesEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
-                        MixContract.RelatedMixesEntry.COLUMN_NAME_MIX_ID + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
-                        " );";
+        final String CREATE_TABLE_RELATED_MIX = CREATE_TABLE + MixContract.MixRelatedEntry.TABLE_NAME + " (" +
+                        MixContract.MixRelatedEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
+                        MixContract.MixRelatedEntry.COLUMN_NAME_MIX_TITLE + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
+                        MixContract.MixRelatedEntry.COLUMN_NAME_MIX_ID_FOREIGN_KEY + COLUMN_TYPE_INT_NOT_NULL + COMMA_SEPERATOR +
 
-        final String CREATE_TABLE_PLAYLIST = CREATE_TABLE + MixContract.RelatedMixesEntry.TABLE_NAME + " (" +
+                        " FOREIGN KEY (" + MixContract.MixRelatedEntry.COLUMN_NAME_MIX_ID_FOREIGN_KEY + ") REFERENCES " +
+                        MixContract.MixEntry.TABLE_NAME + " (" + MixContract.MixEntry._ID + "));";
+
+        final String CREATE_TABLE_PLAYLIST = CREATE_TABLE + MixContract.MixPlaylistEntry.TABLE_NAME + " (" +
                         MixContract.MixPlaylistEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
-                        MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
+                        MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE + COLUMN_TYPE_TEXT_NULL +
                         " );";
 
         final String CREATE_TABLE_USER = CREATE_TABLE + MixContract.UserEntry.TABLE_NAME + " (" +
@@ -92,7 +94,7 @@ public class MixDbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + MixContract.MixEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MixContract.MixItemsEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + MixContract.RelatedMixesEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MixContract.MixRelatedEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MixContract.MixPlaylistEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MixContract.UserEntry.TABLE_NAME);
         onCreate(db);

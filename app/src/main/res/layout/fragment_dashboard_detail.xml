@@ -119,7 +119,7 @@
             android:layout_below="@+id/beat_detail_header"
             android:layout_marginTop="@dimen/content_margin_top" />
 
-        <android.support.v7.widget.RecyclerView
+        <ListView
             android:id="@+id/album_title_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

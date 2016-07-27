@@ -74,6 +74,8 @@ public class Constants {
 
     //Loader Types
     public static final int SOCIAL_LOADER  = 101;
+    public static final int RELATED_TRACKS_LOADER  = 102;
+
 
     public enum AudioServiceRepeatType {
         RepeatOff(0),
