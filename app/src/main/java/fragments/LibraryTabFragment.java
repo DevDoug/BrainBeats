@@ -1,16 +1,21 @@
 package fragments;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import com.android.volley.VolleyError;
 import com.brainbeats.R;
 import com.google.gson.Gson;
@@ -18,23 +23,23 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONArray;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import adapters.LibraryAdapter;
+import adapters.MixerAdapter;
 import architecture.AccountManager;
+import data.MixContract;
 import entity.Track;
 import entity.UserPlaylistsResponse;
 import entity.UserTrackResponse;
 import utils.Constants;
 import web.WebApiManager;
 
-public class LibraryTabFragment extends Fragment {
+public class LibraryTabFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int VOLLEY_LOADER = 0;
 
     ArrayList<Track> trackList;
-    private RecyclerView mBeatListView;
+    private ListView mMixListView;
     private LibraryAdapter mLibraryAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private int mDataType;
@@ -67,7 +72,7 @@ public class LibraryTabFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_library_tab, container, false);
-        mBeatListView = (RecyclerView) v.findViewById(R.id.library_content_list);
+        mMixListView = (ListView) v.findViewById(R.id.library_content_list);
         mEmptyDataPlaceholder = (TextView) v.findViewById(R.id.no_data_placeholder);
         return v;
     }
@@ -76,122 +81,43 @@ public class LibraryTabFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         trackList = new ArrayList<>();
-
-        if (Constants.LibraryDataType.Songs.getCode() == mDataType)
-            loadUserSongs();
-        else if (Constants.LibraryDataType.Playlists.getCode() == mDataType)
-            loadUserPlaylist();
-        else
-            loadUserFavorites();
-    }
-
-    public ArrayList<Track> loadUserSongs() {
-        WebApiManager.getUserTracks(getContext(), AccountManager.getInstance(getContext()).getUserId(), new WebApiManager.OnArrayResponseListener() {
-            @Override
-            public void onArrayResponse(JSONArray array) {
-                Log.i(getClass().getSimpleName(), "Response = " + array.toString());
-                Gson gson = new Gson();
-                Type token = new TypeToken<ArrayList<UserTrackResponse>>(){}.getType();
-                try {
-                    ArrayList<UserTrackResponse> userTracks = gson.fromJson(array.toString(), token);
-                    for (int i = 0; i < userTracks.size(); i++) {
-                        Track tempTrack = new Track();
-                        tempTrack.setTitle(userTracks.get(i).getTitle());
-                        trackList.add(tempTrack);
-                    }
-
-                    if(!mFilter.equalsIgnoreCase(""))
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                            Stream<Track> trackStream = trackList.stream().filter(t -> t.getTitle().equalsIgnoreCase(mFilter));
-                            trackList = (ArrayList<Track>) trackStream;
-                        } else {
-                            Log.i("test",mFilter);
-                        }
-
-                    setTrackList();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-
-        }, new WebApiManager.OnErrorListener(){
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.toString();
-            }
-        });
-        return null;
-    }
-
-    public void loadUserPlaylist() {
-        WebApiManager.getUserPlaylists(getContext(), AccountManager.getInstance(getContext()).getUserId(), new WebApiManager.OnArrayResponseListener() {
-            @Override
-            public void onArrayResponse(JSONArray array) {
-                Log.i(getClass().getSimpleName(), "Response = " + array.toString());
-                Gson gson = new Gson();
-                Type token = new TypeToken<ArrayList<UserPlaylistsResponse>>() {
-                }.getType();
-                try {
-                    ArrayList<UserPlaylistsResponse> userPlaylists = gson.fromJson(array.toString(), token);
-                    trackList = (ArrayList<Track>) userPlaylists.get(0).getTracks();
-                    setTrackList();
-
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }, new WebApiManager.OnErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(getClass().getSimpleName(), "Response = " + error.toString());
-            }
-        });
-    }
-
-    public void loadUserFavorites() {
-        WebApiManager.getUserFavorites(getContext(), AccountManager.getInstance(getContext()).getUserId(), new WebApiManager.OnArrayResponseListener() {
-            @Override
-            public void onArrayResponse(JSONArray array) {
-                Log.i(getClass().getSimpleName(), "Response = " + array.toString());
-                Gson gson = new Gson();
-                Type token = new TypeToken<ArrayList<UserTrackResponse>>() {
-                }.getType();
-                try {
-                    ArrayList<UserTrackResponse> userTracks = gson.fromJson(array.toString(), token);
-                    for(int i = 0; i < userTracks.size();i++){
-                        Track tempTrack = new Track();
-                        tempTrack.setTitle(userTracks.get(i).getTitle());
-                        trackList.add(tempTrack);
-                    }
-                    setTrackList();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }, new WebApiManager.OnErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(getClass().getSimpleName(), "Response = " + error.toString());
-            }
-        });
-    }
-
-    public void setTrackList() {
-        if (trackList.size() != 0) {
-            mLibraryAdapter = new LibraryAdapter(getContext(), trackList);
-            mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-            mBeatListView.setLayoutManager(mLayoutManager);
-            mBeatListView.setAdapter(mLibraryAdapter);
-            mEmptyDataPlaceholder.setVisibility(View.INVISIBLE);
-            mBeatListView.setVisibility(View.VISIBLE);
-        } else { //display no data view
-            mBeatListView.setVisibility(View.INVISIBLE);
-            mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
-            mEmptyDataPlaceholder.setText(R.string.no_current_songs_message);
-        }
+        setRetainInstance(true);
+        getLoaderManager().initLoader(mDataType,null,this);
     }
 
     public void updateFilterParams(String params){
         mFilter = params;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderID, Bundle args) {
+        switch (loaderID) {
+            default:
+                return new CursorLoader(
+                        getActivity(),         // Parent activity context
+                        MixContract.MixEntry.CONTENT_URI,  // Table to query
+                        null,                          // Projection to return
+                        null,                  // No selection clause
+                        null,                  // No selection arguments
+                        null                   // Default sort order
+                );
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader loader, Cursor data) {
+        if (data == null) { //no mix data found
+            mMixListView.setVisibility(View.GONE);
+            mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyDataPlaceholder.setVisibility(View.INVISIBLE);
+            mLibraryAdapter = new LibraryAdapter(getContext(), data,0);
+            mMixListView.setAdapter(mLibraryAdapter);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+
     }
 }

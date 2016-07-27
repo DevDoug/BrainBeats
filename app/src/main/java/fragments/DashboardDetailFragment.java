@@ -152,7 +152,9 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
         mUserSelections = getArguments();
         if (mUserSelections != null) {
             mSelectedTrack = (Track) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_TRACK);
-            mTrackTitle.setText(mSelectedTrack.getTitle());
+            if (mSelectedTrack != null) {
+                mTrackTitle.setText(mSelectedTrack.getTitle());
+            }
             Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
         }
 
@@ -339,29 +341,11 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
      * @param context The application context
      */
     public static Account CreateSyncAccount(Context context) {
-        // Create the account type and default account
         Account newAccount = new Account(ACCOUNT, ACCOUNT_TYPE);
-        // Get an instance of the Android account manager
         android.accounts.AccountManager accountManager = (android.accounts.AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
-        /*
-         * Add the account and account type, no password or user data
-         * If successful, return the Account object, otherwise report an error.
-         */
         if (accountManager.addAccountExplicitly(newAccount, null, null)) {
-            /*
-             * If you don't set android:syncable="true" in
-             * in your <provider> element in the manifest,
-             * then call context.setIsSyncable(account, AUTHORITY, 1)
-             * here.
-             */
             return newAccount;
-
         } else {
-            /*
-             * The account exists or some other error occurred. Log this, report it,
-             * or handle it internally.
-             */
-
             return accountManager.getAccountsByType(ACCOUNT_TYPE)[0];
         }
     }

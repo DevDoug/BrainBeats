@@ -4,12 +4,12 @@
     android:layout_height="match_parent"
     tools:context="fragments.LibraryTabFragment">
 
-    <android.support.v7.widget.RecyclerView
+    <ListView
         android:id="@+id/library_content_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible">
-    </android.support.v7.widget.RecyclerView>
+    </ListView>
 
     <TextView
         android:id="@+id/no_data_placeholder"

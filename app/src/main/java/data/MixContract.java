@@ -69,4 +69,5 @@ public class MixContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
+
 }
