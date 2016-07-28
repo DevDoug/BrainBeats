@@ -37,7 +37,9 @@ public class MixContract {
         public static final String COLUMN_NAME_MIX_PLAYLIST_ID        = "playlistid";
         public static final String COLUMN_NAME_SOUND_CLOUD_ID         = "soundcloudid";
         public static final String COLUMN_NAME_MIX_USER_ID_FK         = "userid";
-        public static final String COLUMN_NAME_RELATED_MIXES_ID = "relatedtracksforeignkey";
+        public static final String COLUMN_NAME_RELATED_MIXES_ID       = "relatedtracksforeignkey";
+        public static final String COLUMN_NAME_IS_IN_LIBRARY          = "isinlibrary";
+        public static final String COLUMN_NAME_IS_IN_MIXER            = "isInMixer";
 
         public static Uri buildMixUriWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

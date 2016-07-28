@@ -28,6 +28,7 @@ import adapters.LibraryAdapter;
 import adapters.MixerAdapter;
 import architecture.AccountManager;
 import data.MixContract;
+import data.MixDbHelper;
 import entity.Track;
 import entity.UserPlaylistsResponse;
 import entity.UserTrackResponse;
@@ -97,8 +98,8 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
                         getActivity(),         // Parent activity context
                         MixContract.MixEntry.CONTENT_URI,  // Table to query
                         null,                          // Projection to return
-                        null,                  // No selection clause
-                        null,                  // No selection arguments
+                        MixContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY + MixDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
+                        new String[]{MixDbHelper.DB_TRUE_VALUE},                  // No selection arguments
                         null                   // Default sort order
                 );
         }

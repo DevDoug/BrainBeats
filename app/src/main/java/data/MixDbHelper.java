@@ -29,6 +29,7 @@ public class MixDbHelper extends SQLiteOpenHelper {
 
     //Db lookup fields
     public static final String DB_ID_FIELD                          = "_id";
+    public static final String DB_TRUE_VALUE                        = "1";
     public static final String DB_SC_ID_FIELD                       = "_sc";
 
     //Sort Types
@@ -51,6 +52,8 @@ public class MixDbHelper extends SQLiteOpenHelper {
                         MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
                         MixContract.MixEntry.COLUMN_NAME_MIX_USER_ID_FK + COLUMN_TYPE_INT_NOT_NULL + COMMA_SEPERATOR +
                         MixContract.MixEntry.COLUMN_NAME_RELATED_MIXES_ID + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
+                        MixContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
+                        MixContract.MixEntry.COLUMN_NAME_IS_IN_MIXER + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
 
                         " FOREIGN KEY (" + MixContract.MixEntry.COLUMN_NAME_MIX_USER_ID_FK + ") REFERENCES " +
                         MixContract.UserEntry.TABLE_NAME + " (" + MixContract.UserEntry._ID +

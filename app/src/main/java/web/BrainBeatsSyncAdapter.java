@@ -134,7 +134,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    public void addTrackToLibrary(String selectedTrackTitle,String selectedTrackAlbumUrl,int selectedTrackId, int relatedTracksId,ContentProviderClient provider){
+    public void addMix(String selectedTrackTitle, String selectedTrackAlbumUrl, int selectedTrackId, int relatedTracksId, boolean inLibrary, boolean inMixer, ContentProviderClient provider){
         Track insertTrack = new Track();
         insertTrack.setTitle(selectedTrackTitle);
         insertTrack.setArtworkURL(selectedTrackAlbumUrl);
@@ -143,6 +143,8 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
 
         Mix newMix = Constants.buildMixRecordFromTrack(insertTrack);
         newMix.setRelatedTracksId(relatedTracksId);
+        newMix.setIsInLibrary((inLibrary) ? 1 :0 );
+        newMix.setIsInMixer((inMixer) ? 1 :0);
 
         Log.i("New Mix", "Adding new mix");
         try {
@@ -175,7 +177,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                             MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL + collection.getId(),
                             null);
                 } else
-                    addTrackToLibrary(collection.getTitle(), collection.getArtworkUrl(), collection.getId(), collection.getId(), provider); // create this as a mix from a sound cloud track
+                    addMix(collection.getTitle(), collection.getArtworkUrl(), collection.getId(), collection.getId(),false,false, provider); // create this as a mix from a sound cloud track
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
