@@ -90,15 +90,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     private OnFragmentInteractionListener mListener;
     public FloatingActionButton mFob;
 
-    //Feilds for testing sync adapter
-    // An account type, in the form of a domain name
-    public static final String ACCOUNT_TYPE = "com.example.android.datasync";
-    // The account name
-    public static final String ACCOUNT = "dummyaccount";
-    // Instance fields
-    Account mAccount;
-
-
     public DashboardDetailFragment() {
         // Required empty public constructor
     }
@@ -107,8 +98,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mAccount = CreateSyncAccount(getActivity());
-
     }
 
     @Override
@@ -194,15 +183,15 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 break;
             case R.id.action_add_to_library:
                 settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_UPDATE_TRACK_ACTION,0);
-                ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
+                ContentResolver.requestSync(((MainActivity)getActivity()).mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
                 break;
             case R.id.action_favorite:
                 settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_UPDATE_TRACK_ACTION,1);
-                ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
+                ContentResolver.requestSync(((MainActivity)getActivity()).mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
                 break;
             case R.id.action_rate:
                 settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_UPDATE_TRACK_ACTION,2);
-                ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
+                ContentResolver.requestSync(((MainActivity)getActivity()).mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
                 break;
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
@@ -275,21 +264,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         }
     }
 
-/*    @Override
-    public void relatedTrackUpdated(Track track) {
-        mSelectedTrack = track;
-        mTrackTitle.setText(mSelectedTrack.getTitle());
-        Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
-        mAudioService.stopSong();
-        mAudioService.mIsPaused = false;
-        if (mSelectedTrack.getStreamURL() != null) {
-            mSelectedTrack.setStreamURL("https://api.soundcloud.com/tracks/5106125/stream?client_id=6af4e9b999eaa63f5d797d466cdc4ccb");
-            mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
-            mAudioService.setProgressIndicator(mPlaySongButton, mPlayTrackSeekBar, mSelectedTrack.getDuration());
-        } else
-            Snackbar.make(mCoordinatorLayout, mAudioService.getString(R.string.error_playing_song_message), Snackbar.LENGTH_LONG).show();
-    }*/
-
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
@@ -297,7 +271,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 // Returns a new CursorLoader
                 return new CursorLoader(
                         getActivity(),         // Parent activity context
-                        MixContract.MixRelatedEntry.CONTENT_URI,  // Table to query
+                        MixContract.MixEntry.CONTENT_URI,  // Table to query
                         null,                          // Projection to return
                         null,                  // No selection clause
                         null,                  // No selection arguments
@@ -338,19 +312,4 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             mBound = false;
         }
     };
-
-    /**
-     * Create a new dummy account for the sync adapter
-     *
-     * @param context The application context
-     */
-    public static Account CreateSyncAccount(Context context) {
-        Account newAccount = new Account(ACCOUNT, ACCOUNT_TYPE);
-        android.accounts.AccountManager accountManager = (android.accounts.AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
-        if (accountManager.addAccountExplicitly(newAccount, null, null)) {
-            return newAccount;
-        } else {
-            return accountManager.getAccountsByType(ACCOUNT_TYPE)[0];
-        }
-    }
 }

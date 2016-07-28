@@ -1,8 +1,10 @@
 package com.brainbeats;
 
+import android.accounts.Account;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,6 +29,7 @@ import entity.Track;
 import fragments.DashboardDetailFragment;
 import fragments.DashboardFragment;
 import fragments.DashboardSongListFragment;
+import model.MixItem;
 import utils.Constants;
 
 public class MainActivity extends BaseActivity implements DashboardFragment.OnFragmentInteractionListener, DashboardSongListFragment.OnFragmentInteractionListener, DashboardDetailFragment.OnFragmentInteractionListener {
@@ -37,6 +40,14 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     Bundle mUserSelections;
     private CoordinatorLayout mCoordinatorLayout;
     public ContentObserver mDataObserver;
+
+    //Feilds for testing sync adapter
+    // An account type, in the form of a domain name
+    public static final String ACCOUNT_TYPE = "com.example.android.datasync";
+    // The account name
+    public static final String ACCOUNT = "dummyaccount";
+    // Instance fields
+    public Account mAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +69,8 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
         }
 
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
+        mAccount = CreateSyncAccount(this);
+
         mDataObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
             public void onChange(boolean selfChange) {
             }
@@ -112,6 +125,12 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     }
 
     public void loadBeatDetailFragment(Track track) {
+        Bundle settingsBundle = new Bundle();
+        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_TRACK_ID,track.getID());
+        ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
+
         toggleNavDrawerIcon();
         mUserSelections.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, track);
         mDashboardDetailFragment.setArguments(mUserSelections);
@@ -120,5 +139,20 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+    }
+
+    /**
+     * Create a new dummy account for the sync adapter
+     *
+     * @param context The application context
+     */
+    public static Account CreateSyncAccount(Context context) {
+        Account newAccount = new Account(ACCOUNT, ACCOUNT_TYPE);
+        android.accounts.AccountManager accountManager = (android.accounts.AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
+        if (accountManager.addAccountExplicitly(newAccount, null, null)) {
+            return newAccount;
+        } else {
+            return accountManager.getAccountsByType(ACCOUNT_TYPE)[0];
+        }
     }
 }

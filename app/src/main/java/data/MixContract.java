@@ -36,7 +36,8 @@ public class MixContract {
         public static final String COLUMN_NAME_IS_FAVORITE            = "isfavorite";
         public static final String COLUMN_NAME_MIX_PLAYLIST_ID        = "playlistid";
         public static final String COLUMN_NAME_SOUND_CLOUD_ID         = "soundcloudid";
-        public static final String COLUMN_NAME_MIX_USER_ID            = "userid";
+        public static final String COLUMN_NAME_MIX_USER_ID_FK         = "userid";
+        public static final String COLUMN_NAME_RELATED_MIXES_ID = "relatedtracksforeignkey";
 
         public static Uri buildMixUriWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
@@ -64,9 +65,7 @@ public class MixContract {
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_RELATED;
 
         public static final String TABLE_NAME                           = "mixesrelated";
-        public static final String COLUMN_NAME_MIX_ID_FOREIGN_KEY       = "mixid";
-        public static final String COLUMN_NAME_MIX_TITLE                = "mixtitle";
-
+        public static final String COLUMN_NAME_TAG_CLOUD_ID             = "tagcloudid";
 
         public static Uri buildRelatedMixesUriWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

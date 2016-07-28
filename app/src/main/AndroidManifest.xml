@@ -62,6 +62,8 @@
             <meta-data android:name="android.content.SyncAdapter"
                 android:resource="@xml/brain_beats_sync_adapter_meta_data" />
         </service>
+
+
         <service
             android:name="service.AuthenticatorService">
             <intent-filter>

@@ -1,6 +1,7 @@
 package fragments;
 
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -32,6 +33,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import adapters.TrackAdapter;
 import architecture.AccountManager;
+import data.MixContract;
 import entity.Track;
 import utils.BeatLearner;
 import utils.Constants;
@@ -81,7 +83,6 @@ public class DashboardSongListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         Drawable up = DrawableCompat.wrap(ContextCompat.getDrawable(getContext(), R.drawable.ic_up));
         DrawableCompat.setTint(up, getResources().getColor(R.color.theme_primary_text_color));

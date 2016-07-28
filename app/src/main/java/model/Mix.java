@@ -17,6 +17,7 @@ public class Mix implements Parcelable {
     private int mMixRating;
     private ArrayList<MixItem> mMixItems;
     private int mSoundCloudId;
+    private int mRelatedTracksId;
 
     public Mix(){
     }
@@ -75,6 +76,14 @@ public class Mix implements Parcelable {
 
     public void setSoundCloudId(int soundCloudId) {
         this.mSoundCloudId = soundCloudId;
+    }
+
+    public int getRelatedTracksId() {
+        return mRelatedTracksId;
+    }
+
+    public void setRelatedTracksId(int relatedTracksId) {
+        this.mRelatedTracksId = relatedTracksId;
     }
 
     @Override

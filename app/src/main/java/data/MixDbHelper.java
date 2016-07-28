@@ -20,6 +20,8 @@ public class MixDbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TYPE_TEXT_NULL                = " TEXT";
     public static final String COLUMN_TYPE_TEXT_NOT_NULL            = " TEXT NOT NULL";
     public static final String COMMA_SEPERATOR                      = ",";
+    public static final String CREATE_TABLE_TERMINATION_FOREIGN_KEY             = "));";
+    public static final String CREATE_TABLE_TERMINATION                         = ");";
 
     //Query params
     public static final String WHERE_CLAUSE_LIKE                    = "LIKE ?";
@@ -47,11 +49,12 @@ public class MixDbHelper extends SQLiteOpenHelper {
                         MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
                         MixContract.MixEntry.COLUMN_NAME_MIX_PLAYLIST_ID + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
                         MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
-                        MixContract.MixEntry.COLUMN_NAME_MIX_USER_ID + COLUMN_TYPE_INT_NOT_NULL + COMMA_SEPERATOR +
+                        MixContract.MixEntry.COLUMN_NAME_MIX_USER_ID_FK + COLUMN_TYPE_INT_NOT_NULL + COMMA_SEPERATOR +
+                        MixContract.MixEntry.COLUMN_NAME_RELATED_MIXES_ID + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
 
-                        // Set up the Mix Items fk column as a foreign key to movie table.
-                        " FOREIGN KEY (" + MixContract.MixEntry.COLUMN_NAME_MIX_USER_ID + ") REFERENCES " +
-                        MixContract.UserEntry.TABLE_NAME + " (" + MixContract.UserEntry._ID + "));";
+                        " FOREIGN KEY (" + MixContract.MixEntry.COLUMN_NAME_MIX_USER_ID_FK + ") REFERENCES " +
+                        MixContract.UserEntry.TABLE_NAME + " (" + MixContract.UserEntry._ID +
+                        CREATE_TABLE_TERMINATION_FOREIGN_KEY;
 
         final String CREATE_TABLE_MIX_ITEMS = CREATE_TABLE + MixContract.MixItemsEntry.TABLE_NAME + " (" +
                         MixContract.MixItemsEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
@@ -61,27 +64,25 @@ public class MixDbHelper extends SQLiteOpenHelper {
 
                         // Set up the Mix Items fk column as a foreign key to movie table.
                         " FOREIGN KEY (" + MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + ") REFERENCES " +
-                        MixContract.MixEntry.TABLE_NAME + " (" + MixContract.MixEntry._ID + "));";
+                        MixContract.MixEntry.TABLE_NAME + " (" + MixContract.MixEntry._ID +
+                        CREATE_TABLE_TERMINATION_FOREIGN_KEY;
 
         final String CREATE_TABLE_RELATED_MIX = CREATE_TABLE + MixContract.MixRelatedEntry.TABLE_NAME + " (" +
                         MixContract.MixRelatedEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
-                        MixContract.MixRelatedEntry.COLUMN_NAME_MIX_TITLE + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
-                        MixContract.MixRelatedEntry.COLUMN_NAME_MIX_ID_FOREIGN_KEY + COLUMN_TYPE_INT_NOT_NULL + COMMA_SEPERATOR +
-
-                        " FOREIGN KEY (" + MixContract.MixRelatedEntry.COLUMN_NAME_MIX_ID_FOREIGN_KEY + ") REFERENCES " +
-                        MixContract.MixEntry.TABLE_NAME + " (" + MixContract.MixEntry._ID + "));";
+                        MixContract.MixRelatedEntry.COLUMN_NAME_TAG_CLOUD_ID + COLUMN_TYPE_INT_NULL +
+                        CREATE_TABLE_TERMINATION;
 
         final String CREATE_TABLE_PLAYLIST = CREATE_TABLE + MixContract.MixPlaylistEntry.TABLE_NAME + " (" +
                         MixContract.MixPlaylistEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
                         MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE + COLUMN_TYPE_TEXT_NULL +
-                        " );";
+                        CREATE_TABLE_TERMINATION;
 
         final String CREATE_TABLE_USER = CREATE_TABLE + MixContract.UserEntry.TABLE_NAME + " (" +
                         MixContract.UserEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
                         MixContract.UserEntry.COLUMN_NAME_USER_NAME + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
                         MixContract.UserEntry.COLUMN_NAME_USER_PASSWORD + COLUMN_TYPE_TEXT_NOT_NULL + COMMA_SEPERATOR +
                         MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + COLUMN_TYPE_TEXT_NULL +
-                        " );";
+                        CREATE_TABLE_TERMINATION;
 
         db.execSQL(CREATE_TABLE_MIX);
         db.execSQL(CREATE_TABLE_MIX_ITEMS);

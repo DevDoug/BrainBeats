@@ -154,6 +154,20 @@ public class MixDbContentProvider extends ContentProvider {
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
+            case MIX_RELATED:
+                long _idMixRelated = db.insert(MixContract.MixRelatedEntry.TABLE_NAME, null, values);
+                if (_idMixRelated > 0)
+                    returnUri = MixContract.MixRelatedEntry.buildRelatedMixesUriWithId(_idMixRelated);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            case MIX_PLAYLIST:
+                long _idMixPlaylist = db.insert(MixContract.MixPlaylistEntry.TABLE_NAME, null, values);
+                if (_idMixPlaylist > 0)
+                    returnUri = MixContract.MixRelatedEntry.buildRelatedMixesUriWithId(_idMixPlaylist);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
             case USER:
                 long _idUser = db.insert(MixContract.UserEntry.TABLE_NAME, null, values);
                 if (_idUser > 0)

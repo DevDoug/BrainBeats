@@ -157,6 +157,13 @@ public class Constants {
         values.put(MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL, mix.getMixAlbumCoverArt());
         values.put(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE, mix.getMixFavorite());
         values.put(MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID, mix.getSoundCloudId());
+        values.put(MixContract.MixEntry.COLUMN_NAME_RELATED_MIXES_ID,mix.getRelatedTracksId());
+        return values;
+    }
+
+    public static ContentValues buildMixRelatedRecord(){
+        ContentValues values = new ContentValues();
+        values.put(MixContract.MixRelatedEntry.COLUMN_NAME_TAG_CLOUD_ID, 0);
         return values;
     }
 
