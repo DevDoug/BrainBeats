@@ -108,6 +108,8 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
         switch (position) {
             case 0:
                 Mix defaultMix = Constants.buildNewDefaultMixRecord(getContext());
+                defaultMix.setIsInMixer(1);
+                defaultMix.setIsInLibrary(1);
                 Uri returnRow = getActivity().getContentResolver().insert(MixContract.MixEntry.CONTENT_URI,Constants.buildMixRecord(defaultMix));
                 long returnRowId = ContentUris.parseId(returnRow);
                 getActivity().getContentResolver().bulkInsert(MixContract.MixItemsEntry.CONTENT_URI,Constants.buildMixItemsBulkRecord(returnRowId,defaultMix.getMixItems()));

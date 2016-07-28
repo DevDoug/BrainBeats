@@ -172,6 +172,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     public boolean onOptionsItemSelected(MenuItem item) {
         Bundle settingsBundle = new Bundle();
         settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_TRACK_ID,mSelectedTrack.getID());
+        settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,0);
         settingsBundle.putString(Constants.KEY_EXTRA_SELECTED_TRACK_TITLE,mSelectedTrack.getTitle());
         settingsBundle.putString(Constants.KEY_EXTRA_SELECTED_TRACK_ALBUM_COVER_ART,mSelectedTrack.getArtworkURL());
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);

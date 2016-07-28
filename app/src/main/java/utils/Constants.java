@@ -40,6 +40,7 @@ public class Constants {
     public static final String KEY_EXTRA_SELECTED_TRACK                     = "SelectedTrack";
     public static final String KEY_EXTRA_SELECTED_MIX                       = "SelectedMix";
     public static final String KEY_EXTRA_SEARCH_KEYWORD                     = "SearchKeyword";
+    public static final String KEY_EXTRA_SYNC_TYPE                          = "SyncType";
     public static final String KEY_EXTRA_SELECTED_TRACK_ID                  = "TrackId";
     public static final String KEY_EXTRA_SELECTED_TRACK_TITLE               = "Title";
     public static final String KEY_EXTRA_SELECTED_TRACK_ALBUM_COVER_ART     = "CoverArt";
@@ -132,6 +133,9 @@ public class Constants {
         mix.setMixAlbumCoverArt(cursor.getString(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL)));
         mix.setMixFavorite(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE)));
         mix.setSoundCloudId(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID)));
+        mix.setIsInLibrary(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY));
+        mix.setIsInMixer(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_IN_MIXER));
+
         String whereClause = MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + "= ?";
         String[] whereArgs = new String[] {
                 " " + cursor.getLong(cursor.getColumnIndex(MixContract.MixEntry._ID)),
@@ -158,6 +162,8 @@ public class Constants {
         values.put(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE, mix.getMixFavorite());
         values.put(MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID, mix.getSoundCloudId());
         values.put(MixContract.MixEntry.COLUMN_NAME_RELATED_MIXES_ID,mix.getRelatedTracksId());
+        values.put(MixContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY, mix.getIsInLibrary());
+        values.put(MixContract.MixEntry.COLUMN_NAME_IS_IN_MIXER, mix.getIsInMixer());
         return values;
     }
 

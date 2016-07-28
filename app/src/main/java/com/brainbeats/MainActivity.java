@@ -129,6 +129,7 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_TRACK_ID,track.getID());
+        settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,1);
         ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
 
         toggleNavDrawerIcon();

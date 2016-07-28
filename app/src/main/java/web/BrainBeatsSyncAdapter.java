@@ -76,10 +76,36 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         Log.i("In sync adapter","in sync");
 
         int selectedTrackId = extras.getInt(Constants.KEY_EXTRA_SELECTED_TRACK_ID);
-        int SYNC_TYPE = 1; // should come from extas
+        int SYNC_TYPE = extras.getInt(Constants.KEY_EXTRA_SYNC_TYPE);
 
         switch (SYNC_TYPE){
             case 0: //sync mixes
+                String selectedTrackTitle = extras.getString(Constants.KEY_EXTRA_SELECTED_TRACK_TITLE);
+                String selectedTrackAlbumUrl = extras.getString(Constants.KEY_EXTRA_SELECTED_TRACK_ALBUM_COVER_ART);
+                int selectedTrackFavorite = extras.getInt(Constants.KEY_EXTRA_SELECTED_TRACK_FAVORITE);
+                int selectedTrackRating = extras.getInt(Constants.KEY_EXTRA_SELECTED_TRACK_RATING);
+
+                try {
+                    Cursor mixCursor = provider.query( //find if this mix exists ?
+                            MixContract.MixEntry.CONTENT_URI, //Get users
+                            null,  //return everything
+                            MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                            new String[]{String.valueOf(selectedTrackId)},
+                            null
+                    );
+                    if (mixCursor != null && mixCursor.getCount() != 0) { // this mix exists so update the record.
+                        Mix mix = Constants.buildMixFromCursor(getContext(), mixCursor, 0);
+                        int returnId = provider.update(
+                                MixContract.MixEntry.CONTENT_URI,
+                                Constants.buildMixRecord(mix),
+                                MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                                new String[]{String.valueOf(selectedTrackId)});
+                        Log.i("returnid", String.valueOf(returnId));
+                    } else
+                        addMix(selectedTrackTitle, selectedTrackAlbumUrl, selectedTrackId, selectedTrackId,true,false, provider); // create this as a mix from a sound cloud track
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 break;
             case 1: //sync mix related
                 WebApiManager.getRelatedTracks(getContext(), String.valueOf(selectedTrackId), new WebApiManager.OnObjectResponseListener() {
@@ -174,8 +200,8 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                     int returnId = provider.update(
                             MixContract.MixEntry.CONTENT_URI,
                             Constants.buildMixRecord(mix),
-                            MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL + collection.getId(),
-                            null);
+                            MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                            new String[]{String.valueOf(collection.getId())});
                 } else
                     addMix(collection.getTitle(), collection.getArtworkUrl(), collection.getId(), collection.getId(),false,false, provider); // create this as a mix from a sound cloud track
             } catch (RemoteException e) {
