@@ -31,6 +31,7 @@ import fragments.DashboardFragment;
 import fragments.DashboardSongListFragment;
 import model.MixItem;
 import utils.Constants;
+import web.SyncManager;
 
 public class MainActivity extends BaseActivity implements DashboardFragment.OnFragmentInteractionListener, DashboardSongListFragment.OnFragmentInteractionListener, DashboardDetailFragment.OnFragmentInteractionListener {
 
@@ -70,10 +71,11 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
 
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
         mAccount = CreateSyncAccount(this);
+        SyncManager.getInstance().updateAllTables(mAccount,MixContract.CONTENT_AUTHORITY);
+
 
         mDataObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
-            public void onChange(boolean selfChange) {
-            }
+            public void onChange(boolean selfChange) {}
 
             @Override
             public void onChange(boolean selfChange, Uri uri) {
@@ -85,8 +87,11 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
                 } else if (uri.toString().equalsIgnoreCase(Constants.LIBRARY_ALREADY_URI.toString())){
                     createdSnack = Snackbar.make(mCoordinatorLayout, R.string.error_this_mix_is_already_in_library, Snackbar.LENGTH_LONG);
                     createdSnack.show();
-                } else if (uri.toString().equalsIgnoreCase(Constants.FAVORITE_ERROR_URI.toString())){
-                    createdSnack = Snackbar.make(mCoordinatorLayout, R.string.error_favoriting_message, Snackbar.LENGTH_LONG);
+                }else if (uri.toString().equalsIgnoreCase(Constants.FAVORITE_SUCCESS_URI.toString())){
+                    createdSnack = Snackbar.make(mCoordinatorLayout, R.string.song_added_to_favorites_snack_message, Snackbar.LENGTH_LONG);
+                    createdSnack.show();
+                } else if (uri.toString().equalsIgnoreCase(Constants.FAVORITE_ALREADY_URI.toString())){
+                    createdSnack = Snackbar.make(mCoordinatorLayout, R.string.error_this_mix_is_already_a_favorite, Snackbar.LENGTH_LONG);
                     createdSnack.show();
                 } else if(uri.toString().equalsIgnoreCase(Constants.NOT_LOGGED_IN_TO_SOUNDCLOUD_URI.toString())){
                     Constants.buildConfirmDialog(getApplicationContext(),"test");

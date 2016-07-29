@@ -26,6 +26,7 @@ public class MixDbHelper extends SQLiteOpenHelper {
     //Query params
     public static final String WHERE_CLAUSE_LIKE                    = "LIKE ?";
     public static final String WHERE_CLAUSE_EQUAL                   = " = ? ";
+    public static final String AND_CLAUSE                           = "AND ";
 
     //Db lookup fields
     public static final String DB_ID_FIELD                          = "_id";

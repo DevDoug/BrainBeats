@@ -24,11 +24,11 @@ import utils.MixManager;
 /**
  * Created by douglas on 5/20/2016.
  */
-public class LibraryAdapter extends CursorAdapter {
+public class LibraryMixAdapter extends CursorAdapter {
 
     Context mAdapterContext;
 
-    public LibraryAdapter(Context context, Cursor cursor, int flags) {
+    public LibraryMixAdapter(Context context, Cursor cursor, int flags) {
         super(context, cursor, 0);
         mAdapterContext = context;
     }

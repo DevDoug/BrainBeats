@@ -17,18 +17,24 @@ import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 import architecture.AccountManager;
 import data.MixContract;
 import data.MixDbHelper;
 import entity.Collection;
+import entity.Playlists;
 import entity.RelatedTracksResponse;
 import entity.Track;
+import entity.UserPlaylistsResponse;
+import entity.UserTrackResponse;
 import model.Mix;
+import model.Playlist;
 import utils.Constants;
 
 /**
@@ -80,32 +86,54 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
 
         switch (SYNC_TYPE){
             case 0: //sync mixes
-                String selectedTrackTitle = extras.getString(Constants.KEY_EXTRA_SELECTED_TRACK_TITLE);
-                String selectedTrackAlbumUrl = extras.getString(Constants.KEY_EXTRA_SELECTED_TRACK_ALBUM_COVER_ART);
-                int selectedTrackFavorite = extras.getInt(Constants.KEY_EXTRA_SELECTED_TRACK_FAVORITE);
-                int selectedTrackRating = extras.getInt(Constants.KEY_EXTRA_SELECTED_TRACK_RATING);
-
-                try {
-                    Cursor mixCursor = provider.query( //find if this mix exists ?
-                            MixContract.MixEntry.CONTENT_URI, //Get users
-                            null,  //return everything
-                            MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
-                            new String[]{String.valueOf(selectedTrackId)},
-                            null
-                    );
-                    if (mixCursor != null && mixCursor.getCount() != 0) { // this mix exists so update the record.
-                        Mix mix = Constants.buildMixFromCursor(getContext(), mixCursor, 0);
-                        int returnId = provider.update(
-                                MixContract.MixEntry.CONTENT_URI,
-                                Constants.buildMixRecord(mix),
-                                MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
-                                new String[]{String.valueOf(selectedTrackId)});
-                        Log.i("returnid", String.valueOf(returnId));
-                    } else
-                        addMix(selectedTrackTitle, selectedTrackAlbumUrl, selectedTrackId, selectedTrackId,true,false, provider); // create this as a mix from a sound cloud track
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                WebApiManager.getUserTracks(getContext(), AccountManager.getInstance(getContext()).getUserId(), new WebApiManager.OnArrayResponseListener() {
+                    @Override
+                    public void onArrayResponse(JSONArray array) {
+                        Log.i(getClass().getSimpleName(), "Response = " + array.toString());
+                        Gson gson = new Gson();
+                        Type token = new TypeToken<ArrayList<UserTrackResponse>>(){}.getType();
+                        try {
+                            ArrayList<UserTrackResponse> userTracks = gson.fromJson(array.toString(), token);
+                            for(UserTrackResponse trackResponse : userTracks) {
+                                try {
+                                    Cursor trackCursor = provider.query( //find if this mix exists
+                                            MixContract.MixEntry.CONTENT_URI, //Get users
+                                            null,  //return everything
+                                            MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                                            new String[]{String.valueOf(trackResponse.getID())},
+                                            null
+                                    );
+                                    if (trackCursor != null && trackCursor.getCount() != 0) { // this mix exists so update the record.
+                                        /*                                        Mix mix = Constants.buildMixFromCursor(getContext(), trackCursor, 0);
+                                        Log.i("InLib", String.valueOf(mix.getIsInLibrary()));
+                                        int returnId = provider.update(
+                                                MixContract.MixEntry.CONTENT_URI,
+                                                Constants.buildMixRecord(mix),
+                                                MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                                                new String[]{String.valueOf(trackResponse.getID())});
+                                        if(returnId != -1)
+                                            Log.i("Mix updated","Updated");
+                                        else
+                                            Log.i("Mix Updated","Fail");*/
+                                        trackCursor.close();
+                                    } else{
+                                        addMix(trackResponse.getTitle(), trackResponse.getArtworkURL(), trackResponse.getID(), 0,true,false,false, provider); // create this as a mix from a sound cloud track
+                                        Log.i("Mix Added","Added");
+                                    }
+                                } catch (RemoteException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }, new WebApiManager.OnErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.toString();
+                    }
+                });
                 break;
             case 1: //sync mix related
                 WebApiManager.getRelatedTracks(getContext(), String.valueOf(selectedTrackId), new WebApiManager.OnObjectResponseListener() {
@@ -152,6 +180,57 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                 });
                 break;
             case 2: //sync mix playlist
+                WebApiManager.getUserPlaylists(getContext(), AccountManager.getInstance(getContext()).getUserId(), new WebApiManager.OnArrayResponseListener() {
+                    @Override
+                    public void onArrayResponse(JSONArray array) {
+                        Log.i(getClass().getSimpleName(), "Response = " + array.toString());
+                        Gson gson = new Gson();
+                        Type token = new TypeToken<ArrayList<UserPlaylistsResponse>>() {
+                        }.getType();
+                        try {
+                            ArrayList<UserPlaylistsResponse> userPlaylists = gson.fromJson(array.toString(), token);
+                            for(UserPlaylistsResponse playlistsResponse : userPlaylists) {
+                                try {
+                                    Cursor playlistCursor = provider.query( //find if this mix exists
+                                            MixContract.MixEntry.CONTENT_URI, //Get users
+                                            null,  //return everything
+                                            MixContract.MixPlaylistEntry._ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                                            new String[]{String.valueOf(playlistsResponse.getId())},
+                                            null
+                                    );
+                                    if (playlistCursor != null && playlistCursor.getCount() != 0) { // this playlist exists so update the record.
+                                        /*                                        Mix mix = Constants.buildMixFromCursor(getContext(), trackCursor, 0);
+                                        Log.i("InLib", String.valueOf(mix.getIsInLibrary()));
+                                        int returnId = provider.update(
+                                                MixContract.MixEntry.CONTENT_URI,
+                                                Constants.buildMixRecord(mix),
+                                                MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                                                new String[]{String.valueOf(trackResponse.getID())});
+                                        if(returnId != -1)
+                                            Log.i("Mix updated","Updated");
+                                        else
+                                            Log.i("Mix Updated","Fail");*/
+                                        playlistCursor.close();
+                                    } else{
+                                        addPlaylist(playlistsResponse,provider); // create this as a mix from a sound cloud track
+                                        Log.i("Mix Added","Added");
+                                    }
+                                } catch (RemoteException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }, new WebApiManager.OnErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i(getClass().getSimpleName(), "Response = " + error.toString());
+                    }
+                });
                 break;
             case 3: // sync user's
                 break;
@@ -160,21 +239,33 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    public void addMix(String selectedTrackTitle, String selectedTrackAlbumUrl, int selectedTrackId, int relatedTracksId, boolean inLibrary, boolean inMixer, ContentProviderClient provider){
+    public void addMix(String selectedTrackTitle, String selectedTrackAlbumUrl, int selectedTrackId, int relatedTracksId, boolean inLibrary, boolean isFavorite, boolean inMixer, ContentProviderClient provider){
         Track insertTrack = new Track();
         insertTrack.setTitle(selectedTrackTitle);
         insertTrack.setArtworkURL(selectedTrackAlbumUrl);
-        insertTrack.setUserFavorite(false);
+        insertTrack.setUserFavorite(isFavorite);
         insertTrack.setID(selectedTrackId);
 
         Mix newMix = Constants.buildMixRecordFromTrack(insertTrack);
         newMix.setRelatedTracksId(relatedTracksId);
-        newMix.setIsInLibrary((inLibrary) ? 1 :0 );
-        newMix.setIsInMixer((inMixer) ? 1 :0);
+        newMix.setIsInLibrary((inLibrary) ? 1 : 0 );
+        newMix.setIsInMixer((inMixer) ? 1 : 0);
 
         Log.i("New Mix", "Adding new mix");
         try {
             Uri result = provider.insert(MixContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(newMix));
+            getContext().getContentResolver().notifyChange(MixContract.MixEntry.CONTENT_URI, null, false);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addPlaylist(UserPlaylistsResponse playlistsResponse, ContentProviderClient provider){
+        Playlist playlist = new Playlist();
+        playlist.setPlaylistTitle(playlistsResponse.getTitle());
+
+        try {
+            Uri result = provider.insert(MixContract.MixPlaylistEntry.CONTENT_URI, Constants.buildPlaylistRecord(playlist));
             getContext().getContentResolver().notifyChange(MixContract.MixEntry.CONTENT_URI, null, false);
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -203,46 +294,10 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                             MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
                             new String[]{String.valueOf(collection.getId())});
                 } else
-                    addMix(collection.getTitle(), collection.getArtworkUrl(), collection.getId(), collection.getId(),false,false, provider); // create this as a mix from a sound cloud track
+                    addMix(collection.getTitle(), collection.getArtworkUrl(), collection.getId(), collection.getId(),false,false,false, provider); // create this as a mix from a sound cloud track
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
         }
-    }
-
-    public void favoriteTrackOnSoundCloud(long selectedTrackId,Cursor mixCursor,ContentProviderClient provider){
-        WebApiManager.putUserFavorite(getContext(), architecture.AccountManager.getInstance(getContext()).getUserId(), String.valueOf(selectedTrackId), new WebApiManager.OnObjectResponseListener() {
-            @Override
-            public void onObjectResponse(JSONObject object) {
-                Log.i("", "Success");
-                try {
-                    Mix mix = Constants.buildMixFromCursor(getContext(),mixCursor,0);
-                    mix.setMixFavorite(1); // set this mix as a favorite in the db.
-                    int returnId = provider.update(MixContract.MixEntry.CONTENT_URI,Constants.buildMixRecord(mix), MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + "=" + selectedTrackId,null);
-                    if(returnId != -1){
-                        getContext().getContentResolver().notifyChange(Constants.FAVORITE_SUCCESS_URI, null, false);
-                        Log.i("info","transaction succeded notify ui");
-                        mixCursor.close();
-                    }
-                    else
-                        Log.i("info","transaction failed");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new WebApiManager.OnErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                String errorMessage = new String(error.networkResponse.data);
-                Log.i("", errorMessage);
-                if (AccountManager.getInstance(getContext()).isConnnectedToSoundCloud()) { //if the user is auhorized to use sound cloud there was an issue
-                    getContext().getContentResolver().notifyChange(Constants.FAVORITE_ERROR_URI, null, false);
-                } else { //otherwise have them connect to soundcloud
-                    getContext().getContentResolver().notifyChange(Constants.NOT_LOGGED_IN_TO_SOUNDCLOUD_URI, null, false);
-                }
-                mixCursor.close();
-
-            }
-        });
     }
 }

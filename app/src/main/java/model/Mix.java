@@ -1,5 +1,6 @@
 package model;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 

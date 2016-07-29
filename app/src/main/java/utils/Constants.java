@@ -27,6 +27,7 @@ import entity.SoundCloudUser;
 import entity.Track;
 import model.Mix;
 import model.MixItem;
+import model.Playlist;
 
 /**
  * Created by Douglas on 4/20/2016.
@@ -53,7 +54,8 @@ public class Constants {
     public static final String HASH_KEY_ACCESS_TOKEN     = "access_token";
 
     //Shared Preferences
-    public static final String KEY_EXTRA_IS_INCOGNITO_PREF = "IsIncognito";
+    public static final String KEY_EXTRA_IS_INCOGNITO_PREF  = "IsIncognito";
+    public static final String KEY_EXTRA_IS_SYNCED_TO_SC    = "SyncedToSoundCloud";
 
     //Sound Cloud
     public static final String SOUND_CLOUD_CLIENT_ID       = "6af4e9b999eaa63f5d797d466cdc4ccb";
@@ -178,6 +180,12 @@ public class Constants {
         values.put(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_TITLE,mixitem.getMixItemTitle());
         values.put(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_LEVEL,mixitem.getMixItemLevel());
         values.put(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY,mixId);
+        return values;
+    }
+
+    public static ContentValues buildPlaylistRecord(Playlist playlist){
+        ContentValues values = new ContentValues();
+        values.put(MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE,playlist.getPlaylistTitle());
         return values;
     }
 

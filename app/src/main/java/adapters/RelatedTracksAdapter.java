@@ -13,12 +13,16 @@ import android.widget.TextView;
 
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
+import com.google.gson.internal.bind.ReflectiveTypeAdapterFactory;
+
 import java.util.List;
 
 import data.MixContract;
 import entity.Collection;
 import entity.Track;
 import fragments.DashboardDetailFragment;
+import model.Mix;
+import utils.Constants;
 
 /**
  * Created by douglas on 4/29/2016.

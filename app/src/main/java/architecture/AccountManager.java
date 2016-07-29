@@ -103,6 +103,19 @@ public class AccountManager  {
         return isIncog;
     }
 
+    public boolean getIsSyncedToSoundCloud() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        boolean isSyncedToSC = sharedPreferences.getBoolean(Constants.KEY_EXTRA_IS_SYNCED_TO_SC, false);
+        return isSyncedToSC;
+    }
+
+    public void setSyncToSoundCloud(boolean isSyncToSc){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constants.KEY_EXTRA_IS_SYNCED_TO_SC, isSyncToSc);
+        editor.commit();
+    }
+
     public void isInCognito(boolean isIncog){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sharedPreferences.edit();

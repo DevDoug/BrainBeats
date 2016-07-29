@@ -124,7 +124,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/blue_line_seperator"
-
             android:paddingTop="@dimen/recycler_view_top_padding">
         </android.support.v7.widget.RecyclerView>
     </RelativeLayout>

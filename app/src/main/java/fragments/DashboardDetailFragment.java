@@ -61,6 +61,7 @@ import entity.Track;
 import service.AudioService;
 import utils.BeatLearner;
 import utils.Constants;
+import web.OfflineSyncManager;
 import web.WebApiManager;
 
 public class DashboardDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
@@ -178,11 +179,16 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 
+        //TODO move local db code out of sync adaper so that sync adapter only has api call's or network interaction.
+        //TODO add sync to sound cloud for determing weather to update sc as well.
+
+
         switch (item.getItemId()) {
             case android.R.id.home:
                 getActivity().onBackPressed();
                 break;
             case R.id.action_add_to_library:
+                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(settingsBundle,getActivity().getContentResolver());
                 settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_UPDATE_TRACK_ACTION,0);
                 ContentResolver.requestSync(((MainActivity)getActivity()).mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
                 break;

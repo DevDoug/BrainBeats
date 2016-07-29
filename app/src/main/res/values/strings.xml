@@ -131,5 +131,6 @@
     <string name="no_current_songs_message">No songs found.</string>
     <string name="sound_cloud_login_message">Log in to sound cloud</string>
     <string name="login_to_sound_cloud_title">Log in to sound cloud.</string>
+    <string name="preference_sync_with_sound_cloud_text">Sync with Sound Cloud</string>
 
 </resources>
