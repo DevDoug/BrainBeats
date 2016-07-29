@@ -79,6 +79,7 @@ public class MixDbHelper extends SQLiteOpenHelper {
         final String CREATE_TABLE_PLAYLIST = CREATE_TABLE + MixContract.MixPlaylistEntry.TABLE_NAME + " (" +
                         MixContract.MixPlaylistEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
                         MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE + COLUMN_TYPE_TEXT_NULL +
+                        MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID + COLUMN_TYPE_INT_NULL +
                         CREATE_TABLE_TERMINATION;
 
         final String CREATE_TABLE_USER = CREATE_TABLE + MixContract.UserEntry.TABLE_NAME + " (" +

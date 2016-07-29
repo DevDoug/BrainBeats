@@ -219,8 +219,6 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                     e.printStackTrace();
                                 }
                             }
-
-
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }

@@ -81,6 +81,8 @@ public class MixContract {
 
         public static final String TABLE_NAME                                       =  "playlists";
         public static final String COLUMN_NAME_PLAYLIST_TITLE                       = "playlisttitle";
+        public static final String COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID               = "soundcloudplaylistid";
+
 
         public static Uri buildPlaylistUriWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
