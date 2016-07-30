@@ -1,5 +1,6 @@
 package model;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -17,6 +18,10 @@ public class Mix implements Parcelable {
     private int mMixRating;
     private ArrayList<MixItem> mMixItems;
     private int mSoundCloudId;
+    private int mRelatedTracksId;
+    private int mIsInLibrary;
+    private int mIsinMixer;
+    private int mMixUserId;
 
     public Mix(){
     }
@@ -75,6 +80,38 @@ public class Mix implements Parcelable {
 
     public void setSoundCloudId(int soundCloudId) {
         this.mSoundCloudId = soundCloudId;
+    }
+
+    public int getRelatedTracksId() {
+        return mRelatedTracksId;
+    }
+
+    public void setRelatedTracksId(int relatedTracksId) {
+        this.mRelatedTracksId = relatedTracksId;
+    }
+
+    public int getIsInLibrary() {
+        return mIsInLibrary;
+    }
+
+    public void setIsInLibrary(int isinlibrary) {
+        this.mIsInLibrary = isinlibrary;
+    }
+
+    public int getIsInMixer() {
+        return mIsinMixer;
+    }
+
+    public void setIsInMixer(int isinMixer) {
+        this.mIsinMixer = isinMixer;
+    }
+
+    public int getMixUserId() {
+        return mMixUserId;
+    }
+
+    public void setMixUserId(int mixUserId) {
+        this.mMixUserId = mixUserId;
     }
 
     @Override

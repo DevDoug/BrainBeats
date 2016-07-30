@@ -31,5 +31,27 @@
                 android:layout_centerVertical="true" />
 
         </RelativeLayout>
+
+        <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/preference_sync_with_sound_cloud_text"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/sync_with_sound_cloud"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true" />
+
+        </RelativeLayout>
     </LinearLayout>
 </FrameLayout>

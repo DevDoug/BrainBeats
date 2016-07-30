@@ -7,40 +7,30 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.volley.VolleyError;
 import com.brainbeats.R;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import org.json.JSONArray;
-import java.lang.reflect.Type;
+
 import java.util.ArrayList;
-import java.util.stream.Stream;
-import adapters.LibraryAdapter;
-import adapters.MixerAdapter;
-import architecture.AccountManager;
+
+import adapters.LibraryMixAdapter;
+import adapters.LibraryPlaylistAdapter;
 import data.MixContract;
+import data.MixDbHelper;
 import entity.Track;
-import entity.UserPlaylistsResponse;
-import entity.UserTrackResponse;
 import utils.Constants;
-import web.WebApiManager;
 
 public class LibraryTabFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final int VOLLEY_LOADER = 0;
-
     ArrayList<Track> trackList;
     private ListView mMixListView;
-    private LibraryAdapter mLibraryAdapter;
+    private LibraryMixAdapter mLibraryMixAdapter;
+    private LibraryPlaylistAdapter mLibraryPlaylistAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private int mDataType;
     public String mFilter = "";
@@ -92,13 +82,40 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
     @Override
     public Loader<Cursor> onCreateLoader(int loaderID, Bundle args) {
         switch (loaderID) {
+            case 0:
+                return new CursorLoader(
+                        getActivity(),         // Parent activity context
+                        MixContract.MixEntry.CONTENT_URI,  // Table to query
+                        null,                          // Projection to return
+                        MixContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY + MixDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
+                        new String[]{MixDbHelper.DB_TRUE_VALUE},                  // No selection arguments
+                        null                   // Default sort order
+                );
+            case 1:
+                return new CursorLoader(
+                        getActivity(),         // Parent activity context
+                        MixContract.MixPlaylistEntry.CONTENT_URI,  // Table to query
+                        null,                          // Projection to return
+                        null,
+                        null,
+                        null                   // Default sort order
+                );
+            case 2:
+                return new CursorLoader(
+                        getActivity(),         // Parent activity context
+                        MixContract.MixEntry.CONTENT_URI,  // Table to query
+                        null,                          // Projection to return
+                        MixContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY + MixDbHelper.WHERE_CLAUSE_EQUAL + MixDbHelper.AND_CLAUSE + MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE + MixDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
+                        new String[]{MixDbHelper.DB_TRUE_VALUE,MixDbHelper.DB_TRUE_VALUE},
+                        null                   // Default sort order
+                );
             default:
                 return new CursorLoader(
                         getActivity(),         // Parent activity context
                         MixContract.MixEntry.CONTENT_URI,  // Table to query
                         null,                          // Projection to return
-                        null,                  // No selection clause
-                        null,                  // No selection arguments
+                        MixContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY + MixDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
+                        new String[]{MixDbHelper.DB_TRUE_VALUE},                  // No selection arguments
                         null                   // Default sort order
                 );
         }
@@ -111,8 +128,13 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
             mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
         } else {
             mEmptyDataPlaceholder.setVisibility(View.INVISIBLE);
-            mLibraryAdapter = new LibraryAdapter(getContext(), data,0);
-            mMixListView.setAdapter(mLibraryAdapter);
+            if(mDataType == 0 || mDataType == 2){
+                mLibraryMixAdapter = new LibraryMixAdapter(getContext(), data,0);
+                mMixListView.setAdapter(mLibraryMixAdapter);
+            }else {
+                mLibraryPlaylistAdapter = new LibraryPlaylistAdapter(getContext(), data,0);
+                mMixListView.setAdapter(mLibraryPlaylistAdapter);
+            }
         }
     }
 

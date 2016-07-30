@@ -27,6 +27,7 @@ import entity.SoundCloudUser;
 import entity.Track;
 import model.Mix;
 import model.MixItem;
+import model.Playlist;
 
 /**
  * Created by Douglas on 4/20/2016.
@@ -40,6 +41,8 @@ public class Constants {
     public static final String KEY_EXTRA_SELECTED_TRACK                     = "SelectedTrack";
     public static final String KEY_EXTRA_SELECTED_MIX                       = "SelectedMix";
     public static final String KEY_EXTRA_SEARCH_KEYWORD                     = "SearchKeyword";
+    public static final String KEY_EXTRA_SYNC_TYPE                          = "SyncType";
+    public static final String KEY_EXTRA_SYNC_ACTION                        = "SyncAction";
     public static final String KEY_EXTRA_SELECTED_TRACK_ID                  = "TrackId";
     public static final String KEY_EXTRA_SELECTED_TRACK_TITLE               = "Title";
     public static final String KEY_EXTRA_SELECTED_TRACK_ALBUM_COVER_ART     = "CoverArt";
@@ -52,7 +55,9 @@ public class Constants {
     public static final String HASH_KEY_ACCESS_TOKEN     = "access_token";
 
     //Shared Preferences
-    public static final String KEY_EXTRA_IS_INCOGNITO_PREF = "IsIncognito";
+    public static final String KEY_EXTRA_IS_INCOGNITO_PREF  = "IsIncognito";
+    public static final String KEY_EXTRA_IS_SYNCED_TO_SC    = "SyncedToSoundCloud";
+    public static final String KEY_EXTRA_IS_GLOBAL_SYNC_REQUIRED = "IsGlobalSyncRequired";
 
     //Sound Cloud
     public static final String SOUND_CLOUD_CLIENT_ID       = "6af4e9b999eaa63f5d797d466cdc4ccb";
@@ -74,6 +79,8 @@ public class Constants {
 
     //Loader Types
     public static final int SOCIAL_LOADER  = 101;
+    public static final int RELATED_TRACKS_LOADER  = 102;
+
 
     public enum AudioServiceRepeatType {
         RepeatOff(0),
@@ -107,6 +114,40 @@ public class Constants {
         }
     }
 
+    public enum SyncDataType {
+        Mixes(0),
+        RelatedMixes(1),
+        Playlists(2),
+        Users(3);
+
+        private int mCode;
+
+        SyncDataType(int code) {
+            mCode = code;
+        }
+
+        public int getCode() {
+            return mCode;
+        }
+    }
+
+    public enum SyncDataAction{
+        UpdateMix(0),
+        UpdateFavorite(1);
+
+        private int mCode;
+
+        SyncDataAction(int code) {
+            mCode = code;
+        }
+
+        public int getCode() {
+            return mCode;
+        }
+    }
+
+
+
     public static ContentValues buildUserRecord(SoundCloudUser soundCloudUser){
         ContentValues values = new ContentValues();
         values.put(MixContract.UserEntry.COLUMN_NAME_USER_NAME, soundCloudUser.getUsername());
@@ -117,8 +158,8 @@ public class Constants {
         Mix mix = new Mix();
         mix.setMixTitle(track.getTitle());
         mix.setMixAlbumCoverArt(track.getArtworkURL());
-        mix.setMixFavorite((track.getIsFavorite()) ? 1:0);
         mix.setSoundCloudId(track.getID());
+        //mix.setRelatedTracksId(relatedTracksId);
         return mix;
     }
 
@@ -130,6 +171,9 @@ public class Constants {
         mix.setMixAlbumCoverArt(cursor.getString(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL)));
         mix.setMixFavorite(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE)));
         mix.setSoundCloudId(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID)));
+        mix.setIsInLibrary(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY));
+        mix.setIsInMixer(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_IN_MIXER));
+
         String whereClause = MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + "= ?";
         String[] whereArgs = new String[] {
                 " " + cursor.getLong(cursor.getColumnIndex(MixContract.MixEntry._ID)),
@@ -154,7 +198,17 @@ public class Constants {
         values.put(MixContract.MixEntry.COLUMN_NAME_MIX_TITLE, mix.getBeatTitle());
         values.put(MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL, mix.getMixAlbumCoverArt());
         values.put(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE, mix.getMixFavorite());
+        values.put(MixContract.MixEntry.COLUMN_NAME_MIX_USER_ID_FK, mix.getMixUserId());
         values.put(MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID, mix.getSoundCloudId());
+        values.put(MixContract.MixEntry.COLUMN_NAME_RELATED_MIXES_ID,mix.getRelatedTracksId());
+        values.put(MixContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY, mix.getIsInLibrary());
+        values.put(MixContract.MixEntry.COLUMN_NAME_IS_IN_MIXER, mix.getIsInMixer());
+        return values;
+    }
+
+    public static ContentValues buildMixRelatedRecord(){
+        ContentValues values = new ContentValues();
+        values.put(MixContract.MixRelatedEntry.COLUMN_NAME_TAG_CLOUD_ID, 0);
         return values;
     }
 
@@ -163,6 +217,13 @@ public class Constants {
         values.put(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_TITLE,mixitem.getMixItemTitle());
         values.put(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_LEVEL,mixitem.getMixItemLevel());
         values.put(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY,mixId);
+        return values;
+    }
+
+    public static ContentValues buildPlaylistRecord(Playlist playlist){
+        ContentValues values = new ContentValues();
+        values.put(MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE,playlist.getPlaylistTitle());
+        values.put(MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID,playlist.getSoundCloudId());
         return values;
     }
 

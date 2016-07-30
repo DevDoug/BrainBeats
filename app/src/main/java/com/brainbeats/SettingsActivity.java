@@ -36,7 +36,7 @@ public class SettingsActivity extends BaseActivity implements SettingFragment.On
         switch (item.getItemId()) {
             case android.R.id.home:
                 //called when the up affordance/carat in actionbar is pressed
-                AccountManager.getInstance(this).isInCognito(((SettingFragment)mSettingsFragment).mIncogCheckBox.isChecked());
+                break;
         }
         return true;
     }

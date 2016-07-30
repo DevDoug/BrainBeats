@@ -5,125 +5,126 @@
     android:fillViewport="true"
     tools:context="fragments.DashboardDetailFragment">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/track_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="25dp"
-            android:background="@android:color/transparent"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:paddingEnd="45dp"
-            android:paddingStart="45dp"
-            android:singleLine="true"
-            android:text="Focus Beat One"
-            android:textColor="@color/theme_secondary_text_color"
-            android:textSize="@dimen/album_detail_title_text_size" />
 
         <RelativeLayout
-            android:id="@+id/beat_detail_header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/track_title">
+            android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/album_cover_art"
-                android:layout_width="300dp"
-                android:layout_height="200dp"
+            <TextView
+                android:id="@+id/track_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/fragment_content_item_top_margin"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/content_description_image_placeholder"
-                android:src="@drawable/placeholder" />
+                android:layout_marginTop="25dp"
+                android:background="@android:color/transparent"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:paddingEnd="45dp"
+                android:paddingStart="45dp"
+                android:singleLine="true"
+                android:text="Focus Beat One"
+                android:textColor="@color/theme_secondary_text_color"
+                android:textSize="@dimen/album_detail_title_text_size" />
 
-            <SeekBar
-                android:id="@+id/play_song_seek_bar"
+            <RelativeLayout
+                android:id="@+id/beat_detail_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/album_cover_art"
-                android:layout_marginLeft="@dimen/seek_bar_margin_left"
-                android:layout_marginRight="@dimen/seek_bar_margin_left"
-                android:layout_marginStart="@dimen/seek_bar_start_margin"
-                android:layout_marginTop="10dp" />
+                android:layout_below="@+id/track_title">
 
-            <LinearLayout
+                <ImageView
+                    android:id="@+id/album_cover_art"
+                    android:layout_width="300dp"
+                    android:layout_height="200dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/fragment_content_item_top_margin"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/content_description_image_placeholder"
+                    android:src="@drawable/placeholder" />
+
+                <SeekBar
+                    android:id="@+id/play_song_seek_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/album_cover_art"
+                    android:layout_marginLeft="@dimen/seek_bar_margin_left"
+                    android:layout_marginRight="@dimen/seek_bar_margin_left"
+                    android:layout_marginStart="@dimen/seek_bar_start_margin"
+                    android:layout_marginTop="10dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@+id/play_song_seek_bar"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/shuffle__button"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:contentDescription="@string/content_description_shuffle_button"
+                        android:src="@drawable/ic_shuffle_off" />
+
+                    <ImageView
+                        android:id="@+id/skip_backward_button"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:contentDescription="@string/content_description_play_prev_button"
+                        android:src="@drawable/ic_skip_previous" />
+
+                    <ImageView
+                        android:id="@+id/play_song_button"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:contentDescription="@string/content_description_play_button"
+                        android:src="@drawable/ic_play_circle" />
+
+                    <ImageView
+                        android:id="@+id/skip_forward_button"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:contentDescription="@string/content_description_play_next_button"
+                        android:src="@drawable/ic_skip_next" />
+
+                    <ImageView
+                        android:id="@+id/repeat_button"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:contentDescription="@string/content_description_play_next_button"
+                        android:src="@drawable/ic_repeat_off" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <include
+                android:id="@+id/blue_line_seperator"
+                layout="@layout/blue_horizontal_seperator"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_below="@+id/play_song_seek_bar"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:layout_height="@dimen/blue_horizontal_divider_height"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/beat_detail_header"
+                android:layout_marginTop="@dimen/content_margin_top" />
 
-                <ImageView
-                    android:id="@+id/shuffle__button"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:contentDescription="@string/content_description_shuffle_button"
-                    android:src="@drawable/ic_shuffle_off" />
-
-                <ImageView
-                    android:id="@+id/skip_backward_button"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:contentDescription="@string/content_description_play_prev_button"
-                    android:src="@drawable/ic_skip_previous" />
-
-                <ImageView
-                    android:id="@+id/play_song_button"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:contentDescription="@string/content_description_play_button"
-                    android:src="@drawable/ic_play_circle" />
-
-                <ImageView
-                    android:id="@+id/skip_forward_button"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:contentDescription="@string/content_description_play_next_button"
-                    android:src="@drawable/ic_skip_next" />
-
-                <ImageView
-                    android:id="@+id/repeat_button"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:contentDescription="@string/content_description_play_next_button"
-                    android:src="@drawable/ic_repeat_off" />
-
-            </LinearLayout>
-
+            <ListView
+                android:id="@+id/album_title_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:nestedScrollingEnabled="true"
+                android:layout_below="@id/blue_line_seperator"/>
         </RelativeLayout>
-
-        <include
-            android:id="@+id/blue_line_seperator"
-            layout="@layout/blue_horizontal_seperator"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/blue_horizontal_divider_height"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/beat_detail_header"
-            android:layout_marginTop="@dimen/content_margin_top" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/album_title_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/blue_line_seperator" />
-
-    </RelativeLayout>
 </ScrollView>

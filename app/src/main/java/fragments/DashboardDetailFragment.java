@@ -17,6 +17,9 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -46,6 +50,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import adapters.MixerAdapter;
 import adapters.RelatedTracksAdapter;
 import architecture.AccountManager;
 import data.MixContract;
@@ -56,9 +61,10 @@ import entity.Track;
 import service.AudioService;
 import utils.BeatLearner;
 import utils.Constants;
+import web.OfflineSyncManager;
 import web.WebApiManager;
 
-public class DashboardDetailFragment extends Fragment implements RelatedTracksAdapter.OnRelatedTrackUpdateListener, View.OnClickListener {
+public class DashboardDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
     public static final String TAG = "DashboardDetailFragment";
 
@@ -77,22 +83,13 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
 
     public Track mSelectedTrack;
     public  List<Collection> mCollections = new ArrayList<>();
-    private RecyclerView mAlbumTrackList;
+    private ListView mAlbumTrackList;
     public RelatedTracksAdapter mRelatedTracksAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     private SeekBar mPlayTrackSeekBar;
     private OnFragmentInteractionListener mListener;
     public FloatingActionButton mFob;
-
-    //Feilds for testing sync adapter
-    // An account type, in the form of a domain name
-    public static final String ACCOUNT_TYPE = "com.example.android.datasync";
-    // The account name
-    public static final String ACCOUNT = "dummyaccount";
-    // Instance fields
-    Account mAccount;
-
 
     public DashboardDetailFragment() {
         // Required empty public constructor
@@ -102,8 +99,6 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mAccount = CreateSyncAccount(getActivity());
-
     }
 
     @Override
@@ -127,7 +122,7 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dashboard_detail, container, false);
-        mAlbumTrackList = (RecyclerView) v.findViewById(R.id.album_title_list);
+        mAlbumTrackList = (ListView) v.findViewById(R.id.album_title_list);
         mTrackTitle = (TextView) v.findViewById(R.id.track_title);
         mAlbumCoverArt = (ImageView) v.findViewById(R.id.album_cover_art);
         mPlaySongButton = (ImageView) v.findViewById(R.id.play_song_button);
@@ -136,6 +131,8 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
         mLoopSongButton = (ImageView) v.findViewById(R.id.repeat_button);
         mPlayTrackSeekBar = (SeekBar) v.findViewById(R.id.play_song_seek_bar);
         ((TextView) v.findViewById(R.id.separator_title)).setText(R.string.suggested_tracks);
+        //mCoordinatorLayout = (CoordinatorLayout) v.findViewById(R.id.main_content_coordinator_layout);
+
 
         mPlaySongButton.setOnClickListener(this);
         mSkipBackwardButton.setOnClickListener(this);
@@ -148,7 +145,6 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         mUserSelections = getArguments();
         if (mUserSelections != null) {
             mSelectedTrack = (Track) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_TRACK);
@@ -158,12 +154,7 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
             Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
         }
 
-        mRelatedTracksAdapter = new RelatedTracksAdapter(getContext(), mCollections, DashboardDetailFragment.this);
-        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        mAlbumTrackList.setLayoutManager(mLayoutManager);
-        mAlbumTrackList.setAdapter(mRelatedTracksAdapter);
-
-        loadRelatedTracks(mSelectedTrack.getID());
+        getLoaderManager().initLoader(Constants.RELATED_TRACKS_LOADER,null,this);
     }
 
     @Override
@@ -184,26 +175,26 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
     public boolean onOptionsItemSelected(MenuItem item) {
         Bundle settingsBundle = new Bundle();
         settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_TRACK_ID,mSelectedTrack.getID());
+        settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Mixes.getCode());
         settingsBundle.putString(Constants.KEY_EXTRA_SELECTED_TRACK_TITLE,mSelectedTrack.getTitle());
         settingsBundle.putString(Constants.KEY_EXTRA_SELECTED_TRACK_ALBUM_COVER_ART,mSelectedTrack.getArtworkURL());
-        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+
+        //TODO move local db code out of sync adaper so that sync adapter only has api call's or network interaction.
+        //TODO add sync to sound cloud for determing weather to update sc as well.
 
         switch (item.getItemId()) {
             case android.R.id.home:
                 getActivity().onBackPressed();
                 break;
             case R.id.action_add_to_library:
-                settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_UPDATE_TRACK_ACTION,0);
-                ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION,Constants.SyncDataAction.UpdateMix.getCode());
+                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity)getActivity()).mCoordinatorLayout, settingsBundle,getActivity().getContentResolver());
                 break;
             case R.id.action_favorite:
-                settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_UPDATE_TRACK_ACTION,1);
-                ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION,Constants.SyncDataAction.UpdateFavorite.getCode());
+                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity)getActivity()).mCoordinatorLayout, settingsBundle,getActivity().getContentResolver());
                 break;
             case R.id.action_rate:
-                settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_UPDATE_TRACK_ACTION,2);
-                ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
                 break;
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
@@ -277,18 +268,33 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
     }
 
     @Override
-    public void relatedTrackUpdated(Track track) {
-        mSelectedTrack = track;
-        mTrackTitle.setText(mSelectedTrack.getTitle());
-        Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
-        mAudioService.stopSong();
-        mAudioService.mIsPaused = false;
-        if (mSelectedTrack.getStreamURL() != null) {
-            mSelectedTrack.setStreamURL("https://api.soundcloud.com/tracks/5106125/stream?client_id=6af4e9b999eaa63f5d797d466cdc4ccb");
-            mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
-            mAudioService.setProgressIndicator(mPlaySongButton, mPlayTrackSeekBar, mSelectedTrack.getDuration());
-        } else
-            Snackbar.make(mCoordinatorLayout, mAudioService.getString(R.string.error_playing_song_message), Snackbar.LENGTH_LONG).show();
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case Constants.RELATED_TRACKS_LOADER:
+                // Returns a new CursorLoader
+                return new CursorLoader(
+                        getActivity(),         // Parent activity context
+                        MixContract.MixEntry.CONTENT_URI,  // Table to query
+                        null,                          // Projection to return
+                        null,                  // No selection clause
+                        null,                  // No selection arguments
+                        null                   // Default sort order
+                );
+            default:
+                // An invalid id was passed in
+                return null;
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mRelatedTracksAdapter = new RelatedTracksAdapter(getContext(), data,0);
+        mAlbumTrackList.setAdapter(mRelatedTracksAdapter);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 
     public interface OnFragmentInteractionListener {
@@ -309,44 +315,4 @@ public class DashboardDetailFragment extends Fragment implements RelatedTracksAd
             mBound = false;
         }
     };
-
-    public void loadRelatedTracks(int trackId){
-        WebApiManager.getRelatedTracks(getContext(), String.valueOf(trackId), new WebApiManager.OnObjectResponseListener() {
-            @Override
-            public void onObjectResponse(JSONObject object) {
-                Log.i(getClass().getSimpleName(), "Response = " + object.toString());
-                Gson gson = new Gson();
-                Type token = new TypeToken<RelatedTracksResponse>() {
-                }.getType();
-                try {
-                    RelatedTracksResponse relatedTracks = gson.fromJson(object.toString(), token);
-                    mCollections = relatedTracks.getCollection();
-                    mRelatedTracksAdapter = new RelatedTracksAdapter(getContext(), mCollections, DashboardDetailFragment.this);
-                    mAlbumTrackList.setAdapter(mRelatedTracksAdapter);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }, new WebApiManager.OnErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(getClass().getSimpleName(), "Response = " + error.toString());
-            }
-        });
-    }
-
-    /**
-     * Create a new dummy account for the sync adapter
-     *
-     * @param context The application context
-     */
-    public static Account CreateSyncAccount(Context context) {
-        Account newAccount = new Account(ACCOUNT, ACCOUNT_TYPE);
-        android.accounts.AccountManager accountManager = (android.accounts.AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
-        if (accountManager.addAccountExplicitly(newAccount, null, null)) {
-            return newAccount;
-        } else {
-            return accountManager.getAccountsByType(ACCOUNT_TYPE)[0];
-        }
-    }
 }

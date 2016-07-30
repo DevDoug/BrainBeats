@@ -18,9 +18,11 @@ public class MixDbContentProvider extends ContentProvider {
     private MixDbHelper mOpenHelper;
     private static final SQLiteQueryBuilder sMixByIDQueryBuilder;
 
-    static final int MIX      = 100;
-    static final int MIXITEM  = 200;
-    static final int USER     = 300;
+    static final int MIX                = 100;
+    static final int MIXITEM            = 200;
+    static final int MIX_RELATED        = 300;
+    static final int MIX_PLAYLIST       = 400;
+    static final int USER               = 500;
 
     static {
         sMixByIDQueryBuilder = new SQLiteQueryBuilder();
@@ -33,6 +35,8 @@ public class MixDbContentProvider extends ContentProvider {
         // For each type of URI you want to add, create a corresponding code.
         matcher.addURI(authority, MixContract.PATH_MIX, MIX);
         matcher.addURI(authority, MixContract.PATH_MIX_ITEM, MIXITEM);
+        matcher.addURI(authority, MixContract.PATH_MIX_RELATED, MIX_RELATED);
+        matcher.addURI(authority, MixContract.PATH_MIX_PLAYLIST, MIX_PLAYLIST);
         matcher.addURI(authority, MixContract.PATH_USER, USER);
         return matcher;
     }
@@ -69,6 +73,28 @@ public class MixDbContentProvider extends ContentProvider {
                         sortOrder
                 );
                 break;
+            case MIX_RELATED:
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        MixContract.MixRelatedEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            case MIX_PLAYLIST:
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        MixContract.MixPlaylistEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
             case USER:
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         MixContract.UserEntry.TABLE_NAME,
@@ -97,6 +123,10 @@ public class MixDbContentProvider extends ContentProvider {
                 return MixContract.MixEntry.CONTENT_TYPE;
             case MIXITEM:
                 return MixContract.MixItemsEntry.CONTENT_TYPE;
+            case MIX_RELATED:
+                return MixContract.MixRelatedEntry.CONTENT_TYPE;
+            case MIX_PLAYLIST:
+                return MixContract.MixPlaylistEntry.CONTENT_TYPE;
             case USER:
                 return MixContract.UserEntry.CONTENT_TYPE;
             default:
@@ -121,6 +151,20 @@ public class MixDbContentProvider extends ContentProvider {
                 long _idMixItem = db.insert(MixContract.MixItemsEntry.TABLE_NAME, null, values);
                 if (_idMixItem > 0)
                     returnUri = MixContract.MixItemsEntry.buildMixItemUriWithId(_idMixItem);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            case MIX_RELATED:
+                long _idMixRelated = db.insert(MixContract.MixRelatedEntry.TABLE_NAME, null, values);
+                if (_idMixRelated > 0)
+                    returnUri = MixContract.MixRelatedEntry.buildRelatedMixesUriWithId(_idMixRelated);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            case MIX_PLAYLIST:
+                long _idMixPlaylist = db.insert(MixContract.MixPlaylistEntry.TABLE_NAME, null, values);
+                if (_idMixPlaylist > 0)
+                    returnUri = MixContract.MixRelatedEntry.buildRelatedMixesUriWithId(_idMixPlaylist);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;

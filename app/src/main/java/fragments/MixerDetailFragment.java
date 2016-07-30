@@ -83,7 +83,12 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
             public void onClick(View view) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 mSelectedMix.setMixTitle(mMixTitle.getText().toString());
-                ((MixerActivity) getActivity()).getContentResolver().update(MixContract.MixEntry.CONTENT_URI,Constants.buildMixRecord(mSelectedMix), MixDbHelper.DB_ID_FIELD + mSelectedMix.getMixId(), null);
+                ((MixerActivity) getActivity()).getContentResolver().update(
+                        MixContract.MixEntry.CONTENT_URI,
+                        Constants.buildMixRecord(mSelectedMix),
+                        MixDbHelper.DB_ID_FIELD + mSelectedMix.getMixId(),
+                        null);
+
                 for (int i = 0; i < mSelectedMix.getMixItems().size(); i++) {
                     MixItem item = mSelectedMix.getMixItems().get(i);
                     ((MixerActivity) getActivity()).getContentResolver().update(
