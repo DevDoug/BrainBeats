@@ -126,4 +126,18 @@ public class AccountManager  {
     public void forceLogout(Context context){
         removeUserId();
     }
+
+    public boolean getGlobalSyncRequired(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        boolean isGlobalSyncRequired = sharedPreferences.getBoolean(Constants.KEY_EXTRA_IS_GLOBAL_SYNC_REQUIRED, true);
+        return isGlobalSyncRequired;
+    }
+
+    public void setGlobalSyncRequired(boolean isGlobalSyncRequired){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constants.KEY_EXTRA_IS_GLOBAL_SYNC_REQUIRED, isGlobalSyncRequired);
+        editor.commit();
+    }
+
 }

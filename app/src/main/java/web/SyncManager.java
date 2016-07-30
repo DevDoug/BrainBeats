@@ -39,9 +39,9 @@ public class SyncManager {
         settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION,Constants.SyncDataAction.UpdateMix.getCode());
         ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle); // Sync mixes
 
-/*        settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Mixes.getCode());
+        settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Mixes.getCode());
         settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION,Constants.SyncDataAction.UpdateFavorite.getCode());
-        ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle); // Sync favorites*/
+        ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle); // Sync favorites
 
         settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Playlists.getCode());
         ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle); //Sync Playlists

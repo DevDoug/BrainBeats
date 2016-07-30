@@ -137,7 +137,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                             public void onArrayResponse(JSONArray array) {
                                 Log.i(getClass().getSimpleName(), "Response = " + array.toString());
                                 Gson gson = new Gson();
-                                Type token = new TypeToken<ArrayList<UserTrackResponse>>() {
+                                Type token = new TypeToken<ArrayList<Track>>() {
                                 }.getType();
                                 try {
                                     ArrayList<Track> userTracks = gson.fromJson(array.toString(), token);
@@ -154,25 +154,27 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                                 // if the local db data doesn't agree with what we get from API try to update api with local change
                                                 // the data from sound cloud says this is not a favorite but locally it is so try and updated it on SC
                                                 if(!track.getIsFavorite() && trackCursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE) == 1)
-                                                    favoriteTrackOnSoundCloud(trackCursor, track.getID(),provider);
+                                                    Log.i("Action","favorite n sc");
+                                                    //favoriteTrackOnSoundCloud(trackCursor, track.getID(),provider);
                                                 else if(track.getIsFavorite() && trackCursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE) == 0) {
                                                     //update the local db from the change on sound cloud
-                                                    Mix mix = Constants.buildMixFromCursor(getContext(), trackCursor, 0);
-
+                                                    Log.i("Action","favorite in local");
+/*                                                    Mix mix = Constants.buildMixFromCursor(getContext(), trackCursor, 0);
                                                     int returnId = provider.update(
-                                                        MixContract.MixEntry.CONTENT_URI,
-                                                        Constants.buildMixRecord(mix),
-                                                        MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
-                                                        new String[]{String.valueOf(track.getID())});
+                                                            MixContract.MixEntry.CONTENT_URI,
+                                                            Constants.buildMixRecord(mix),
+                                                            MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                                                            new String[]{String.valueOf(track.getID())});
                                                     if(returnId != -1)
                                                         Log.i("Mix updated","Updated");
                                                     else
-                                                        Log.i("Mix Updated","Fail");
+                                                        Log.i("Mix Updated","Fail");*/
+
                                                 }
                                                 trackCursor.close();
                                             } else{
                                                 addMix(track,true,true,false, provider); // create this as a mix from a sound cloud track
-                                                Log.i("Mix Added","Added is a favorite");
+                                                Log.i("Mix Added","Added a favorite");
                                                 if (trackCursor != null) {
                                                     trackCursor.close();
                                                 }

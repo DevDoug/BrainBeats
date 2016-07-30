@@ -57,6 +57,7 @@ public class Constants {
     //Shared Preferences
     public static final String KEY_EXTRA_IS_INCOGNITO_PREF  = "IsIncognito";
     public static final String KEY_EXTRA_IS_SYNCED_TO_SC    = "SyncedToSoundCloud";
+    public static final String KEY_EXTRA_IS_GLOBAL_SYNC_REQUIRED = "IsGlobalSyncRequired";
 
     //Sound Cloud
     public static final String SOUND_CLOUD_CLIENT_ID       = "6af4e9b999eaa63f5d797d466cdc4ccb";
