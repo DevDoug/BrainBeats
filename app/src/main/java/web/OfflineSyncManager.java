@@ -10,9 +10,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 
 import com.android.volley.VolleyError;
+import com.brainbeats.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -21,6 +24,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+import architecture.AccountManager;
 import data.MixContract;
 import data.MixDbHelper;
 import entity.Collection;
@@ -48,13 +52,13 @@ public class OfflineSyncManager {
         return mInstance;
     }
 
-    public void performSyncOnLocalDb(Bundle extras, ContentResolver provider){
+    public void performSyncOnLocalDb(CoordinatorLayout coordinatorLayout,Bundle extras, ContentResolver provider){
 
         int selectedTrackId = extras.getInt(Constants.KEY_EXTRA_SELECTED_TRACK_ID);
         String selectedTrackTitle = extras.getString(Constants.KEY_EXTRA_SELECTED_TRACK_TITLE);
         String selectedTrackAlbumUrl = extras.getString(Constants.KEY_EXTRA_SELECTED_TRACK_ALBUM_COVER_ART);
         int SYNC_TYPE = extras.getInt(Constants.KEY_EXTRA_SYNC_TYPE);
-        int updateMixAction = extras.getInt(Constants.KEY_EXTRA_SELECTED_UPDATE_TRACK_ACTION);
+        int updateMixAction = extras.getInt(Constants.KEY_EXTRA_SYNC_ACTION);
 
         switch (SYNC_TYPE){
             case 0: //sync mixes
@@ -76,22 +80,35 @@ public class OfflineSyncManager {
                                     Mix mix = Constants.buildMixFromCursor(mContext, mixCursor, 0);
                                     mix.setIsInLibrary(1);
                                     updateMixRecord(provider,mix,selectedTrackId);
-                                    //context.getContentResolver().notifyChange(Constants.LIBRARY_ALREADY_URI, null, false);
+                                    showSnackMessage(coordinatorLayout,R.string.error_this_mix_is_already_in_library);
                                 } else{
                                     addMix(selectedTrackTitle, selectedTrackAlbumUrl, selectedTrackId, selectedTrackId,true,false,false, provider); // create this as a mix from a sound cloud track
-                                    //context.getContentResolver().notifyChange(Constants.ADDED_TO_LIBRARY_URI, null, false);
+                                    showSnackMessage(coordinatorLayout,R.string.song_added_to_library_snack_message);
                                 }
                                 break;
                             case 1: //add to fav
                                 if (mixCursor.getCount() != 0) { // this mix exists so update the record.
                                     Mix mix = Constants.buildMixFromCursor(mContext, mixCursor, 0);
-                                    mix.setMixFavorite(1);
-                                    updateMixRecord(provider,mix,selectedTrackId);
-                                    //getContext().getContentResolver().notifyChange(Constants.FAVORITE_ALREADY_URI, null, false);
+                                    if(mix.getMixFavorite() != 1) { //if mix is not fav
+                                        mix.setMixFavorite(1);
+                                        updateMixRecord(provider,mix,selectedTrackId);
+                                        showSnackMessage(coordinatorLayout,R.string.song_added_to_favorites_snack_message);
+                                    } else { //mix exists and is already a favorite
+                                        showSnackMessage(coordinatorLayout,R.string.error_this_mix_is_already_a_favorite);
+                                    }
                                 } else{
-                                    addMix(selectedTrackTitle, selectedTrackAlbumUrl, selectedTrackId, selectedTrackId,true,false,true, provider); // create this as a mix from a sound cloud track
-                                    //getContext().getContentResolver().notifyChange(Constants.FAVORITE_SUCCESS_URI, null, false);
+                                    addMix(selectedTrackTitle, selectedTrackAlbumUrl, selectedTrackId, selectedTrackId,true,true,false, provider); // create this as a mix from a sound cloud track
+                                    showSnackMessage(coordinatorLayout,R.string.song_added_to_favorites_snack_message);
                                 }
+
+                                if(AccountManager.getInstance(mContext).getIsSyncedToSoundCloud()){
+                                    Bundle settingsBundle = new Bundle();
+                                    settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,0);
+                                    settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION,1); //Action add mix to user fav on sc.
+                                    settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+                                    settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+                                }
+
                                 break;
                             case 2: //change rating
                                 break;
@@ -101,7 +118,7 @@ public class OfflineSyncManager {
                     e.printStackTrace();
                 }
 
-                //TODO after updating locally tell the syncadapter to update the server
+                //TODO after updating locally tell the syncadapter to update the server if it can be updated on server E.X. user favorites can be added to SC
                 break;
             case 1: //sync mix related
                 break;
@@ -147,5 +164,12 @@ public class OfflineSyncManager {
             e.printStackTrace();
         }
     }
+
+    public void showSnackMessage(CoordinatorLayout layout, int messageResource){
+        Snackbar createdSnack;
+        createdSnack = Snackbar.make(layout, messageResource, Snackbar.LENGTH_LONG);
+        createdSnack.show();
+    }
+
 
 }

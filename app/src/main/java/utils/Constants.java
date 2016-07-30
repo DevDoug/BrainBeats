@@ -42,6 +42,7 @@ public class Constants {
     public static final String KEY_EXTRA_SELECTED_MIX                       = "SelectedMix";
     public static final String KEY_EXTRA_SEARCH_KEYWORD                     = "SearchKeyword";
     public static final String KEY_EXTRA_SYNC_TYPE                          = "SyncType";
+    public static final String KEY_EXTRA_SYNC_ACTION                        = "SyncAction";
     public static final String KEY_EXTRA_SELECTED_TRACK_ID                  = "TrackId";
     public static final String KEY_EXTRA_SELECTED_TRACK_TITLE               = "Title";
     public static final String KEY_EXTRA_SELECTED_TRACK_ALBUM_COVER_ART     = "CoverArt";
@@ -112,6 +113,40 @@ public class Constants {
         }
     }
 
+    public enum SyncDataType {
+        Mixes(0),
+        RelatedMixes(1),
+        Playlists(2),
+        Users(3);
+
+        private int mCode;
+
+        SyncDataType(int code) {
+            mCode = code;
+        }
+
+        public int getCode() {
+            return mCode;
+        }
+    }
+
+    public enum SyncDataAction{
+        UpdateMix(0),
+        UpdateFavorite(1);
+
+        private int mCode;
+
+        SyncDataAction(int code) {
+            mCode = code;
+        }
+
+        public int getCode() {
+            return mCode;
+        }
+    }
+
+
+
     public static ContentValues buildUserRecord(SoundCloudUser soundCloudUser){
         ContentValues values = new ContentValues();
         values.put(MixContract.UserEntry.COLUMN_NAME_USER_NAME, soundCloudUser.getUsername());
@@ -122,8 +157,8 @@ public class Constants {
         Mix mix = new Mix();
         mix.setMixTitle(track.getTitle());
         mix.setMixAlbumCoverArt(track.getArtworkURL());
-        mix.setMixFavorite((track.getIsFavorite()) ? 1:0);
         mix.setSoundCloudId(track.getID());
+        //mix.setRelatedTracksId(relatedTracksId);
         return mix;
     }
 
@@ -162,6 +197,7 @@ public class Constants {
         values.put(MixContract.MixEntry.COLUMN_NAME_MIX_TITLE, mix.getBeatTitle());
         values.put(MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL, mix.getMixAlbumCoverArt());
         values.put(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE, mix.getMixFavorite());
+        values.put(MixContract.MixEntry.COLUMN_NAME_MIX_USER_ID_FK, mix.getMixUserId());
         values.put(MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID, mix.getSoundCloudId());
         values.put(MixContract.MixEntry.COLUMN_NAME_RELATED_MIXES_ID,mix.getRelatedTracksId());
         values.put(MixContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY, mix.getIsInLibrary());
@@ -186,6 +222,7 @@ public class Constants {
     public static ContentValues buildPlaylistRecord(Playlist playlist){
         ContentValues values = new ContentValues();
         values.put(MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE,playlist.getPlaylistTitle());
+        values.put(MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID,playlist.getSoundCloudId());
         return values;
     }
 

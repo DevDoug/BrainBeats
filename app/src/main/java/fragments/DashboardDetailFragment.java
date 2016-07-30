@@ -131,6 +131,8 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         mLoopSongButton = (ImageView) v.findViewById(R.id.repeat_button);
         mPlayTrackSeekBar = (SeekBar) v.findViewById(R.id.play_song_seek_bar);
         ((TextView) v.findViewById(R.id.separator_title)).setText(R.string.suggested_tracks);
+        //mCoordinatorLayout = (CoordinatorLayout) v.findViewById(R.id.main_content_coordinator_layout);
+
 
         mPlaySongButton.setOnClickListener(this);
         mSkipBackwardButton.setOnClickListener(this);
@@ -173,32 +175,26 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     public boolean onOptionsItemSelected(MenuItem item) {
         Bundle settingsBundle = new Bundle();
         settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_TRACK_ID,mSelectedTrack.getID());
-        settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,0);
+        settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Mixes.getCode());
         settingsBundle.putString(Constants.KEY_EXTRA_SELECTED_TRACK_TITLE,mSelectedTrack.getTitle());
         settingsBundle.putString(Constants.KEY_EXTRA_SELECTED_TRACK_ALBUM_COVER_ART,mSelectedTrack.getArtworkURL());
-        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 
         //TODO move local db code out of sync adaper so that sync adapter only has api call's or network interaction.
         //TODO add sync to sound cloud for determing weather to update sc as well.
-
 
         switch (item.getItemId()) {
             case android.R.id.home:
                 getActivity().onBackPressed();
                 break;
             case R.id.action_add_to_library:
-                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(settingsBundle,getActivity().getContentResolver());
-                settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_UPDATE_TRACK_ACTION,0);
-                ContentResolver.requestSync(((MainActivity)getActivity()).mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION,Constants.SyncDataAction.UpdateMix.getCode());
+                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity)getActivity()).mCoordinatorLayout, settingsBundle,getActivity().getContentResolver());
                 break;
             case R.id.action_favorite:
-                settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_UPDATE_TRACK_ACTION,1);
-                ContentResolver.requestSync(((MainActivity)getActivity()).mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION,Constants.SyncDataAction.UpdateFavorite.getCode());
+                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity)getActivity()).mCoordinatorLayout, settingsBundle,getActivity().getContentResolver());
                 break;
             case R.id.action_rate:
-                settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_UPDATE_TRACK_ACTION,2);
-                ContentResolver.requestSync(((MainActivity)getActivity()).mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);
                 break;
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());

@@ -21,6 +21,7 @@ public class Mix implements Parcelable {
     private int mRelatedTracksId;
     private int mIsInLibrary;
     private int mIsinMixer;
+    private int mMixUserId;
 
     public Mix(){
     }
@@ -103,6 +104,14 @@ public class Mix implements Parcelable {
 
     public void setIsInMixer(int isinMixer) {
         this.mIsinMixer = isinMixer;
+    }
+
+    public int getMixUserId() {
+        return mMixUserId;
+    }
+
+    public void setMixUserId(int mixUserId) {
+        this.mMixUserId = mixUserId;
     }
 
     @Override

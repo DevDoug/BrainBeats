@@ -9,19 +9,19 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class MixDbHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 6;
+    public static final int DATABASE_VERSION = 11;
     public static final String DATABASE_NAME = "Mix.db";
 
     //Common sql statments.
     public static final String CREATE_TABLE                         = "CREATE TABLE ";
     public static final String INTEGER_PRIMARY_KEY_AUTO_INCREMENT   = " INTEGER PRIMARY KEY AUTOINCREMENT,";
     public static final String COLUMN_TYPE_INT_NULL                 = " INTEGER";
-    public static final String COLUMN_TYPE_INT_NOT_NULL             = " INTEGER";
+    public static final String COLUMN_TYPE_INT_NOT_NULL             = " INTEGER NOT NULL";
     public static final String COLUMN_TYPE_TEXT_NULL                = " TEXT";
     public static final String COLUMN_TYPE_TEXT_NOT_NULL            = " TEXT NOT NULL";
     public static final String COMMA_SEPERATOR                      = ",";
-    public static final String CREATE_TABLE_TERMINATION_FOREIGN_KEY             = "));";
-    public static final String CREATE_TABLE_TERMINATION                         = ");";
+    public static final String CREATE_TABLE_TERMINATION_FOREIGN_KEY        = "));";
+    public static final String CREATE_TABLE_TERMINATION                    = ");";
 
     //Query params
     public static final String WHERE_CLAUSE_LIKE                    = "LIKE ?";
@@ -78,7 +78,7 @@ public class MixDbHelper extends SQLiteOpenHelper {
 
         final String CREATE_TABLE_PLAYLIST = CREATE_TABLE + MixContract.MixPlaylistEntry.TABLE_NAME + " (" +
                         MixContract.MixPlaylistEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
-                        MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE + COLUMN_TYPE_TEXT_NULL +
+                        MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
                         MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID + COLUMN_TYPE_INT_NULL +
                         CREATE_TABLE_TERMINATION;
 
@@ -86,7 +86,7 @@ public class MixDbHelper extends SQLiteOpenHelper {
                         MixContract.UserEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
                         MixContract.UserEntry.COLUMN_NAME_USER_NAME + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
                         MixContract.UserEntry.COLUMN_NAME_USER_PASSWORD + COLUMN_TYPE_TEXT_NOT_NULL + COMMA_SEPERATOR +
-                        MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + COLUMN_TYPE_TEXT_NULL +
+                        MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + COLUMN_TYPE_INT_NULL +
                         CREATE_TABLE_TERMINATION;
 
         db.execSQL(CREATE_TABLE_MIX);

@@ -28,6 +28,8 @@ public class UserTrackResponse {
     @SerializedName("duration")
     private int mDuration;
 
+    @SerializedName("user_favorite")
+    private boolean mUserFavorite;
 
     public String getTitle() {
         return mTitle;
@@ -39,6 +41,10 @@ public class UserTrackResponse {
 
     public int getID() {
         return mID;
+    }
+
+    public void setID(int id){
+        this.mID = id;
     }
 
     public String getStreamURL() {
@@ -55,5 +61,13 @@ public class UserTrackResponse {
 
     public void setDuration(int duration) {
         this.mDuration = duration;
+    }
+
+    public boolean getIsFavorite(){
+        return mUserFavorite;
+    }
+
+    public void setUserFavorite(boolean favorite){
+        mUserFavorite = favorite;
     }
 }

@@ -1,5 +1,6 @@
 package architecture;
 
+import android.accounts.Account;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -32,6 +33,9 @@ import com.brainbeats.R;
 import com.brainbeats.SettingsActivity;
 import com.brainbeats.SocialActivity;
 
+import data.MixContract;
+import web.SyncManager;
+
 /**
  * Created by Douglas on 4/21/2016.
  */
@@ -42,9 +46,19 @@ public class BaseActivity extends AppCompatActivity {
     public ActionBarDrawerToggle mDrawerToggle;
     public NavigationView mNavView;
 
+    //Feilds for testing sync adapter
+    // An account type, in the form of a domain name
+    public static final String ACCOUNT_TYPE = "com.example.android.datasync";
+    // The account name
+    public static final String ACCOUNT = "dummyaccount";
+    // Instance fields
+    public Account mAccount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAccount = CreateSyncAccount(this);
+        SyncManager.getInstance().updateAllTables(mAccount, MixContract.CONTENT_AUTHORITY);
     }
 
     @Override
@@ -169,6 +183,16 @@ public class BaseActivity extends AppCompatActivity {
             }
         } else {
             currentActivity.onBackPressed();
+        }
+    }
+
+    public static Account CreateSyncAccount(Context context) {
+        Account newAccount = new Account(ACCOUNT, ACCOUNT_TYPE);
+        android.accounts.AccountManager accountManager = (android.accounts.AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
+        if (accountManager.addAccountExplicitly(newAccount, null, null)) {
+            return newAccount;
+        } else {
+            return accountManager.getAccountsByType(ACCOUNT_TYPE)[0];
         }
     }
 }
