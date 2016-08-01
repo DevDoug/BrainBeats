@@ -102,11 +102,12 @@ public class OfflineSyncManager {
                                 if(AccountManager.getInstance(mContext).getIsSyncedToSoundCloud()){
                                     Bundle settingsBundle = new Bundle();
                                     settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,0);
-                                    settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION,1); //Action add mix to user fav on sc.
+                                    settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION,2); //Action add mix to user fav on sc.
+                                    settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_TRACK_ID,selectedTrack.getID());
                                     settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
                                     settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+                                    SyncManager.getInstance().performSyncOnTable(settingsBundle);
                                 }
-
                                 break;
                             case 2: //change rating
                                 break;

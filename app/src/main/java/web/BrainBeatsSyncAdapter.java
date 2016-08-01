@@ -152,13 +152,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                                     null
                                             );
                                             if (trackCursor != null && trackCursor.getCount() != 0) { // this mix exists so update the record.
-                                                // if the local db data doesn't agree with what we get from API try to update api with local change
-                                                // the data from sound cloud says this is not a favorite but locally it is so try and updated it on SC
-                                                if(!track.getIsFavorite() && trackCursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE) == 1){
-                                                    Log.i("Action","Favorite locally but not in api, favorite on SC !");
-                                                   //favoriteTrackOnSoundCloud(trackCursor, track.getID(),provider);
-                                                }
-                                                else if(track.getIsFavorite() && trackCursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE) == 0) {
+                                                if(track.getIsFavorite() && trackCursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE) == 0) {
                                                     //update the local db from the change on sound cloud
                                                     Log.i("Action","favorite in local");
 /*                                                    Mix mix = Constants.buildMixFromCursor(getContext(), trackCursor, 0);
@@ -196,6 +190,10 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                             }
                         });
 
+                        break;
+                    case 2: //set user fav on sc
+                        Log.i("Action","Favorite locally but not in api, favorite on SC !");
+                        favoriteTrackOnSoundCloud(selectedTrackId,provider);
                         break;
                 }
                 break;
@@ -357,7 +355,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }*/
 
-    public void favoriteTrackOnSoundCloud(Cursor trackCursor, int trackId,ContentProviderClient provider){
+    public void favoriteTrackOnSoundCloud(int trackId,ContentProviderClient provider){
         WebApiManager.putUserFavorite(getContext(), architecture.AccountManager.getInstance(getContext()).getUserId(), String.valueOf(trackId), new WebApiManager.OnObjectResponseListener() {
             @Override
             public void onObjectResponse(JSONObject object) {
@@ -375,7 +373,6 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                     //getContext().getContentResolver().notifyChange(Constants.NOT_LOGGED_IN_TO_SOUNDCLOUD_URI, null, false);
                     Log.i("", "Fail track has not been favorite on Sound Cloud user not authorized"); //There was an issue user not authorized
                 }
-                trackCursor.close();
             }
         });
     }
