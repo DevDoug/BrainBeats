@@ -192,8 +192,8 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION,Constants.SyncDataAction.UpdateFavorite.getCode());
                 OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity)getActivity()).mCoordinatorLayout, settingsBundle,getActivity().getContentResolver());
                 break;
-            case R.id.action_rate:
-                break;
+/*            case R.id.action_rate:
+                break;*/
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
                 Intent loginIntent = new Intent(getContext(), LoginActivity.class);
