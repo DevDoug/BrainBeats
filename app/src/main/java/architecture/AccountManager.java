@@ -14,12 +14,12 @@ import utils.Constants;
 public class AccountManager  {
 
     private static AccountManager mAccountInstance;
-    private static Context mContext;
+    private Context mContext;
     private static boolean mIsConnected;
 
     public static final String PACKAGE_NAME                         = BuildConfig.APPLICATION_ID;   //"com.brainbeats";
     private static final String SOUND_CLOUD_AUTH_TOKEN = PACKAGE_NAME + ".SOUND_CLOUD_AUTH_TOKEN";
-    private static final String BRAIN_BEATS_USER_ID                 = PACKAGE_NAME + ".BRAIN_BEATS_USER_ID";
+    private static final String BRAIN_BEATS_USER_ID                     = PACKAGE_NAME + ".BRAIN_BEATS_USER_ID";
 
 
     private AccountManager(Context context){

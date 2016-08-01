@@ -171,6 +171,7 @@ public class Constants {
         mix.setMixAlbumCoverArt(cursor.getString(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL)));
         mix.setMixFavorite(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE)));
         mix.setSoundCloudId(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID)));
+        mix.setMixUserId(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_MIX_USER_ID_FK));
         mix.setIsInLibrary(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY));
         mix.setIsInMixer(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_IN_MIXER));
 

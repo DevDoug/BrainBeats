@@ -174,10 +174,8 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Bundle settingsBundle = new Bundle();
-        settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_TRACK_ID,mSelectedTrack.getID());
         settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Mixes.getCode());
-        settingsBundle.putString(Constants.KEY_EXTRA_SELECTED_TRACK_TITLE,mSelectedTrack.getTitle());
-        settingsBundle.putString(Constants.KEY_EXTRA_SELECTED_TRACK_ALBUM_COVER_ART,mSelectedTrack.getArtworkURL());
+        settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
 
         //TODO move local db code out of sync adaper so that sync adapter only has api call's or network interaction.
         //TODO add sync to sound cloud for determing weather to update sc as well.

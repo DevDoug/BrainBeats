@@ -100,7 +100,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                     for(Track track : userTracks) {
                                         try {
                                             Cursor trackCursor = provider.query( //find if this mix exists
-                                                    MixContract.MixEntry.CONTENT_URI, //Get users
+                                                    MixContract.MixEntry.CONTENT_URI,
                                                     null,  //return everything
                                                     MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
                                                     new String[]{String.valueOf(track.getID())},
@@ -141,10 +141,11 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                 }.getType();
                                 try {
                                     ArrayList<Track> userTracks = gson.fromJson(array.toString(), token);
+                                    Log.i("Favs", String.valueOf(userTracks.size()));
                                     for(Track track: userTracks) {
                                         try {
                                             Cursor trackCursor = provider.query( //find if this mix exists
-                                                    MixContract.MixEntry.CONTENT_URI, //Get users
+                                                    MixContract.MixEntry.CONTENT_URI,
                                                     null,  //return everything
                                                     MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
                                                     new String[]{String.valueOf(track.getID())},
@@ -153,9 +154,10 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                             if (trackCursor != null && trackCursor.getCount() != 0) { // this mix exists so update the record.
                                                 // if the local db data doesn't agree with what we get from API try to update api with local change
                                                 // the data from sound cloud says this is not a favorite but locally it is so try and updated it on SC
-                                                if(!track.getIsFavorite() && trackCursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE) == 1)
-                                                    Log.i("Action","favorite n sc");
-                                                    //favoriteTrackOnSoundCloud(trackCursor, track.getID(),provider);
+                                                if(!track.getIsFavorite() && trackCursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE) == 1){
+                                                    Log.i("Action","Favorite locally but not in api, favorite on SC !");
+                                                   //favoriteTrackOnSoundCloud(trackCursor, track.getID(),provider);
+                                                }
                                                 else if(track.getIsFavorite() && trackCursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE) == 0) {
                                                     //update the local db from the change on sound cloud
                                                     Log.i("Action","favorite in local");
@@ -173,8 +175,8 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                                 }
                                                 trackCursor.close();
                                             } else{
-                                                addMix(track,true,true,false, provider); // create this as a mix from a sound cloud track
-                                                Log.i("Mix Added","Added a favorite");
+                                                addMix(track,false,true,false, provider); // create this as a mix from a sound cloud track
+                                                Log.i("Favorite Added","Added a favorite");
                                                 if (trackCursor != null) {
                                                     trackCursor.close();
                                                 }
@@ -297,9 +299,8 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         newMix.setMixFavorite((isFavorite) ? 1 : 0 );
         newMix.setIsInLibrary((inLibrary) ? 1 : 0 );
         newMix.setIsInMixer((inMixer) ? 1 : 0);
-        newMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(mContext).getUserId()));
+        newMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(getContext()).getUserId()));
 
-        Log.i("New Mix", "Adding new mix");
         try {
             Uri result = provider.insert(MixContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(newMix));
             getContext().getContentResolver().notifyChange(MixContract.MixEntry.CONTENT_URI, null, false);
@@ -321,7 +322,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    public void updateRelateMixes(ArrayList<Collection> mCollections, ContentProviderClient provider){
+/*    public void updateRelateMixes(ArrayList<Collection> mCollections, ContentProviderClient provider){
         //update all mixes in the collection
         Cursor mixCursor;
         for(Collection collection : mCollections) {
@@ -354,25 +355,13 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
     public void favoriteTrackOnSoundCloud(Cursor trackCursor, int trackId,ContentProviderClient provider){
         WebApiManager.putUserFavorite(getContext(), architecture.AccountManager.getInstance(getContext()).getUserId(), String.valueOf(trackId), new WebApiManager.OnObjectResponseListener() {
             @Override
             public void onObjectResponse(JSONObject object) {
-                Log.i("", "Success");
-                try {
-                    Mix mix = Constants.buildMixFromCursor(getContext(),trackCursor,trackCursor.getPosition());
-                    mix.setMixFavorite(1);
-                    int returnId = provider.update(MixContract.MixEntry.CONTENT_URI,Constants.buildMixRecord(mix), MixDbHelper.DB_ID_FIELD + trackId, null);
-                    if(returnId != -1)
-                        getContext().getContentResolver().notifyChange(Constants.FAVORITE_SUCCESS_URI, null, false);
-                    else
-                        Log.i("info","transaction failed");
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                trackCursor.close();
+                Log.i("", "Success track has been favorite on Sound Cloud"); //we have succesfully updated the api with our local change inform the user !
             }
         }, new WebApiManager.OnErrorListener() {
             @Override
@@ -381,8 +370,10 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                 Log.i("", errorMessage);
                 if (AccountManager.getInstance(getContext()).isConnnectedToSoundCloud()) { //if the user is auhorized to use sound cloud there was an issue
                     //getContext().getContentResolver().notifyChange(Constants.FAVORITE_ERROR_URI, null, false);
+                    Log.i("", "Fail track has not been favorite on Sound Cloud"); //There was an issue
                 } else { //otherwise have them connect to soundcloud
                     //getContext().getContentResolver().notifyChange(Constants.NOT_LOGGED_IN_TO_SOUNDCLOUD_URI, null, false);
+                    Log.i("", "Fail track has not been favorite on Sound Cloud user not authorized"); //There was an issue user not authorized
                 }
                 trackCursor.close();
             }
