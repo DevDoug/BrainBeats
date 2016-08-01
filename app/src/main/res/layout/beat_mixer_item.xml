@@ -5,6 +5,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/custom_list_text_background"
     android:padding="@dimen/list_item_padding"
     android:gravity="center_vertical">
 
