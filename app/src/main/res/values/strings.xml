@@ -29,7 +29,7 @@
     <string name="new_beat_title">New Mix</string>
     <string-array name="new_beat_options">
         <item name="create_blank_beat">Create a new mix.</item>
-        <item name="create_mix_from_existing">Create a new mix from an existing mix.</item>
+       <!-- <item name="create_mix_from_existing">Create a new mix from an existing mix.</item>-->
     </string-array>
 
     <string name="create_beat_from_title">Create A New Mix From</string>

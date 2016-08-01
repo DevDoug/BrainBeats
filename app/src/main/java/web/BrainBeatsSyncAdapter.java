@@ -152,10 +152,12 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                                     null
                                             );
                                             if (trackCursor != null && trackCursor.getCount() != 0) { // this mix exists so update the record.
-                                                if(track.getIsFavorite() && trackCursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE) == 0) {
+                                                trackCursor.moveToFirst();
+                                                if(trackCursor.getInt(trackCursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE)) == 0) {
                                                     //update the local db from the change on sound cloud
                                                     Log.i("Action","favorite in local");
-/*                                                    Mix mix = Constants.buildMixFromCursor(getContext(), trackCursor, 0);
+                                                    Mix mix = Constants.buildMixFromCursor(getContext(), trackCursor, 0);
+                                                    mix.setMixFavorite(1);
                                                     int returnId = provider.update(
                                                             MixContract.MixEntry.CONTENT_URI,
                                                             Constants.buildMixRecord(mix),
@@ -164,7 +166,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                                     if(returnId != -1)
                                                         Log.i("Mix updated","Updated");
                                                     else
-                                                        Log.i("Mix Updated","Fail");*/
+                                                        Log.i("Mix Updated","Fail");
 
                                                 }
                                                 trackCursor.close();
