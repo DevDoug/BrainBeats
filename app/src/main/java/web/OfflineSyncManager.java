@@ -39,7 +39,7 @@ import utils.Constants;
 public class OfflineSyncManager {
 
     private static OfflineSyncManager mInstance;
-    private static Context mContext;
+    private Context mContext;
 
     public OfflineSyncManager(Context context) {
         mContext = context;
@@ -76,9 +76,13 @@ public class OfflineSyncManager {
                             case 0: //add to lib
                                 if (mixCursor.getCount() != 0) { // this mix exists so update the record.
                                     Mix mix = Constants.buildMixFromCursor(mContext, mixCursor, 0);
-                                    mix.setIsInLibrary(1);
-  /*                                  updateMixRecord(provider,mix,selectedTrack.getID());
-                                    showSnackMessage(coordinatorLayout,R.string.error_this_mix_is_already_in_library);*/
+                                    if(mix.getIsInLibrary() == 0) {
+                                        mix.setIsInLibrary(1);
+                                        updateMixRecord(provider,mix,selectedTrack.getID());
+                                        showSnackMessage(coordinatorLayout,R.string.item_updated_mix);
+                                    }else if (mix.getIsInLibrary() == 1) {
+                                        showSnackMessage(coordinatorLayout,R.string.error_this_mix_is_already_in_library);
+                                    }
                                 } else{
                                     addMix(selectedTrack,true,false,false, provider); // create this as a mix from a sound cloud track
                                     showSnackMessage(coordinatorLayout,R.string.song_added_to_library_snack_message);
@@ -87,11 +91,11 @@ public class OfflineSyncManager {
                             case 1: //add to fav
                                 if (mixCursor.getCount() != 0) { // this mix exists so update the record.
                                     Mix mix = Constants.buildMixFromCursor(mContext, mixCursor, 0);
-                                    if(mix.getMixFavorite() != 1) { //if mix is not fav
+                                    if(mix.getIsInLibrary() == 0) {
                                         mix.setMixFavorite(1);
-/*                                        updateMixRecord(provider,mix,selectedTrack.getID());
-                                        showSnackMessage(coordinatorLayout,R.string.song_added_to_favorites_snack_message);*/
-                                    } else { //mix exists and is already a favorite
+                                        updateMixRecord(provider,mix,selectedTrack.getID());
+                                        showSnackMessage(coordinatorLayout,R.string.item_updated_mix);
+                                    }else if (mix.getIsInLibrary() == 1) {
                                         showSnackMessage(coordinatorLayout,R.string.error_this_mix_is_already_a_favorite);
                                     }
                                 } else{

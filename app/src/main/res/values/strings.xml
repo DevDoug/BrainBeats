@@ -108,6 +108,8 @@
     <string name="error_playing_song_message">There was a problem playing this song.</string>
     <string name="forgot_password">Forgot Password ?</string>
 
+    <!-- Item updated messages -->
+    <string name="item_updated_mix">This mix has been updated.</string>
     <!-- Error message strings -->
     <string name="error_favoriting_message">There was a problem favoriting this mix.</string>
     <string name="error_this_mix_is_already_a_favorite">This mix is already a favorite.</string>

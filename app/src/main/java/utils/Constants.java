@@ -171,9 +171,9 @@ public class Constants {
         mix.setMixAlbumCoverArt(cursor.getString(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL)));
         mix.setMixFavorite(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE)));
         mix.setSoundCloudId(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID)));
-        mix.setMixUserId(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_MIX_USER_ID_FK));
-        mix.setIsInLibrary(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY));
-        mix.setIsInMixer(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_IN_MIXER));
+        mix.setMixUserId(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_MIX_USER_ID_FK)));
+        mix.setIsInLibrary(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY)));
+        mix.setIsInMixer(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_IN_MIXER)));
 
         String whereClause = MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + "= ?";
         String[] whereArgs = new String[] {
