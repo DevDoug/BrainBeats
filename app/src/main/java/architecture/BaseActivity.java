@@ -58,17 +58,19 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAccount = CreateSyncAccount(this);
+        SyncManager.getInstance().updateAllTables(mAccount, MixContract.CONTENT_AUTHORITY);
 
-        if(AccountManager.getInstance(BaseActivity.this).getGlobalSyncRequired()){
+
+/*        if(AccountManager.getInstance(BaseActivity.this).getGlobalSyncRequired()){
             SyncManager.getInstance().updateAllTables(mAccount, MixContract.CONTENT_AUTHORITY);
             AccountManager.getInstance(BaseActivity.this).setGlobalSyncRequired(false);
-        }
+        }*/
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        AccountManager.getInstance(BaseActivity.this).setGlobalSyncRequired(true);
+        //AccountManager.getInstance(BaseActivity.this).setGlobalSyncRequired(true);
     }
 
     @Override

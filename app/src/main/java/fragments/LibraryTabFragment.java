@@ -105,8 +105,8 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
                         getActivity(),         // Parent activity context
                         MixContract.MixEntry.CONTENT_URI,  // Table to query
                         null,                          // Projection to return
-                        MixContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY + MixDbHelper.WHERE_CLAUSE_EQUAL + MixDbHelper.AND_CLAUSE + MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE + MixDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
-                        new String[]{MixDbHelper.DB_TRUE_VALUE,MixDbHelper.DB_TRUE_VALUE},
+                        MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE + MixDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
+                        new String[]{MixDbHelper.DB_TRUE_VALUE},
                         null                   // Default sort order
                 );
             default:

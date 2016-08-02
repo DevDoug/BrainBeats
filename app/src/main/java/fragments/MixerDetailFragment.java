@@ -83,19 +83,21 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
             public void onClick(View view) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 mSelectedMix.setMixTitle(mMixTitle.getText().toString());
-                ((MixerActivity) getActivity()).getContentResolver().update(
+                int returnId = getActivity().getContentResolver().update(
                         MixContract.MixEntry.CONTENT_URI,
                         Constants.buildMixRecord(mSelectedMix),
-                        MixDbHelper.DB_ID_FIELD + mSelectedMix.getMixId(),
-                        null);
+                        MixContract.MixEntry._ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                        new String[]{String.valueOf(mSelectedMix.getMixId())});
 
-                for (int i = 0; i < mSelectedMix.getMixItems().size(); i++) {
-                    MixItem item = mSelectedMix.getMixItems().get(i);
-                    ((MixerActivity) getActivity()).getContentResolver().update(
-                            MixContract.MixItemsEntry.CONTENT_URI,
-                            Constants.buildMixItemsRecord(mSelectedMix.getMixId(), item),
-                            MixDbHelper.DB_ID_FIELD + item.getMixItemId(),
-                            null);
+                if(returnId != -1){
+                    for (int i = 0; i < mSelectedMix.getMixItems().size(); i++) {
+                        MixItem item = mSelectedMix.getMixItems().get(i);
+                        int returnIdMixItem = getActivity().getContentResolver().update(
+                                MixContract.MixItemsEntry.CONTENT_URI,
+                                Constants.buildMixItemsRecord(mSelectedMix.getMixId(),item),
+                                MixContract.MixEntry._ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                                new String[]{String.valueOf(item.getMixItemId())});
+                    }
                 }
                 InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
                 if(getActivity().getCurrentFocus() != null) //
