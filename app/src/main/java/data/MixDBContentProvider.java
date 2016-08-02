@@ -11,7 +11,7 @@ import android.net.Uri;
 /**
  * Created by douglas on 5/25/2016.
  */
-public class MixDbContentProvider extends ContentProvider {
+public class MixDBContentProvider extends ContentProvider {
 
     // The URI Matcher used by this content provider.
     private static final UriMatcher sUriMatcher = buildUriMatcher();
