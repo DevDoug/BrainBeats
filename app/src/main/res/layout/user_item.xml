@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:text="Stop Following"
         android:layout_alignParentEnd="true"
-        android:id="@+id/Follow"
+        android:id="@+id/stop_following_text"
         android:layout_centerVertical="true" />
 
 </RelativeLayout>

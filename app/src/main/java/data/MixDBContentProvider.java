@@ -229,6 +229,10 @@ public class MixDBContentProvider extends ContentProvider {
                 rowsDeleted = db.delete(
                         MixContract.UserEntry.TABLE_NAME, selection, selectionArgs);
                 break;
+            case USER_FOLLOWERS:
+                rowsDeleted = db.delete(
+                        MixContract.UserFollowersEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }

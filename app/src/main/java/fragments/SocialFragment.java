@@ -27,7 +27,6 @@ import utils.Constants;
 public class SocialFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private ListView mUserList;
-    private TextView mStopfollowing;
     private OnFragmentInteractionListener mListener;
 
     public SocialFragment() {
@@ -42,19 +41,12 @@ public class SocialFragment extends Fragment implements LoaderManager.LoaderCall
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_social, container, false);
         mUserList = (ListView) v.findViewById(R.id.user_list);
-        mStopfollowing = (TextView) v.findViewById(R.id.Follow);
         return v;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mStopfollowing.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               // getActivity().getContentResolver().delete(MixContract.UserFollowersEntry.CONTENT_URI,MixDbHelper.WHERE_CLAUSE_EQUAL,new String[]{})
-            }
-        });
         getLoaderManager().initLoader(Constants.SOCIAL_LOADER, null, this);
     }
 
