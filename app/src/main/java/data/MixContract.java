@@ -21,6 +21,7 @@ public class MixContract {
     public static final String PATH_MIX                 = "mix";
     public static final String PATH_MIX_ITEM            = "mixitem";
     public static final String PATH_USER                = "user";
+    public static final String PATH_USER_FOLLOWERS                = "userfollowers";
     public static final String PATH_MIX_RELATED         = "mixrelated";
     public static final String PATH_MIX_PLAYLIST        = "playlist";
 
@@ -100,6 +101,20 @@ public class MixContract {
         public static final String COLUMN_NAME_USER_SOUND_CLOUD_ID    = "soundcloudid";
 
         public static Uri buildUserUriWithId(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
+    public static final class UserFollowersEntry implements BaseColumns {
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_USER_FOLLOWERS).build();
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_USER;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_USER;
+
+        public static final String TABLE_NAME                            = "userfollowers";
+        public static final String COLUMN_NAME_USER_ID                   = "userid";
+        public static final String COLUMN_NAME_USER_FOLLOWER_ID          = "userfollowerid";
+
+        public static Uri buildUserFollowerUriWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }

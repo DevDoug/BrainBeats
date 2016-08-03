@@ -89,6 +89,12 @@ public class MixDbHelper extends SQLiteOpenHelper {
                         MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + COLUMN_TYPE_INT_NULL +
                         CREATE_TABLE_TERMINATION;
 
+        final String CREATE_TABLE_USER_FOLLOWERS = CREATE_TABLE + MixContract.UserFollowersEntry.TABLE_NAME + " (" +
+                        MixContract.UserFollowersEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
+                        MixContract.UserFollowersEntry.COLUMN_NAME_USER_ID + COLUMN_TYPE_INT_NOT_NULL + COMMA_SEPERATOR +
+                        MixContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID + COLUMN_TYPE_INT_NOT_NULL +
+                        CREATE_TABLE_TERMINATION;
+
         db.execSQL(CREATE_TABLE_MIX);
         db.execSQL(CREATE_TABLE_MIX_ITEMS);
         db.execSQL(CREATE_TABLE_RELATED_MIX);

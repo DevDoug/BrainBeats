@@ -58,8 +58,6 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAccount = CreateSyncAccount(this);
-        SyncManager.getInstance().updateAllTables(mAccount, MixContract.CONTENT_AUTHORITY);
-
 
 /*        if(AccountManager.getInstance(BaseActivity.this).getGlobalSyncRequired()){
             SyncManager.getInstance().updateAllTables(mAccount, MixContract.CONTENT_AUTHORITY);

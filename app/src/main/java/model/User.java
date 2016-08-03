@@ -5,20 +5,8 @@ package model;
  */
 public class User {
 
-    private int mUserId;
     private String mUserName;
-
-    public int getmUserId() {
-        return mUserId;
-    }
-
-    public void setmUserId(int mUserId) {
-        this.mUserId = mUserId;
-    }
-
-    public User(){
-
-    }
+    private int mSoundCloudUserId;
 
     public String getUserName() {
         return mUserName;
@@ -26,5 +14,13 @@ public class User {
 
     public void setUserName(String UserName) {
         this.mUserName = UserName;
+    }
+
+    public int getSoundCloudUserId() {
+        return mSoundCloudUserId;
+    }
+
+    public void setSoundCloudUserId(int soundCloudUserId) {
+        this.mSoundCloudUserId = soundCloudUserId;
     }
 }
