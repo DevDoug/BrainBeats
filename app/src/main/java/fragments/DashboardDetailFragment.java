@@ -32,9 +32,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.brainbeats.LoginActivity;
@@ -74,8 +77,10 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     private ImageView mSkipBackwardButton;
     private ImageView mSkipForwardButton;
     private ImageView mLoopSongButton;
+    private TextView mArtistName;
     private ShareActionProvider mShareActionProvider;
     private CoordinatorLayout mCoordinatorLayout;
+    private LinearLayout mFollowButton;
 
     public  Bundle mUserSelections;
     public AudioService mAudioService;
@@ -122,7 +127,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dashboard_detail, container, false);
-        mAlbumTrackList = (ListView) v.findViewById(R.id.album_title_list);
+        //mAlbumTrackList = (ListView) v.findViewById(R.id.album_title_list);
         mTrackTitle = (TextView) v.findViewById(R.id.track_title);
         mAlbumCoverArt = (ImageView) v.findViewById(R.id.album_cover_art);
         mPlaySongButton = (ImageView) v.findViewById(R.id.play_song_button);
@@ -130,9 +135,10 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         mSkipForwardButton = (ImageView) v.findViewById(R.id.skip_forward_button);
         mLoopSongButton = (ImageView) v.findViewById(R.id.repeat_button);
         mPlayTrackSeekBar = (SeekBar) v.findViewById(R.id.play_song_seek_bar);
-        ((TextView) v.findViewById(R.id.separator_title)).setText(R.string.suggested_tracks);
+        mArtistName = (TextView) v.findViewById(R.id.user_name);
+        mFollowButton = (LinearLayout) v.findViewById(R.id.follow_button);
+        //((TextView) v.findViewById(R.id.separator_title)).setText(R.string.suggested_tracks);
         //mCoordinatorLayout = (CoordinatorLayout) v.findViewById(R.id.main_content_coordinator_layout);
-
 
         mPlaySongButton.setOnClickListener(this);
         mSkipBackwardButton.setOnClickListener(this);
@@ -152,7 +158,18 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 mTrackTitle.setText(mSelectedTrack.getTitle());
             }
             Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
+            mArtistName.setText(mSelectedTrack.getUser().getUsername());
         }
+
+        mFollowButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), "Follow this user if not following, unfollow if following", Toast.LENGTH_SHORT).show();
+                Bundle settingsBundle = new Bundle();
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Users.getCode());
+                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity)getActivity()).mCoordinatorLayout, settingsBundle,getActivity().getContentResolver());
+            }
+        });
 
         getLoaderManager().initLoader(Constants.RELATED_TRACKS_LOADER,null,this);
     }
@@ -286,8 +303,8 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mRelatedTracksAdapter = new RelatedTracksAdapter(getContext(), data,0);
-        mAlbumTrackList.setAdapter(mRelatedTracksAdapter);
+/*        mRelatedTracksAdapter = new RelatedTracksAdapter(getContext(), data,0);
+        mAlbumTrackList.setAdapter(mRelatedTracksAdapter);*/
     }
 
     @Override

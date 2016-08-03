@@ -35,7 +35,7 @@ public class SettingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_setting, container, false);
-        mIncogCheckBox = (CheckBox) v.findViewById(R.id.is_incognito_checkbox);
+        //mIncogCheckBox = (CheckBox) v.findViewById(R.id.is_incognito_checkbox);
         mSyncWithSoundCloud = (CheckBox) v.findViewById(R.id.sync_with_sound_cloud);
         return v;
     }
@@ -43,15 +43,16 @@ public class SettingFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mIncogCheckBox.setChecked(AccountManager.getInstance(getContext()).getIsIncognito());
+        //mIncogCheckBox.setChecked(AccountManager.getInstance(getContext()).getIsIncognito());
         mSyncWithSoundCloud.setChecked(AccountManager.getInstance(getContext()).getIsSyncedToSoundCloud());
-
+/*
         mIncogCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 AccountManager.getInstance(getContext()).isInCognito(mIncogCheckBox.isChecked());
             }
-        });
+        });*/
+
         mSyncWithSoundCloud.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {

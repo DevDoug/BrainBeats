@@ -24,6 +24,7 @@ public class MixDBContentProvider extends ContentProvider {
     static final int MIX_PLAYLIST       = 400;
     static final int USER               = 500;
     static final int USER_FOLLOWERS     = 600;
+    static final int RAW_QUERY          = 700;
 
     static {
         sMixByIDQueryBuilder = new SQLiteQueryBuilder();
@@ -40,6 +41,7 @@ public class MixDBContentProvider extends ContentProvider {
         matcher.addURI(authority, MixContract.PATH_MIX_PLAYLIST, MIX_PLAYLIST);
         matcher.addURI(authority, MixContract.PATH_USER, USER);
         matcher.addURI(authority, MixContract.PATH_USER_FOLLOWERS, USER_FOLLOWERS);
+        matcher.addURI(authority, MixContract.PATH_RAW_QUERY, RAW_QUERY);
         return matcher;
     }
 
@@ -118,6 +120,9 @@ public class MixDBContentProvider extends ContentProvider {
                         null,
                         sortOrder
                 );
+                break;
+            case RAW_QUERY:
+                retCursor = mOpenHelper.getReadableDatabase().rawQuery(selection,selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

@@ -111,6 +111,8 @@
 
             </RelativeLayout>
 
+
+
             <include
                 android:id="@+id/blue_line_seperator"
                 layout="@layout/blue_horizontal_seperator"
@@ -120,11 +122,69 @@
                 android:layout_below="@+id/beat_detail_header"
                 android:layout_marginTop="@dimen/content_margin_top" />
 
-            <ListView
+            <RelativeLayout
+                android:id="@+id/user_item_container"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/list_item_padding"
+                android:gravity="center_vertical"
+                android:layout_below="@id/blue_line_seperator"
+                android:background="@drawable/custom_list_text_background">
+
+                <ImageView
+                    android:id="@+id/plus_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_account_circle_black"
+                    android:contentDescription="account circle"
+                    android:layout_alignTop="@+id/mix_item_title"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true" />
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/album_title_text_size"
+                    android:gravity="start"
+                    android:layout_alignTop="@+id/plus_icon"
+                    android:layout_toEndOf="@+id/plus_icon"
+                    android:layout_marginStart="31dp"
+                    android:layout_alignBottom="@+id/plus_icon"
+                    android:text="Fetty wap"
+                    android:layout_centerVertical="true" />
+
+                <LinearLayout
+                    android:id="@+id/follow_button"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/imageView"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/ic_person_add" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Follow"
+                        android:id="@+id/Follow" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+<!--            <ListView
                 android:id="@+id/album_title_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:nestedScrollingEnabled="true"
-                android:layout_below="@id/blue_line_seperator"/>
+                android:layout_below="@id/blue_line_seperator"/>-->
         </RelativeLayout>
 </ScrollView>

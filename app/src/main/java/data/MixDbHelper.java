@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class MixDbHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 11;
+    public static final int DATABASE_VERSION = 12;
     public static final String DATABASE_NAME = "Mix.db";
 
     //Common sql statments.
@@ -26,6 +26,8 @@ public class MixDbHelper extends SQLiteOpenHelper {
     //Query params
     public static final String WHERE_CLAUSE_LIKE                    = "LIKE ?";
     public static final String WHERE_CLAUSE_EQUAL                   = " = ? ";
+    public static final String WHERE_CLAUSE_NOT_EQUAL               = "? != ? ";
+
     public static final String AND_CLAUSE                           = "AND ";
 
     //Db lookup fields
@@ -100,6 +102,7 @@ public class MixDbHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_RELATED_MIX);
         db.execSQL(CREATE_TABLE_PLAYLIST);
         db.execSQL(CREATE_TABLE_USER);
+        db.execSQL(CREATE_TABLE_USER_FOLLOWERS);
     }
 
     @Override
@@ -109,6 +112,7 @@ public class MixDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + MixContract.MixRelatedEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MixContract.MixPlaylistEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MixContract.UserEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MixContract.UserFollowersEntry.TABLE_NAME);
         onCreate(db);
     }
 }

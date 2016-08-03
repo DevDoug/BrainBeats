@@ -34,6 +34,9 @@ public class Track implements Parcelable {
     @SerializedName("user_favorite")
     private boolean mUserFavorite;
 
+    @SerializedName("user")
+    private User user;
+
     public Track(){
     }
 
@@ -111,6 +114,16 @@ public class Track implements Parcelable {
     public void setUserFavorite(boolean favorite){
         mUserFavorite = favorite;
     }
+
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public int describeContents() {
         return 0;

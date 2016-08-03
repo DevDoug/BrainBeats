@@ -18,7 +18,9 @@ import android.widget.ListView;
 
 import com.brainbeats.R;
 import adapters.SocialAdapter;
+import architecture.AccountManager;
 import data.MixContract;
+import data.MixDbHelper;
 import utils.Constants;
 
 public class SocialFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -75,12 +77,16 @@ public class SocialFragment extends Fragment implements LoaderManager.LoaderCall
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
             case Constants.SOCIAL_LOADER:
+
+                String rawQuery = "SELECT * FROM " + MixContract.UserEntry.TABLE_NAME + " INNER JOIN " + MixContract.UserFollowersEntry.TABLE_NAME
+                        + " ON " + "user." + MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + " = " + "userfollowers." + MixContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID;
+
                 return new CursorLoader(
                         getActivity(),                      // Parent activity context
-                        MixContract.UserEntry.CONTENT_URI,   // Table to query
-                        null,                               // Projection to return
-                        null,                  // No selection clause
-                        null,                  // No selection arguments
+                        MixContract.CONTENT_URI_RAW_QUERY,
+                        null,  //return everything
+                        rawQuery, //raw query sql
+                        null, // select args
                         null                   // Default sort order
                 );
             default:

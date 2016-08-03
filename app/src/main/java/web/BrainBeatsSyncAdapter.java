@@ -314,7 +314,8 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                         //TODO add code that allows user to change user attributes
                                         userCursor.close();
                                     } else{
-                                        addUser(collection,true,provider); // create this as a user from sound cloud
+                                        if(!String.valueOf(collection.getId()).equalsIgnoreCase(AccountManager.getInstance(getContext()).getUserId())) // if this user is not the current user
+                                            addUser(collection,true,provider); // create this as a user from sound cloud
                                         Log.i("User Added","Added");
                                         if (userCursor != null) {
                                             userCursor.close();
@@ -377,7 +378,8 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         try {
             Uri result = provider.insert(MixContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(user)); //insert user rec
             if(isFollowing) { //if the user is following this person add the record to the following table, now when quered
-                //Uri relatedResult = provider.insert(MixContract.UserFollowersEntry.CONTENT_URI, Constants.buildUserFollowingRecord(AccountManager.getInstance(getContext()).getUserId(), String.valueOf(collection.getId())));
+                Uri relatedResult = provider.insert(MixContract.UserFollowersEntry.CONTENT_URI, Constants.buildUserFollowingRecord(AccountManager.getInstance(getContext()).getUserId(), String.valueOf(collection.getId())));
+                Log.i("Add user following rec","user collection Id " + String.valueOf(collection.getId()));
             }
         } catch (RemoteException e) {
             e.printStackTrace();
