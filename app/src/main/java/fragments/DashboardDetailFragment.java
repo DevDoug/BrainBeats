@@ -164,9 +164,9 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         mFollowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "Follow this user if not following, unfollow if following", Toast.LENGTH_SHORT).show();
                 Bundle settingsBundle = new Bundle();
                 settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Users.getCode());
+                settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
                 OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity)getActivity()).mCoordinatorLayout, settingsBundle,getActivity().getContentResolver());
             }
         });

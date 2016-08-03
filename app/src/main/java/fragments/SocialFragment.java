@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.brainbeats.R;
 import adapters.SocialAdapter;
@@ -25,8 +26,8 @@ import utils.Constants;
 
 public class SocialFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private SocialAdapter mUserAdapter;
     private ListView mUserList;
+    private TextView mStopfollowing;
     private OnFragmentInteractionListener mListener;
 
     public SocialFragment() {
@@ -41,12 +42,19 @@ public class SocialFragment extends Fragment implements LoaderManager.LoaderCall
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_social, container, false);
         mUserList = (ListView) v.findViewById(R.id.user_list);
+        mStopfollowing = (TextView) v.findViewById(R.id.Follow);
         return v;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mStopfollowing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               // getActivity().getContentResolver().delete(MixContract.UserFollowersEntry.CONTENT_URI,MixDbHelper.WHERE_CLAUSE_EQUAL,new String[]{})
+            }
+        });
         getLoaderManager().initLoader(Constants.SOCIAL_LOADER, null, this);
     }
 
@@ -97,7 +105,7 @@ public class SocialFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mUserAdapter = new SocialAdapter(getContext(),data,0);
+        SocialAdapter mUserAdapter = new SocialAdapter(getContext(), data, 0);
         mUserList.setAdapter(mUserAdapter);
         Log.i("data", String.valueOf(data.getColumnCount()));
     }

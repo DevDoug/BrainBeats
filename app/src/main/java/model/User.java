@@ -5,8 +5,18 @@ package model;
  */
 public class User {
 
+    private long mUserId;
     private String mUserName;
+    private String mPassword;
     private int mSoundCloudUserId;
+
+    public long getUserId() {
+        return mUserId;
+    }
+
+    public void setUserId(long userId) {
+        this.mUserId = userId;
+    }
 
     public String getUserName() {
         return mUserName;
@@ -16,7 +26,7 @@ public class User {
         this.mUserName = UserName;
     }
 
-    public int getSoundCloudUserId() {
+    public long getSoundCloudUserId() {
         return mSoundCloudUserId;
     }
 

@@ -187,6 +187,17 @@ public class Constants {
         return mix;
     }
 
+    public static User buildUserFromCursor(Context context,Cursor cursor) {
+        cursor.moveToFirst();
+
+        User user = new User();
+        user.setUserId(cursor.getLong(cursor.getColumnIndex(MixContract.UserEntry._ID)));
+        user.setUserName(cursor.getString(cursor.getColumnIndex(MixContract.UserEntry.COLUMN_NAME_USER_NAME)));
+        user.setSoundCloudUserId(cursor.getInt(cursor.getColumnIndex(MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID)));
+
+        return user;
+    }
+
     public static ContentValues buildMixRecord(Mix mix) {
         ContentValues values = new ContentValues();
         values.put(MixContract.MixEntry.COLUMN_NAME_MIX_TITLE, mix.getBeatTitle());

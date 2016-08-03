@@ -30,7 +30,9 @@ import data.MixDbHelper;
 import entity.Collection;
 import entity.RelatedTracksResponse;
 import entity.Track;
+import entity.UserCollectionEntry;
 import model.Mix;
+import model.User;
 import utils.Constants;
 
 /**
@@ -129,6 +131,25 @@ public class OfflineSyncManager {
                 break;
             case 3: // sync user's
 
+                final Cursor followingArtistCursor = provider.query(
+                        MixContract.UserFollowersEntry.CONTENT_URI, //Get mixes
+                        null,  //return everything
+                        MixContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                        new String[]{String.valueOf(selectedTrack.getUser().getId())},
+                        null
+                );
+
+                if (followingArtistCursor != null) {
+                    followingArtistCursor.moveToFirst();
+
+                    if (followingArtistCursor.getCount() != 0) { // this user exists so update the record.
+/*                        User user = Constants.buildUserFromCursor(mContext, followingArtistCursor);
+                        //if user is following stop following otherwise start following*/
+                    } else {
+                        addUser(selectedTrack.getUser(), true, provider); // create this as a user from sound cloud
+                        showSnackMessage(coordinatorLayout, R.string.artist_added_to_following);
+                    }
+                }
                 break;
             default:
                 break;
@@ -147,6 +168,22 @@ public class OfflineSyncManager {
         try {
             Uri result = provider.insert(MixContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(newMix));
             mContext.getContentResolver().notifyChange(MixContract.MixEntry.CONTENT_URI, null, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addUser(entity.User collection, boolean isFollowing, ContentResolver provider){
+        User user = new User();
+        user.setUserName(collection.getUsername());
+        user.setSoundCloudUserId(collection.getId());
+
+        try {
+            Uri result = provider.insert(MixContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(user)); //insert user rec
+            if(isFollowing) { //if the user is following this person add the record to the following table, now when quered
+                Uri relatedResult = provider.insert(MixContract.UserFollowersEntry.CONTENT_URI, Constants.buildUserFollowingRecord(AccountManager.getInstance(mContext).getUserId(), String.valueOf(collection.getId())));
+                Log.i("Add user following rec","user collection Id " + String.valueOf(collection.getId()));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
