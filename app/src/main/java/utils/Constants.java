@@ -32,11 +32,11 @@ import model.User;
 
 /**
  * Created by Douglas on 4/20/2016.
+ * Constants for Brain Beats Application.
  */
 public class Constants {
 
     //= Keys for bundles and extras =============================================
-    public static final String KEY_EXTRA_BEAT_LIST                          = "BeatInfo";
     public static final String KEY_LIBRARY_DATA_TYPE                        = "LibraryDataType";
     public static final String KEY_EXTRA_LIBRARY_FILTER_TEXT                = "Filter";
     public static final String KEY_EXTRA_SELECTED_TRACK                     = "SelectedTrack";
@@ -45,12 +45,6 @@ public class Constants {
     public static final String KEY_EXTRA_SYNC_TYPE                          = "SyncType";
     public static final String KEY_EXTRA_SYNC_ACTION                        = "SyncAction";
     public static final String KEY_EXTRA_SELECTED_TRACK_ID                  = "TrackId";
-    public static final String KEY_EXTRA_SELECTED_TRACK_TITLE               = "Title";
-    public static final String KEY_EXTRA_SELECTED_TRACK_ALBUM_COVER_ART     = "CoverArt";
-    public static final String KEY_EXTRA_SELECTED_TRACK_FAVORITE            = "IsFavorite";
-    public static final String KEY_EXTRA_SELECTED_TRACK_RATING              = "Rating";
-    public static final String KEY_EXTRA_SELECTED_TRACK_SOUND_CLOUD_ID      = "SoundCloudId";
-    public static final String KEY_EXTRA_SELECTED_UPDATE_TRACK_ACTION       = "UpdateTrackAction";
 
     //Hash map keys
     public static final String HASH_KEY_ACCESS_TOKEN     = "access_token";
@@ -64,24 +58,17 @@ public class Constants {
     public static final String SOUND_CLOUD_CLIENT_ID       = "6af4e9b999eaa63f5d797d466cdc4ccb";
     public static final String SOUND_CLOUD_CLIENT_SECRET   = "09e8c5b6f91e2ab440b9137008d2d32c";
 
-    public static final int GRID_SPAN_COUNT = 3;
-    public static final int BEAT_LEVEL_INCREASE_DIFFERENCE = 10;
-    public static final int MIX_ITEM_DEFAULT_LEVEL = 50;
-    public static final int BEAT_ITEM_DRAWABLES[] = new int[]{R.drawable.ic_alpha, R.drawable.ic_beta,
-                                                              R.drawable.ic_google, R.drawable.ic_theta,};
-
-    public static final Uri NOT_LOGGED_IN_TO_SOUNDCLOUD_URI = Uri.parse("nonsoundclouduser://");
-    public static final Uri ADDED_TO_LIBRARY_URI = Uri.parse("library://success");
-    public static final Uri LIBRARY_ALREADY_URI = Uri.parse("library://already");
-    public static final Uri FAVORITE_SUCCESS_URI = Uri.parse("favorite://success");
-    public static final Uri FAVORITE_ERROR_URI = Uri.parse("favorite://");
-    public static final Uri FAVORITE_ALREADY_URI = Uri.parse("favorite://error/already/favorite");
-    public static final Uri RATE_ERROR_URI = Uri.parse("rate://error");
-
     //Loader Types
     public static final int SOCIAL_LOADER  = 101;
     public static final int RELATED_TRACKS_LOADER  = 102;
 
+    //Misc
+
+    public static final int GRID_SPAN_COUNT = 3;
+    public static final int BEAT_LEVEL_INCREASE_DIFFERENCE = 10;
+    public static final int MIX_ITEM_DEFAULT_LEVEL = 50;
+    public static final int BEAT_ITEM_DRAWABLES[] = new int[]{R.drawable.ic_alpha, R.drawable.ic_beta, R.drawable.ic_google, R.drawable.ic_theta,};
+    public static final int PASSWORD_MINIMUM_LENGTH = 4;
 
     public enum AudioServiceRepeatType {
         RepeatOff(0),
@@ -172,18 +159,25 @@ public class Constants {
         String[] whereArgs = new String[] {
                 " " + cursor.getLong(cursor.getColumnIndex(MixContract.MixEntry._ID)),
         };
+
         Cursor mixItemsCursor = context.getContentResolver().query(MixContract.MixItemsEntry.CONTENT_URI, null,whereClause,whereArgs,null); // get the mix items associated with this mix
-        mixItemsCursor.moveToFirst();
-        ArrayList<MixItem> mixItems = new ArrayList<>();
-        for (int i = 0; i < mixItemsCursor.getCount(); i++) {
-            MixItem mixItem = new MixItem();
-            mixItem.setMixItemId(mixItemsCursor.getLong(mixItemsCursor.getColumnIndex(MixContract.MixItemsEntry._ID)));
-            mixItem.setMixItemTitle(mixItemsCursor.getString(mixItemsCursor.getColumnIndex(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_TITLE)));
-            mixItem.setMixItemLevel(mixItemsCursor.getInt(mixItemsCursor.getColumnIndex(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_LEVEL)));
-            mixItems.add(mixItem);
-            mixItemsCursor.moveToNext();
+
+        if (mixItemsCursor != null) {
+            mixItemsCursor.moveToFirst();
+
+            ArrayList<MixItem> mixItems = new ArrayList<>();
+            for (int i = 0; i < mixItemsCursor.getCount(); i++) {
+                MixItem mixItem = new MixItem();
+                mixItem.setMixItemId(mixItemsCursor.getLong(mixItemsCursor.getColumnIndex(MixContract.MixItemsEntry._ID)));
+                mixItem.setMixItemTitle(mixItemsCursor.getString(mixItemsCursor.getColumnIndex(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_TITLE)));
+                mixItem.setMixItemLevel(mixItemsCursor.getInt(mixItemsCursor.getColumnIndex(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_LEVEL)));
+                mixItems.add(mixItem);
+                mixItemsCursor.moveToNext();
+            }
+            mix.setMixItems(mixItems);
+            mixItemsCursor.close();
         }
-        mix.setMixItems(mixItems);
+
         return mix;
     }
 

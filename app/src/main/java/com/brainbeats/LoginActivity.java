@@ -59,16 +59,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
     private Button mLoginButton;
     private Button mSoundCloudLogin;
 
     public static final String OAUTH_CALLBACK_SCHEME = "brainbeats";
     public static final String OAUTH_CALLBACK_HOST = "soundcloud/callback";
     public static final String CALLBACK_URL = OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
-
-    public static final int LOGIN_TO_SOUNDCLOUD = 1;  // The request code
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +74,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mLoginButton = (Button) findViewById(R.id.email_sign_in_button);
         mPasswordView = (EditText) findViewById(R.id.password);
-        mProgressView = findViewById(R.id.login_progress);
         mSoundCloudLogin = (Button) findViewById(R.id.sound_cloud_sign_in_button);
 
         populateAutoComplete();
@@ -115,7 +110,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() >= 4) {
+                if (s.length() >= Constants.PASSWORD_MINIMUM_LENGTH) {
                     Cursor userCursor = getContentResolver().query(
                             MixContract.UserEntry.CONTENT_URI, //Get users
                             null,  //return everything
@@ -281,7 +276,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }, new WebApiManager.OnErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                error.toString();
+                error.printStackTrace();
             }
         });
     }
@@ -293,7 +288,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > Constants.PASSWORD_MINIMUM_LENGTH;
     }
 
     @Override
