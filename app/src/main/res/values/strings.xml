@@ -5,6 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <!-- App titles -->
+    <string name="app_title">Brain Beats</string>
     <string name="dashboard_title">Dashboard</string>
 
     <!-- Menu items-->
@@ -130,7 +131,7 @@
     <string name="content_description_repeat_button">Repeat button</string>
 
     <string name="no_songs_placeholder">No songs yet.</string>
-    <string name="log_in_using_sound_cloud">Log in using Sound Cloud.</string>
+    <string name="log_in_using_sound_cloud">Log in using Sound Cloud</string>
     <string name="no_current_songs_message">No songs found.</string>
     <string name="sound_cloud_login_message">Log in to sound cloud</string>
     <string name="login_to_sound_cloud_title">Log in to sound cloud.</string>

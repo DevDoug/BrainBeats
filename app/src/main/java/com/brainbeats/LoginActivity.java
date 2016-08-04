@@ -201,7 +201,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    public void attemptSoundCloudLogin(){
+    public void attemptSoundCloudLogin() {
         String authSoundCloudURL = WebApiManager.API_CONNECT_URL + "?client_id=" + Constants.SOUND_CLOUD_CLIENT_ID + "&redirect_uri=" + CALLBACK_URL + "&response_type=token";
         Intent loginIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(authSoundCloudURL));
         loginIntent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -214,7 +214,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onNewIntent(intent);
         Uri returnData = intent.getData();
         String uriFrag = returnData.getFragment();
-        HashMap<String,String> map = Constants.mapQueryParams(uriFrag);
+        HashMap<String, String> map = Constants.mapQueryParams(uriFrag);
 
         AccountManager.getInstance(this).setAccessToken(map.get(Constants.HASH_KEY_ACCESS_TOKEN));
         WebApiManager.getSoundCloudUser(this, map.get(Constants.HASH_KEY_ACCESS_TOKEN), new WebApiManager.OnObjectResponseListener() {
