@@ -95,8 +95,8 @@ public class DashboardFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onResume() {
+        super.onResume();
         final ProgressDialog loadingMusicDialog = new ProgressDialog(getContext());
         loadingMusicDialog.setCancelable(false);
         loadingMusicDialog.setMessage(getString(R.string.loading_message));
@@ -123,6 +123,11 @@ public class DashboardFragment extends Fragment {
                 Log.i(getClass().getSimpleName(), "Response = " + error.toString());
             }
         });
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

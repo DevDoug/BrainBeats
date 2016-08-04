@@ -329,9 +329,9 @@ public class Constants {
         String[] paramList = fragmentString.split("#");
         String[] params = paramList[0].split("&");
 
-        for (int i = 0; i < params.length; i++) {
-            String key = params[i].split("=")[0];
-            String value = params[i].split("=")[1];
+        for (String param : params) {
+            String key = param.split("=")[0];
+            String value = param.split("=")[1];
             queryMap.put(key, value);
         }
         return queryMap;

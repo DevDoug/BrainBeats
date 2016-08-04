@@ -217,6 +217,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         HashMap<String, String> map = Constants.mapQueryParams(uriFrag);
 
         AccountManager.getInstance(this).setAccessToken(map.get(Constants.HASH_KEY_ACCESS_TOKEN));
+
         WebApiManager.getSoundCloudUser(this, map.get(Constants.HASH_KEY_ACCESS_TOKEN), new WebApiManager.OnObjectResponseListener() {
             @Override
             public void onObjectResponse(JSONObject object) {
