@@ -108,13 +108,6 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     }
 
     public void loadBeatDetailFragment(Track track) {
-/*        Bundle settingsBundle = new Bundle();
-        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_TRACK_ID,track.getID());
-        settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,1);
-        ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle);*/
-
         toggleNavDrawerIcon();
         mUserSelections.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, track);
         mDashboardDetailFragment.setArguments(mUserSelections);

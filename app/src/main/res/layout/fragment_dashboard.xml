@@ -8,11 +8,10 @@
         android:id="@+id/category_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="@dimen/recycler_view_top_padding"
         android:layout_marginTop="@dimen/content_margin_top">
     </android.support.v7.widget.RecyclerView>
 
-    <android.support.design.widget.FloatingActionButton
+<!--    <android.support.design.widget.FloatingActionButton
         android:id="@+id/floating_action_button_fab_with_listview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,6 +21,6 @@
         android:layout_marginRight="16dp"
         android:clickable="true"
         android:src="@drawable/ic_add_white"
-        android:elevation="@dimen/fob_elevation" />
+        android:elevation="@dimen/fob_elevation" />-->
 </RelativeLayout>
 

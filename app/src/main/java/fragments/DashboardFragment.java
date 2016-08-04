@@ -1,5 +1,6 @@
 package fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,17 +19,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import adapters.SearchMusicAdapter;
+import adapters.TrackAdapter;
 import architecture.AccountManager;
 import entity.Track;
 import utils.Constants;
+import web.WebApiManager;
 
 public class DashboardFragment extends Fragment {
 
@@ -55,13 +65,15 @@ public class DashboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dashboard, container, false);
         mTrackGrid = (RecyclerView) v.findViewById(R.id.category_grid);
-        mAddCategoryFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_fab_with_listview);
+
+
+/*        mAddCategoryFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_fab_with_listview);
         mAddCategoryFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getContext(), "Add Category !", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
         return v;
     }
 
@@ -85,18 +97,32 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ArrayList<Track> trackCategory = new ArrayList<>();
-        for (int i = 0; i < getResources().getStringArray(R.array.beat_categories).length; i++) {
-            Track defaultTrack = new Track();
-            defaultTrack.setTitle(getResources().getStringArray(R.array.beat_categories)[i]);
-            trackCategory.add(defaultTrack);
-        }
-        trackList = trackCategory;
-        mTrackAdapter = new SearchMusicAdapter(getContext(), trackList);
-        mBeatGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
-        mTrackGrid.setLayoutManager(mBeatGridLayoutManager);
-        mTrackGrid.setAdapter(mTrackAdapter);
-        mTrackAdapter.notifyDataSetChanged();
+        final ProgressDialog loadingMusicDialog = new ProgressDialog(getContext());
+        loadingMusicDialog.setCancelable(false);
+        loadingMusicDialog.setMessage(getString(R.string.loading_message));
+        loadingMusicDialog.show();
+
+        WebApiManager.getMostPopularTracks(getContext(), new WebApiManager.OnArrayResponseListener() {
+            @Override
+            public void onArrayResponse(JSONArray array) {
+                loadingMusicDialog.dismiss();
+                Gson gson = new Gson();
+                Type token = new TypeToken<List<Track>>() {}.getType();
+                List<Track> trackList = gson.fromJson(array.toString(), token);
+                if(trackList != null) {
+                    mTrackAdapter = new SearchMusicAdapter(getContext(), trackList);
+                    mBeatGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
+                    mTrackGrid.setLayoutManager(mBeatGridLayoutManager);
+                    mTrackGrid.setAdapter(mTrackAdapter);
+                    mTrackAdapter.notifyDataSetChanged();
+                }
+            }
+        }, new WebApiManager.OnErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(getClass().getSimpleName(), "Response = " + error.toString());
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event
