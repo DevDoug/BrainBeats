@@ -37,6 +37,7 @@ public class WebApiManager {
     public static final String API_TRACKS_URL        = "/tracks/";
     public static final String API_PLAYLIST_URL      = "/playlists/";
     public static final String API_USER_URL          = "/users/";
+    public static final String API_USER_FOLLOWING_URL = "/followings";
     public static final String API_FAVORITES_URL     = "/favorites/";
     public static final String API_ME_URL            = "/me";
 
@@ -183,6 +184,19 @@ public class WebApiManager {
         } catch (Exception ex) {
             errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
         }
+    }
+
+    public static void getUserFollowing(Context context, String userId, final OnObjectResponseListener responseListener, final OnErrorListener errorListener){
+        HashMap<String, String> mParams = new HashMap<>();
+        mParams.put(SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
+        String url = API_ROOT_URL + API_USER_URL + userId + API_USER_FOLLOWING_URL;
+        try {
+            JSONObject jsonRequest = new JSONObject();
+            sendObjectRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
+        } catch (Exception ex) {
+            errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
+        }
+
     }
 
  /*   public static void getPlayList(Context context, String playlistId, final OnResponseListener responseListener, final OnErrorListener errorListener){

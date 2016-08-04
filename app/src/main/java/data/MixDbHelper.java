@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class MixDbHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 11;
+    public static final int DATABASE_VERSION = 12;
     public static final String DATABASE_NAME = "Mix.db";
 
     //Common sql statments.
@@ -26,6 +26,8 @@ public class MixDbHelper extends SQLiteOpenHelper {
     //Query params
     public static final String WHERE_CLAUSE_LIKE                    = "LIKE ?";
     public static final String WHERE_CLAUSE_EQUAL                   = " = ? ";
+    public static final String WHERE_CLAUSE_NOT_EQUAL               = "? != ? ";
+
     public static final String AND_CLAUSE                           = "AND ";
 
     //Db lookup fields
@@ -89,11 +91,18 @@ public class MixDbHelper extends SQLiteOpenHelper {
                         MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + COLUMN_TYPE_INT_NULL +
                         CREATE_TABLE_TERMINATION;
 
+        final String CREATE_TABLE_USER_FOLLOWERS = CREATE_TABLE + MixContract.UserFollowersEntry.TABLE_NAME + " (" +
+                        MixContract.UserFollowersEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
+                        MixContract.UserFollowersEntry.COLUMN_NAME_USER_ID + COLUMN_TYPE_INT_NOT_NULL + COMMA_SEPERATOR +
+                        MixContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID + COLUMN_TYPE_INT_NOT_NULL +
+                        CREATE_TABLE_TERMINATION;
+
         db.execSQL(CREATE_TABLE_MIX);
         db.execSQL(CREATE_TABLE_MIX_ITEMS);
         db.execSQL(CREATE_TABLE_RELATED_MIX);
         db.execSQL(CREATE_TABLE_PLAYLIST);
         db.execSQL(CREATE_TABLE_USER);
+        db.execSQL(CREATE_TABLE_USER_FOLLOWERS);
     }
 
     @Override
@@ -103,6 +112,7 @@ public class MixDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + MixContract.MixRelatedEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MixContract.MixPlaylistEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MixContract.UserEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MixContract.UserFollowersEntry.TABLE_NAME);
         onCreate(db);
     }
 }

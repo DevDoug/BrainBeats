@@ -31,10 +31,13 @@ import entity.Collection;
 import entity.Playlists;
 import entity.RelatedTracksResponse;
 import entity.Track;
+import entity.UserCollection;
+import entity.UserCollectionEntry;
 import entity.UserPlaylistsResponse;
 import entity.UserTrackResponse;
 import model.Mix;
 import model.Playlist;
+import model.User;
 import utils.Constants;
 
 /**
@@ -288,6 +291,51 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                 });
                 break;
             case 3: // sync user's
+                //TODO add get people the user is following and convert it to a Brain Beats user.
+                WebApiManager.getUserFollowing(getContext(),AccountManager.getInstance(getContext()).getUserId(), new WebApiManager.OnObjectResponseListener() {
+                    @Override
+                    public void onObjectResponse(JSONObject object) {
+                        Log.i("User fetch succsess","success");
+                        Gson gson = new Gson();
+                        Type token = new TypeToken<UserCollection>() {
+                        }.getType();
+                        try {
+                            UserCollection userFollowingCollection = gson.fromJson(object.toString(),token);
+                            for(UserCollectionEntry collection : userFollowingCollection.getCollection()){
+                                try {
+                                    Cursor userCursor = provider.query( //find if this user exists
+                                            MixContract.UserEntry.CONTENT_URI, //Get users
+                                            null,  //return everything
+                                            MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                                            new String[]{String.valueOf(collection.getId())},
+                                            null
+                                    );
+                                    if (userCursor != null && userCursor.getCount() != 0) { // this user exists so update the record.
+                                        //TODO add code that allows user to change user attributes
+                                        userCursor.close();
+                                    } else{
+                                        if(!String.valueOf(collection.getId()).equalsIgnoreCase(AccountManager.getInstance(getContext()).getUserId())) // if this user is not the current user
+                                            addUser(collection,true,provider); // create this as a user from sound cloud
+                                        Log.i("User Added","Added");
+                                        if (userCursor != null) {
+                                            userCursor.close();
+                                        }
+                                    }
+                                } catch (RemoteException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }, new WebApiManager.OnErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("User fetch fail","fail");
+                    }
+                });
+
                 // break;
             default:
                 break;
@@ -303,7 +351,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             Uri result = provider.insert(MixContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(newMix));
-            getContext().getContentResolver().notifyChange(MixContract.MixEntry.CONTENT_URI, null, false);
+            //getContext().getContentResolver().notifyChange(MixContract.MixEntry.CONTENT_URI, null, false);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -316,7 +364,23 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             Uri result = provider.insert(MixContract.MixPlaylistEntry.CONTENT_URI, Constants.buildPlaylistRecord(playlist));
-            getContext().getContentResolver().notifyChange(MixContract.MixEntry.CONTENT_URI, null, false);
+            //getContext().getContentResolver().notifyChange(MixContract.MixEntry.CONTENT_URI, null, false);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addUser(UserCollectionEntry collection, boolean isFollowing, ContentProviderClient provider){
+        User user = new User();
+        user.setUserName(collection.getUsername());
+        user.setSoundCloudUserId(collection.getId());
+
+        try {
+            Uri result = provider.insert(MixContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(user)); //insert user rec
+            if(isFollowing) { //if the user is following this person add the record to the following table, now when quered
+                Uri relatedResult = provider.insert(MixContract.UserFollowersEntry.CONTENT_URI, Constants.buildUserFollowingRecord(AccountManager.getInstance(getContext()).getUserId(), String.valueOf(collection.getId())));
+                Log.i("Add user following rec","user collection Id " + String.valueOf(collection.getId()));
+            }
         } catch (RemoteException e) {
             e.printStackTrace();
         }

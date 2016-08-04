@@ -28,6 +28,7 @@ import entity.Track;
 import model.Mix;
 import model.MixItem;
 import model.Playlist;
+import model.User;
 
 /**
  * Created by Douglas on 4/20/2016.
@@ -146,14 +147,6 @@ public class Constants {
         }
     }
 
-
-
-    public static ContentValues buildUserRecord(SoundCloudUser soundCloudUser){
-        ContentValues values = new ContentValues();
-        values.put(MixContract.UserEntry.COLUMN_NAME_USER_NAME, soundCloudUser.getUsername());
-        return values;
-    }
-
     public static Mix buildMixRecordFromTrack(Track track){
         Mix mix = new Mix();
         mix.setMixTitle(track.getTitle());
@@ -194,6 +187,17 @@ public class Constants {
         return mix;
     }
 
+    public static User buildUserFromCursor(Context context,Cursor cursor) {
+        cursor.moveToFirst();
+
+        User user = new User();
+        user.setUserId(cursor.getLong(cursor.getColumnIndex(MixContract.UserEntry._ID)));
+        user.setUserName(cursor.getString(cursor.getColumnIndex(MixContract.UserEntry.COLUMN_NAME_USER_NAME)));
+        user.setSoundCloudUserId(cursor.getInt(cursor.getColumnIndex(MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID)));
+
+        return user;
+    }
+
     public static ContentValues buildMixRecord(Mix mix) {
         ContentValues values = new ContentValues();
         values.put(MixContract.MixEntry.COLUMN_NAME_MIX_TITLE, mix.getBeatTitle());
@@ -225,6 +229,21 @@ public class Constants {
         ContentValues values = new ContentValues();
         values.put(MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE,playlist.getPlaylistTitle());
         values.put(MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID,playlist.getSoundCloudId());
+        return values;
+    }
+
+    public static ContentValues buildUserRecord(User user) {
+        ContentValues values = new ContentValues();
+        values.put(MixContract.UserEntry.COLUMN_NAME_USER_NAME,user.getUserName());
+        values.put(MixContract.UserEntry.COLUMN_NAME_USER_PASSWORD,Constants.generateEncryptedPass());
+        values.put(MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID,user.getSoundCloudUserId());
+        return values;
+    }
+
+    public static ContentValues buildUserFollowingRecord(String bbUserId,String scUserId){
+        ContentValues values = new ContentValues();
+        values.put(MixContract.UserFollowersEntry.COLUMN_NAME_USER_ID,bbUserId);
+        values.put(MixContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID,scUserId);
         return values;
     }
 

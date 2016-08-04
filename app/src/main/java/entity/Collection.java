@@ -8,6 +8,7 @@ import java.util.ArrayList;
  * Created by douglas on 6/2/2016.
  */
 public class Collection {
+
     @SerializedName("artwork_url")
     private String artworkUrl;
 

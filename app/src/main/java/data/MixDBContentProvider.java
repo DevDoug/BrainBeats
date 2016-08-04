@@ -23,6 +23,8 @@ public class MixDBContentProvider extends ContentProvider {
     static final int MIX_RELATED        = 300;
     static final int MIX_PLAYLIST       = 400;
     static final int USER               = 500;
+    static final int USER_FOLLOWERS     = 600;
+    static final int RAW_QUERY          = 700;
 
     static {
         sMixByIDQueryBuilder = new SQLiteQueryBuilder();
@@ -38,6 +40,8 @@ public class MixDBContentProvider extends ContentProvider {
         matcher.addURI(authority, MixContract.PATH_MIX_RELATED, MIX_RELATED);
         matcher.addURI(authority, MixContract.PATH_MIX_PLAYLIST, MIX_PLAYLIST);
         matcher.addURI(authority, MixContract.PATH_USER, USER);
+        matcher.addURI(authority, MixContract.PATH_USER_FOLLOWERS, USER_FOLLOWERS);
+        matcher.addURI(authority, MixContract.PATH_RAW_QUERY, RAW_QUERY);
         return matcher;
     }
 
@@ -106,6 +110,20 @@ public class MixDBContentProvider extends ContentProvider {
                         sortOrder
                 );
                 break;
+            case USER_FOLLOWERS:
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        MixContract.UserFollowersEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            case RAW_QUERY:
+                retCursor = mOpenHelper.getReadableDatabase().rawQuery(selection,selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -129,6 +147,8 @@ public class MixDBContentProvider extends ContentProvider {
                 return MixContract.MixPlaylistEntry.CONTENT_TYPE;
             case USER:
                 return MixContract.UserEntry.CONTENT_TYPE;
+            case USER_FOLLOWERS:
+                return MixContract.UserFollowersEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -175,6 +195,13 @@ public class MixDBContentProvider extends ContentProvider {
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
+            case USER_FOLLOWERS:
+                long _idUserFollow = db.insert(MixContract.UserFollowersEntry.TABLE_NAME, null, values);
+                if (_idUserFollow > 0)
+                    returnUri = MixContract.UserFollowersEntry.buildUserFollowerUriWithId(_idUserFollow);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -201,6 +228,10 @@ public class MixDBContentProvider extends ContentProvider {
             case USER:
                 rowsDeleted = db.delete(
                         MixContract.UserEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case USER_FOLLOWERS:
+                rowsDeleted = db.delete(
+                        MixContract.UserFollowersEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

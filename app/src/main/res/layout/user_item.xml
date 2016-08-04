@@ -16,7 +16,8 @@
         android:src="@drawable/ic_account_circle_black"
         android:contentDescription="account circle"
         android:layout_alignTop="@+id/mix_item_title"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true" />
 
     <TextView
         android:id="@+id/user_name"
@@ -27,5 +28,15 @@
         android:layout_alignTop="@+id/plus_icon"
         android:layout_toEndOf="@+id/plus_icon"
         android:layout_marginStart="31dp"
-        android:layout_alignBottom="@+id/plus_icon" />
+        android:layout_alignBottom="@+id/plus_icon"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop Following"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/stop_following_text"
+        android:layout_centerVertical="true" />
+
 </RelativeLayout>

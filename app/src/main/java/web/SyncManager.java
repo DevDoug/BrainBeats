@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Bundle;
 
+import architecture.AccountManager;
 import data.MixContract;
 import utils.Constants;
 
@@ -30,12 +31,13 @@ public class SyncManager {
         return mInstance;
     }
 
-    public void updateAllTables(Account mAccount, String authority){
+    public void updateAllTables(String userId,Account mAccount, String authority){
         this.mAccount = mAccount;
         //perform an immediate sync on all tables
         Bundle settingsBundle = new Bundle();
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        settingsBundle.putString("userid",userId);
 
         settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Mixes.getCode());
         settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION,Constants.SyncDataAction.UpdateMix.getCode());
@@ -47,6 +49,9 @@ public class SyncManager {
 
         settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Playlists.getCode());
         ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle); //Sync Playlists
+
+        settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Users.getCode());
+        ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle); //Sync users
 
         //ContentResolver.addPeriodicSync(mAccount, authority, Bundle.EMPTY, SYNC_INTERVAL); // sets our sync adapter to go after a period of time.
     }

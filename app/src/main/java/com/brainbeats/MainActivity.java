@@ -21,17 +21,28 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+
 import architecture.AccountManager;
 import architecture.BaseActivity;
 import data.MixContract;
 import data.MixDbHelper;
+import entity.Collection;
 import entity.Track;
+import entity.UserCollection;
 import fragments.DashboardDetailFragment;
 import fragments.DashboardFragment;
 import fragments.DashboardSongListFragment;
 import model.MixItem;
 import utils.Constants;
 import web.SyncManager;
+import web.WebApiManager;
 
 public class MainActivity extends BaseActivity implements DashboardFragment.OnFragmentInteractionListener, DashboardSongListFragment.OnFragmentInteractionListener, DashboardDetailFragment.OnFragmentInteractionListener {
 
@@ -46,6 +57,7 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
         mDashboardFragment = new DashboardFragment();
         mDashboardSongListFragment = new DashboardSongListFragment();
         mDashboardDetailFragment = new DashboardDetailFragment();
@@ -60,8 +72,6 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
             startActivity(loginIntent);
             finish();
         }
-
-        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
 
         mDataObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
             public void onChange(boolean selfChange) {}
@@ -83,6 +93,7 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     @Override
     public void onResume() {
         super.onResume();
+        SyncManager.getInstance().updateAllTables(AccountManager.getInstance(MainActivity.this).getUserId(),mAccount, MixContract.CONTENT_AUTHORITY);
     }
 
     public void switchToDashboardFragment() {
