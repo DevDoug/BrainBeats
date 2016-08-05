@@ -53,7 +53,7 @@ public class SyncManager {
         settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Users.getCode());
         ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle); //Sync users
 
-        //ContentResolver.addPeriodicSync(mAccount, authority, Bundle.EMPTY, SYNC_INTERVAL); // sets our sync adapter to go after a period of time.
+        ContentResolver.addPeriodicSync(mAccount, authority, Bundle.EMPTY, SYNC_INTERVAL); // sets our sync adapter to go after a period of time.
     }
 
     public void performSyncOnTable(Bundle settingsBundle){

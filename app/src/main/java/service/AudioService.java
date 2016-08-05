@@ -31,6 +31,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     int mSongDuration = 0;
     private SeekBar mSeekbar;
     private ImageView mPlayButton;
+    public Thread mUpdateSeekBar;
 
     public AudioService() {
     }
@@ -63,7 +64,6 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         if(mp.isLooping()) {
             mp.seekTo(0);
             mSeekbar.setProgress(0);
-            updateUI();
         }
     }
 
@@ -104,7 +104,8 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         mPlayButton = playPauseStop;
         bar.setMax(duration);
         bar.setIndeterminate(false);
-        new Thread(new Runnable() {
+        mUpdateSeekBar = new Thread(new Runnable() {
+            @Override
             public void run() {
                 while (mProgressStatus < duration) {
                     try {
@@ -129,16 +130,14 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
                         e.printStackTrace();
                     }
                 }
+
             }
-        }).start();
+        });
+
+        mUpdateSeekBar.start();
     }
 
     public class AudioBinder extends Binder{
         public AudioService getService() {return AudioService.this;}
-    }
-
-    @UiThread
-    public void updateUI(){
-       // mPlayButton.setImageResource(R.drawable.ic_pause_circle);
     }
 }

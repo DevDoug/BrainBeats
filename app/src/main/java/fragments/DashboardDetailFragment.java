@@ -122,6 +122,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 ((MainActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
             }
         });
+
     }
 
     @Override
@@ -167,8 +168,16 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("LayoutShiftDetail", true);
+        outState.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK,mSelectedTrack);
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         mUserSelections = getArguments();
         if (mUserSelections != null) {
             mSelectedTrack = (Track) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_TRACK);
@@ -200,7 +209,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_dashboard_detail, menu);
-        // Locate MenuItem with ShareActionProvider
+/*        // Locate MenuItem with ShareActionProvider
         MenuItem item = menu.findItem(R.id.menu_share);
         // Fetch and store ShareActionProvider
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
@@ -208,7 +217,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.putExtra(Intent.EXTRA_TEXT, "Check out this track" + (mSelectedTrack == null ? mSelectedTrack.getTitle() : ""));
         shareIntent.setType("text/plain");
-        mShareActionProvider.setShareIntent(shareIntent);
+        mShareActionProvider.setShareIntent(shareIntent);*/
     }
 
     @Override

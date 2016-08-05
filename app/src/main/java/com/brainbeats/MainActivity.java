@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 import architecture.AccountManager;
@@ -22,7 +23,6 @@ import web.SyncManager;
 public class MainActivity extends BaseActivity implements DashboardFragment.OnFragmentInteractionListener, DashboardDetailFragment.OnFragmentInteractionListener {
 
     public Fragment mDashboardFragment;
-    public Fragment mDashboardSongListFragment;
     public Fragment mDashboardDetailFragment;
     Bundle mUserSelections;
     public CoordinatorLayout mCoordinatorLayout;
@@ -36,7 +36,18 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
 
         mDashboardFragment = new DashboardFragment();
         mDashboardDetailFragment = new DashboardDetailFragment();
-        switchToDashboardFragment();
+
+        if (savedInstanceState != null) {
+            Track track = savedInstanceState.getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+            boolean orientationChange = savedInstanceState.getBoolean("LayoutShiftDetail");
+            if(orientationChange) {
+                switchTBeatDetailFragment(track);
+            }
+        } else {
+            mDashboardFragment = new DashboardFragment();
+            mDashboardDetailFragment = new DashboardDetailFragment();
+            switchToDashboardFragment();
+        }
 
         if (mUserSelections == null) {
             mUserSelections = new Bundle();
@@ -68,14 +79,23 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     @Override
     public void onResume() {
         super.onResume();
-        SyncManager.getInstance().updateAllTables(AccountManager.getInstance(MainActivity.this).getUserId(),mAccount, MixContract.CONTENT_AUTHORITY);
+        if(AccountManager.getInstance(MainActivity.this).getGlobalSyncRequired()){
+            SyncManager.getInstance().updateAllTables(AccountManager.getInstance(MainActivity.this).getUserId(),mAccount, MixContract.CONTENT_AUTHORITY);
+            AccountManager.getInstance(MainActivity.this).setGlobalSyncRequired(false);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AccountManager.getInstance(MainActivity.this).setGlobalSyncRequired(true);
     }
 
     public void switchToDashboardFragment() {
         replaceFragment(mDashboardFragment, mDashboardFragment.getTag());
     }
 
-    public void loadBeatDetailFragment(Track track) {
+    public void switchTBeatDetailFragment(Track track) {
         toggleNavDrawerIcon();
         mUserSelections.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, track);
         mDashboardDetailFragment.setArguments(mUserSelections);

@@ -57,10 +57,9 @@ public class WebApiManager {
 
     //Sound Cloud track filter params
     public static final String SOUND_CLOUD_QUERY_FILTER_PARAM = "popular";
+    public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_LIMIT_ONE_HUNDRED = "100";
     public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_LIMIT_TWO_HUNDRED = "200";
     public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_LINKED_ENABLED = "1";
-
-
 
 
     public interface OnObjectResponseListener {
@@ -94,8 +93,8 @@ public class WebApiManager {
         HashMap<String, String> mParams = new HashMap<>();
         mParams.put(SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
         mParams.put(SOUND_CLOUD_QUERY_FILTER_TAGS,SOUND_CLOUD_QUERY_FILTER_PARAM);
-        //mParams.put(SOUND_CLOUD_QUERY_FILTER_LIMIT,SOUND_CLOUD_QUERY_FILTER_PARAM_LIMIT_TWO_HUNDRED);
-        //mParams.put(SOUND_CLOUD_QUERY_FILTER_LINKED_PARTITIONING,SOUND_CLOUD_QUERY_FILTER_PARAM_LINKED_ENABLED);
+        mParams.put(SOUND_CLOUD_QUERY_FILTER_LIMIT,SOUND_CLOUD_QUERY_FILTER_PARAM_LIMIT_ONE_HUNDRED);
+        //mParams.put(SOUND_CLOUD_QUERY_FILTER_LINKED_PARTITIONING,"1");
 
         String url = API_ROOT_URL + API_TRACKS_URL;
         try {
