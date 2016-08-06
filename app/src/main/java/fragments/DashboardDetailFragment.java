@@ -72,7 +72,7 @@ import utils.Constants;
 import web.OfflineSyncManager;
 import web.WebApiManager;
 
-public class DashboardDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
+public class DashboardDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener, BeatLearner.RecommendationCompleteListener {
 
     public static final String TAG = "DashboardDetailFragment";
 
@@ -88,8 +88,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     private LinearLayout mFollowButton;
     public Thread mUpdateSeekBar;
     int mProgressStatus = 0;
-
-
 
     public  Bundle mUserSelections;
     public AudioService mAudioService;
@@ -298,10 +296,10 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 }
                 break;
             case R.id.skip_backward_button:
-                BeatLearner.getInstance().loadLastBeat();
+                BeatLearner.getInstance(getContext()).loadLastBeat();
                 break;
             case R.id.skip_forward_button:
-                BeatLearner.getInstance().loadNextRecommendedBeat();
+                BeatLearner.getInstance(getContext()).loadNextRecommendedBeat(mSelectedTrack.getID(),this);
                 break;
             case R.id.repeat_button:
                 if (mBound) {
@@ -389,6 +387,18 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public Track recommendationComplete(Collection collection) {
+        mTrackTitle.setText(collection.getTitle());
+
+        if(collection.getArtworkUrl() == null)
+            mAlbumCoverArt.setImageResource(R.drawable.placeholder);
+        else
+            Picasso.with(getContext()).load(collection.getArtworkUrl()).into(mAlbumCoverArt);
+
+        return null;
     }
 
     public interface OnFragmentInteractionListener {
