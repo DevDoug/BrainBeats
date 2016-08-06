@@ -86,17 +86,16 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     private ShareActionProvider mShareActionProvider;
     private CoordinatorLayout mCoordinatorLayout;
     private LinearLayout mFollowButton;
+    public Thread mUpdateSeekBar;
+    int mProgressStatus = 0;
+
+
 
     public  Bundle mUserSelections;
     public AudioService mAudioService;
     boolean mBound = false;
 
     public Track mSelectedTrack;
-    public  List<Collection> mCollections = new ArrayList<>();
-    private ListView mAlbumTrackList;
-    public RelatedTracksAdapter mRelatedTracksAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-
     private SeekBar mPlayTrackSeekBar;
     private OnFragmentInteractionListener mListener;
     public FloatingActionButton mFob;
@@ -122,7 +121,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 ((MainActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
             }
         });
-
     }
 
     @Override
@@ -141,6 +139,15 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             getContext().unbindService(mConnection);
             mBound = false;
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(mUpdateSeekBar != null)
+            mUpdateSeekBar.interrupt(); // stop updating a the progress bar if out of view
+
+        mPlayTrackSeekBar.setProgress(0);
     }
 
     @Override
@@ -286,7 +293,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                     } else {
                         mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
                         mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
-                        mAudioService.setProgressIndicator(mPlaySongButton,mPlayTrackSeekBar, mSelectedTrack.getDuration());
+                        startProgressBarThread();
                     }
                 }
                 break;
@@ -312,6 +319,46 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             default:
                 break;
         }
+    }
+
+    public void startProgressBarThread(){
+        int trackDuration = mSelectedTrack.getDuration();
+        mPlayTrackSeekBar.setMax(trackDuration);
+        mPlayTrackSeekBar.setIndeterminate(false);
+        mUpdateSeekBar = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (mProgressStatus < trackDuration) {
+                    try {
+                        Thread.sleep(1000); //Update once per second
+                        mProgressStatus = mAudioService.mPlayer.getCurrentPosition();
+                        mPlayTrackSeekBar.setProgress(mProgressStatus);
+                        mPlayTrackSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                            @Override
+                            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                                if (fromUser) {
+                                    mAudioService.mPlayer.seekTo(progress);
+                                }
+                            }
+
+                            @Override
+                            public void onStartTrackingTouch(SeekBar seekBar) {
+                            }
+
+                            @Override
+                            public void onStopTrackingTouch(SeekBar seekBar) {
+                            }
+                        });
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        Log.i("Progress bar thread", "Exception occured" + e.toString());
+                    }
+                }
+            }
+        });
+
+        mUpdateSeekBar.start();
     }
 
     @Override

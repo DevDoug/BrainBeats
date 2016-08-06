@@ -26,11 +26,10 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     public MediaPlayer mPlayer;
     private IBinder mBinder = new AudioBinder();
     public boolean mIsPaused = false;
-    private Handler mHandler = new Handler();
     int mProgressStatus = 0;
     int mSongDuration = 0;
     private SeekBar mSeekbar;
-    private ImageView mPlayButton;
+    public ImageView mPlayButton;
     public Thread mUpdateSeekBar;
 
     public AudioService() {
@@ -63,7 +62,6 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     public void onCompletion(MediaPlayer mp) {
         if(mp.isLooping()) {
             mp.seekTo(0);
-            mSeekbar.setProgress(0);
         }
     }
 
@@ -97,44 +95,6 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     public void stopSong(){
         mPlayer.stop();
-    }
-
-    public void setProgressIndicator(ImageView playPauseStop, final SeekBar bar, final int duration) {
-        mSeekbar = bar;
-        mPlayButton = playPauseStop;
-        bar.setMax(duration);
-        bar.setIndeterminate(false);
-        mUpdateSeekBar = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (mProgressStatus < duration) {
-                    try {
-                        Thread.sleep(1000); //Update once per second
-                        mProgressStatus = mPlayer.getCurrentPosition();
-                        bar.setProgress(mProgressStatus);
-                        bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                            @Override
-                            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                                if (fromUser) {
-                                    mPlayer.seekTo(progress);
-                                }
-                            }
-                            @Override
-                            public void onStartTrackingTouch(SeekBar seekBar) {
-                            }
-                            @Override
-                            public void onStopTrackingTouch(SeekBar seekBar) {
-                            }
-                        });
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-        });
-
-        mUpdateSeekBar.start();
     }
 
     public class AudioBinder extends Binder{

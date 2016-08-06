@@ -91,6 +91,7 @@
     <string name="song_added_to_favorites_snack_message">Song added to Favorites.</string>
     <string name="song_added_to_library_snack_message">Song added to Library.</string>
     <string name="artist_added_to_following">You are now following this artist.</string>
+    <string name="artist_removed_from_following">You have stopped following this artist.</string>
     <string name="mix_item_exists_snack_message" formatted="false">This mix already contains %s</string>
 
     <string name="title_activity_login">Sign in</string>

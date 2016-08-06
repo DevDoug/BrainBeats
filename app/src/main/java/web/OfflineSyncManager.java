@@ -130,25 +130,39 @@ public class OfflineSyncManager {
             case 2: //sync mix playlist
                 break;
             case 3: // sync user's
-
-                final Cursor followingArtistCursor = provider.query(
-                        MixContract.UserFollowersEntry.CONTENT_URI, //Get mixes
+                //if the artist exists then see if they are following and toggle otherwise just add user
+                final Cursor artistCursor = provider.query(
+                        MixContract.UserEntry.CONTENT_URI, //Get users
                         null,  //return everything
-                        MixContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                        MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
                         new String[]{String.valueOf(selectedTrack.getUser().getId())},
                         null
                 );
 
-                if (followingArtistCursor != null) {
-                    followingArtistCursor.moveToFirst();
+                if (artistCursor != null) {
+                    artistCursor.moveToFirst();
 
-                    if (followingArtistCursor.getCount() != 0) { // this user exists so update the record.
-/*                        User user = Constants.buildUserFromCursor(mContext, followingArtistCursor);
-                        //if user is following stop following otherwise start following*/
+                    if (artistCursor.getCount() != 0) { // this user exists so update the record.
+                        final Cursor followingArtistCursor = provider.query(
+                                MixContract.UserFollowersEntry.CONTENT_URI, //Get mixes
+                                null,  //return everything
+                                MixContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                                new String[]{String.valueOf(selectedTrack.getUser().getId())},
+                                null
+                        );
+
+                        if(followingArtistCursor.getCount() != 0) {
+                            int result = provider.delete(MixContract.UserFollowersEntry.CONTENT_URI, MixContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID + MixDbHelper.WHERE_CLAUSE_EQUAL, new String[]{String.valueOf(selectedTrack.getUser().getId())});
+                            showSnackMessage(coordinatorLayout, R.string.artist_removed_from_following);
+                        } else {
+                            Uri result = provider.insert(MixContract.UserFollowersEntry.CONTENT_URI, Constants.buildUserFollowingRecord(AccountManager.getInstance(mContext).getUserId(), String.valueOf(selectedTrack.getUser().getId())));
+                            showSnackMessage(coordinatorLayout, R.string.artist_added_to_following);
+                        }
                     } else {
                         addUser(selectedTrack.getUser(), true, provider); // create this as a user from sound cloud
                         showSnackMessage(coordinatorLayout, R.string.artist_added_to_following);
                     }
+                    artistCursor.close();
                 }
                 break;
             default:
