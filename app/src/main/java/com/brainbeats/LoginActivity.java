@@ -39,9 +39,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import architecture.AccountManager;
-import data.MixContract;
-import data.MixDbHelper;
-import entity.RelatedTracksResponse;
+import data.BrainBeatsContract;
+import data.BrainBeatsDbHelper;
 import entity.SoundCloudUser;
 import utils.Constants;
 import web.WebApiManager;
@@ -112,9 +111,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() >= Constants.PASSWORD_MINIMUM_LENGTH) {
                     Cursor userCursor = getContentResolver().query(
-                            MixContract.UserEntry.CONTENT_URI, //Get users
+                            BrainBeatsContract.UserEntry.CONTENT_URI, //Get users
                             null,  //return everything
-                            MixContract.UserEntry.COLUMN_NAME_USER_NAME + MixDbHelper.WHERE_CLAUSE_EQUAL, //where the username is  equal
+                            BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, //where the username is  equal
                             new String[]{mEmailView.getText().toString()},
                             null
                     );
@@ -124,7 +123,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     if (userCursor.getCount() >= 1) {
                         userCursor.moveToFirst();
                         while (!userCursor.isAfterLast()) {
-                            String userName = userCursor.getString(userCursor.getColumnIndexOrThrow(MixContract.UserEntry.COLUMN_NAME_USER_NAME));
+                            String userName = userCursor.getString(userCursor.getColumnIndexOrThrow(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME));
                             if (userName.equals(mEmailView.getText().toString())) { //user exists
                                 message = getString(R.string.login_text);
                                 break;
@@ -229,9 +228,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     SoundCloudUser soundCloudUser = gson.fromJson(object.toString(), token);
 
                     Cursor userCursor = getContentResolver().query(
-                            MixContract.UserEntry.CONTENT_URI, //Get users
+                            BrainBeatsContract.UserEntry.CONTENT_URI, //Get users
                             null,  //return everything
-                            MixContract.UserEntry.COLUMN_NAME_USER_NAME + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                            BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                             new String[]{soundCloudUser.getUsername()},
                             null
                     );
@@ -240,7 +239,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         userCursor.moveToFirst();
 
                         while (!userCursor.isAfterLast()) {
-                            String userName = userCursor.getString(userCursor.getColumnIndexOrThrow(MixContract.UserEntry.COLUMN_NAME_USER_NAME));
+                            String userName = userCursor.getString(userCursor.getColumnIndexOrThrow(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME));
                             if (userName.equals(soundCloudUser.getUsername())) { // this sound cloud user already exists in the Brain Beats system
                                 finish();
                                 Intent dashboardIntent = new Intent(LoginActivity.this, MainActivity.class);
@@ -255,10 +254,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     //if we have reached this point and not returned a false this user username does not exist so create a new account
                     ContentValues values = new ContentValues();
-                    values.put(MixContract.UserEntry.COLUMN_NAME_USER_NAME, soundCloudUser.getUsername());
-                    values.put(MixContract.UserEntry.COLUMN_NAME_USER_PASSWORD, Constants.generateEncryptedPass());
-                    values.put(MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID, soundCloudUser.getId());
-                    Uri returnRow = getContentResolver().insert(MixContract.UserEntry.CONTENT_URI, values);
+                    values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME, soundCloudUser.getUsername());
+                    values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PASSWORD, Constants.generateEncryptedPass());
+                    values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID, soundCloudUser.getId());
+                    Uri returnRow = getContentResolver().insert(BrainBeatsContract.UserEntry.CONTENT_URI, values);
                     long returnRowId = ContentUris.parseId(returnRow);
 
                     if (returnRowId != -1) { //new user create with sound cloud if success login
@@ -297,11 +296,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         //Get all users
         return new CursorLoader(
                 this,
-                MixContract.UserEntry.CONTENT_URI,
+                BrainBeatsContract.UserEntry.CONTENT_URI,
                 null,
                 null,
                 null,
-                MixContract.UserEntry.COLUMN_NAME_USER_NAME + MixDbHelper.DB_SORT_TYPE_DESC
+                BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME + BrainBeatsDbHelper.DB_SORT_TYPE_DESC
         );
     }
 
@@ -310,7 +309,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         List<String> emails = new ArrayList<>();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(cursor.getColumnIndexOrThrow(MixContract.UserEntry.COLUMN_NAME_USER_NAME)));
+            emails.add(cursor.getString(cursor.getColumnIndexOrThrow(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));
             cursor.moveToNext();
         }
 
@@ -349,9 +348,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected Boolean doInBackground(Void... params) {
             Cursor userCursor = getContentResolver().query(
-                    MixContract.UserEntry.CONTENT_URI, //Get users
+                    BrainBeatsContract.UserEntry.CONTENT_URI, //Get users
                     null,  //return everything
-                    MixContract.UserEntry.COLUMN_NAME_USER_NAME + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                    BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                     new String[]{mEmail},
                     null
             );
@@ -360,9 +359,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 userCursor.moveToFirst();
 
                 while (!userCursor.isAfterLast()) {
-                    String userName = userCursor.getString(userCursor.getColumnIndexOrThrow(MixContract.UserEntry.COLUMN_NAME_USER_NAME));
+                    String userName = userCursor.getString(userCursor.getColumnIndexOrThrow(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME));
                     if (userName.equals(mEmail)) {
-                        String userPassword = userCursor.getString(userCursor.getColumnIndexOrThrow(MixContract.UserEntry.COLUMN_NAME_USER_PASSWORD));
+                        String userPassword = userCursor.getString(userCursor.getColumnIndexOrThrow(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PASSWORD));
                         return userPassword.equals(mPassword);
                     }
                     userCursor.moveToNext();
@@ -373,9 +372,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             //if we have reached this point and not returned a false this user username does not exist so create a new account
             ContentValues values = new ContentValues();
-            values.put(MixContract.UserEntry.COLUMN_NAME_USER_NAME, mEmail);
-            values.put(MixContract.UserEntry.COLUMN_NAME_USER_PASSWORD, mPassword);
-            Uri returnRow = getContentResolver().insert(MixContract.UserEntry.CONTENT_URI, values);
+            values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME, mEmail);
+            values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PASSWORD, mPassword);
+            Uri returnRow = getContentResolver().insert(BrainBeatsContract.UserEntry.CONTENT_URI, values);
             long returnRowId = ContentUris.parseId(returnRow);
 
             if (returnRowId != -1) {

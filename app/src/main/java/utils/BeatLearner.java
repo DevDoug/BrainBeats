@@ -43,7 +43,7 @@ public class BeatLearner {
     }
 
     public interface RecommendationCompleteListener{
-        Track recommendationComplete(Collection collection);
+        Track recommendationComplete(Track track);
     }
 
     //TODO:Implement machine learning recommendation
@@ -64,8 +64,21 @@ public class BeatLearner {
                             int n = rand.nextInt(mCollections.size());
                             Collection randomTrack = mCollections.get(n);
 
-                            listener.recommendationComplete(randomTrack);
+                            WebApiManager.getTrack(mContext, String.valueOf(randomTrack.getId()), new WebApiManager.OnObjectResponseListener() {
+                                @Override
+                                public void onObjectResponse(JSONObject object) {
+                                    Gson gson = new Gson();
+                                    Type token = new TypeToken<Track>() {
+                                    }.getType();
+                                    Track relatedTracks = gson.fromJson(object.toString(), token);
+                                    listener.recommendationComplete(relatedTracks);
+                                }
+                            }, new WebApiManager.OnErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
 
+                                }
+                            });
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }

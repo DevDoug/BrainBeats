@@ -9,19 +9,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.brainbeats.R;
 import adapters.SocialAdapter;
-import architecture.AccountManager;
-import data.MixContract;
-import data.MixDbHelper;
+import data.BrainBeatsContract;
 import utils.Constants;
 
 public class SocialFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -78,12 +74,14 @@ public class SocialFragment extends Fragment implements LoaderManager.LoaderCall
         switch (id) {
             case Constants.SOCIAL_LOADER:
 
-                String rawQuery = "SELECT * FROM " + MixContract.UserEntry.TABLE_NAME + " INNER JOIN " + MixContract.UserFollowersEntry.TABLE_NAME
-                        + " ON " + "user." + MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + " = " + "userfollowers." + MixContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID;
+                String rawQuery =
+                        "SELECT * FROM " + BrainBeatsContract.UserEntry.TABLE_NAME + " INNER JOIN " + BrainBeatsContract.UserFollowersEntry.TABLE_NAME
+                        + " ON " + "user." + BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + " = " + "userfollowers." +
+                                BrainBeatsContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID;
 
                 return new CursorLoader(
                         getActivity(),                      // Parent activity context
-                        MixContract.CONTENT_URI_RAW_QUERY,
+                        BrainBeatsContract.CONTENT_URI_RAW_QUERY,
                         null,  //return everything
                         rawQuery, //raw query sql
                         null, // select args

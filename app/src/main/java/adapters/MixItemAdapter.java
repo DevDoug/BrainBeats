@@ -1,8 +1,6 @@
 package adapters;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +12,8 @@ import android.widget.TextView;
 import com.brainbeats.R;
 import java.util.List;
 
-import data.MixContract;
-import data.MixDbHelper;
+import data.BrainBeatsContract;
+import data.BrainBeatsDbHelper;
 import fragments.MixerDetailFragment;
 import model.MixItem;
 import utils.Constants;
@@ -77,8 +75,8 @@ public class MixItemAdapter extends RecyclerView.Adapter<MixItemAdapter.ViewHold
                     long removeMixID = mMixItems.get(position).getMixItemId();
                     removeItem(position);
                     mAdapterContext.getContentResolver().delete(
-                            MixContract.MixItemsEntry.CONTENT_URI,
-                            MixContract.MixItemsEntry._ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                            BrainBeatsContract.MixItemsEntry.CONTENT_URI,
+                            BrainBeatsContract.MixItemsEntry._ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                             new String[]{String.valueOf(removeMixID)});
                     break;
             }

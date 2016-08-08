@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.brainbeats.R;
 
-import data.MixContract;
+import data.BrainBeatsContract;
 
 /**
  * Created by douglas on 7/28/2016.
@@ -32,6 +32,6 @@ public class LibraryPlaylistAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, final Cursor cursor) {
         TextView titleText = (TextView) view.findViewById(R.id.album_title);
-        titleText.setText(cursor.getString(cursor.getColumnIndexOrThrow(MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE)));
+        titleText.setText(cursor.getString(cursor.getColumnIndexOrThrow(BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE)));
     }
 }

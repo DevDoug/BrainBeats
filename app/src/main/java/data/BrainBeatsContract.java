@@ -8,15 +8,13 @@ import android.provider.BaseColumns;
 /**
  * Created by douglas on 5/25/2016.
  */
-public class MixContract {
-    // To prevent someone from accidentally instantiating the contract class,
-    // give it an empty constructor.
-    public MixContract() {
+public class BrainBeatsContract {
+
+    public BrainBeatsContract() {
     }
 
     public static final String CONTENT_AUTHORITY = "com.brainbeats";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-
 
     // Possible paths (appended to base content URI for possible URI's)
     public static final String PATH_MIX                 = "mix";
@@ -28,7 +26,6 @@ public class MixContract {
     public static final String PATH_RAW_QUERY           = "rawquery";
 
     public static final Uri CONTENT_URI_RAW_QUERY = BASE_CONTENT_URI.buildUpon().appendPath(PATH_RAW_QUERY).build();
-
 
 
     public static final class MixEntry implements BaseColumns {
@@ -124,5 +121,4 @@ public class MixContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
-
 }

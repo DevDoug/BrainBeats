@@ -132,6 +132,12 @@ public class Collection {
     @SerializedName("policy")
     private String policy;
 
+    @SerializedName("stream_url")
+    private String mStreamURL;
+
+    @SerializedName("user")
+    private User user;
+
     public String getArtworkUrl() {
         return artworkUrl;
     }
@@ -458,5 +464,21 @@ public class Collection {
 
     public void setPolicy(String policy) {
         this.policy = policy;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getStreamURL() {
+        return mStreamURL;
+    }
+
+    public void setStreamURL(String streamURL) {
+        this.mStreamURL = streamURL;
     }
 }

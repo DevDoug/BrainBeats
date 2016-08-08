@@ -2,15 +2,11 @@ package architecture;
 
 import android.accounts.Account;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,18 +19,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
 
 import com.brainbeats.LibraryActivity;
-import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import com.brainbeats.SettingsActivity;
 import com.brainbeats.SocialActivity;
-
-import data.MixContract;
-import web.SyncManager;
 
 /**
  * Created by Douglas on 4/21/2016.
@@ -60,7 +51,7 @@ public class BaseActivity extends AppCompatActivity {
         mAccount = CreateSyncAccount(this);
 
 /*        if(AccountManager.getInstance(BaseActivity.this).getGlobalSyncRequired()){
-            SyncManager.getInstance().updateAllTables(mAccount, MixContract.CONTENT_AUTHORITY);
+            SyncManager.getInstance().updateAllTables(mAccount, BrainBeatsContract.CONTENT_AUTHORITY);
             AccountManager.getInstance(BaseActivity.this).setGlobalSyncRequired(false);
         }*/
     }

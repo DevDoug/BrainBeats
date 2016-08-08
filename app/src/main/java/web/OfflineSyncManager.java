@@ -1,36 +1,20 @@
 package web;
 
-import android.accounts.Account;
-import android.content.ContentProviderClient;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
-import android.content.SyncResult;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 
-import com.android.volley.VolleyError;
 import com.brainbeats.R;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 
 import architecture.AccountManager;
-import data.MixContract;
-import data.MixDbHelper;
-import entity.Collection;
-import entity.RelatedTracksResponse;
+import data.BrainBeatsContract;
+import data.BrainBeatsDbHelper;
 import entity.Track;
-import entity.UserCollectionEntry;
 import model.Mix;
 import model.User;
 import utils.Constants;
@@ -64,9 +48,9 @@ public class OfflineSyncManager {
             case 0: //sync mixes
                 try {
                     final Cursor mixCursor = provider.query(
-                            MixContract.MixEntry.CONTENT_URI, //Get mixes
+                            BrainBeatsContract.MixEntry.CONTENT_URI, //Get mixes
                             null,  //return everything
-                            MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                            BrainBeatsContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                             new String[]{String.valueOf(selectedTrack.getID())},
                             null
                     );
@@ -132,9 +116,9 @@ public class OfflineSyncManager {
             case 3: // sync user's
                 //if the artist exists then see if they are following and toggle otherwise just add user
                 final Cursor artistCursor = provider.query(
-                        MixContract.UserEntry.CONTENT_URI, //Get users
+                        BrainBeatsContract.UserEntry.CONTENT_URI, //Get users
                         null,  //return everything
-                        MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                        BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                         new String[]{String.valueOf(selectedTrack.getUser().getId())},
                         null
                 );
@@ -144,18 +128,18 @@ public class OfflineSyncManager {
 
                     if (artistCursor.getCount() != 0) { // this user exists so update the record.
                         final Cursor followingArtistCursor = provider.query(
-                                MixContract.UserFollowersEntry.CONTENT_URI, //Get mixes
+                                BrainBeatsContract.UserFollowersEntry.CONTENT_URI, //Get mixes
                                 null,  //return everything
-                                MixContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                                BrainBeatsContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                                 new String[]{String.valueOf(selectedTrack.getUser().getId())},
                                 null
                         );
 
                         if(followingArtistCursor.getCount() != 0) {
-                            int result = provider.delete(MixContract.UserFollowersEntry.CONTENT_URI, MixContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID + MixDbHelper.WHERE_CLAUSE_EQUAL, new String[]{String.valueOf(selectedTrack.getUser().getId())});
+                            int result = provider.delete(BrainBeatsContract.UserFollowersEntry.CONTENT_URI, BrainBeatsContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, new String[]{String.valueOf(selectedTrack.getUser().getId())});
                             showSnackMessage(coordinatorLayout, R.string.artist_removed_from_following);
                         } else {
-                            Uri result = provider.insert(MixContract.UserFollowersEntry.CONTENT_URI, Constants.buildUserFollowingRecord(AccountManager.getInstance(mContext).getUserId(), String.valueOf(selectedTrack.getUser().getId())));
+                            Uri result = provider.insert(BrainBeatsContract.UserFollowersEntry.CONTENT_URI, Constants.buildUserFollowingRecord(AccountManager.getInstance(mContext).getUserId(), String.valueOf(selectedTrack.getUser().getId())));
                             showSnackMessage(coordinatorLayout, R.string.artist_added_to_following);
                         }
                     } else {
@@ -180,8 +164,8 @@ public class OfflineSyncManager {
 
         Log.i("New Mix", "Adding new mix");
         try {
-            Uri result = provider.insert(MixContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(newMix));
-            mContext.getContentResolver().notifyChange(MixContract.MixEntry.CONTENT_URI, null, false);
+            Uri result = provider.insert(BrainBeatsContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(newMix));
+            mContext.getContentResolver().notifyChange(BrainBeatsContract.MixEntry.CONTENT_URI, null, false);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -193,9 +177,9 @@ public class OfflineSyncManager {
         user.setSoundCloudUserId(collection.getId());
 
         try {
-            Uri result = provider.insert(MixContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(user)); //insert user rec
+            Uri result = provider.insert(BrainBeatsContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(user)); //insert user rec
             if(isFollowing) { //if the user is following this person add the record to the following table, now when quered
-                Uri relatedResult = provider.insert(MixContract.UserFollowersEntry.CONTENT_URI, Constants.buildUserFollowingRecord(AccountManager.getInstance(mContext).getUserId(), String.valueOf(collection.getId())));
+                Uri relatedResult = provider.insert(BrainBeatsContract.UserFollowersEntry.CONTENT_URI, Constants.buildUserFollowingRecord(AccountManager.getInstance(mContext).getUserId(), String.valueOf(collection.getId())));
                 Log.i("Add user following rec","user collection Id " + String.valueOf(collection.getId()));
             }
         } catch (Exception e) {
@@ -206,9 +190,9 @@ public class OfflineSyncManager {
     public void updateMixRecord(ContentResolver provider, Mix mix, int selectedTrackId){
         try {
             int returnId = provider.update(
-                    MixContract.MixEntry.CONTENT_URI,
+                    BrainBeatsContract.MixEntry.CONTENT_URI,
                     Constants.buildMixRecord(mix),
-                    MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                    BrainBeatsContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                     new String[]{String.valueOf(selectedTrackId)});
         } catch (Exception e) {
             e.printStackTrace();

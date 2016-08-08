@@ -4,7 +4,6 @@ import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.SyncResult;
 import android.database.Cursor;
@@ -22,19 +21,14 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.stream.Stream;
 
 import architecture.AccountManager;
-import data.MixContract;
-import data.MixDbHelper;
-import entity.Collection;
-import entity.Playlists;
-import entity.RelatedTracksResponse;
+import data.BrainBeatsContract;
+import data.BrainBeatsDbHelper;
 import entity.Track;
 import entity.UserCollection;
 import entity.UserCollectionEntry;
 import entity.UserPlaylistsResponse;
-import entity.UserTrackResponse;
 import model.Mix;
 import model.Playlist;
 import model.User;
@@ -103,9 +97,9 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                     for(Track track : userTracks) {
                                         try {
                                             Cursor trackCursor = provider.query( //find if this mix exists
-                                                    MixContract.MixEntry.CONTENT_URI,
+                                                    BrainBeatsContract.MixEntry.CONTENT_URI,
                                                     null,  //return everything
-                                                    MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                                                    BrainBeatsContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                                                     new String[]{String.valueOf(track.getID())},
                                                     null
                                             );
@@ -148,23 +142,23 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                     for(Track track: userTracks) {
                                         try {
                                             Cursor trackCursor = provider.query( //find if this mix exists
-                                                    MixContract.MixEntry.CONTENT_URI,
+                                                    BrainBeatsContract.MixEntry.CONTENT_URI,
                                                     null,  //return everything
-                                                    MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                                                    BrainBeatsContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                                                     new String[]{String.valueOf(track.getID())},
                                                     null
                                             );
                                             if (trackCursor != null && trackCursor.getCount() != 0) { // this mix exists so update the record.
                                                 trackCursor.moveToFirst();
-                                                if(trackCursor.getInt(trackCursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE)) == 0) {
+                                                if(trackCursor.getInt(trackCursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_FAVORITE)) == 0) {
                                                     //update the local db from the change on sound cloud
                                                     Log.i("Action","favorite in local");
                                                     Mix mix = Constants.buildMixFromCursor(getContext(), trackCursor, 0);
                                                     mix.setMixFavorite(1);
                                                     int returnId = provider.update(
-                                                            MixContract.MixEntry.CONTENT_URI,
+                                                            BrainBeatsContract.MixEntry.CONTENT_URI,
                                                             Constants.buildMixRecord(mix),
-                                                            MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                                                            BrainBeatsContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                                                             new String[]{String.valueOf(track.getID())});
                                                     if(returnId != -1)
                                                         Log.i("Mix updated","Updated");
@@ -215,9 +209,9 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                             ArrayList<Collection> mCollections = (ArrayList<Collection>) relatedTracks.getCollection();
 
                             Cursor relatedMixCursor = provider.query( //find if this mix has an associated mix related entry
-                                    MixContract.MixEntry.CONTENT_URI, //Get users
+                                    BrainBeatsContract.MixEntry.CONTENT_URI, //Get users
                                     null,  //return everything
-                                    MixContract.MixRelatedEntry._ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                                    BrainBeatsContract.MixRelatedEntry._ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                                     new String[]{String.valueOf(selectedTrackId)},
                                     null
                             );
@@ -226,7 +220,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                 updateRelateMixes(mCollections, provider);
                                 relatedMixCursor.close();
                             } else { //add the related record with this mix
-                                Uri returnRecord = provider.insert(MixContract.MixRelatedEntry.CONTENT_URI, Constants.buildMixRelatedRecord());
+                                Uri returnRecord = provider.insert(BrainBeatsContract.MixRelatedEntry.CONTENT_URI, Constants.buildMixRelatedRecord());
                                 long returnRowId = ContentUris.parseId(returnRecord);
                                 if (returnRowId != -1) {
                                     updateRelateMixes(mCollections, provider);
@@ -259,9 +253,9 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                             for(UserPlaylistsResponse playlistsResponse : userPlaylists) {
                                 try {
                                     Cursor playlistCursor = provider.query( //find if this mix exists
-                                            MixContract.MixPlaylistEntry.CONTENT_URI, //Get users
+                                            BrainBeatsContract.MixPlaylistEntry.CONTENT_URI, //Get users
                                             null,  //return everything
-                                            MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                                            BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                                             new String[]{String.valueOf(playlistsResponse.getId())},
                                             null
                                     );
@@ -304,9 +298,9 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                             for(UserCollectionEntry collection : userFollowingCollection.getCollection()){
                                 try {
                                     Cursor userCursor = provider.query( //find if this user exists
-                                            MixContract.UserEntry.CONTENT_URI, //Get users
+                                            BrainBeatsContract.UserEntry.CONTENT_URI, //Get users
                                             null,  //return everything
-                                            MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                                            BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                                             new String[]{String.valueOf(collection.getId())},
                                             null
                                     );
@@ -350,8 +344,8 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         newMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(getContext()).getUserId()));
 
         try {
-            Uri result = provider.insert(MixContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(newMix));
-            //getContext().getContentResolver().notifyChange(MixContract.MixEntry.CONTENT_URI, null, false);
+            Uri result = provider.insert(BrainBeatsContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(newMix));
+            //getContext().getContentResolver().notifyChange(BrainBeatsContract.MixEntry.CONTENT_URI, null, false);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -363,8 +357,8 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         playlist.setSoundCloudId(playlistsResponse.getId());
 
         try {
-            Uri result = provider.insert(MixContract.MixPlaylistEntry.CONTENT_URI, Constants.buildPlaylistRecord(playlist));
-            //getContext().getContentResolver().notifyChange(MixContract.MixEntry.CONTENT_URI, null, false);
+            Uri result = provider.insert(BrainBeatsContract.MixPlaylistEntry.CONTENT_URI, Constants.buildPlaylistRecord(playlist));
+            //getContext().getContentResolver().notifyChange(BrainBeatsContract.MixEntry.CONTENT_URI, null, false);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -376,9 +370,9 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         user.setSoundCloudUserId(collection.getId());
 
         try {
-            Uri result = provider.insert(MixContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(user)); //insert user rec
+            Uri result = provider.insert(BrainBeatsContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(user)); //insert user rec
             if(isFollowing) { //if the user is following this person add the record to the following table, now when quered
-                Uri relatedResult = provider.insert(MixContract.UserFollowersEntry.CONTENT_URI, Constants.buildUserFollowingRecord(AccountManager.getInstance(getContext()).getUserId(), String.valueOf(collection.getId())));
+                Uri relatedResult = provider.insert(BrainBeatsContract.UserFollowersEntry.CONTENT_URI, Constants.buildUserFollowingRecord(AccountManager.getInstance(getContext()).getUserId(), String.valueOf(collection.getId())));
                 Log.i("Add user following rec","user collection Id " + String.valueOf(collection.getId()));
             }
         } catch (RemoteException e) {
@@ -392,9 +386,9 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         for(Collection collection : mCollections) {
             try {
                 mixCursor = provider.query( //find if this mix exists ?
-                        MixContract.MixEntry.CONTENT_URI, //Get users
+                        BrainBeatsContract.MixEntry.CONTENT_URI, //Get users
                         null,  //return everything
-                        MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                        BrainBeatsContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                         new String[]{String.valueOf(collection.getId())},
                         null
                 );
@@ -403,9 +397,9 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                     mix.setRelatedTracksId(collection.getId());
 
                     int returnId = provider.update(
-                            MixContract.MixEntry.CONTENT_URI,
+                            BrainBeatsContract.MixEntry.CONTENT_URI,
                             Constants.buildMixRecord(mix),
-                            MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                            BrainBeatsContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                             new String[]{String.valueOf(collection.getId())});
 
                     mixCursor.close();

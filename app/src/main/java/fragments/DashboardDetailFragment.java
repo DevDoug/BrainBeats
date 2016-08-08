@@ -1,10 +1,6 @@
 package fragments;
 
-import android.accounts.Account;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -16,7 +12,6 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
@@ -24,9 +19,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -38,39 +30,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.VolleyError;
 import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-
-import adapters.MixerAdapter;
-import adapters.RelatedTracksAdapter;
 import architecture.AccountManager;
-import data.MixContract;
-import data.MixDbHelper;
+import data.BrainBeatsContract;
 import entity.Collection;
-import entity.RelatedTracksResponse;
 import entity.Track;
 import service.AudioService;
 import utils.BeatLearner;
 import utils.Constants;
 import web.OfflineSyncManager;
-import web.WebApiManager;
 
 public class DashboardDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener, BeatLearner.RecommendationCompleteListener {
 
@@ -366,7 +341,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 // Returns a new CursorLoader
                 return new CursorLoader(
                         getActivity(),         // Parent activity context
-                        MixContract.MixEntry.CONTENT_URI,  // Table to query
+                        BrainBeatsContract.MixEntry.CONTENT_URI,  // Table to query
                         null,                          // Projection to return
                         null,                  // No selection clause
                         null,                  // No selection arguments
@@ -390,14 +365,23 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     }
 
     @Override
-    public Track recommendationComplete(Collection collection) {
-        mTrackTitle.setText(collection.getTitle());
+    public Track recommendationComplete(Track track) {
+        mTrackTitle.setText(track.getTitle());
 
-        if(collection.getArtworkUrl() == null)
+        if(track.getArtworkURL() == null)
             mAlbumCoverArt.setImageResource(R.drawable.placeholder);
         else
-            Picasso.with(getContext()).load(collection.getArtworkUrl()).into(mAlbumCoverArt);
+            Picasso.with(getContext()).load(track.getArtworkURL()).into(mAlbumCoverArt);
 
+        if(mBound){
+            if(track.getStreamURL() != null){
+                mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
+                mAudioService.playSong(Uri.parse(track.getStreamURL()));
+                startProgressBarThread();
+            }
+        }
+
+        mArtistName.setText(track.getUser().getUsername());
         return null;
     }
 

@@ -25,8 +25,8 @@ import com.brainbeats.LibraryActivity;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import adapters.MixerAdapter;
-import data.MixContract;
-import data.MixDbHelper;
+import data.BrainBeatsContract;
+import data.BrainBeatsDbHelper;
 import model.Mix;
 import utils.Constants;
 
@@ -110,9 +110,9 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
                 Mix defaultMix = Constants.buildNewDefaultMixRecord(getContext());
                 defaultMix.setIsInMixer(1);
                 defaultMix.setIsInLibrary(1);
-                Uri returnRow = getActivity().getContentResolver().insert(MixContract.MixEntry.CONTENT_URI,Constants.buildMixRecord(defaultMix));
+                Uri returnRow = getActivity().getContentResolver().insert(BrainBeatsContract.MixEntry.CONTENT_URI,Constants.buildMixRecord(defaultMix));
                 long returnRowId = ContentUris.parseId(returnRow);
-                getActivity().getContentResolver().bulkInsert(MixContract.MixItemsEntry.CONTENT_URI,Constants.buildMixItemsBulkRecord(returnRowId,defaultMix.getMixItems()));
+                getActivity().getContentResolver().bulkInsert(BrainBeatsContract.MixItemsEntry.CONTENT_URI,Constants.buildMixItemsBulkRecord(returnRowId,defaultMix.getMixItems()));
                 mAddOptionsDialog.dismiss();
                 break;
             case 1:
@@ -145,10 +145,10 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
                 // Returns a new CursorLoader
                 return new CursorLoader(
                         getActivity(),         // Parent activity context
-                        MixContract.MixEntry.CONTENT_URI,  // Table to query
+                        BrainBeatsContract.MixEntry.CONTENT_URI,  // Table to query
                         null,                          // Projection to return
-                        MixContract.MixEntry.COLUMN_NAME_IS_IN_MIXER + MixDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
-                        new String[]{MixDbHelper.DB_TRUE_VALUE},                  // No selection arguments
+                        BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_MIXER + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
+                        new String[]{BrainBeatsDbHelper.DB_TRUE_VALUE},                  // No selection arguments
                         null                   // Default sort order
                 );
             default:

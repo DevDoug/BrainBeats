@@ -28,9 +28,6 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     public boolean mIsPaused = false;
     int mProgressStatus = 0;
     int mSongDuration = 0;
-    private SeekBar mSeekbar;
-    public ImageView mPlayButton;
-    public Thread mUpdateSeekBar;
 
     public AudioService() {
     }

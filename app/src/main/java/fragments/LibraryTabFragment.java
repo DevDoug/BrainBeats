@@ -20,8 +20,8 @@ import java.util.ArrayList;
 
 import adapters.LibraryMixAdapter;
 import adapters.LibraryPlaylistAdapter;
-import data.MixContract;
-import data.MixDbHelper;
+import data.BrainBeatsContract;
+import data.BrainBeatsDbHelper;
 import entity.Track;
 import utils.Constants;
 
@@ -85,16 +85,16 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
             case 0:
                 return new CursorLoader(
                         getActivity(),         // Parent activity context
-                        MixContract.MixEntry.CONTENT_URI,  // Table to query
+                        BrainBeatsContract.MixEntry.CONTENT_URI,  // Table to query
                         null,                          // Projection to return
-                        MixContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY + MixDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
-                        new String[]{MixDbHelper.DB_TRUE_VALUE},                  // No selection arguments
+                        BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
+                        new String[]{BrainBeatsDbHelper.DB_TRUE_VALUE},                  // No selection arguments
                         null                   // Default sort order
                 );
             case 1:
                 return new CursorLoader(
                         getActivity(),         // Parent activity context
-                        MixContract.MixPlaylistEntry.CONTENT_URI,  // Table to query
+                        BrainBeatsContract.MixPlaylistEntry.CONTENT_URI,  // Table to query
                         null,                          // Projection to return
                         null,
                         null,
@@ -103,19 +103,19 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
             case 2:
                 return new CursorLoader(
                         getActivity(),         // Parent activity context
-                        MixContract.MixEntry.CONTENT_URI,  // Table to query
+                        BrainBeatsContract.MixEntry.CONTENT_URI,  // Table to query
                         null,                          // Projection to return
-                        MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE + MixDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
-                        new String[]{MixDbHelper.DB_TRUE_VALUE},
+                        BrainBeatsContract.MixEntry.COLUMN_NAME_IS_FAVORITE + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
+                        new String[]{BrainBeatsDbHelper.DB_TRUE_VALUE},
                         null                   // Default sort order
                 );
             default:
                 return new CursorLoader(
                         getActivity(),         // Parent activity context
-                        MixContract.MixEntry.CONTENT_URI,  // Table to query
+                        BrainBeatsContract.MixEntry.CONTENT_URI,  // Table to query
                         null,                          // Projection to return
-                        MixContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY + MixDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
-                        new String[]{MixDbHelper.DB_TRUE_VALUE},                  // No selection arguments
+                        BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
+                        new String[]{BrainBeatsDbHelper.DB_TRUE_VALUE},                  // No selection arguments
                         null                   // Default sort order
                 );
         }

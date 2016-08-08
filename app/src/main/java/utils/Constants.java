@@ -6,8 +6,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,8 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import adapters.ImageAdapter;
-import data.MixContract;
-import entity.SoundCloudUser;
+import data.BrainBeatsContract;
 import entity.Track;
 import model.Mix;
 import model.MixItem;
@@ -146,21 +143,21 @@ public class Constants {
     public static Mix buildMixFromCursor(Context context,Cursor cursor, int position) {
         cursor.moveToPosition(position);
         Mix mix = new Mix();
-        mix.setMixId(cursor.getLong(cursor.getColumnIndex(MixContract.MixEntry._ID)));
-        mix.setMixTitle(cursor.getString(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_MIX_TITLE)));
-        mix.setMixAlbumCoverArt(cursor.getString(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL)));
-        mix.setMixFavorite(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE)));
-        mix.setSoundCloudId(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID)));
-        mix.setMixUserId(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_MIX_USER_ID_FK)));
-        mix.setIsInLibrary(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY)));
-        mix.setIsInMixer(cursor.getInt(cursor.getColumnIndex(MixContract.MixEntry.COLUMN_NAME_IS_IN_MIXER)));
+        mix.setMixId(cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.MixEntry._ID)));
+        mix.setMixTitle(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE)));
+        mix.setMixAlbumCoverArt(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL)));
+        mix.setMixFavorite(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_FAVORITE)));
+        mix.setSoundCloudId(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID)));
+        mix.setMixUserId(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_USER_ID_FK)));
+        mix.setIsInLibrary(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY)));
+        mix.setIsInMixer(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_MIXER)));
 
-        String whereClause = MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + "= ?";
+        String whereClause = BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + "= ?";
         String[] whereArgs = new String[] {
-                " " + cursor.getLong(cursor.getColumnIndex(MixContract.MixEntry._ID)),
+                " " + cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.MixEntry._ID)),
         };
 
-        Cursor mixItemsCursor = context.getContentResolver().query(MixContract.MixItemsEntry.CONTENT_URI, null,whereClause,whereArgs,null); // get the mix items associated with this mix
+        Cursor mixItemsCursor = context.getContentResolver().query(BrainBeatsContract.MixItemsEntry.CONTENT_URI, null,whereClause,whereArgs,null); // get the mix items associated with this mix
 
         if (mixItemsCursor != null) {
             mixItemsCursor.moveToFirst();
@@ -168,9 +165,9 @@ public class Constants {
             ArrayList<MixItem> mixItems = new ArrayList<>();
             for (int i = 0; i < mixItemsCursor.getCount(); i++) {
                 MixItem mixItem = new MixItem();
-                mixItem.setMixItemId(mixItemsCursor.getLong(mixItemsCursor.getColumnIndex(MixContract.MixItemsEntry._ID)));
-                mixItem.setMixItemTitle(mixItemsCursor.getString(mixItemsCursor.getColumnIndex(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_TITLE)));
-                mixItem.setMixItemLevel(mixItemsCursor.getInt(mixItemsCursor.getColumnIndex(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_LEVEL)));
+                mixItem.setMixItemId(mixItemsCursor.getLong(mixItemsCursor.getColumnIndex(BrainBeatsContract.MixItemsEntry._ID)));
+                mixItem.setMixItemTitle(mixItemsCursor.getString(mixItemsCursor.getColumnIndex(BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_TITLE)));
+                mixItem.setMixItemLevel(mixItemsCursor.getInt(mixItemsCursor.getColumnIndex(BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_LEVEL)));
                 mixItems.add(mixItem);
                 mixItemsCursor.moveToNext();
             }
@@ -185,59 +182,59 @@ public class Constants {
         cursor.moveToFirst();
 
         User user = new User();
-        user.setUserId(cursor.getLong(cursor.getColumnIndex(MixContract.UserEntry._ID)));
-        user.setUserName(cursor.getString(cursor.getColumnIndex(MixContract.UserEntry.COLUMN_NAME_USER_NAME)));
-        user.setSoundCloudUserId(cursor.getInt(cursor.getColumnIndex(MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID)));
+        user.setUserId(cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
+        user.setUserName(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));
+        user.setSoundCloudUserId(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID)));
 
         return user;
     }
 
     public static ContentValues buildMixRecord(Mix mix) {
         ContentValues values = new ContentValues();
-        values.put(MixContract.MixEntry.COLUMN_NAME_MIX_TITLE, mix.getBeatTitle());
-        values.put(MixContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL, mix.getMixAlbumCoverArt());
-        values.put(MixContract.MixEntry.COLUMN_NAME_IS_FAVORITE, mix.getMixFavorite());
-        values.put(MixContract.MixEntry.COLUMN_NAME_MIX_USER_ID_FK, mix.getMixUserId());
-        values.put(MixContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID, mix.getSoundCloudId());
-        values.put(MixContract.MixEntry.COLUMN_NAME_RELATED_MIXES_ID,mix.getRelatedTracksId());
-        values.put(MixContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY, mix.getIsInLibrary());
-        values.put(MixContract.MixEntry.COLUMN_NAME_IS_IN_MIXER, mix.getIsInMixer());
+        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE, mix.getBeatTitle());
+        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL, mix.getMixAlbumCoverArt());
+        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_FAVORITE, mix.getMixFavorite());
+        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_USER_ID_FK, mix.getMixUserId());
+        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID, mix.getSoundCloudId());
+        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_RELATED_MIXES_ID,mix.getRelatedTracksId());
+        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY, mix.getIsInLibrary());
+        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_MIXER, mix.getIsInMixer());
         return values;
     }
 
     public static ContentValues buildMixRelatedRecord(){
         ContentValues values = new ContentValues();
-        values.put(MixContract.MixRelatedEntry.COLUMN_NAME_TAG_CLOUD_ID, 0);
+        values.put(BrainBeatsContract.MixRelatedEntry.COLUMN_NAME_TAG_CLOUD_ID, 0);
         return values;
     }
 
     public static ContentValues buildMixItemsRecord(long mixId,MixItem mixitem){
         ContentValues values = new ContentValues();
-        values.put(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_TITLE,mixitem.getMixItemTitle());
-        values.put(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_LEVEL,mixitem.getMixItemLevel());
-        values.put(MixContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY,mixId);
+        values.put(BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_TITLE,mixitem.getMixItemTitle());
+        values.put(BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_LEVEL,mixitem.getMixItemLevel());
+        values.put(BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY,mixId);
         return values;
     }
 
     public static ContentValues buildPlaylistRecord(Playlist playlist){
         ContentValues values = new ContentValues();
-        values.put(MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE,playlist.getPlaylistTitle());
-        values.put(MixContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID,playlist.getSoundCloudId());
+        values.put(BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE,playlist.getPlaylistTitle());
+        values.put(BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID,playlist.getSoundCloudId());
         return values;
     }
 
     public static ContentValues buildUserRecord(User user) {
         ContentValues values = new ContentValues();
-        values.put(MixContract.UserEntry.COLUMN_NAME_USER_NAME,user.getUserName());
-        values.put(MixContract.UserEntry.COLUMN_NAME_USER_PASSWORD,Constants.generateEncryptedPass());
-        values.put(MixContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID,user.getSoundCloudUserId());
+        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME,user.getUserName());
+        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PASSWORD,Constants.generateEncryptedPass());
+        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID,user.getSoundCloudUserId());
         return values;
     }
 
     public static ContentValues buildUserFollowingRecord(String bbUserId,String scUserId){
         ContentValues values = new ContentValues();
-        values.put(MixContract.UserFollowersEntry.COLUMN_NAME_USER_ID,bbUserId);
-        values.put(MixContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID,scUserId);
+        values.put(BrainBeatsContract.UserFollowersEntry.COLUMN_NAME_USER_ID,bbUserId);
+        values.put(BrainBeatsContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID,scUserId);
         return values;
     }
 

@@ -2,11 +2,9 @@ package web;
 
 import android.accounts.Account;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.os.Bundle;
 
-import architecture.AccountManager;
-import data.MixContract;
+import data.BrainBeatsContract;
 import utils.Constants;
 
 /**
@@ -41,22 +39,22 @@ public class SyncManager {
 
         settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Mixes.getCode());
         settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION,Constants.SyncDataAction.UpdateMix.getCode());
-        ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle); // Sync mixes
+        ContentResolver.requestSync(mAccount, BrainBeatsContract.CONTENT_AUTHORITY, settingsBundle); // Sync mixes
 
         settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Mixes.getCode());
         settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION,Constants.SyncDataAction.UpdateFavorite.getCode());
-        ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle); // Sync favorites
+        ContentResolver.requestSync(mAccount, BrainBeatsContract.CONTENT_AUTHORITY, settingsBundle); // Sync favorites
 
         settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Playlists.getCode());
-        ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle); //Sync Playlists
+        ContentResolver.requestSync(mAccount, BrainBeatsContract.CONTENT_AUTHORITY, settingsBundle); //Sync Playlists
 
         settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Users.getCode());
-        ContentResolver.requestSync(mAccount, MixContract.CONTENT_AUTHORITY, settingsBundle); //Sync users
+        ContentResolver.requestSync(mAccount, BrainBeatsContract.CONTENT_AUTHORITY, settingsBundle); //Sync users
 
         ContentResolver.addPeriodicSync(mAccount, authority, Bundle.EMPTY, SYNC_INTERVAL); // sets our sync adapter to go after a period of time.
     }
 
     public void performSyncOnTable(Bundle settingsBundle){
-        ContentResolver.requestSync(mAccount,MixContract.CONTENT_AUTHORITY, settingsBundle); // Sync mixes
+        ContentResolver.requestSync(mAccount, BrainBeatsContract.CONTENT_AUTHORITY, settingsBundle); // Sync mixes
     }
 }

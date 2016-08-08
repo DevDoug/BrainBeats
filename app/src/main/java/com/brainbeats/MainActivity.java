@@ -8,12 +8,11 @@ import android.os.Looper;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 import architecture.AccountManager;
 import architecture.BaseActivity;
-import data.MixContract;
+import data.BrainBeatsContract;
 import entity.Track;
 import fragments.DashboardDetailFragment;
 import fragments.DashboardFragment;
@@ -67,8 +66,8 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
                 Log.i("",uri.toString());
             }
         };
-        getContentResolver().registerContentObserver(MixContract.MixEntry.CONTENT_URI, false, mDataObserver);
-        getContentResolver().registerContentObserver(MixContract.MixPlaylistEntry.CONTENT_URI, false, mDataObserver);
+        getContentResolver().registerContentObserver(BrainBeatsContract.MixEntry.CONTENT_URI, false, mDataObserver);
+        getContentResolver().registerContentObserver(BrainBeatsContract.MixPlaylistEntry.CONTENT_URI, false, mDataObserver);
     }
 
     @Override
@@ -80,7 +79,7 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     public void onResume() {
         super.onResume();
         if(AccountManager.getInstance(MainActivity.this).getGlobalSyncRequired()){
-            SyncManager.getInstance().updateAllTables(AccountManager.getInstance(MainActivity.this).getUserId(),mAccount, MixContract.CONTENT_AUTHORITY);
+            SyncManager.getInstance().updateAllTables(AccountManager.getInstance(MainActivity.this).getUserId(),mAccount, BrainBeatsContract.CONTENT_AUTHORITY);
             AccountManager.getInstance(MainActivity.this).setGlobalSyncRequired(false);
         }
     }
