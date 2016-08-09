@@ -17,6 +17,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -39,7 +41,7 @@ import entity.Track;
 import utils.Constants;
 import web.WebApiManager;
 
-public class DashboardFragment extends Fragment {
+public class DashboardFragment extends Fragment implements View.OnClickListener {
 
     public static final String TAG = "DashboardFragment";
 
@@ -47,8 +49,12 @@ public class DashboardFragment extends Fragment {
     private SearchMusicAdapter mTrackAdapter;
     private GridLayoutManager mBeatGridLayoutManager;
     List<Track> trackList = new ArrayList<>();
-    FloatingActionButton mAddCategoryFab;
+    FloatingActionButton mQuickFilterFab;
+    FloatingActionButton mFilerByPopularFab;
+    FloatingActionButton mFilterByRecentFab;
+    private Animation fab_open,fab_close,rotate_forward,rotate_backward;
     private OnFragmentInteractionListener mListener;
+    private boolean mIsFabOpen = false;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -65,15 +71,19 @@ public class DashboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dashboard, container, false);
         mTrackGrid = (RecyclerView) v.findViewById(R.id.category_grid);
+        mQuickFilterFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_quick_filter);
+        mFilerByPopularFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_filter_by_popular);
+        mFilterByRecentFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_filter_by_recent);
 
+        fab_open = AnimationUtils.loadAnimation(getContext(), R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(getContext(),R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(getContext(),R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(getContext(),R.anim.rotate_backward);
 
-/*        mAddCategoryFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_fab_with_listview);
-        mAddCategoryFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(), "Add Category !", Toast.LENGTH_SHORT).show();
-            }
-        });*/
+        mQuickFilterFab.setOnClickListener(this);
+        mFilerByPopularFab.setOnClickListener(this);
+        mFilterByRecentFab.setOnClickListener(this);
+
         return v;
     }
 
@@ -154,8 +164,36 @@ public class DashboardFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id){
+            case R.id.floating_action_button_quick_filter:
+                animateFAB();
+                break;
+        }
+    }
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void animateFAB(){
+        if(mIsFabOpen){
+            mQuickFilterFab.startAnimation(rotate_backward);
+            mFilerByPopularFab.startAnimation(fab_close);
+            mFilterByRecentFab.startAnimation(fab_close);
+            mFilerByPopularFab.setClickable(false);
+            mFilterByRecentFab.setClickable(false);
+            mIsFabOpen = false;
+        } else {
+            mQuickFilterFab.startAnimation(rotate_forward);
+            mFilerByPopularFab.startAnimation(fab_open);
+            mFilterByRecentFab.startAnimation(fab_open);
+            mFilerByPopularFab.setClickable(true);
+            mFilterByRecentFab.setClickable(true);
+            mIsFabOpen = true;
+        }
     }
 }

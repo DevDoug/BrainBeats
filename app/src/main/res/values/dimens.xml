@@ -46,5 +46,7 @@
     <dimen name="album_detail_title_text_size">23sp</dimen>
     <dimen name="mixer_item_text_size">17sp</dimen>
 
+    <!-- Animation value dimens -->
+    <dimen name="fab_press_translation_z">12dp</dimen>
 
 </resources>

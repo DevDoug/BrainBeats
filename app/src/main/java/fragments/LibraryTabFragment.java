@@ -87,8 +87,12 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
                         getActivity(),         // Parent activity context
                         BrainBeatsContract.MixEntry.CONTENT_URI,  // Table to query
                         null,                          // Projection to return
-                        BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
-                        new String[]{BrainBeatsDbHelper.DB_TRUE_VALUE},                  // No selection arguments
+                        BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY +
+                                BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL +
+                                BrainBeatsDbHelper.AND_CLAUSE +
+                                BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE +
+                                BrainBeatsDbHelper.WHERE_CLAUSE_LIKE, // where the mix is in the lib
+                        new String[]{BrainBeatsDbHelper.DB_TRUE_VALUE, mFilter + "%"},                  // No selection arguments
                         null                   // Default sort order
                 );
             case 1:

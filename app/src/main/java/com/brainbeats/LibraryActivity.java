@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import architecture.BaseActivity;
+import fragments.DashboardDetailFragment;
 import fragments.LibraryFragment;
 
 public class LibraryActivity extends BaseActivity implements LibraryFragment.OnFragmentInteractionListener {
@@ -36,6 +37,7 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
             @Override
             public boolean onQueryTextSubmit(String query) {
                 mQueryText = query;
+                ((LibraryFragment)mLibraryFragment).updateTabFilter(mQueryText);
                 return true;
             }
 

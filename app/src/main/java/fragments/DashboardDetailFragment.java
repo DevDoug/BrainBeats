@@ -366,13 +366,12 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
 
     @Override
     public Track recommendationComplete(Track track) {
+        mSelectedTrack = track;
         mTrackTitle.setText(track.getTitle());
-
         if(track.getArtworkURL() == null)
             mAlbumCoverArt.setImageResource(R.drawable.placeholder);
         else
             Picasso.with(getContext()).load(track.getArtworkURL()).into(mAlbumCoverArt);
-
         if(mBound){
             if(track.getStreamURL() != null){
                 mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
@@ -380,7 +379,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 startProgressBarThread();
             }
         }
-
         mArtistName.setText(track.getUser().getUsername());
         return null;
     }

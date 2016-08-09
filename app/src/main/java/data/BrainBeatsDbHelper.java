@@ -24,7 +24,7 @@ public class BrainBeatsDbHelper extends SQLiteOpenHelper {
     public static final String CREATE_TABLE_TERMINATION                     = ");";
 
     //Query params
-    public static final String WHERE_CLAUSE_LIKE                    = "LIKE ?";
+    public static final String WHERE_CLAUSE_LIKE                    = " LIKE ?";
     public static final String WHERE_CLAUSE_EQUAL                   = " = ? ";
     public static final String WHERE_CLAUSE_NOT_EQUAL               = "? != ? ";
     public static final String AND_CLAUSE                           = "AND ";
