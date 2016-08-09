@@ -171,6 +171,15 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
             case R.id.floating_action_button_quick_filter:
                 animateFAB();
                 break;
+            case R.id.floating_action_button_filter_by_popular:
+                //sort by popular
+
+                animateFAB();
+                break;
+            case R.id.floating_action_button_filter_by_recent:
+                //sort by recet
+                animateFAB();
+                break;
         }
     }
 

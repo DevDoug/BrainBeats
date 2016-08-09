@@ -104,6 +104,5 @@ public class LibraryFragment extends Fragment {
     public void updateTabFilter(String query){
         LibraryTabFragment frag = (LibraryTabFragment) ((ViewPagerAdapter)mViewPager.getAdapter()).getItem(mViewPager.getCurrentItem());
         frag.updateFilterParams(query);
-        mViewPager.notify();
     }
 }
