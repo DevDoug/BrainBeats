@@ -6,8 +6,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/category_grid"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/content_margin_top"/>
+        android:layout_height="match_parent" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floating_action_button_filter_by_recent"
