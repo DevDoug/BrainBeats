@@ -90,10 +90,10 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
 
                 //update local db with change
                 Bundle settingsBundle = new Bundle();
-                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Users.getCode());
-                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateMix.getCode());
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Mixes.getCode());
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateAddToMixer.getCode());
                 settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_MIX, selectedMix);
-                //OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((LibraryActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
+                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((LibraryActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
 
                 //start intent to send user to their new mix for them to add/sub mix items.
                 Intent mixerIntent = new Intent(getContext(), MixerActivity.class);

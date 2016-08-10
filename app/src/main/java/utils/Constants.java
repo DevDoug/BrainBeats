@@ -118,7 +118,8 @@ public class Constants {
 
     public enum SyncDataAction {
         UpdateMix(0),
-        UpdateFavorite(1);
+        UpdateFavorite(1),
+        UpdateAddToMixer(2);
 
         private int mCode;
 
