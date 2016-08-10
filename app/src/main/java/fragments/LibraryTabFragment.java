@@ -31,7 +31,6 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
     private ListView mMixListView;
     private LibraryMixAdapter mLibraryMixAdapter;
     private LibraryPlaylistAdapter mLibraryPlaylistAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
     private int mDataType;
     public String mFilter = "";
     private TextView mEmptyDataPlaceholder;

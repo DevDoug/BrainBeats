@@ -51,12 +51,15 @@ public class WebApiManager {
     public static final String SOUND_CLOUD_API_KEY_OAUTH_TOKEN   = "oauth_token";
 
     //Sound Cloud track search params
+    public static final String SOUND_CLOUD_QUERY_FILTER_QUERY = "q";
     public static final String SOUND_CLOUD_QUERY_FILTER_TAGS = "tags";
     public static final String SOUND_CLOUD_QUERY_FILTER_LIMIT = "limit";
     public static final String SOUND_CLOUD_QUERY_FILTER_LINKED_PARTITIONING = "linked_partitioning";
 
     //Sound Cloud track filter params
-    public static final String SOUND_CLOUD_QUERY_FILTER_PARAM = "popular";
+    public static final String SOUND_CLOUD_QUERY_FILTER_INSTRUMENTAL            =  "instrumental";
+    public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR           =  "popular";
+    public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT            =  "recent";
     public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_LIMIT_ONE_HUNDRED = "100";
     public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_LIMIT_TWO_HUNDRED = "200";
     public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_LINKED_ENABLED = "1";
@@ -103,10 +106,30 @@ public class WebApiManager {
 
     }
 
+    public static void getTracks(Context context, String queryFilter,String filterTags, final OnArrayResponseListener responseListener, final OnErrorListener errorListener){
+        HashMap<String, String> mParams = new HashMap<>();
+        mParams.put(SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
+        mParams.put(SOUND_CLOUD_QUERY_FILTER_TAGS,filterTags);
+        mParams.put(SOUND_CLOUD_QUERY_FILTER_LIMIT,SOUND_CLOUD_QUERY_FILTER_PARAM_LIMIT_TWO_HUNDRED);
+        //mParams.put(SOUND_CLOUD_QUERY_FILTER_LINKED_PARTITIONING,"1");
+
+        if (queryFilter != null && !queryFilter.equalsIgnoreCase(""))
+            mParams.put(SOUND_CLOUD_QUERY_FILTER_QUERY, queryFilter);
+
+
+        String url = API_ROOT_URL + API_TRACKS_URL;
+        try {
+            JSONArray jsonRequest = new JSONArray();
+            sendArrayRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
+        } catch (Exception ex) {
+            errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
+        }
+    }
+
     public static void getMostPopularTracks(Context context, final OnArrayResponseListener responseListener, final OnErrorListener errorListener){
         HashMap<String, String> mParams = new HashMap<>();
         mParams.put(SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
-        mParams.put(SOUND_CLOUD_QUERY_FILTER_TAGS,SOUND_CLOUD_QUERY_FILTER_PARAM);
+        mParams.put(SOUND_CLOUD_QUERY_FILTER_TAGS,SOUND_CLOUD_QUERY_FILTER_INSTRUMENTAL);
         mParams.put(SOUND_CLOUD_QUERY_FILTER_LIMIT,SOUND_CLOUD_QUERY_FILTER_PARAM_LIMIT_ONE_HUNDRED);
         //mParams.put(SOUND_CLOUD_QUERY_FILTER_LINKED_PARTITIONING,"1");
 

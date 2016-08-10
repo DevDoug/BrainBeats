@@ -12,6 +12,7 @@ import com.brainbeats.MainActivity;
 import com.brainbeats.R;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import entity.Track;
@@ -87,4 +88,10 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
     public int getItemCount() {
         return mTracks.size();
     }
+
+/*    public void swap(ArrayList<Track> datas){
+        mTracks.clear();
+        mTracks.addAll(datas);
+        notifyDataSetChanged();
+    }*/
 }

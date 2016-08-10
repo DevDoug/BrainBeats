@@ -6,8 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.brainbeats.R;
+import com.squareup.picasso.Picasso;
 
 import data.BrainBeatsContract;
 
@@ -41,6 +43,7 @@ public class SocialAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, final Cursor cursor) {
         TextView titleText = (TextView) view.findViewById(R.id.user_name);
+        ImageView artistImage = (ImageView) view.findViewById(R.id.user_profile_pic);
         titleText.setText(cursor.getString(cursor.getColumnIndexOrThrow(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));
     }
 }

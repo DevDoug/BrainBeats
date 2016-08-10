@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -55,6 +56,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     private Animation fab_open,fab_close,rotate_forward,rotate_backward;
     private OnFragmentInteractionListener mListener;
     private boolean mIsFabOpen = false;
+    private SearchView mSearchView;
+    private MenuItem searchMenuItem;
+    String mQueryText = "";
+    SearchView.OnQueryTextListener listener;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -84,12 +89,30 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         mFilerByPopularFab.setOnClickListener(this);
         mFilterByRecentFab.setOnClickListener(this);
 
+        listener = new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mQueryText = query;
+                getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_INSTRUMENTAL);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // newText is text entered by user to SearchView
+                return false;
+            }
+        };
+
         return v;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_dashboard, menu);
+        searchMenuItem = menu.findItem(R.id.action_search);
+        mSearchView = (SearchView) searchMenuItem.getActionView();
+        mSearchView.setOnQueryTextListener(listener);
     }
 
     @Override
@@ -107,32 +130,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onResume() {
         super.onResume();
-        final ProgressDialog loadingMusicDialog = new ProgressDialog(getContext());
-        loadingMusicDialog.setCancelable(false);
-        loadingMusicDialog.setMessage(getString(R.string.loading_message));
-        loadingMusicDialog.show();
-
-        WebApiManager.getMostPopularTracks(getContext(), new WebApiManager.OnArrayResponseListener() {
-            @Override
-            public void onArrayResponse(JSONArray array) {
-                loadingMusicDialog.dismiss();
-                Gson gson = new Gson();
-                Type token = new TypeToken<List<Track>>() {}.getType();
-                List<Track> trackList = gson.fromJson(array.toString(), token);
-                if(trackList != null) {
-                    mTrackAdapter = new SearchMusicAdapter(getContext(), trackList);
-                    mBeatGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
-                    mTrackGrid.setLayoutManager(mBeatGridLayoutManager);
-                    mTrackGrid.setAdapter(mTrackAdapter);
-                    mTrackAdapter.notifyDataSetChanged();
-                }
-            }
-        }, new WebApiManager.OnErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(getClass().getSimpleName(), "Response = " + error.toString());
-            }
-        });
+        getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_INSTRUMENTAL);
     }
 
     @Override
@@ -173,12 +171,14 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
                 break;
             case R.id.floating_action_button_filter_by_popular:
                 //sort by popular
-
+                //TODO hookup to local sync and remove api call
                 animateFAB();
+                getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR);
                 break;
             case R.id.floating_action_button_filter_by_recent:
                 //sort by recet
                 animateFAB();
+                getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT);
                 break;
         }
     }
@@ -204,5 +204,34 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
             mFilterByRecentFab.setClickable(true);
             mIsFabOpen = true;
         }
+    }
+
+    public void getTracks(String filterTag){
+        final ProgressDialog loadingMusicDialog = new ProgressDialog(getContext());
+        loadingMusicDialog.setCancelable(false);
+        loadingMusicDialog.setMessage(getString(R.string.loading_message));
+        loadingMusicDialog.show();
+
+        WebApiManager.getTracks(getContext(), mQueryText, filterTag, new WebApiManager.OnArrayResponseListener() {
+            @Override
+            public void onArrayResponse(JSONArray array) {
+                loadingMusicDialog.dismiss();
+                Gson gson = new Gson();
+                Type token = new TypeToken<List<Track>>() {}.getType();
+                ArrayList<Track> trackList = gson.fromJson(array.toString(), token);
+                if(trackList != null) {
+                    mTrackAdapter = new SearchMusicAdapter(getContext(), trackList);
+                    mBeatGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
+                    mTrackGrid.setLayoutManager(mBeatGridLayoutManager);
+                    mTrackGrid.setAdapter(mTrackAdapter);
+                    mTrackAdapter.notifyDataSetChanged();
+                }
+            }
+        }, new WebApiManager.OnErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(getClass().getSimpleName(), "Response = " + error.toString());
+            }
+        });
     }
 }

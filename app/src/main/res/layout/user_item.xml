@@ -10,12 +10,11 @@
     android:background="@drawable/custom_list_text_background">
 
     <ImageView
-        android:id="@+id/plus_icon"
+        android:id="@+id/user_profile_pic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_account_circle_black"
         android:contentDescription="account circle"
-        android:layout_alignTop="@+id/mix_item_title"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true" />
 
@@ -25,10 +24,10 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/album_title_text_size"
         android:gravity="start"
-        android:layout_alignTop="@+id/plus_icon"
-        android:layout_toEndOf="@+id/plus_icon"
+        android:layout_alignTop="@+id/user_profile_pic"
+        android:layout_toEndOf="@+id/user_profile_pic"
         android:layout_marginStart="31dp"
-        android:layout_alignBottom="@+id/plus_icon"
+        android:layout_alignBottom="@+id/user_profile_pic"
         android:layout_centerVertical="true" />
 
 

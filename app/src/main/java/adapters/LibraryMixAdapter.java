@@ -1,16 +1,25 @@
 package adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.brainbeats.LibraryActivity;
+import com.brainbeats.MainActivity;
+import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 
 import data.BrainBeatsContract;
+import model.Mix;
+import utils.Constants;
+import web.OfflineSyncManager;
 
 /**
  * Created by douglas on 5/20/2016.

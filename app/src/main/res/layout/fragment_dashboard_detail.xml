@@ -5,7 +5,6 @@
     android:fillViewport="true"
     tools:context="fragments.DashboardDetailFragment">
 
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

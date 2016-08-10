@@ -19,6 +19,7 @@ public class BrainBeatsDbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TYPE_INT_NOT_NULL                     = " INTEGER NOT NULL";
     public static final String COLUMN_TYPE_TEXT_NULL                        = " TEXT";
     public static final String COLUMN_TYPE_TEXT_NOT_NULL                    = " TEXT NOT NULL";
+    public static final String COLUMN_TYPE_BLOB_NULL                        = " BLOB";
     public static final String COMMA_SEPERATOR                              = ",";
     public static final String CREATE_TABLE_TERMINATION_FOREIGN_KEY         = "));";
     public static final String CREATE_TABLE_TERMINATION                     = ");";
@@ -87,6 +88,7 @@ public class BrainBeatsDbHelper extends SQLiteOpenHelper {
                         BrainBeatsContract.UserEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
                         BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
                         BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PASSWORD + COLUMN_TYPE_TEXT_NOT_NULL + COMMA_SEPERATOR +
+                        BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PROFILE_IMG + COLUMN_TYPE_BLOB_NULL + COMMA_SEPERATOR +
                         BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + COLUMN_TYPE_INT_NULL +
                         CREATE_TABLE_TERMINATION;
 

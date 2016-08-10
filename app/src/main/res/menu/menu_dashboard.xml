@@ -5,6 +5,13 @@
     tools:context="com.brainbeats.DashboardActivity" >
 
     <item
+        android:id="@+id/action_search"
+        android:title="@string/search_hint"
+        android:icon="@drawable/abc_ic_search_api_mtrl_alpha"
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView" />
+
+    <item
         android:id="@+id/action_logout"
         android:title="Log Off"
         android:orderInCategory="101"

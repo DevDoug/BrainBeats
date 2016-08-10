@@ -8,7 +8,10 @@ import android.os.Looper;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import architecture.AccountManager;
 import architecture.BaseActivity;
@@ -16,6 +19,7 @@ import data.BrainBeatsContract;
 import entity.Track;
 import fragments.DashboardDetailFragment;
 import fragments.DashboardFragment;
+import fragments.LibraryFragment;
 import utils.Constants;
 import web.SyncManager;
 
