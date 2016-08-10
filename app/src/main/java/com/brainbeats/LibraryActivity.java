@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -23,11 +24,14 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
     Fragment mLibraryFragment;
     String mQueryText;
     SearchView.OnQueryTextListener listener;
+    public CoordinatorLayout mCoordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_library);
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
+
         mLibraryFragment = new LibraryFragment();
         switchToLibraryFragment();
 

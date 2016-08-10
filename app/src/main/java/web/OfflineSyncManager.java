@@ -99,7 +99,8 @@ public class OfflineSyncManager {
                                     SyncManager.getInstance().performSyncOnTable(settingsBundle);
                                 }
                                 break;
-                            case 2: //change rating
+                            case 2: //change to bieng mixed in mixer
+
                                 break;
                         }
                     }

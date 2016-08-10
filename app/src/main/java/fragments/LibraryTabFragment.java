@@ -1,5 +1,6 @@
 package fragments;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,12 +9,17 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.brainbeats.LibraryActivity;
+import com.brainbeats.MainActivity;
+import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 
 import java.util.ArrayList;
@@ -23,7 +29,9 @@ import adapters.LibraryPlaylistAdapter;
 import data.BrainBeatsContract;
 import data.BrainBeatsDbHelper;
 import entity.Track;
+import model.Mix;
 import utils.Constants;
+import web.OfflineSyncManager;
 
 public class LibraryTabFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -72,6 +80,26 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
         trackList = new ArrayList<>();
         setRetainInstance(true);
         getLoaderManager().initLoader(mDataType, null, this);
+
+        mMixListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Cursor cursor = (Cursor) mLibraryMixAdapter.getItem(i);
+                cursor.moveToPosition(i);
+                Mix selectedMix = Constants.buildMixFromCursor(getContext(),cursor,i); // get the selected mix item
+
+                //update local db with change
+                Bundle settingsBundle = new Bundle();
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Users.getCode());
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateMix.getCode());
+                settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_MIX, selectedMix);
+                //OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((LibraryActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
+
+                //start intent to send user to their new mix for them to add/sub mix items.
+                Intent mixerIntent = new Intent(getContext(), MixerActivity.class);
+                startActivity(mixerIntent);
+            }
+        });
     }
 
     public void updateFilterParams(String params) {
