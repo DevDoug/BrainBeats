@@ -1,14 +1,10 @@
 package com.brainbeats;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
 import android.view.Menu;
-
-import com.brainbeats.R;
 
 import architecture.BaseActivity;
 import fragments.MixerDetailFragment;
@@ -41,7 +37,7 @@ public class MixerActivity extends BaseActivity implements MixerFragment.OnFragm
         }
     }
 
-    public void switchToMixerFragment(){
+    public void switchToMixerFragment() {
         replaceFragment(mMixerFragment, mMixerFragment.getTag());
     }
 
@@ -49,11 +45,11 @@ public class MixerActivity extends BaseActivity implements MixerFragment.OnFragm
     public void onFragmentInteraction(Uri uri) {
     }
 
-    public void loadMixerDetailFragment(Mix mix){
-        if(mDrawerToggle != null)
+    public void loadMixerDetailFragment(Mix mix) {
+        if (mDrawerToggle != null)
             toggleNavDrawerIcon();
 
-        mUserSelections.putParcelable(Constants.KEY_EXTRA_SELECTED_MIX,mix);
+        mUserSelections.putParcelable(Constants.KEY_EXTRA_SELECTED_MIX, mix);
         mMixerDetailFragment.setArguments(mUserSelections);
         replaceFragment(mMixerDetailFragment, mMixerDetailFragment.getTag());
     }
@@ -61,7 +57,7 @@ public class MixerActivity extends BaseActivity implements MixerFragment.OnFragm
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_base, menu);
+        getMenuInflater().inflate(R.menu.menu_global, menu);
         return true;
     }
 }

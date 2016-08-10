@@ -64,7 +64,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     public Thread mUpdateSeekBar;
     int mProgressStatus = 0;
 
-    public  Bundle mUserSelections;
+    public Bundle mUserSelections;
     public AudioService mAudioService;
     boolean mBound = false;
 
@@ -117,7 +117,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     @Override
     public void onPause() {
         super.onPause();
-        if(mUpdateSeekBar != null)
+        if (mUpdateSeekBar != null)
             mUpdateSeekBar.interrupt(); // stop updating a the progress bar if out of view
 
         mPlayTrackSeekBar.setProgress(0);
@@ -151,7 +151,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean("LayoutShiftDetail", true);
-        outState.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK,mSelectedTrack);
+        outState.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
     }
 
     @Override
@@ -164,7 +164,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             if (mSelectedTrack != null) {
                 mTrackTitle.setText(mSelectedTrack.getTitle());
 
-                if(mSelectedTrack.getArtworkURL() == null)
+                if (mSelectedTrack.getArtworkURL() == null)
                     mAlbumCoverArt.setImageResource(R.drawable.placeholder);
                 else
                     Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
@@ -177,13 +177,13 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             @Override
             public void onClick(View view) {
                 Bundle settingsBundle = new Bundle();
-                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Users.getCode());
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Users.getCode());
                 settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
-                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity)getActivity()).mCoordinatorLayout, settingsBundle,getActivity().getContentResolver());
+                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
             }
         });
 
-        getLoaderManager().initLoader(Constants.RELATED_TRACKS_LOADER,null,this);
+        getLoaderManager().initLoader(Constants.RELATED_TRACKS_LOADER, null, this);
     }
 
     @Override
@@ -203,7 +203,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Bundle settingsBundle = new Bundle();
-        settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Mixes.getCode());
+        settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Mixes.getCode());
         settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
 
 
@@ -215,12 +215,12 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 getActivity().onBackPressed();
                 break;
             case R.id.action_add_to_library:
-                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION,Constants.SyncDataAction.UpdateMix.getCode());
-                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity)getActivity()).mCoordinatorLayout, settingsBundle,getActivity().getContentResolver());
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateMix.getCode());
+                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
                 break;
             case R.id.action_favorite:
-                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION,Constants.SyncDataAction.UpdateFavorite.getCode());
-                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity)getActivity()).mCoordinatorLayout, settingsBundle,getActivity().getContentResolver());
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateFavorite.getCode());
+                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
                 break;
 /*            case R.id.action_rate:
                 break;*/
@@ -275,7 +275,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 BeatLearner.getInstance(getContext()).loadLastBeat();
                 break;
             case R.id.skip_forward_button:
-                BeatLearner.getInstance(getContext()).loadNextRecommendedBeat(mSelectedTrack.getID(),this);
+                BeatLearner.getInstance(getContext()).loadNextRecommendedBeat(mSelectedTrack.getID(), this);
                 break;
             case R.id.repeat_button:
                 if (mBound) {
@@ -295,7 +295,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         }
     }
 
-    public void startProgressBarThread(){
+    public void startProgressBarThread() {
         int trackDuration = mSelectedTrack.getDuration();
         mPlayTrackSeekBar.setMax(trackDuration);
         mPlayTrackSeekBar.setIndeterminate(false);
@@ -369,12 +369,12 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     public Track recommendationComplete(Track track) {
         mSelectedTrack = track;
         mTrackTitle.setText(track.getTitle());
-        if(track.getArtworkURL() == null)
+        if (track.getArtworkURL() == null)
             mAlbumCoverArt.setImageResource(R.drawable.placeholder);
         else
             Picasso.with(getContext()).load(track.getArtworkURL()).into(mAlbumCoverArt);
-        if(mBound){
-            if(track.getStreamURL() != null){
+        if (mBound) {
+            if (track.getStreamURL() != null) {
                 mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
                 mAudioService.playSong(Uri.parse(track.getStreamURL()));
                 startProgressBarThread();

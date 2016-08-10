@@ -31,7 +31,7 @@ public class BeatLearner {
     public Track mPreviousTrack;
     public Context mContext;
 
-    public BeatLearner(Context context){
+    public BeatLearner(Context context) {
         this.mContext = context;
     }
 
@@ -42,7 +42,7 @@ public class BeatLearner {
         return mBeatLearnerInstance;
     }
 
-    public interface RecommendationCompleteListener{
+    public interface RecommendationCompleteListener {
         Track recommendationComplete(Track track);
     }
 
@@ -50,48 +50,48 @@ public class BeatLearner {
     public void loadNextRecommendedBeat(int selectedTrackId, RecommendationCompleteListener listener) {
         //for now do something very basic and just return a random related mix.
         WebApiManager.getRelatedTracks(mContext, String.valueOf(selectedTrackId), new WebApiManager.OnObjectResponseListener() {
-                    @Override
-                    public void onObjectResponse(JSONObject object) {
-                        Log.i(getClass().getSimpleName(), "Response = " + object.toString());
-                        Gson gson = new Gson();
-                        Type token = new TypeToken<RelatedTracksResponse>() {
-                        }.getType();
-                        try {
-                            RelatedTracksResponse relatedTracks = gson.fromJson(object.toString(), token);
-                            ArrayList<Collection> mCollections = (ArrayList<Collection>) relatedTracks.getCollection();
+            @Override
+            public void onObjectResponse(JSONObject object) {
+                Log.i(getClass().getSimpleName(), "Response = " + object.toString());
+                Gson gson = new Gson();
+                Type token = new TypeToken<RelatedTracksResponse>() {
+                }.getType();
+                try {
+                    RelatedTracksResponse relatedTracks = gson.fromJson(object.toString(), token);
+                    ArrayList<Collection> mCollections = (ArrayList<Collection>) relatedTracks.getCollection();
 
-                            Random rand = new Random();
-                            int n = rand.nextInt(mCollections.size());
-                            Collection randomTrack = mCollections.get(n);
+                    Random rand = new Random();
+                    int n = rand.nextInt(mCollections.size());
+                    Collection randomTrack = mCollections.get(n);
 
-                            WebApiManager.getTrack(mContext, String.valueOf(randomTrack.getId()), new WebApiManager.OnObjectResponseListener() {
-                                @Override
-                                public void onObjectResponse(JSONObject object) {
-                                    Gson gson = new Gson();
-                                    Type token = new TypeToken<Track>() {
-                                    }.getType();
-                                    Track relatedTracks = gson.fromJson(object.toString(), token);
-                                    listener.recommendationComplete(relatedTracks);
-                                }
-                            }, new WebApiManager.OnErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-
-                                }
-                            });
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
+                    WebApiManager.getTrack(mContext, String.valueOf(randomTrack.getId()), new WebApiManager.OnObjectResponseListener() {
+                        @Override
+                        public void onObjectResponse(JSONObject object) {
+                            Gson gson = new Gson();
+                            Type token = new TypeToken<Track>() {
+                            }.getType();
+                            Track relatedTracks = gson.fromJson(object.toString(), token);
+                            listener.recommendationComplete(relatedTracks);
                         }
-                    }
-                }, new WebApiManager.OnErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.i(getClass().getSimpleName(), "Response = " + error.toString());
-                    }
-                });
+                    }, new WebApiManager.OnErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+
+                        }
+                    });
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }, new WebApiManager.OnErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(getClass().getSimpleName(), "Response = " + error.toString());
+            }
+        });
     }
 
-    public Track loadLastBeat(){ //load the last track they played
+    public Track loadLastBeat() { //load the last track they played
         return mPreviousTrack;
     }
 }

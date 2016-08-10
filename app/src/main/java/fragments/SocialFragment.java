@@ -26,6 +26,7 @@ public class SocialFragment extends Fragment implements LoaderManager.LoaderCall
     private OnFragmentInteractionListener mListener;
 
     public SocialFragment() {
+        // Required empty public constructor
     }
 
     @Override
@@ -76,7 +77,7 @@ public class SocialFragment extends Fragment implements LoaderManager.LoaderCall
 
                 String rawQuery =
                         "SELECT * FROM " + BrainBeatsContract.UserEntry.TABLE_NAME + " INNER JOIN " + BrainBeatsContract.UserFollowersEntry.TABLE_NAME
-                        + " ON " + "user." + BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + " = " + "userfollowers." +
+                                + " ON " + "user." + BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + " = " + "userfollowers." +
                                 BrainBeatsContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID;
 
                 return new CursorLoader(

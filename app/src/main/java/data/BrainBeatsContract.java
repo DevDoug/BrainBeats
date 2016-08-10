@@ -33,17 +33,17 @@ public class BrainBeatsContract {
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX;
 
-        public static final String TABLE_NAME                         = "mix";
-        public static final String COLUMN_NAME_MIX_TITLE              = "mixtitle";
-        public static final String COLUMN_NAME_MIX_ALBUM_ART_URL      = "albumarturl";
-        public static final String COLUMN_NAME_MIX_RATING             = "mixrating";
-        public static final String COLUMN_NAME_IS_FAVORITE            = "isfavorite";
-        public static final String COLUMN_NAME_MIX_PLAYLIST_ID        = "playlistid";
-        public static final String COLUMN_NAME_SOUND_CLOUD_ID         = "soundcloudid";
-        public static final String COLUMN_NAME_MIX_USER_ID_FK         = "userid";
-        public static final String COLUMN_NAME_RELATED_MIXES_ID       = "relatedtracksforeignkey";
-        public static final String COLUMN_NAME_IS_IN_LIBRARY          = "isinlibrary";
-        public static final String COLUMN_NAME_IS_IN_MIXER            = "isInMixer";
+        public static final String TABLE_NAME                           = "mix";
+        public static final String COLUMN_NAME_MIX_TITLE                = "mixtitle";
+        public static final String COLUMN_NAME_MIX_ALBUM_ART_URL        = "albumarturl";
+        public static final String COLUMN_NAME_MIX_RATING               = "mixrating";
+        public static final String COLUMN_NAME_IS_FAVORITE              = "isfavorite";
+        public static final String COLUMN_NAME_MIX_PLAYLIST_ID          = "playlistid";
+        public static final String COLUMN_NAME_SOUND_CLOUD_ID           = "soundcloudid";
+        public static final String COLUMN_NAME_MIX_USER_ID_FK           = "userid";
+        public static final String COLUMN_NAME_RELATED_MIXES_ID         = "relatedtracksforeignkey";
+        public static final String COLUMN_NAME_IS_IN_LIBRARY            = "isinlibrary";
+        public static final String COLUMN_NAME_IS_IN_MIXER              = "isInMixer";
 
         public static Uri buildMixUriWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
@@ -55,10 +55,10 @@ public class BrainBeatsContract {
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_ITEM;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_ITEM;
 
-        public static final String TABLE_NAME                         = "mixitem";
-        public static final String COLUMN_NAME_MIX_ITEM_TITLE         = "mixitemtitle";
-        public static final String COLUMN_NAME_MIX_ITEM_LEVEL         = "mixlevel";
-        public static final String COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY  = "mixitemforeignkey";
+        public static final String TABLE_NAME                           = "mixitem";
+        public static final String COLUMN_NAME_MIX_ITEM_TITLE           = "mixitemtitle";
+        public static final String COLUMN_NAME_MIX_ITEM_LEVEL           = "mixlevel";
+        public static final String COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY    = "mixitemforeignkey";
 
         public static Uri buildMixItemUriWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
@@ -83,9 +83,9 @@ public class BrainBeatsContract {
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_PLAYLIST;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_PLAYLIST;
 
-        public static final String TABLE_NAME                                       =  "playlists";
-        public static final String COLUMN_NAME_PLAYLIST_TITLE                       = "playlisttitle";
-        public static final String COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID               = "soundcloudplaylistid";
+        public static final String TABLE_NAME                           =  "playlists";
+        public static final String COLUMN_NAME_PLAYLIST_TITLE           = "playlisttitle";
+        public static final String COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID   = "soundcloudplaylistid";
 
 
         public static Uri buildPlaylistUriWithId(long id) {
@@ -98,11 +98,11 @@ public class BrainBeatsContract {
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_USER;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_USER;
 
-        public static final String TABLE_NAME                         = "user";
-        public static final String COLUMN_NAME_USER_NAME              = "username";
-        public static final String COLUMN_NAME_USER_PASSWORD          = "password";
-        public static final String COLUMN_NAME_USER_PROFILE_IMG       = "userprofileimg";
-        public static final String COLUMN_NAME_USER_SOUND_CLOUD_ID    = "soundcloudid";
+        public static final String TABLE_NAME                           = "user";
+        public static final String COLUMN_NAME_USER_NAME                = "username";
+        public static final String COLUMN_NAME_USER_PASSWORD            = "password";
+        public static final String COLUMN_NAME_USER_PROFILE_IMG         = "userprofileimg";
+        public static final String COLUMN_NAME_USER_SOUND_CLOUD_ID      = "soundcloudid";
 
         public static Uri buildUserUriWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
@@ -114,9 +114,9 @@ public class BrainBeatsContract {
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_USER;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_USER;
 
-        public static final String TABLE_NAME                            = "userfollowers";
-        public static final String COLUMN_NAME_USER_ID                   = "userid";
-        public static final String COLUMN_NAME_USER_FOLLOWER_ID          = "userfollowerid";
+        public static final String TABLE_NAME                           = "userfollowers";
+        public static final String COLUMN_NAME_USER_ID                  = "userid";
+        public static final String COLUMN_NAME_USER_FOLLOWER_ID         = "userfollowerid";
 
         public static Uri buildUserFollowerUriWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

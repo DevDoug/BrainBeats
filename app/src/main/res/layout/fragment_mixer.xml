@@ -1,10 +1,9 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="fragments.MixerFragment"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    tools:context="fragments.MixerFragment">
 
     <include
         android:id="@+id/blue_line_seperator"
@@ -17,17 +16,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/blue_line_seperator"
-        android:descendantFocusability="beforeDescendants">
-    </ListView>
+        android:descendantFocusability="beforeDescendants"/>
 
     <TextView
         android:id="@+id/empty_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:text="@string/no_mixes_found_text"
         android:textSize="26sp"
-        android:layout_centerInParent="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/mixer_fob"
@@ -35,9 +33,9 @@
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:src="@drawable/ic_add_white"
-        android:elevation="@dimen/fob_elevation"
         android:layout_marginBottom="@dimen/floating_action_button_bottom_margin"
-        android:layout_marginEnd="@dimen/floating_action_button_right_margin" />
+        android:layout_marginEnd="@dimen/floating_action_button_right_margin"
+        android:elevation="@dimen/fob_elevation"
+        android:src="@drawable/ic_add_white" />
 
 </RelativeLayout>

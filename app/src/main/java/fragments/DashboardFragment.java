@@ -53,7 +53,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     FloatingActionButton mQuickFilterFab;
     FloatingActionButton mFilerByPopularFab;
     FloatingActionButton mFilterByRecentFab;
-    private Animation fab_open,fab_close,rotate_forward,rotate_backward;
+    private Animation fab_open, fab_close, rotate_forward, rotate_backward;
     private OnFragmentInteractionListener mListener;
     private boolean mIsFabOpen = false;
     private SearchView mSearchView;
@@ -81,9 +81,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         mFilterByRecentFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_filter_by_recent);
 
         fab_open = AnimationUtils.loadAnimation(getContext(), R.anim.fab_open);
-        fab_close = AnimationUtils.loadAnimation(getContext(),R.anim.fab_close);
-        rotate_forward = AnimationUtils.loadAnimation(getContext(),R.anim.rotate_forward);
-        rotate_backward = AnimationUtils.loadAnimation(getContext(),R.anim.rotate_backward);
+        fab_close = AnimationUtils.loadAnimation(getContext(), R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_backward);
 
         mQuickFilterFab.setOnClickListener(this);
         mFilerByPopularFab.setOnClickListener(this);
@@ -120,7 +120,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         switch (item.getItemId()) {
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
-                Intent loginIntent = new Intent(getContext(),LoginActivity.class);
+                Intent loginIntent = new Intent(getContext(), LoginActivity.class);
                 startActivity(loginIntent);
                 break;
         }
@@ -165,7 +165,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        switch (id){
+        switch (id) {
             case R.id.floating_action_button_quick_filter:
                 animateFAB();
                 break;
@@ -188,8 +188,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         void onFragmentInteraction(Uri uri);
     }
 
-    public void animateFAB(){
-        if(mIsFabOpen){
+    public void animateFAB() {
+        if (mIsFabOpen) {
             mQuickFilterFab.startAnimation(rotate_backward);
             mFilerByPopularFab.startAnimation(fab_close);
             mFilterByRecentFab.startAnimation(fab_close);
@@ -206,7 +206,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    public void getTracks(String filterTag){
+    public void getTracks(String filterTag) {
         final ProgressDialog loadingMusicDialog = new ProgressDialog(getContext());
         loadingMusicDialog.setCancelable(false);
         loadingMusicDialog.setMessage(getString(R.string.loading_message));
@@ -217,9 +217,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
             public void onArrayResponse(JSONArray array) {
                 loadingMusicDialog.dismiss();
                 Gson gson = new Gson();
-                Type token = new TypeToken<List<Track>>() {}.getType();
+                Type token = new TypeToken<List<Track>>() {
+                }.getType();
                 ArrayList<Track> trackList = gson.fromJson(array.toString(), token);
-                if(trackList != null) {
+                if (trackList != null) {
                     mTrackAdapter = new SearchMusicAdapter(getContext(), trackList);
                     mBeatGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
                     mTrackGrid.setLayoutManager(mBeatGridLayoutManager);

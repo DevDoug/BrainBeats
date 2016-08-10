@@ -57,7 +57,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        if(mp.isLooping()) {
+        if (mp.isLooping()) {
             mp.seekTo(0);
         }
     }
@@ -81,20 +81,22 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         }
     }
 
-    public void pauseSong(){
+    public void pauseSong() {
         mPlayer.pause();
         mIsPaused = true;
     }
 
-    public void setSongLooping(boolean isLooping){
+    public void setSongLooping(boolean isLooping) {
         mPlayer.setLooping(isLooping);
     }
 
-    public void stopSong(){
+    public void stopSong() {
         mPlayer.stop();
     }
 
-    public class AudioBinder extends Binder{
-        public AudioService getService() {return AudioService.this;}
+    public class AudioBinder extends Binder {
+        public AudioService getService() {
+            return AudioService.this;
+        }
     }
 }

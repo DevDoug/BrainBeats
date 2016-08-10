@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import architecture.AccountManager;
 import architecture.BaseActivity;
 import fragments.SettingFragment;
 
@@ -22,7 +21,7 @@ public class SettingsActivity extends BaseActivity implements SettingFragment.On
         switchToSettingsFragment();
     }
 
-    public void switchToSettingsFragment(){
+    public void switchToSettingsFragment() {
         replaceFragment(mSettingsFragment, mSettingsFragment.getTag());
     }
 
@@ -43,9 +42,7 @@ public class SettingsActivity extends BaseActivity implements SettingFragment.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_base, menu);
+        getMenuInflater().inflate(R.menu.menu_global, menu);
         return true;
     }
-
 }

@@ -10,23 +10,22 @@ import utils.Constants;
 
 /**
  * Created by douglas on 6/5/2016.
+ * Singleton account manager
  */
 public class AccountManager  {
 
     private static AccountManager mAccountInstance;
     private Context mContext;
-    private static boolean mIsConnected;
 
-    public static final String PACKAGE_NAME                         = BuildConfig.APPLICATION_ID;   //"com.brainbeats";
-    private static final String SOUND_CLOUD_AUTH_TOKEN = PACKAGE_NAME + ".SOUND_CLOUD_AUTH_TOKEN";
-    private static final String BRAIN_BEATS_USER_ID                     = PACKAGE_NAME + ".BRAIN_BEATS_USER_ID";
+    public static final String PACKAGE_NAME                 = BuildConfig.APPLICATION_ID;   //"com.brainbeats";
+    private static final String SOUND_CLOUD_AUTH_TOKEN      = PACKAGE_NAME + ".SOUND_CLOUD_AUTH_TOKEN";
+    private static final String BRAIN_BEATS_USER_ID         = PACKAGE_NAME + ".BRAIN_BEATS_USER_ID";
 
-
-    private AccountManager(Context context){
+    private AccountManager(Context context) {
         this.mContext = context;
     }
 
-    public static synchronized AccountManager getInstance(Context context){
+    public static synchronized AccountManager getInstance(Context context) {
         if (mAccountInstance == null) {
             mAccountInstance = new AccountManager(context);
         }
@@ -41,22 +40,22 @@ public class AccountManager  {
         return result;
     }
 
-    public boolean isConnnectedToSoundCloud(){
+    public boolean isConnnectedToSoundCloud() {
         boolean result = false;
         String accessToken = getAccessToken();
-        if(accessToken != null){
+        if (accessToken != null) {
             result = true;
         }
         return result;
     }
 
-    public String getAccessToken(){
+    public String getAccessToken() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         String token = sharedPreferences.getString(SOUND_CLOUD_AUTH_TOKEN, null);
         return token;
     }
 
-    public void setAccessToken(String token){
+    public void setAccessToken(String token) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(SOUND_CLOUD_AUTH_TOKEN, token);
@@ -69,7 +68,7 @@ public class AccountManager  {
         return userId;
     }
 
-    public void setUserId(String userId){
+    public void setUserId(String userId) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(BRAIN_BEATS_USER_ID, userId);
@@ -81,20 +80,6 @@ public class AccountManager  {
         SharedPreferences.Editor editor = appPreferences.edit();
         editor.remove(BRAIN_BEATS_USER_ID);
         editor.commit();
-    }
-
-    public void setLastSongPlayed(String tracTitle){
-        SharedPreferences appPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        SharedPreferences.Editor editor = appPreferences.edit();
-        editor.putString("Last Song", tracTitle);
-        editor.commit();
-
-    }
-
-    public String getLastSongPlayed() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String userId = sharedPreferences.getString("Last Song", null);
-        return userId;
     }
 
     public boolean getIsIncognito() {
@@ -109,35 +94,34 @@ public class AccountManager  {
         return isSyncedToSC;
     }
 
-    public void setSyncToSoundCloud(boolean isSyncToSc){
+    public void setSyncToSoundCloud(boolean isSyncToSc) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(Constants.KEY_EXTRA_IS_SYNCED_TO_SC, isSyncToSc);
         editor.commit();
     }
 
-    public void isInCognito(boolean isIncog){
+    public void isInCognito(boolean isIncog) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(Constants.KEY_EXTRA_IS_INCOGNITO_PREF, isIncog);
         editor.commit();
     }
 
-    public void forceLogout(Context context){
+    public void forceLogout(Context context) {
         removeUserId();
     }
 
-    public boolean getGlobalSyncRequired(){
+    public boolean getGlobalSyncRequired() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         boolean isGlobalSyncRequired = sharedPreferences.getBoolean(Constants.KEY_EXTRA_IS_GLOBAL_SYNC_REQUIRED, true);
         return isGlobalSyncRequired;
     }
 
-    public void setGlobalSyncRequired(boolean isGlobalSyncRequired){
+    public void setGlobalSyncRequired(boolean isGlobalSyncRequired) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(Constants.KEY_EXTRA_IS_GLOBAL_SYNC_REQUIRED, isGlobalSyncRequired);
         editor.commit();
     }
-
 }

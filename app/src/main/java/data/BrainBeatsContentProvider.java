@@ -10,6 +10,7 @@ import android.net.Uri;
 
 /**
  * Created by douglas on 5/25/2016.
+ * Content provider for brain beats
  */
 public class BrainBeatsContentProvider extends ContentProvider {
 

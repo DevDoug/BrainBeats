@@ -27,13 +27,10 @@ public class BrainBeatsDbHelper extends SQLiteOpenHelper {
     //Query params
     public static final String WHERE_CLAUSE_LIKE                    = " LIKE ?";
     public static final String WHERE_CLAUSE_EQUAL                   = " = ? ";
-    public static final String WHERE_CLAUSE_NOT_EQUAL               = "? != ? ";
     public static final String AND_CLAUSE                           = "AND ";
 
     //Db lookup fields
-    public static final String DB_ID_FIELD                          = "_id";
     public static final String DB_TRUE_VALUE                        = "1";
-    public static final String DB_SC_ID_FIELD                       = "_sc";
 
     //Sort Types
     public static final String DB_SORT_TYPE_DESC                    = " DESC";

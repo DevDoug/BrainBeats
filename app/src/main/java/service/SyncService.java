@@ -20,6 +20,7 @@ public class SyncService extends Service {
     private static BrainBeatsSyncAdapter sSyncAdapter = null;
     // Object to use as a thread-safe lock
     private static final Object sSyncAdapterLock = new Object();
+
     /*
      * Instantiate the sync adapter object.
      */
@@ -36,10 +37,10 @@ public class SyncService extends Service {
             }
         }
     }
+
     /**
      * Return an object that allows the system to invoke
      * the sync adapter.
-     *
      */
     @Override
     public IBinder onBind(Intent intent) {

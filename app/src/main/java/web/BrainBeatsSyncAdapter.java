@@ -43,6 +43,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
     // Define a variable to contain a content resolver instance
     ContentResolver mContentResolver;
     private Context mContext;
+
     /**
      * Set up the sync adapter
      */
@@ -55,6 +56,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
          */
         mContentResolver = context.getContentResolver();
     }
+
     /**
      * Set up the sync adapter. This form of the
      * constructor maintains compatibility with Android 3.0
@@ -76,25 +78,26 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
    */
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-        Log.i("In sync adapter","in sync");
+        Log.i("In sync adapter", "in sync");
 
         int selectedTrackId = extras.getInt(Constants.KEY_EXTRA_SELECTED_TRACK_ID);
         int SYNC_TYPE = extras.getInt(Constants.KEY_EXTRA_SYNC_TYPE);
         int SYNC_ACTION = extras.getInt(Constants.KEY_EXTRA_SYNC_ACTION);
 
-        switch (SYNC_TYPE){
+        switch (SYNC_TYPE) {
             case 0: //sync mixes
-                switch (SYNC_ACTION){
+                switch (SYNC_ACTION) {
                     case 0:
                         WebApiManager.getUserTracks(getContext(), AccountManager.getInstance(getContext()).getUserId(), new WebApiManager.OnArrayResponseListener() {
                             @Override
                             public void onArrayResponse(JSONArray array) {
                                 Log.i(getClass().getSimpleName(), "Response = " + array.toString());
                                 Gson gson = new Gson();
-                                Type token = new TypeToken<ArrayList<Track>>(){}.getType();
+                                Type token = new TypeToken<ArrayList<Track>>() {
+                                }.getType();
                                 try {
                                     ArrayList<Track> userTracks = gson.fromJson(array.toString(), token);
-                                    for(Track track : userTracks) {
+                                    for (Track track : userTracks) {
                                         try {
                                             Cursor trackCursor = provider.query( //find if this mix exists
                                                     BrainBeatsContract.MixEntry.CONTENT_URI,
@@ -106,9 +109,9 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                             if (trackCursor != null && trackCursor.getCount() != 0) { // this mix exists so update the record.
                                                 //TODO add code that allows user to change mix attribute such as title
                                                 trackCursor.close();
-                                            } else{
-                                                addMix(track,true,false,false, provider); // create this as a mix from a sound cloud track
-                                                Log.i("Mix Added","Added");
+                                            } else {
+                                                addMix(track, true, false, false, provider); // create this as a mix from a sound cloud track
+                                                Log.i("Mix Added", "Added");
                                                 if (trackCursor != null) {
                                                     trackCursor.close();
                                                 }
@@ -121,7 +124,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                     ex.printStackTrace();
                                 }
                             }
-                        }, new WebApiManager.OnErrorListener(){
+                        }, new WebApiManager.OnErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
                                 error.toString();
@@ -139,7 +142,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                 try {
                                     ArrayList<Track> userTracks = gson.fromJson(array.toString(), token);
                                     Log.i("Favs", String.valueOf(userTracks.size()));
-                                    for(Track track: userTracks) {
+                                    for (Track track : userTracks) {
                                         try {
                                             Cursor trackCursor = provider.query( //find if this mix exists
                                                     BrainBeatsContract.MixEntry.CONTENT_URI,
@@ -150,9 +153,9 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                             );
                                             if (trackCursor != null && trackCursor.getCount() != 0) { // this mix exists so update the record.
                                                 trackCursor.moveToFirst();
-                                                if(trackCursor.getInt(trackCursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_FAVORITE)) == 0) {
+                                                if (trackCursor.getInt(trackCursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_FAVORITE)) == 0) {
                                                     //update the local db from the change on sound cloud
-                                                    Log.i("Action","favorite in local");
+                                                    Log.i("Action", "favorite in local");
                                                     Mix mix = Constants.buildMixFromCursor(getContext(), trackCursor, 0);
                                                     mix.setMixFavorite(1);
                                                     int returnId = provider.update(
@@ -160,16 +163,16 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                                             Constants.buildMixRecord(mix),
                                                             BrainBeatsContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                                                             new String[]{String.valueOf(track.getID())});
-                                                    if(returnId != -1)
-                                                        Log.i("Mix updated","Updated");
+                                                    if (returnId != -1)
+                                                        Log.i("Mix updated", "Updated");
                                                     else
-                                                        Log.i("Mix Updated","Fail");
+                                                        Log.i("Mix Updated", "Fail");
 
                                                 }
                                                 trackCursor.close();
-                                            } else{
-                                                addMix(track,false,true,false, provider); // create this as a mix from a sound cloud track
-                                                Log.i("Favorite Added","Added a favorite");
+                                            } else {
+                                                addMix(track, false, true, false, provider); // create this as a mix from a sound cloud track
+                                                Log.i("Favorite Added", "Added a favorite");
                                                 if (trackCursor != null) {
                                                     trackCursor.close();
                                                 }
@@ -191,8 +194,8 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
 
                         break;
                     case 2: //set user fav on sc
-                        Log.i("Action","Favorite locally but not in api, favorite on SC !");
-                        favoriteTrackOnSoundCloud(selectedTrackId,provider);
+                        Log.i("Action", "Favorite locally but not in api, favorite on SC !");
+                        favoriteTrackOnSoundCloud(selectedTrackId, provider);
                         break;
                 }
                 break;
@@ -250,7 +253,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                         }.getType();
                         try {
                             ArrayList<UserPlaylistsResponse> userPlaylists = gson.fromJson(array.toString(), token);
-                            for(UserPlaylistsResponse playlistsResponse : userPlaylists) {
+                            for (UserPlaylistsResponse playlistsResponse : userPlaylists) {
                                 try {
                                     Cursor playlistCursor = provider.query( //find if this mix exists
                                             BrainBeatsContract.MixPlaylistEntry.CONTENT_URI, //Get users
@@ -262,9 +265,9 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                     if (playlistCursor != null && playlistCursor.getCount() != 0) { // this playlist exists so update the record.
                                         //TODO add code that allows user to change playlist attributes
                                         playlistCursor.close();
-                                    } else{
-                                        addPlaylist(playlistsResponse,provider); // create this as a mix from a sound cloud track
-                                        Log.i("Mix Added","Added");
+                                    } else {
+                                        addPlaylist(playlistsResponse, provider); // create this as a mix from a sound cloud track
+                                        Log.i("Mix Added", "Added");
                                         if (playlistCursor != null) {
                                             playlistCursor.close();
                                         }
@@ -286,16 +289,16 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                 break;
             case 3: // sync user's
                 //TODO add get people the user is following and convert it to a Brain Beats user.
-                WebApiManager.getUserFollowing(getContext(),AccountManager.getInstance(getContext()).getUserId(), new WebApiManager.OnObjectResponseListener() {
+                WebApiManager.getUserFollowing(getContext(), AccountManager.getInstance(getContext()).getUserId(), new WebApiManager.OnObjectResponseListener() {
                     @Override
                     public void onObjectResponse(JSONObject object) {
-                        Log.i("User fetch succsess","success");
+                        Log.i("User fetch succsess", "success");
                         Gson gson = new Gson();
                         Type token = new TypeToken<UserCollection>() {
                         }.getType();
                         try {
-                            UserCollection userFollowingCollection = gson.fromJson(object.toString(),token);
-                            for(UserCollectionEntry collection : userFollowingCollection.getCollection()){
+                            UserCollection userFollowingCollection = gson.fromJson(object.toString(), token);
+                            for (UserCollectionEntry collection : userFollowingCollection.getCollection()) {
                                 try {
                                     Cursor userCursor = provider.query( //find if this user exists
                                             BrainBeatsContract.UserEntry.CONTENT_URI, //Get users
@@ -307,10 +310,10 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                     if (userCursor != null && userCursor.getCount() != 0) { // this user exists so update the record.
                                         //TODO add code that allows user to change user attributes
                                         userCursor.close();
-                                    } else{
-                                        if(!String.valueOf(collection.getId()).equalsIgnoreCase(AccountManager.getInstance(getContext()).getUserId())) // if this user is not the current user
-                                            addUser(collection,true,provider); // create this as a user from sound cloud
-                                        Log.i("User Added","Added");
+                                    } else {
+                                        if (!String.valueOf(collection.getId()).equalsIgnoreCase(AccountManager.getInstance(getContext()).getUserId())) // if this user is not the current user
+                                            addUser(collection, true, provider); // create this as a user from sound cloud
+                                        Log.i("User Added", "Added");
                                         if (userCursor != null) {
                                             userCursor.close();
                                         }
@@ -319,14 +322,14 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                     e.printStackTrace();
                                 }
                             }
-                        }catch (Exception ex) {
+                        } catch (Exception ex) {
                             ex.printStackTrace();
                         }
                     }
                 }, new WebApiManager.OnErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i("User fetch fail","fail");
+                        Log.i("User fetch fail", "fail");
                     }
                 });
 
@@ -336,10 +339,10 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    public void addMix(Track track,boolean inLibrary, boolean isFavorite, boolean inMixer, ContentProviderClient provider){
+    public void addMix(Track track, boolean inLibrary, boolean isFavorite, boolean inMixer, ContentProviderClient provider) {
         Mix newMix = Constants.buildMixRecordFromTrack(track);
-        newMix.setMixFavorite((isFavorite) ? 1 : 0 );
-        newMix.setIsInLibrary((inLibrary) ? 1 : 0 );
+        newMix.setMixFavorite((isFavorite) ? 1 : 0);
+        newMix.setIsInLibrary((inLibrary) ? 1 : 0);
         newMix.setIsInMixer((inMixer) ? 1 : 0);
         newMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(getContext()).getUserId()));
 
@@ -351,7 +354,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    public void addPlaylist(UserPlaylistsResponse playlistsResponse, ContentProviderClient provider){
+    public void addPlaylist(UserPlaylistsResponse playlistsResponse, ContentProviderClient provider) {
         Playlist playlist = new Playlist();
         playlist.setPlaylistTitle(playlistsResponse.getTitle());
         playlist.setSoundCloudId(playlistsResponse.getId());
@@ -364,16 +367,16 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    public void addUser(UserCollectionEntry collection, boolean isFollowing, ContentProviderClient provider){
+    public void addUser(UserCollectionEntry collection, boolean isFollowing, ContentProviderClient provider) {
         User user = new User();
         user.setUserName(collection.getUsername());
         user.setSoundCloudUserId(collection.getId());
 
         try {
             Uri result = provider.insert(BrainBeatsContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(user)); //insert user rec
-            if(isFollowing) { //if the user is following this person add the record to the following table, now when quered
+            if (isFollowing) { //if the user is following this person add the record to the following table, now when quered
                 Uri relatedResult = provider.insert(BrainBeatsContract.UserFollowersEntry.CONTENT_URI, Constants.buildUserFollowingRecord(AccountManager.getInstance(getContext()).getUserId(), String.valueOf(collection.getId())));
-                Log.i("Add user following rec","user collection Id " + String.valueOf(collection.getId()));
+                Log.i("Add user following rec", "user collection Id " + String.valueOf(collection.getId()));
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -415,7 +418,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }*/
 
-    public void favoriteTrackOnSoundCloud(int trackId,ContentProviderClient provider){
+    public void favoriteTrackOnSoundCloud(int trackId, ContentProviderClient provider) {
         WebApiManager.putUserFavorite(getContext(), architecture.AccountManager.getInstance(getContext()).getUserId(), String.valueOf(trackId), new WebApiManager.OnObjectResponseListener() {
             @Override
             public void onObjectResponse(JSONObject object) {

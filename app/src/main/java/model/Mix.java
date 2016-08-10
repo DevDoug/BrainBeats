@@ -23,7 +23,7 @@ public class Mix implements Parcelable {
     private int mIsinMixer;
     private int mMixUserId;
 
-    public Mix(){
+    public Mix() {
     }
 
     public long getMixId() {
@@ -58,11 +58,11 @@ public class Mix implements Parcelable {
         this.mMixFavorite = mixItemFavorite;
     }
 
-    public int getMixRating(){
+    public int getMixRating() {
         return mMixRating;
     }
 
-    public void setMixRating(int rating){
+    public void setMixRating(int rating) {
         this.mMixRating = rating;
     }
 

@@ -116,7 +116,7 @@ public class Constants {
         }
     }
 
-    public enum SyncDataAction{
+    public enum SyncDataAction {
         UpdateMix(0),
         UpdateFavorite(1);
 
@@ -131,7 +131,7 @@ public class Constants {
         }
     }
 
-    public static Mix buildMixRecordFromTrack(Track track){
+    public static Mix buildMixRecordFromTrack(Track track) {
         Mix mix = new Mix();
         mix.setMixTitle(track.getTitle());
         mix.setMixAlbumCoverArt(track.getArtworkURL());
@@ -140,7 +140,7 @@ public class Constants {
         return mix;
     }
 
-    public static Mix buildMixFromCursor(Context context,Cursor cursor, int position) {
+    public static Mix buildMixFromCursor(Context context, Cursor cursor, int position) {
         cursor.moveToPosition(position);
         Mix mix = new Mix();
         mix.setMixId(cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.MixEntry._ID)));
@@ -153,11 +153,11 @@ public class Constants {
         mix.setIsInMixer(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_MIXER)));
 
         String whereClause = BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + "= ?";
-        String[] whereArgs = new String[] {
+        String[] whereArgs = new String[]{
                 " " + cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.MixEntry._ID)),
         };
 
-        Cursor mixItemsCursor = context.getContentResolver().query(BrainBeatsContract.MixItemsEntry.CONTENT_URI, null,whereClause,whereArgs,null); // get the mix items associated with this mix
+        Cursor mixItemsCursor = context.getContentResolver().query(BrainBeatsContract.MixItemsEntry.CONTENT_URI, null, whereClause, whereArgs, null); // get the mix items associated with this mix
 
         if (mixItemsCursor != null) {
             mixItemsCursor.moveToFirst();
@@ -178,7 +178,7 @@ public class Constants {
         return mix;
     }
 
-    public static User buildUserFromCursor(Context context,Cursor cursor) {
+    public static User buildUserFromCursor(Context context, Cursor cursor) {
         cursor.moveToFirst();
 
         User user = new User();
@@ -196,52 +196,52 @@ public class Constants {
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_FAVORITE, mix.getMixFavorite());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_USER_ID_FK, mix.getMixUserId());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID, mix.getSoundCloudId());
-        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_RELATED_MIXES_ID,mix.getRelatedTracksId());
+        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_RELATED_MIXES_ID, mix.getRelatedTracksId());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY, mix.getIsInLibrary());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_MIXER, mix.getIsInMixer());
         return values;
     }
 
-    public static ContentValues buildMixRelatedRecord(){
+    public static ContentValues buildMixRelatedRecord() {
         ContentValues values = new ContentValues();
         values.put(BrainBeatsContract.MixRelatedEntry.COLUMN_NAME_TAG_CLOUD_ID, 0);
         return values;
     }
 
-    public static ContentValues buildMixItemsRecord(long mixId,MixItem mixitem){
+    public static ContentValues buildMixItemsRecord(long mixId, MixItem mixitem) {
         ContentValues values = new ContentValues();
-        values.put(BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_TITLE,mixitem.getMixItemTitle());
-        values.put(BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_LEVEL,mixitem.getMixItemLevel());
-        values.put(BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY,mixId);
+        values.put(BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_TITLE, mixitem.getMixItemTitle());
+        values.put(BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_LEVEL, mixitem.getMixItemLevel());
+        values.put(BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY, mixId);
         return values;
     }
 
-    public static ContentValues buildPlaylistRecord(Playlist playlist){
+    public static ContentValues buildPlaylistRecord(Playlist playlist) {
         ContentValues values = new ContentValues();
-        values.put(BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE,playlist.getPlaylistTitle());
-        values.put(BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID,playlist.getSoundCloudId());
+        values.put(BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE, playlist.getPlaylistTitle());
+        values.put(BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID, playlist.getSoundCloudId());
         return values;
     }
 
     public static ContentValues buildUserRecord(User user) {
         ContentValues values = new ContentValues();
-        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME,user.getUserName());
-        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PASSWORD,Constants.generateEncryptedPass());
-        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID,user.getSoundCloudUserId());
+        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME, user.getUserName());
+        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PASSWORD, Constants.generateEncryptedPass());
+        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID, user.getSoundCloudUserId());
         return values;
     }
 
-    public static ContentValues buildUserFollowingRecord(String bbUserId,String scUserId){
+    public static ContentValues buildUserFollowingRecord(String bbUserId, String scUserId) {
         ContentValues values = new ContentValues();
-        values.put(BrainBeatsContract.UserFollowersEntry.COLUMN_NAME_USER_ID,bbUserId);
-        values.put(BrainBeatsContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID,scUserId);
+        values.put(BrainBeatsContract.UserFollowersEntry.COLUMN_NAME_USER_ID, bbUserId);
+        values.put(BrainBeatsContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID, scUserId);
         return values;
     }
 
-    public static ContentValues[] buildMixItemsBulkRecord(long mixId,ArrayList<MixItem> mixitems) {
+    public static ContentValues[] buildMixItemsBulkRecord(long mixId, ArrayList<MixItem> mixitems) {
         ContentValues[] contentValues = new ContentValues[mixitems.size()];
         for (int i = 0; i < mixitems.size(); i++) {
-            contentValues[i] = buildMixItemsRecord(mixId,mixitems.get(i));
+            contentValues[i] = buildMixItemsRecord(mixId, mixitems.get(i));
         }
         return contentValues;
     }
@@ -251,7 +251,7 @@ public class Constants {
         defaultMix.setMixTitle(context.getString(R.string.default_mix_title));
         defaultMix.setMixAlbumCoverArt(context.getString(R.string.default_mix_album_art_url));
         ArrayList<MixItem> defaultMixItems = new ArrayList<>();
-        for(int i = 0; i < context.getResources().getStringArray(R.array.default_mix_items).length; i++){
+        for (int i = 0; i < context.getResources().getStringArray(R.array.default_mix_items).length; i++) {
             MixItem item = new MixItem();
             item.setMixItemTitle(context.getResources().getStringArray(R.array.default_mix_items)[i]);
             item.setMixItemLevel(MIX_ITEM_DEFAULT_LEVEL);
@@ -267,7 +267,7 @@ public class Constants {
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.custom_image_list_dialog_layout, null);
         ((TextView) dialogView.findViewById(R.id.separator_title)).setText(title);
-        ((GridView) dialogView.findViewById(R.id.options_list)).setAdapter(new ImageAdapter(context,selectionListener));
+        ((GridView) dialogView.findViewById(R.id.options_list)).setAdapter(new ImageAdapter(context, selectionListener));
         builder.setView(dialogView);
         AlertDialog alert = builder.create();
         alert.show();
@@ -279,7 +279,7 @@ public class Constants {
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.custom_image_list_dialog_layout, null);
         ((TextView) dialogView.findViewById(R.id.separator_title)).setText(title);
-        ((GridView) dialogView.findViewById(R.id.options_list)).setAdapter(new ImageAdapter(context,selectionListener));
+        ((GridView) dialogView.findViewById(R.id.options_list)).setAdapter(new ImageAdapter(context, selectionListener));
         builder.setView(dialogView);
         AlertDialog alert = builder.create();
         alert.show();
@@ -313,7 +313,7 @@ public class Constants {
         builder.setPositiveButton("connect to sound cloud", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(context, "set up log in to sound cloud link",Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "set up log in to sound cloud link", Toast.LENGTH_LONG).show();
             }
         });
         AlertDialog alert = builder.create();
@@ -321,7 +321,7 @@ public class Constants {
         return alert;
     }
 
-    public static HashMap<String,String> mapQueryParams(String fragmentString){
+    public static HashMap<String, String> mapQueryParams(String fragmentString) {
         HashMap<String, String> queryMap = new HashMap<>();
         String[] paramList = fragmentString.split("#");
         String[] params = paramList[0].split("&");
@@ -334,7 +334,7 @@ public class Constants {
         return queryMap;
     }
 
-    public static String generateEncryptedPass(){
+    public static String generateEncryptedPass() {
         return "Password1";
     }
 

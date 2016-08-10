@@ -58,7 +58,7 @@ public class MixItemAdapter extends RecyclerView.Adapter<MixItemAdapter.ViewHold
 
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
+            switch (v.getId()) {
                 case R.id.plus_icon:
                     fragment.showAddBeatItemDialog();
                     break;
@@ -95,7 +95,7 @@ public class MixItemAdapter extends RecyclerView.Adapter<MixItemAdapter.ViewHold
         holder.mMixerItemTitle.setText(mMixItems.get(position).getMixItemTitle());
         holder.mProgressBar.setProgress(mMixItems.get(position).getMixItemLevel());
 
-        if(position == mMixItems.size() - 1) { // set the last row to be an add new item
+        if (position == mMixItems.size() - 1) { // set the last row to be an add new item
             holder.mRemoveBeatItemIcon.setVisibility(View.INVISIBLE);
             holder.mSubtractBeatLevelIcon.setVisibility(View.INVISIBLE);
             holder.mIncreaseBeatLevelIcon.setVisibility(View.GONE);

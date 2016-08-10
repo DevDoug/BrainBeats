@@ -66,6 +66,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder> 
                 public void onSuccess() {
                     textView.setText(mTracks.get(position).getTitle());
                 }
+
                 @Override
                 public void onError() {
                 }
@@ -76,6 +77,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder> 
                 public void onSuccess() {
                     textView.setText(mTracks.get(position).getTitle());
                 }
+
                 @Override
                 public void onError() {
                 }

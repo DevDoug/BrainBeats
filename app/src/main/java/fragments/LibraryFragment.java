@@ -44,6 +44,7 @@ public class LibraryFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     public LibraryFragment() {
+        // Required empty public constructor
     }
 
     @Override
@@ -101,8 +102,8 @@ public class LibraryFragment extends Fragment {
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
-    public void updateTabFilter(String query){
-        LibraryTabFragment frag = (LibraryTabFragment) ((ViewPagerAdapter)mViewPager.getAdapter()).getItem(mViewPager.getCurrentItem());
+    public void updateTabFilter(String query) {
+        LibraryTabFragment frag = (LibraryTabFragment) ((ViewPagerAdapter) mViewPager.getAdapter()).getItem(mViewPager.getCurrentItem());
         frag.updateFilterParams(query);
     }
 }

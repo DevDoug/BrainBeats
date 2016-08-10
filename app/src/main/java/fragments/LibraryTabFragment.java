@@ -42,7 +42,7 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
     public static LibraryTabFragment newInstance(Constants.LibraryDataType dataType) {
         LibraryTabFragment tabFragment = new LibraryTabFragment();
         Bundle args = new Bundle();
-        args.putInt(Constants.KEY_LIBRARY_DATA_TYPE,dataType.getCode());
+        args.putInt(Constants.KEY_LIBRARY_DATA_TYPE, dataType.getCode());
         //args.putString(Constants.KEY_EXTRA_LIBRARY_FILTER_TEXT,tabFilter);
         tabFragment.setArguments(args);
         return tabFragment;
@@ -71,10 +71,10 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
         super.onActivityCreated(savedInstanceState);
         trackList = new ArrayList<>();
         setRetainInstance(true);
-        getLoaderManager().initLoader(mDataType,null,this);
+        getLoaderManager().initLoader(mDataType, null, this);
     }
 
-    public void updateFilterParams(String params){
+    public void updateFilterParams(String params) {
         mFilter = params;
     }
 
@@ -131,11 +131,11 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
             mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
         } else {
             mEmptyDataPlaceholder.setVisibility(View.INVISIBLE);
-            if(mDataType == 0 || mDataType == 2){
-                mLibraryMixAdapter = new LibraryMixAdapter(getContext(), data,0);
+            if (mDataType == 0 || mDataType == 2) {
+                mLibraryMixAdapter = new LibraryMixAdapter(getContext(), data, 0);
                 mMixListView.setAdapter(mLibraryMixAdapter);
-            }else {
-                mLibraryPlaylistAdapter = new LibraryPlaylistAdapter(getContext(), data,0);
+            } else {
+                mLibraryPlaylistAdapter = new LibraryPlaylistAdapter(getContext(), data, 0);
                 mMixListView.setAdapter(mLibraryPlaylistAdapter);
             }
         }
@@ -143,6 +143,5 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public void onLoaderReset(Loader loader) {
-
     }
 }

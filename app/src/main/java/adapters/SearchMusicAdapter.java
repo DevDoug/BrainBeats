@@ -67,6 +67,7 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
                 public void onSuccess() {
                     textView.setText(mTracks.get(position).getTitle());
                 }
+
                 @Override
                 public void onError() {
                 }
@@ -77,6 +78,7 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
                 public void onSuccess() {
                     textView.setText(mTracks.get(position).getTitle());
                 }
+
                 @Override
                 public void onError() {
                 }
@@ -88,10 +90,4 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
     public int getItemCount() {
         return mTracks.size();
     }
-
-/*    public void swap(ArrayList<Track> datas){
-        mTracks.clear();
-        mTracks.addAll(datas);
-        notifyDataSetChanged();
-    }*/
 }

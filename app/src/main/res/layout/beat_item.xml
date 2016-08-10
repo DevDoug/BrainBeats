@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:background="@drawable/custom_list_text_background"
+    android:orientation="vertical"
     android:padding="@dimen/beat_grid_item_padding">
 
     <ImageView
         android:id="@+id/album_cover_art"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/placeholder"
         android:layout_marginBottom="@dimen/album_art_title_margin_bottom"
+        android:adjustViewBounds="true"
         android:contentDescription="@string/album_cover_art_image_description"
-        android:adjustViewBounds="true"/>
+        android:src="@drawable/placeholder" />
 
     <TextView
         android:id="@+id/album_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/album_title_text_size"
+        android:layout_below="@+id/album_cover_art"
+        android:ellipsize="end"
         android:gravity="center"
         android:singleLine="true"
-        android:ellipsize="end"
-        android:layout_below="@+id/album_cover_art" />
+        android:textSize="@dimen/album_title_text_size" />
 
 </RelativeLayout>

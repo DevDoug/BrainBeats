@@ -1,5 +1,4 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -8,8 +7,7 @@
         android:id="@+id/category_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/content_margin_top">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_marginTop="@dimen/content_margin_top"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floating_action_button_filter_by_recent"
@@ -17,8 +15,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/floating_action_button_filter_by_popular"
         android:layout_alignStart="@+id/floating_action_button_filter_by_popular"
-        android:src="@drawable/ic_access_time_white"
         android:layout_marginBottom="15dp"
+        android:src="@drawable/ic_access_time_white"
         android:visibility="invisible" />
 
     <android.support.design.widget.FloatingActionButton
@@ -27,8 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/floating_action_button_quick_filter"
         android:layout_alignStart="@+id/floating_action_button_quick_filter"
-        android:src="@drawable/ic_whatshot_white"
         android:layout_marginBottom="15dp"
+        android:src="@drawable/ic_whatshot_white"
         android:visibility="invisible" />
 
     <android.support.design.widget.FloatingActionButton
@@ -40,7 +38,8 @@
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
         android:clickable="true"
-        android:src="@drawable/ic_filter_list_white"
-        android:elevation="@dimen/fob_elevation" />
+        android:elevation="@dimen/fob_elevation"
+        android:src="@drawable/ic_filter_list_white" />
+
 </RelativeLayout>
 

@@ -29,7 +29,7 @@ public class SocialAdapter extends CursorAdapter {
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         View v = LayoutInflater.from(context).inflate(R.layout.user_item, parent, false);
 /*        ImageView stopFollow = (ImageView) v.findViewById(R.id.stop_following_text);
-        stopFollow.setOnClickListener(new View.OnClickListener() {
+            stopFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int followerId = cursor.getInt(cursor.getColumnIndexOrThrow(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID));
@@ -43,7 +43,6 @@ public class SocialAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, final Cursor cursor) {
         TextView titleText = (TextView) view.findViewById(R.id.user_name);
-        ImageView artistImage = (ImageView) view.findViewById(R.id.user_profile_pic);
         titleText.setText(cursor.getString(cursor.getColumnIndexOrThrow(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));
     }
 }

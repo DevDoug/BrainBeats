@@ -38,13 +38,13 @@ public class OfflineSyncManager {
         return mInstance;
     }
 
-    public void performSyncOnLocalDb(CoordinatorLayout coordinatorLayout,Bundle extras, ContentResolver provider){
+    public void performSyncOnLocalDb(CoordinatorLayout coordinatorLayout, Bundle extras, ContentResolver provider) {
 
         Track selectedTrack = extras.getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
         int SYNC_TYPE = extras.getInt(Constants.KEY_EXTRA_SYNC_TYPE);
         int updateMixAction = extras.getInt(Constants.KEY_EXTRA_SYNC_ACTION);
 
-        switch (SYNC_TYPE){
+        switch (SYNC_TYPE) {
             case 0: //sync mixes
                 try {
                     final Cursor mixCursor = provider.query(
@@ -62,38 +62,38 @@ public class OfflineSyncManager {
                             case 0: //add to lib
                                 if (mixCursor.getCount() != 0) { // this mix exists so update the record.
                                     Mix mix = Constants.buildMixFromCursor(mContext, mixCursor, 0);
-                                    if(mix.getIsInLibrary() == 0) {
+                                    if (mix.getIsInLibrary() == 0) {
                                         mix.setIsInLibrary(1);
-                                        updateMixRecord(provider,mix,selectedTrack.getID());
-                                        showSnackMessage(coordinatorLayout,R.string.item_updated_mix);
-                                    }else if (mix.getIsInLibrary() == 1) {
-                                        showSnackMessage(coordinatorLayout,R.string.error_this_mix_is_already_in_library);
+                                        updateMixRecord(provider, mix, selectedTrack.getID());
+                                        showSnackMessage(coordinatorLayout, R.string.item_updated_mix);
+                                    } else if (mix.getIsInLibrary() == 1) {
+                                        showSnackMessage(coordinatorLayout, R.string.error_this_mix_is_already_in_library);
                                     }
-                                } else{
-                                    addMix(selectedTrack,true,false,false, provider); // create this as a mix from a sound cloud track
-                                    showSnackMessage(coordinatorLayout,R.string.song_added_to_library_snack_message);
+                                } else {
+                                    addMix(selectedTrack, true, false, false, provider); // create this as a mix from a sound cloud track
+                                    showSnackMessage(coordinatorLayout, R.string.song_added_to_library_snack_message);
                                 }
                                 break;
                             case 1: //add to fav
                                 if (mixCursor.getCount() != 0) { // this mix exists so update the record.
                                     Mix mix = Constants.buildMixFromCursor(mContext, mixCursor, 0);
-                                    if(mix.getIsInLibrary() == 0) {
+                                    if (mix.getIsInLibrary() == 0) {
                                         mix.setMixFavorite(1);
-                                        updateMixRecord(provider,mix,selectedTrack.getID());
-                                        showSnackMessage(coordinatorLayout,R.string.item_updated_mix);
-                                    }else if (mix.getIsInLibrary() == 1) {
-                                        showSnackMessage(coordinatorLayout,R.string.error_this_mix_is_already_a_favorite);
+                                        updateMixRecord(provider, mix, selectedTrack.getID());
+                                        showSnackMessage(coordinatorLayout, R.string.item_updated_mix);
+                                    } else if (mix.getIsInLibrary() == 1) {
+                                        showSnackMessage(coordinatorLayout, R.string.error_this_mix_is_already_a_favorite);
                                     }
-                                } else{
-                                    addMix(selectedTrack,false,true,false, provider); // create this as a mix from a sound cloud track
-                                    showSnackMessage(coordinatorLayout,R.string.song_added_to_favorites_snack_message);
+                                } else {
+                                    addMix(selectedTrack, false, true, false, provider); // create this as a mix from a sound cloud track
+                                    showSnackMessage(coordinatorLayout, R.string.song_added_to_favorites_snack_message);
                                 }
 
-                                if(AccountManager.getInstance(mContext).getIsSyncedToSoundCloud()){
+                                if (AccountManager.getInstance(mContext).getIsSyncedToSoundCloud()) {
                                     Bundle settingsBundle = new Bundle();
-                                    settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,0);
-                                    settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION,2); //Action add mix to user fav on sc.
-                                    settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_TRACK_ID,selectedTrack.getID());
+                                    settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, 0);
+                                    settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, 2); //Action add mix to user fav on sc.
+                                    settingsBundle.putInt(Constants.KEY_EXTRA_SELECTED_TRACK_ID, selectedTrack.getID());
                                     settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
                                     settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
                                     SyncManager.getInstance().performSyncOnTable(settingsBundle);
@@ -135,7 +135,7 @@ public class OfflineSyncManager {
                                 null
                         );
 
-                        if(followingArtistCursor.getCount() != 0) {
+                        if (followingArtistCursor.getCount() != 0) {
                             int result = provider.delete(BrainBeatsContract.UserFollowersEntry.CONTENT_URI, BrainBeatsContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, new String[]{String.valueOf(selectedTrack.getUser().getId())});
                             showSnackMessage(coordinatorLayout, R.string.artist_removed_from_following);
                         } else {
@@ -155,10 +155,10 @@ public class OfflineSyncManager {
 
     }
 
-    public void addMix(Track track,boolean inLibrary, boolean isFavorite, boolean inMixer, ContentResolver provider){
+    public void addMix(Track track, boolean inLibrary, boolean isFavorite, boolean inMixer, ContentResolver provider) {
         Mix newMix = Constants.buildMixRecordFromTrack(track);
-        newMix.setMixFavorite((isFavorite) ? 1 : 0 );
-        newMix.setIsInLibrary((inLibrary) ? 1 : 0 );
+        newMix.setMixFavorite((isFavorite) ? 1 : 0);
+        newMix.setIsInLibrary((inLibrary) ? 1 : 0);
         newMix.setIsInMixer((inMixer) ? 1 : 0);
         newMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(mContext).getUserId()));
 
@@ -171,23 +171,23 @@ public class OfflineSyncManager {
         }
     }
 
-    public void addUser(entity.User collection, boolean isFollowing, ContentResolver provider){
+    public void addUser(entity.User collection, boolean isFollowing, ContentResolver provider) {
         User user = new User();
         user.setUserName(collection.getUsername());
         user.setSoundCloudUserId(collection.getId());
 
         try {
             Uri result = provider.insert(BrainBeatsContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(user)); //insert user rec
-            if(isFollowing) { //if the user is following this person add the record to the following table, now when quered
+            if (isFollowing) { //if the user is following this person add the record to the following table, now when quered
                 Uri relatedResult = provider.insert(BrainBeatsContract.UserFollowersEntry.CONTENT_URI, Constants.buildUserFollowingRecord(AccountManager.getInstance(mContext).getUserId(), String.valueOf(collection.getId())));
-                Log.i("Add user following rec","user collection Id " + String.valueOf(collection.getId()));
+                Log.i("Add user following rec", "user collection Id " + String.valueOf(collection.getId()));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void updateMixRecord(ContentResolver provider, Mix mix, int selectedTrackId){
+    public void updateMixRecord(ContentResolver provider, Mix mix, int selectedTrackId) {
         try {
             int returnId = provider.update(
                     BrainBeatsContract.MixEntry.CONTENT_URI,
@@ -199,7 +199,7 @@ public class OfflineSyncManager {
         }
     }
 
-    public void showSnackMessage(CoordinatorLayout layout, int messageResource){
+    public void showSnackMessage(CoordinatorLayout layout, int messageResource) {
         Snackbar createdSnack;
         createdSnack = Snackbar.make(layout, messageResource, Snackbar.LENGTH_LONG);
         createdSnack.show();

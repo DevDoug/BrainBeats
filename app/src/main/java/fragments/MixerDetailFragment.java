@@ -62,7 +62,7 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
         mMixTitle = (EditText) v.findViewById(R.id.track_title);
         mCoordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.main_content_coordinator_layout);
         mPlayMixButton = (ImageView) v.findViewById(R.id.play_song_button);
-        ((TextView)v.findViewById(R.id.separator_title)).setText(R.string.beat_levels);
+        ((TextView) v.findViewById(R.id.separator_title)).setText(R.string.beat_levels);
         return v;
     }
 
@@ -86,20 +86,20 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
                         BrainBeatsContract.MixEntry._ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                         new String[]{String.valueOf(mSelectedMix.getMixId())});
 
-                if(returnId != -1){
+                if (returnId != -1) {
                     for (int i = 0; i < mSelectedMix.getMixItems().size(); i++) {
                         MixItem item = mSelectedMix.getMixItems().get(i);
                         int returnIdMixItem = getActivity().getContentResolver().update(
                                 BrainBeatsContract.MixItemsEntry.CONTENT_URI,
-                                Constants.buildMixItemsRecord(mSelectedMix.getMixId(),item),
+                                Constants.buildMixItemsRecord(mSelectedMix.getMixId(), item),
                                 BrainBeatsContract.MixEntry._ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                                 new String[]{String.valueOf(item.getMixItemId())});
                     }
                 }
                 InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
-                if(getActivity().getCurrentFocus() != null) //
+                if (getActivity().getCurrentFocus() != null) //
                     inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
-                    ((MixerActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
+                ((MixerActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
             }
         });
     }
@@ -111,7 +111,7 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
         if (mUserSelections != null) {
             mSelectedMix = (Mix) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_MIX);
             mMixTitle.setText(mSelectedMix.getBeatTitle());
-            if(mSelectedMix.getMixItems() != null)
+            if (mSelectedMix.getMixItems() != null)
                 mixItemList.addAll(mSelectedMix.getMixItems());
 
             MixItem addNewMix = new MixItem();
@@ -133,7 +133,7 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
         });
     }
 
-    public void showAddBeatItemDialog(){
+    public void showAddBeatItemDialog() {
         mDialog = Constants.buildImageListDialogue(getContext(), getContext().getResources().getString(R.string.add_sound_item_to_current_beat), this);
     }
 
@@ -160,8 +160,8 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
         }
         item.setMixItemLevel(Constants.MIX_ITEM_DEFAULT_LEVEL);
         boolean mixItemExists = false;
-        for(MixItem mix : mixItemList) {
-            if(mix.getMixItemTitle().equalsIgnoreCase(item.getMixItemTitle())) {
+        for (MixItem mix : mixItemList) {
+            if (mix.getMixItemTitle().equalsIgnoreCase(item.getMixItemTitle())) {
                 mixItemExists = true;
             }
         }
@@ -177,7 +177,7 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
         }
     }
 
-    public void playMix(){
+    public void playMix() {
         final Thread thread = new Thread(new Runnable() {
             public void run() {
                 handler.post(new Runnable() {

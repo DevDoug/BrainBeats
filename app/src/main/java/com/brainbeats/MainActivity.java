@@ -27,7 +27,7 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
 
     public Fragment mDashboardFragment;
     public Fragment mDashboardDetailFragment;
-    Bundle mUserSelections;
+    public Bundle mUserSelections;
     public CoordinatorLayout mCoordinatorLayout;
     public ContentObserver mDataObserver;
 
@@ -43,7 +43,7 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
         if (savedInstanceState != null) {
             Track track = savedInstanceState.getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
             boolean orientationChange = savedInstanceState.getBoolean("LayoutShiftDetail");
-            if(orientationChange) {
+            if (orientationChange) {
                 switchTBeatDetailFragment(track);
             }
         } else {
@@ -63,11 +63,12 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
         }
 
         mDataObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
-            public void onChange(boolean selfChange) {}
+            public void onChange(boolean selfChange) {
+            }
 
             @Override
             public void onChange(boolean selfChange, Uri uri) {
-                Log.i("",uri.toString());
+                Log.i("", uri.toString());
             }
         };
         getContentResolver().registerContentObserver(BrainBeatsContract.MixEntry.CONTENT_URI, false, mDataObserver);
@@ -82,8 +83,8 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     @Override
     public void onResume() {
         super.onResume();
-        if(AccountManager.getInstance(MainActivity.this).getGlobalSyncRequired()){
-            SyncManager.getInstance().updateAllTables(AccountManager.getInstance(MainActivity.this).getUserId(),mAccount, BrainBeatsContract.CONTENT_AUTHORITY);
+        if (AccountManager.getInstance(MainActivity.this).getGlobalSyncRequired()) {
+            SyncManager.getInstance().updateAllTables(AccountManager.getInstance(MainActivity.this).getUserId(), mAccount, BrainBeatsContract.CONTENT_AUTHORITY);
             AccountManager.getInstance(MainActivity.this).setGlobalSyncRequired(false);
         }
     }
