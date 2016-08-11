@@ -79,6 +79,7 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
             @Override
             public void onClick(View view) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
+
                 mSelectedMix.setMixTitle(mMixTitle.getText().toString());
                 int returnId = getActivity().getContentResolver().update(
                         BrainBeatsContract.MixEntry.CONTENT_URI,
@@ -111,8 +112,10 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
         if (mUserSelections != null) {
             mSelectedMix = (Mix) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_MIX);
             mMixTitle.setText(mSelectedMix.getBeatTitle());
-            if (mSelectedMix.getMixItems() != null)
+            if (mSelectedMix.getMixItems() != null){
+                mixItemList = new ArrayList<>();
                 mixItemList.addAll(mSelectedMix.getMixItems());
+            }
 
             MixItem addNewMix = new MixItem();
             addNewMix.setMixItemTitle("Add New");
