@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +24,7 @@ import utils.Constants;
 
 public class SocialFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private ListView mUserList;
+    private RecyclerView mUserList;
     private OnFragmentInteractionListener mListener;
 
     public SocialFragment() {
@@ -37,7 +39,7 @@ public class SocialFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_social, container, false);
-        mUserList = (ListView) v.findViewById(R.id.user_list);
+        mUserList = (RecyclerView) v.findViewById(R.id.user_list);
         return v;
     }
 
@@ -45,6 +47,10 @@ public class SocialFragment extends Fragment implements LoaderManager.LoaderCall
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getLoaderManager().initLoader(Constants.SOCIAL_LOADER, null, this);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mUserList.setLayoutManager(layoutManager);
     }
 
     public void onButtonPressed(Uri uri) {
@@ -96,7 +102,7 @@ public class SocialFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        SocialAdapter mUserAdapter = new SocialAdapter(getContext(), data, 0);
+        SocialAdapter mUserAdapter = new SocialAdapter(getContext(), data);
         mUserList.setAdapter(mUserAdapter);
         Log.i("data", String.valueOf(data.getColumnCount()));
     }

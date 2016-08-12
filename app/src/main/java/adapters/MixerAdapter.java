@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.brainbeats.LibraryActivity;
@@ -39,6 +40,13 @@ public class MixerAdapter extends RecyclerViewCursorAdapter<MixerAdapter.ViewHol
         String title = cursor.getString(cursor.getColumnIndexOrThrow(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE));
         if(title != null)
             viewHolder.mTitleText.setText(title);
+
+        viewHolder.mContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MixerActivity) mAdapterContext).loadMixerDetailFragment(Constants.buildMixFromCursor(mAdapterContext, cursor, 0));
+            }
+        });
     }
 
     @Override
@@ -49,11 +57,14 @@ public class MixerAdapter extends RecyclerViewCursorAdapter<MixerAdapter.ViewHol
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        RelativeLayout mContainer;
         TextView mTitleText;
 
         public ViewHolder(View view){
             super(view);
+            mContainer =(RelativeLayout) view.findViewById(R.id.mixer_item_container);
             mTitleText = (TextView) view.findViewById(R.id.album_title);
+
         }
     }
 
