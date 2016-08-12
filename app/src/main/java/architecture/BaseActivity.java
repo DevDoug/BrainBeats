@@ -161,8 +161,10 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void toggleNavDrawerIcon() {
-        mDrawerToggle.setDrawerIndicatorEnabled(false);
-        mDrawerToggle.syncState();
+        if (mDrawerToggle != null) {
+            mDrawerToggle.setDrawerIndicatorEnabled(false);
+            mDrawerToggle.syncState();
+        }
     }
 
     public void navigateUpOrBack(Activity currentActivity, FragmentManager fm) {

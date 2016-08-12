@@ -13,6 +13,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +37,7 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private static final int URL_LOADER = 0;
 
-    private ListView mMixerItems;
+    private RecyclerView mMixerItems;
     private TextView mEmptyText;
     private MixerAdapter mMixerAdapter;
     private OnFragmentInteractionListener mListener;
@@ -54,7 +56,7 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mixer, container, false);
-        mMixerItems = (ListView) v.findViewById(R.id.mixer_list);
+        mMixerItems = (RecyclerView) v.findViewById(R.id.mixer_list);
         mEmptyText = (TextView) v.findViewById(R.id.empty_text);
         ((TextView) v.findViewById(R.id.separator_title)).setText(R.string.mixes);
         mAddNewBeatButton = (FloatingActionButton) v.findViewById(R.id.mixer_fob);
@@ -65,13 +67,18 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getLoaderManager().initLoader(URL_LOADER, null, this);
-        mMixerItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mMixerItems.setLayoutManager(layoutManager);
+
+/*        mMixerItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Cursor c = mMixerAdapter.getCursor();
                 ((MixerActivity) getActivity()).loadMixerDetailFragment(Constants.buildMixFromCursor(getContext(), c, position));
             }
-        });
+        });*/
         mAddNewBeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,7 +170,7 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
             mMixerItems.setVisibility(View.GONE);
             mEmptyText.setVisibility(View.VISIBLE);
         } else {
-            mMixerAdapter = new MixerAdapter(getContext(), data, 0);
+            mMixerAdapter = new MixerAdapter(getContext(), data);
             mMixerItems.setAdapter(mMixerAdapter);
         }
     }

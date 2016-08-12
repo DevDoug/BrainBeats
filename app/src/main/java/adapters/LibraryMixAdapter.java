@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -39,6 +40,38 @@ public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapt
         String title = cursor.getString(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE));
         if(title != null)
             viewHolder.mTitleText.setText(title);
+
+        viewHolder.mPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO open this mix in player
+                Mix selectedMix = Constants.buildMixFromCursor(mAdapterContext,cursor,0); // get the selected mix item
+                //start intent to send user to play this mix in player
+                Intent dashboardIntent = new Intent(mAdapterContext, MainActivity.class);
+                dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, selectedMix);
+                mAdapterContext.startActivity(dashboardIntent);
+            }
+        });
+
+        viewHolder.mMix.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO send to mixer
+                Mix selectedMix = Constants.buildMixFromCursor(mAdapterContext,cursor,0); // get the selected mix item
+
+                //update local db with change
+                Bundle settingsBundle = new Bundle();
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Mixes.getCode());
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateAddToMixer.getCode());
+                settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_MIX, selectedMix);
+                OfflineSyncManager.getInstance(mAdapterContext).performSyncOnLocalDb(((LibraryActivity) mAdapterContext).mCoordinatorLayout, settingsBundle, mAdapterContext.getContentResolver());
+
+                //start intent to send user to their new mix for them to add/sub mix items.
+                Intent mixerIntent = new Intent(mAdapterContext, MixerActivity.class);
+                mAdapterContext.startActivity(mixerIntent);
+
+            }
+        });
     }
 
     @Override
@@ -50,10 +83,14 @@ public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapt
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView mTitleText;
+        ImageView mPlay;
+        ImageView mMix;
 
         public ViewHolder(View view){
             super(view);
             mTitleText = (TextView) view.findViewById(R.id.album_title);
+            mPlay = (ImageView) view.findViewById(R.id.play_mix);
+            mMix = (ImageView) view.findViewById(R.id.mix_beat);
         }
     }
 

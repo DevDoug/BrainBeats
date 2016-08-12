@@ -22,6 +22,8 @@ public class Mix implements Parcelable {
     private int mIsInLibrary;
     private int mIsinMixer;
     private int mMixUserId;
+    private String mStreamURL;
+    private User user;
 
     public Mix() {
     }
@@ -112,6 +114,22 @@ public class Mix implements Parcelable {
 
     public void setMixUserId(int mixUserId) {
         this.mMixUserId = mixUserId;
+    }
+
+    public String getStreamURL() {
+        return mStreamURL;
+    }
+
+    public void setStreamURL(String streamURL) {
+        this.mStreamURL = streamURL;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

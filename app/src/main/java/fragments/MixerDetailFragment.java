@@ -110,8 +110,10 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
         super.onActivityCreated(savedInstanceState);
         mUserSelections = getArguments();
         if (mUserSelections != null) {
+
             mSelectedMix = (Mix) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_MIX);
             mMixTitle.setText(mSelectedMix.getBeatTitle());
+
             if (mSelectedMix.getMixItems() != null){
                 mixItemList = new ArrayList<>();
                 mixItemList.addAll(mSelectedMix.getMixItems());

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/blue_horizontal_divider_height" />
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/mixer_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

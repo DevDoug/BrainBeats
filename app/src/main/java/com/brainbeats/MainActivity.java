@@ -17,9 +17,11 @@ import architecture.AccountManager;
 import architecture.BaseActivity;
 import data.BrainBeatsContract;
 import entity.Track;
+import entity.User;
 import fragments.DashboardDetailFragment;
 import fragments.DashboardFragment;
 import fragments.LibraryFragment;
+import model.Mix;
 import utils.Constants;
 import web.SyncManager;
 
@@ -56,23 +58,27 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
             mUserSelections = new Bundle();
         }
 
+        Bundle intentBundle = getIntent().getExtras();
+        if(intentBundle != null){
+            if (intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX) != null) {
+                Mix sentMix = (Mix) intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX);
+                Track playTrack = new Track();
+                playTrack.setTitle(sentMix.getBeatTitle());
+                playTrack.setArtworkURL(sentMix.getMixAlbumCoverArt());
+                playTrack.setID(sentMix.getSoundCloudId());
+                playTrack.setStreamURL(sentMix.getStreamURL());
+                User scUser = new User();
+                scUser.setUsername("Test");
+                playTrack.setUser(scUser);
+                switchTBeatDetailFragment(playTrack);
+            }
+        }
+
         if (!AccountManager.getInstance(this).isLoggedIn()) { //if the user has not created an account load login activity
             Intent loginIntent = new Intent(this, LoginActivity.class);
             startActivity(loginIntent);
             finish();
         }
-
-        mDataObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
-            public void onChange(boolean selfChange) {
-            }
-
-            @Override
-            public void onChange(boolean selfChange, Uri uri) {
-                Log.i("", uri.toString());
-            }
-        };
-        getContentResolver().registerContentObserver(BrainBeatsContract.MixEntry.CONTENT_URI, false, mDataObserver);
-        getContentResolver().registerContentObserver(BrainBeatsContract.MixPlaylistEntry.CONTENT_URI, false, mDataObserver);
     }
 
     @Override
