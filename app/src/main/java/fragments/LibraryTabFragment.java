@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,7 +37,7 @@ import web.OfflineSyncManager;
 public class LibraryTabFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     ArrayList<Track> trackList;
-    private ListView mMixListView;
+    private RecyclerView mMixListView;
     private LibraryMixAdapter mLibraryMixAdapter;
     private LibraryPlaylistAdapter mLibraryPlaylistAdapter;
     private int mDataType;
@@ -69,7 +70,7 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_library_tab, container, false);
-        mMixListView = (ListView) v.findViewById(R.id.library_content_list);
+        mMixListView = (RecyclerView) v.findViewById(R.id.library_content_list);
         mEmptyDataPlaceholder = (TextView) v.findViewById(R.id.no_data_placeholder);
         return v;
     }
@@ -81,7 +82,12 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
         setRetainInstance(true);
         getLoaderManager().initLoader(mDataType, null, this);
 
-        mMixListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        // use a linear layout manager
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mMixListView.setLayoutManager(layoutManager);
+
+/*        mMixListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Cursor cursor = (Cursor) mLibraryMixAdapter.getItem(i);
@@ -99,7 +105,7 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
                 Intent mixerIntent = new Intent(getContext(), MixerActivity.class);
                 startActivity(mixerIntent);
             }
-        });
+        });*/
     }
 
     public void updateFilterParams(String params) {
@@ -153,23 +159,25 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
     }
 
     @Override
-    public void onLoadFinished(Loader loader, Cursor data) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data == null) { //no mix data found
             mMixListView.setVisibility(View.GONE);
             mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
         } else {
             mEmptyDataPlaceholder.setVisibility(View.INVISIBLE);
             if (mDataType == 0 || mDataType == 2) {
-                mLibraryMixAdapter = new LibraryMixAdapter(getContext(), data, 0);
+                mLibraryMixAdapter = new LibraryMixAdapter(getContext(), data);
                 mMixListView.setAdapter(mLibraryMixAdapter);
             } else {
-                mLibraryPlaylistAdapter = new LibraryPlaylistAdapter(getContext(), data, 0);
+                mLibraryPlaylistAdapter = new LibraryPlaylistAdapter(getContext(), data);
                 mMixListView.setAdapter(mLibraryPlaylistAdapter);
             }
         }
     }
 
     @Override
-    public void onLoaderReset(Loader loader) {
+    public void onLoaderReset(Loader<Cursor> loader) {
+        if (mLibraryMixAdapter != null)
+                mLibraryMixAdapter.changeCursor(null);
     }
 }
