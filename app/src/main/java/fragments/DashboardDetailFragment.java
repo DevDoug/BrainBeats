@@ -1,5 +1,7 @@
 package fragments;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -72,6 +74,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     private SeekBar mPlayTrackSeekBar;
     private OnFragmentInteractionListener mListener;
     public FloatingActionButton mFob;
+    public boolean mIsCurrentTrack = true;
 
     public DashboardDetailFragment() {
         // Required empty public constructor
@@ -187,6 +190,11 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_dashboard_detail, menu);
 /*        // Locate MenuItem with ShareActionProvider
@@ -261,7 +269,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         switch (v.getId()) {
             case R.id.play_song_button:
                 if (mBound) {
-                    if (mAudioService.mPlayer.isPlaying()) {
+                    if (mAudioService.getIsPlaying()) {
                         mAudioService.pauseSong();
                         mPlaySongButton.setImageResource(R.drawable.ic_play_circle);
                     } else {
@@ -279,7 +287,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 break;
             case R.id.repeat_button:
                 if (mBound) {
-                    if (!mAudioService.mPlayer.isLooping()) {
+                    if (!mAudioService.getIsLooping()) {
                         mAudioService.setSongLooping(true);
                         mLoopSongButton.setImageResource(R.drawable.ic_repeat);
                     } else {
@@ -316,12 +324,9 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                             }
 
                             @Override
-                            public void onStartTrackingTouch(SeekBar seekBar) {
-                            }
-
+                            public void onStartTrackingTouch(SeekBar seekBar) {}
                             @Override
-                            public void onStopTrackingTouch(SeekBar seekBar) {
-                            }
+                            public void onStopTrackingTouch(SeekBar seekBar) {}
                         });
 
                     } catch (InterruptedException e) {
@@ -331,7 +336,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 }
             }
         });
-
         mUpdateSeekBar.start();
     }
 
@@ -395,6 +399,11 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             AudioService.AudioBinder binder = (AudioService.AudioBinder) service;
             mAudioService = binder.getService();
             mBound = true;
+
+            if(mAudioService.getIsPlaying()){
+                mAudioService.stopSong();
+                mPlayTrackSeekBar.setProgress(0);
+            }
         }
 
         @Override

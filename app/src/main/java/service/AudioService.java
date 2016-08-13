@@ -1,5 +1,6 @@
 package service;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -23,7 +24,7 @@ import web.WebApiManager;
 
 public class AudioService extends Service implements MediaPlayer.OnPreparedListener,  MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
-    public MediaPlayer mPlayer;
+    public static MediaPlayer mPlayer;
     private IBinder mBinder = new AudioBinder();
     public boolean mIsPaused = false;
     int mProgressStatus = 0;
@@ -33,15 +34,14 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
-        mPlayer = new MediaPlayer();
-        mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
-        mPlayer.setOnPreparedListener(this);
-        mPlayer.setOnCompletionListener(this);
-        mPlayer.setOnErrorListener(this);
+        initMediaPlayer();
     }
 
     @Override
@@ -65,6 +65,18 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         return false;
+    }
+
+    public void initMediaPlayer(){
+        if(mPlayer == null) {
+            mPlayer = new MediaPlayer();
+        }
+        mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+        mPlayer.setOnPreparedListener(this);
+        mPlayer.setOnCompletionListener(this);
+        mPlayer.setOnErrorListener(this);
     }
 
     public void playSong(Uri songPath) {
@@ -92,6 +104,14 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     public void stopSong() {
         mPlayer.stop();
+    }
+
+    public boolean getIsPlaying(){
+        return mPlayer.isPlaying();
+    }
+
+    public boolean getIsLooping(){
+        return mPlayer.isLooping();
     }
 
     public class AudioBinder extends Binder {
