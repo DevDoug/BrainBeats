@@ -44,6 +44,7 @@ public class BrainBeatsContract {
         public static final String COLUMN_NAME_RELATED_MIXES_ID         = "relatedtracksforeignkey";
         public static final String COLUMN_NAME_IS_IN_LIBRARY            = "isinlibrary";
         public static final String COLUMN_NAME_IS_IN_MIXER              = "isInMixer";
+        public static final String COLUMN_NAME_STREAM_URL               = "mixStreamUrl";
 
         public static Uri buildMixUriWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

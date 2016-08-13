@@ -54,6 +54,7 @@ public class BrainBeatsDbHelper extends SQLiteOpenHelper {
                         BrainBeatsContract.MixEntry.COLUMN_NAME_RELATED_MIXES_ID + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
                         BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
                         BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_MIXER + COLUMN_TYPE_INT_NULL + COMMA_SEPERATOR +
+                        BrainBeatsContract.MixEntry.COLUMN_NAME_STREAM_URL + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
 
                         " FOREIGN KEY (" + BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_USER_ID_FK + ") REFERENCES " +
                         BrainBeatsContract.UserEntry.TABLE_NAME + " (" + BrainBeatsContract.UserEntry._ID +

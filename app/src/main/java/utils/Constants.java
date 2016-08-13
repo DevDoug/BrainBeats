@@ -137,6 +137,7 @@ public class Constants {
         mix.setMixTitle(track.getTitle());
         mix.setMixAlbumCoverArt(track.getArtworkURL());
         mix.setSoundCloudId(track.getID());
+        mix.setStreamURL(track.getStreamURL());
         //mix.setRelatedTracksId(relatedTracksId);
         return mix;
     }
@@ -152,6 +153,7 @@ public class Constants {
         mix.setMixUserId(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_USER_ID_FK)));
         mix.setIsInLibrary(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY)));
         mix.setIsInMixer(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_MIXER)));
+        mix.setStreamURL(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_STREAM_URL)));
 
         String whereClause = BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + "= ?";
         String[] whereArgs = new String[]{
@@ -200,6 +202,7 @@ public class Constants {
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_RELATED_MIXES_ID, mix.getRelatedTracksId());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY, mix.getIsInLibrary());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_MIXER, mix.getIsInMixer());
+        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_STREAM_URL, mix.getStreamURL());
         return values;
     }
 

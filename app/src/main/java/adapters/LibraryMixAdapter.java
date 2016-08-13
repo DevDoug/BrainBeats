@@ -45,7 +45,7 @@ public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapt
             @Override
             public void onClick(View view) {
                 //TODO open this mix in player
-                Mix selectedMix = Constants.buildMixFromCursor(mAdapterContext,cursor,0); // get the selected mix item
+                Mix selectedMix = Constants.buildMixFromCursor(mAdapterContext,getCursor(), viewHolder.getAdapterPosition()); // get the selected mix item
                 //start intent to send user to play this mix in player
                 Intent dashboardIntent = new Intent(mAdapterContext, MainActivity.class);
                 dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, selectedMix);
@@ -57,7 +57,7 @@ public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapt
             @Override
             public void onClick(View view) {
                 //TODO send to mixer
-                Mix selectedMix = Constants.buildMixFromCursor(mAdapterContext,cursor,0); // get the selected mix item
+                Mix selectedMix = Constants.buildMixFromCursor(mAdapterContext,getCursor(), viewHolder.getAdapterPosition()); // get the selected mix item
 
                 //update local db with change
                 Bundle settingsBundle = new Bundle();

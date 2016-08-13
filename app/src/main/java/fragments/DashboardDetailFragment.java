@@ -274,7 +274,8 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                         mPlaySongButton.setImageResource(R.drawable.ic_play_circle);
                     } else {
                         mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
-                        mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
+                        if(mSelectedTrack.getStreamURL() != null)
+                            mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
                         startProgressBarThread();
                     }
                 }

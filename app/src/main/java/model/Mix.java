@@ -143,6 +143,11 @@ public class Mix implements Parcelable {
         dest.writeString(mMixTitle);
         dest.writeString(mBeatAlbumCoverArtSource);
         dest.writeInt(mSoundCloudId);
+        dest.writeInt(mRelatedTracksId);
+        dest.writeInt(mIsInLibrary);
+        dest.writeInt(mIsinMixer);
+        dest.writeInt(mMixUserId);
+        dest.writeString(mStreamURL);
     }
 
     protected Mix(Parcel in) {
@@ -150,6 +155,11 @@ public class Mix implements Parcelable {
         mMixTitle = in.readString();
         mBeatAlbumCoverArtSource = in.readString();
         mSoundCloudId = in.readInt();
+        mRelatedTracksId = in.readInt();
+        mIsInLibrary = in.readInt();
+        mIsinMixer = in.readInt();
+        mMixUserId = in.readInt();
+        mStreamURL = in.readString();
     }
 
     public static final Creator<Mix> CREATOR = new Creator<Mix>() {
