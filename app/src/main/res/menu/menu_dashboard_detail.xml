@@ -9,7 +9,7 @@
             app:showAsAction="ifRoom"
             app:actionProviderClass="android.support.v7.widget.ShareActionProvider" />-->
 
-    <item
+<!--    <item
         android:id="@+id/action_add_to_library"
         android:orderInCategory="95"
         android:title="Add to library"
@@ -19,7 +19,7 @@
         android:id="@+id/action_favorite"
         android:orderInCategory="96"
         android:title="@string/action_favorite"
-        app:showAsAction="never" />
+        app:showAsAction="never" />-->
 
     <!--    <item
             android:id="@+id/action_rate"

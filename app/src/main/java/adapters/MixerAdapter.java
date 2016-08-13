@@ -44,7 +44,7 @@ public class MixerAdapter extends RecyclerViewCursorAdapter<MixerAdapter.ViewHol
         viewHolder.mContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MixerActivity) mAdapterContext).loadMixerDetailFragment(Constants.buildMixFromCursor(mAdapterContext, getCursor(), 2));
+                ((MixerActivity) mAdapterContext).loadMixerDetailFragment(Constants.buildMixFromCursor(mAdapterContext, getCursor(), viewHolder.getAdapterPosition()));
             }
         });
     }

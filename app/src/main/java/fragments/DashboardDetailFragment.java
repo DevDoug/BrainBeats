@@ -30,6 +30,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -74,7 +76,13 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     private SeekBar mPlayTrackSeekBar;
     private OnFragmentInteractionListener mListener;
     public FloatingActionButton mFob;
-    public boolean mIsCurrentTrack = true;
+
+    FloatingActionButton mTrackOptionsFab;
+    FloatingActionButton mAddToLibraryFab;
+    FloatingActionButton mFavFab;
+    FloatingActionButton mFollowArtistFab;
+    private Animation fab_open, fab_close, rotate_forward, rotate_backward;
+    private boolean mIsFabOpen = false;
 
     public DashboardDetailFragment() {
         // Required empty public constructor
@@ -141,6 +149,22 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         mFollowButton = (LinearLayout) v.findViewById(R.id.follow_button);
         //((TextView) v.findViewById(R.id.separator_title)).setText(R.string.suggested_tracks);
         //mCoordinatorLayout = (CoordinatorLayout) v.findViewById(R.id.main_content_coordinator_layout);
+
+        mTrackOptionsFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_track_options);
+        mAddToLibraryFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_add_to_library);
+        mFavFab = (FloatingActionButton) v.findViewById(R.id.floating_action_favorite);
+        mFollowArtistFab = (FloatingActionButton) v.findViewById(R.id.floating_follow_artist);
+
+
+        fab_open = AnimationUtils.loadAnimation(getContext(), R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(getContext(), R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_backward);
+
+        mTrackOptionsFab.setOnClickListener(this);
+        mAddToLibraryFab.setOnClickListener(this);
+        mFavFab.setOnClickListener(this);
+        mFollowArtistFab.setOnClickListener(this);
 
         mPlaySongButton.setOnClickListener(this);
         mSkipBackwardButton.setOnClickListener(this);
@@ -222,7 +246,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             case android.R.id.home:
                 getActivity().onBackPressed();
                 break;
-            case R.id.action_add_to_library:
+/*            case R.id.action_add_to_library:
                 settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateMix.getCode());
                 OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
                 break;
@@ -230,7 +254,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateFavorite.getCode());
                 OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
                 break;
-/*            case R.id.action_rate:
+*//*            case R.id.action_rate:
                 break;*/
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
@@ -266,6 +290,10 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
 
     @Override
     public void onClick(View v) {
+        Bundle settingsBundle = new Bundle();
+        settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Mixes.getCode());
+        settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
+
         switch (v.getId()) {
             case R.id.play_song_button:
                 if (mBound) {
@@ -298,6 +326,22 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 }
                 break;
             case R.id.shuffle__button:
+                break;
+            case R.id.floating_action_button_track_options:
+                animateFAB();
+                break;
+            case R.id.floating_action_button_add_to_library:
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateMix.getCode());
+                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
+                break;
+            case R.id.floating_action_favorite:
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateFavorite.getCode());
+                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
+                break;
+            case R.id.floating_follow_artist:
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Users.getCode());
+                settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
+                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
                 break;
             default:
                 break;
@@ -412,4 +456,26 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             mBound = false;
         }
     };
+
+    public void animateFAB() {
+        if (mIsFabOpen) {
+            mTrackOptionsFab.startAnimation(rotate_backward);
+            mAddToLibraryFab.startAnimation(fab_close);
+            mFavFab.startAnimation(fab_close);
+            mFollowArtistFab.startAnimation(fab_close);
+            mAddToLibraryFab.setClickable(false);
+            mFavFab.setClickable(false);
+            mFollowArtistFab.setClickable(false);
+            mIsFabOpen = false;
+        } else {
+            mTrackOptionsFab.startAnimation(rotate_forward);
+            mAddToLibraryFab.startAnimation(fab_open);
+            mFavFab.startAnimation(fab_open);
+            mFollowArtistFab.startAnimation(fab_open);
+            mAddToLibraryFab.setClickable(true);
+            mFavFab.setClickable(true);
+            mFollowArtistFab.setClickable(true);
+            mIsFabOpen = true;
+        }
+    }
 }
