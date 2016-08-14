@@ -64,7 +64,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     private TextView mArtistName;
     private ShareActionProvider mShareActionProvider;
     private CoordinatorLayout mCoordinatorLayout;
-    private LinearLayout mFollowButton;
     public Thread mUpdateSeekBar;
     int mProgressStatus = 0;
 
@@ -146,7 +145,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         mLoopSongButton = (ImageView) v.findViewById(R.id.repeat_button);
         mPlayTrackSeekBar = (SeekBar) v.findViewById(R.id.play_song_seek_bar);
         mArtistName = (TextView) v.findViewById(R.id.user_name);
-        mFollowButton = (LinearLayout) v.findViewById(R.id.follow_button);
+
         //((TextView) v.findViewById(R.id.separator_title)).setText(R.string.suggested_tracks);
         //mCoordinatorLayout = (CoordinatorLayout) v.findViewById(R.id.main_content_coordinator_layout);
 
@@ -199,16 +198,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 mArtistName.setText(mSelectedTrack.getUser().getUsername());
             }
         }
-
-        mFollowButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle settingsBundle = new Bundle();
-                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Users.getCode());
-                settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
-                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
-            }
-        });
 
         getLoaderManager().initLoader(Constants.RELATED_TRACKS_LOADER, null, this);
     }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,12 +58,12 @@ public class MixerAdapter extends RecyclerViewCursorAdapter<MixerAdapter.ViewHol
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        RelativeLayout mContainer;
+        CardView mContainer;
         TextView mTitleText;
 
         public ViewHolder(View view){
             super(view);
-            mContainer =(RelativeLayout) view.findViewById(R.id.mixer_item_container);
+            mContainer =(CardView) view.findViewById(R.id.card_view);
             mTitleText = (TextView) view.findViewById(R.id.album_title);
 
         }
