@@ -5,17 +5,16 @@
     android:background="@android:color/white"
     tools:context="fragments.MixerFragment">
 
-    <include
+    <!--<include
         android:id="@+id/blue_line_seperator"
         layout="@layout/blue_horizontal_seperator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/blue_horizontal_divider_height" />
+        android:layout_height="@dimen/blue_horizontal_divider_height" />-->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/mixer_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/blue_line_seperator"
         android:descendantFocusability="beforeDescendants"/>
 
     <TextView

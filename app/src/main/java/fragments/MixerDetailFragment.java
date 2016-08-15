@@ -63,6 +63,8 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
         mCoordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.main_content_coordinator_layout);
         mPlayMixButton = (ImageView) v.findViewById(R.id.play_song_button);
         ((TextView) v.findViewById(R.id.separator_title)).setText(R.string.beat_levels);
+
+
         return v;
     }
 
@@ -81,6 +83,7 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
                 FragmentManager fm = getActivity().getSupportFragmentManager();
 
                 mSelectedMix.setMixTitle(mMixTitle.getText().toString());
+
                 int returnId = getActivity().getContentResolver().update(
                         BrainBeatsContract.MixEntry.CONTENT_URI,
                         Constants.buildMixRecord(mSelectedMix),
@@ -108,6 +111,24 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mMixerItemAdapter = new MixItemAdapter(getContext(), mixItemList, this);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mMixerItemList.setLayoutManager(mLayoutManager);
+        mMixerItemList.setAdapter(mMixerItemAdapter);
+        mMixerItemAdapter.notifyDataSetChanged();
+
+        mPlayMixButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playMix();
+            }
+        });
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
         mUserSelections = getArguments();
         if (mUserSelections != null) {
 
@@ -123,19 +144,6 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
             addNewMix.setMixItemTitle("Add New");
             mixItemList.add(addNewMix);
         }
-
-        mMixerItemAdapter = new MixItemAdapter(getContext(), mixItemList, this);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        mMixerItemList.setLayoutManager(mLayoutManager);
-        mMixerItemList.setAdapter(mMixerItemAdapter);
-        mMixerItemAdapter.notifyDataSetChanged();
-
-        mPlayMixButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playMix();
-            }
-        });
     }
 
     public void showAddBeatItemDialog() {

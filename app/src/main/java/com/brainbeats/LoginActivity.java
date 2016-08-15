@@ -4,6 +4,9 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -48,7 +51,7 @@ import web.WebApiManager;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>, Constants.ConfirmDialogActionListener {
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -60,6 +63,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private Button mLoginButton;
     private Button mSoundCloudLogin;
+    public CoordinatorLayout mCoordinatorLayout;
+
 
     public static final String OAUTH_CALLBACK_SCHEME = "brainbeats";
     public static final String OAUTH_CALLBACK_HOST = "soundcloud/callback";
@@ -74,6 +79,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginButton = (Button) findViewById(R.id.email_sign_in_button);
         mPasswordView = (EditText) findViewById(R.id.password);
         mSoundCloudLogin = (Button) findViewById(R.id.sound_cloud_sign_in_button);
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
+
 
         populateAutoComplete();
 
@@ -201,11 +208,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     public void attemptSoundCloudLogin() {
-        String authSoundCloudURL = WebApiManager.API_CONNECT_URL + "?client_id=" + Constants.SOUND_CLOUD_CLIENT_ID + "&redirect_uri=" + CALLBACK_URL + "&response_type=token";
-        Intent loginIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(authSoundCloudURL));
-        loginIntent.addCategory(Intent.CATEGORY_DEFAULT);
-        loginIntent.addCategory(Intent.CATEGORY_BROWSABLE);
-        startActivity(loginIntent);
+        if (Constants.isNetworkAvailable(LoginActivity.this)){
+            String authSoundCloudURL = WebApiManager.API_CONNECT_URL + "?client_id=" + Constants.SOUND_CLOUD_CLIENT_ID + "&redirect_uri=" + CALLBACK_URL + "&response_type=token";
+            Intent loginIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(authSoundCloudURL));
+            loginIntent.addCategory(Intent.CATEGORY_DEFAULT);
+            loginIntent.addCategory(Intent.CATEGORY_BROWSABLE);
+            startActivity(loginIntent);
+        } else {
+            Constants.buildConfirmDialog(LoginActivity.this,getString(R.string.connect_to_network_message),getString(R.string.enable_wifi_in_settings_message),getString(R.string.go_to_settings_message),this);
+        }
     }
 
     @Override
@@ -327,6 +338,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         android.R.layout.select_dialog_item, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
+    }
+
+    @Override
+    public void PerformDialogAction() {
+        startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
     }
 
     /**

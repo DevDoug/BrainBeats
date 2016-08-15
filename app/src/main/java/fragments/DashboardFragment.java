@@ -42,7 +42,7 @@ import entity.Track;
 import utils.Constants;
 import web.WebApiManager;
 
-public class DashboardFragment extends Fragment implements View.OnClickListener {
+public class DashboardFragment extends Fragment implements View.OnClickListener, Constants.ConfirmDialogActionListener {
 
     public static final String TAG = "DashboardFragment";
 
@@ -183,6 +183,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         }
     }
 
+    @Override
+    public void PerformDialogAction() {
+        startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+    }
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
@@ -207,32 +212,37 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     }
 
     public void getTracks(String filterTag) {
-        final ProgressDialog loadingMusicDialog = new ProgressDialog(getContext());
-        loadingMusicDialog.setCancelable(false);
-        loadingMusicDialog.setMessage(getString(R.string.loading_message));
-        loadingMusicDialog.show();
+        if (Constants.isNetworkAvailable(getContext())){
+            final ProgressDialog loadingMusicDialog = new ProgressDialog(getContext());
+            loadingMusicDialog.setCancelable(false);
+            loadingMusicDialog.setMessage(getString(R.string.loading_message));
+            loadingMusicDialog.show();
 
-        WebApiManager.getTracks(getContext(), mQueryText, filterTag, new WebApiManager.OnArrayResponseListener() {
-            @Override
-            public void onArrayResponse(JSONArray array) {
-                loadingMusicDialog.dismiss();
-                Gson gson = new Gson();
-                Type token = new TypeToken<List<Track>>() {
-                }.getType();
-                ArrayList<Track> trackList = gson.fromJson(array.toString(), token);
-                if (trackList != null) {
-                    mTrackAdapter = new SearchMusicAdapter(getContext(), trackList);
-                    mBeatGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
-                    mTrackGrid.setLayoutManager(mBeatGridLayoutManager);
-                    mTrackGrid.setAdapter(mTrackAdapter);
-                    mTrackAdapter.notifyDataSetChanged();
+            WebApiManager.getTracks(getContext(), mQueryText, filterTag, new WebApiManager.OnArrayResponseListener() {
+                @Override
+                public void onArrayResponse(JSONArray array) {
+                    loadingMusicDialog.dismiss();
+                    Gson gson = new Gson();
+                    Type token = new TypeToken<List<Track>>() {
+                    }.getType();
+                    ArrayList<Track> trackList = gson.fromJson(array.toString(), token);
+                    if (trackList != null) {
+                        mTrackAdapter = new SearchMusicAdapter(getContext(), trackList);
+                        mBeatGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
+                        mTrackGrid.setLayoutManager(mBeatGridLayoutManager);
+                        mTrackGrid.setAdapter(mTrackAdapter);
+                        mTrackAdapter.notifyDataSetChanged();
+                    }
                 }
-            }
-        }, new WebApiManager.OnErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(getClass().getSimpleName(), "Response = " + error.toString());
-            }
-        });
+            }, new WebApiManager.OnErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.i(getClass().getSimpleName(), "Response = " + error.toString());
+                }
+            });
+
+        } else {
+            Constants.buildConfirmDialog(getContext(),getString(R.string.connect_to_network_message),getString(R.string.enable_wifi_in_settings_message),getString(R.string.go_to_settings_message),this);
+        }
     }
 }

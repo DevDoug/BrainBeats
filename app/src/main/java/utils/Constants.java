@@ -6,6 +6,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -130,6 +132,10 @@ public class Constants {
         public int getCode() {
             return mCode;
         }
+    }
+
+    public interface ConfirmDialogActionListener{
+        void PerformDialogAction();
     }
 
     public static Mix buildMixRecordFromTrack(Track track) {
@@ -304,20 +310,20 @@ public class Constants {
         return alert;
     }
 
-    public static AlertDialog buildConfirmDialog(Context context, String title) {
+    public static AlertDialog buildConfirmDialog(Context context, String title, String dialogMessage, String positiveButtonConfirm, ConfirmDialogActionListener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
         builder.setTitle(title);
-        builder.setMessage(context.getString(R.string.please_sign_in_to_sound_cloud_dialog));
+        builder.setMessage(dialogMessage);
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
             }
         });
-        builder.setPositiveButton("connect to sound cloud", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(positiveButtonConfirm, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(context, "set up log in to sound cloud link", Toast.LENGTH_LONG).show();
+                listener.PerformDialogAction();
             }
         });
         AlertDialog alert = builder.create();
@@ -342,4 +348,9 @@ public class Constants {
         return "Password1";
     }
 
+    public static  boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context. getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 }

@@ -58,7 +58,6 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
         View v = inflater.inflate(R.layout.fragment_mixer, container, false);
         mMixerItems = (RecyclerView) v.findViewById(R.id.mixer_list);
         mEmptyText = (TextView) v.findViewById(R.id.empty_text);
-        ((TextView) v.findViewById(R.id.separator_title)).setText(R.string.mixes);
         mAddNewBeatButton = (FloatingActionButton) v.findViewById(R.id.mixer_fob);
         return v;
     }
