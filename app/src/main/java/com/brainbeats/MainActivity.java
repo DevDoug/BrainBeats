@@ -3,15 +3,9 @@ package com.brainbeats;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import architecture.AccountManager;
 import architecture.BaseActivity;
@@ -20,7 +14,6 @@ import entity.Track;
 import entity.User;
 import fragments.DashboardDetailFragment;
 import fragments.DashboardFragment;
-import fragments.LibraryFragment;
 import model.Mix;
 import utils.Constants;
 import web.SyncManager;
@@ -89,9 +82,9 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     @Override
     public void onResume() {
         super.onResume();
-        if (AccountManager.getInstance(MainActivity.this).getGlobalSyncRequired()) {
+        if (SyncManager.getInstance().getIsGlobalSyncRequired()) {
             SyncManager.getInstance().updateAllTables(AccountManager.getInstance(MainActivity.this).getUserId(), mAccount, BrainBeatsContract.CONTENT_AUTHORITY);
-            AccountManager.getInstance(MainActivity.this).setGlobalSyncRequired(false);
+            SyncManager.mIsGlobalSyncRequired = false;
         }
     }
 

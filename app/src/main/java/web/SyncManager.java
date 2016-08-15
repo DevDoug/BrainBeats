@@ -15,11 +15,14 @@ public class SyncManager {
     public static final long SECONDS_PER_MINUTE = 60L;
     public static final long SYNC_INTERVAL_IN_MINUTES = 60L;
     public static final long SYNC_INTERVAL = SYNC_INTERVAL_IN_MINUTES * SECONDS_PER_MINUTE;
+
+    public static boolean mIsGlobalSyncRequired;
     public Account mAccount;
 
     private static SyncManager mInstance;
 
     public SyncManager() {
+        mIsGlobalSyncRequired = true;
     }
 
     public static synchronized SyncManager getInstance() {
@@ -56,5 +59,9 @@ public class SyncManager {
 
     public void performSyncOnTable(Bundle settingsBundle) {
         ContentResolver.requestSync(mAccount, BrainBeatsContract.CONTENT_AUTHORITY, settingsBundle); // Sync mixes
+    }
+
+    public boolean getIsGlobalSyncRequired(){
+        return mIsGlobalSyncRequired;
     }
 }
