@@ -1,8 +1,6 @@
 package adapters;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +12,8 @@ import android.widget.TextView;
 import com.brainbeats.R;
 import java.util.List;
 
-import data.MixContract;
-import data.MixDbHelper;
+import data.BrainBeatsContract;
+import data.BrainBeatsDbHelper;
 import fragments.MixerDetailFragment;
 import model.MixItem;
 import utils.Constants;
@@ -60,7 +58,7 @@ public class MixItemAdapter extends RecyclerView.Adapter<MixItemAdapter.ViewHold
 
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
+            switch (v.getId()) {
                 case R.id.plus_icon:
                     fragment.showAddBeatItemDialog();
                     break;
@@ -77,8 +75,8 @@ public class MixItemAdapter extends RecyclerView.Adapter<MixItemAdapter.ViewHold
                     long removeMixID = mMixItems.get(position).getMixItemId();
                     removeItem(position);
                     mAdapterContext.getContentResolver().delete(
-                            MixContract.MixItemsEntry.CONTENT_URI,
-                            MixContract.MixItemsEntry._ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                            BrainBeatsContract.MixItemsEntry.CONTENT_URI,
+                            BrainBeatsContract.MixItemsEntry._ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                             new String[]{String.valueOf(removeMixID)});
                     break;
             }
@@ -97,7 +95,7 @@ public class MixItemAdapter extends RecyclerView.Adapter<MixItemAdapter.ViewHold
         holder.mMixerItemTitle.setText(mMixItems.get(position).getMixItemTitle());
         holder.mProgressBar.setProgress(mMixItems.get(position).getMixItemLevel());
 
-        if(position == mMixItems.size() - 1) { // set the last row to be an add new item
+        if (position == mMixItems.size() - 1) { // set the last row to be an add new item
             holder.mRemoveBeatItemIcon.setVisibility(View.INVISIBLE);
             holder.mSubtractBeatLevelIcon.setVisibility(View.INVISIBLE);
             holder.mIncreaseBeatLevelIcon.setVisibility(View.GONE);

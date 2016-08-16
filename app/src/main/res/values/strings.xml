@@ -30,7 +30,7 @@
     <string name="new_beat_title">New Mix</string>
     <string-array name="new_beat_options">
         <item name="create_blank_beat">Create a new mix.</item>
-       <!-- <item name="create_mix_from_existing">Create a new mix from an existing mix.</item>-->
+        <!-- <item name="create_mix_from_existing">Create a new mix from an existing mix.</item>-->
     </string-array>
 
     <string name="create_beat_from_title">Create A New Mix From</string>
@@ -90,7 +90,9 @@
     <string name="loading_message">Loading</string>
     <string name="song_added_to_favorites_snack_message">Song added to Favorites.</string>
     <string name="song_added_to_library_snack_message">Song added to Library.</string>
+    <string name="song_added_to_mixer_snack_message">Song added to Mixer.</string>
     <string name="artist_added_to_following">You are now following this artist.</string>
+    <string name="artist_removed_from_following">You have stopped following this artist.</string>
     <string name="mix_item_exists_snack_message" formatted="false">This mix already contains %s</string>
 
     <string name="title_activity_login">Sign in</string>
@@ -104,6 +106,9 @@
     <string name="error_invalid_password">This password is too short.</string>
     <string name="error_incorrect_password">This password is incorrect.</string>
     <string name="error_field_required">This field is required</string>
+    <string name="connect_to_network_message">Unable to connect to network</string>
+    <string name="go_to_settings_message">Go to settings</string>
+    <string name="enable_wifi_in_settings_message">Please connect to a network to use this feature.</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
     <string name="register_text">Register</string>
     <string name="login_text">Login</string>
@@ -116,6 +121,7 @@
     <string name="error_favoriting_message">There was a problem favoriting this mix.</string>
     <string name="error_this_mix_is_already_a_favorite">This mix is already a favorite.</string>
     <string name="error_this_mix_is_already_in_library">This mix is already in your library.</string>
+    <string name="error_this_mix_is_in_the_mixer">This mix is already in the mixer.</string>
     <string name="error_rating_message">There was a problem rating this mix.</string>
     <string name="error_unkown_message">An unexpected error occurred.</string>
 

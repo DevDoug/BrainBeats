@@ -1,5 +1,4 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,12 +8,12 @@
         android:id="@+id/album_cover_art"
         android:layout_width="300dp"
         android:layout_height="200dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/fragment_content_item_top_margin"
-        android:src="@drawable/placeholder"
         android:adjustViewBounds="true"
         android:contentDescription="@string/content_description_image_placeholder"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:src="@drawable/placeholder" />
 
     <SeekBar
         android:id="@+id/play_song_seek_bar"
@@ -22,63 +21,63 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/album_cover_art"
         android:layout_marginLeft="@dimen/seek_bar_margin_left"
+        android:layout_marginRight="@dimen/seek_bar_margin_left"
         android:layout_marginStart="@dimen/seek_bar_start_margin"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="@dimen/seek_bar_margin_left" />
+        android:layout_marginTop="10dp" />
 
     <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
         android:id="@+id/play_song_button"
-        android:src="@drawable/ic_play_circle"
-        android:layout_marginLeft="32dp"
-        android:layout_below="@+id/play_song_seek_bar"
-        android:layout_centerHorizontal="true" />
-
-    <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:id="@+id/pause_song_button"
-        android:src="@drawable/ic_pause_circle"
-        android:layout_marginLeft="32dp"
         android:layout_below="@+id/play_song_seek_bar"
         android:layout_centerHorizontal="true"
+        android:layout_marginLeft="32dp"
+        android:src="@drawable/ic_play_circle" />
+
+    <ImageView
+        android:id="@+id/pause_song_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/play_song_seek_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="32dp"
+        android:src="@drawable/ic_pause_circle"
         android:visibility="invisible" />
 
     <ImageView
         android:id="@+id/skip_backward_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/ic_skip_previous"
         android:layout_below="@+id/play_song_seek_bar"
         android:layout_marginLeft="32dp"
-        android:layout_toStartOf="@+id/play_song_button" />
+        android:layout_toStartOf="@+id/play_song_button"
+        android:src="@drawable/ic_skip_previous" />
 
     <ImageView
         android:id="@+id/shuffle__button"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/ic_shuffle"
         android:layout_below="@+id/play_song_seek_bar"
-        android:layout_toStartOf="@+id/skip_backward_button" />
+        android:layout_toStartOf="@+id/skip_backward_button"
+        android:src="@drawable/ic_shuffle" />
 
 
     <ImageView
         android:id="@+id/skip_forward_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/ic_skip_next"
         android:layout_below="@+id/play_song_seek_bar"
         android:layout_marginLeft="32dp"
-        android:layout_toEndOf="@+id/play_song_button" />
+        android:layout_toEndOf="@+id/play_song_button"
+        android:src="@drawable/ic_skip_next" />
 
     <ImageView
         android:id="@+id/repeat_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/ic_repeat"
         android:layout_below="@+id/play_song_seek_bar"
         android:layout_marginLeft="32dp"
-        android:layout_toEndOf="@+id/skip_forward_button" />
+        android:layout_toEndOf="@+id/skip_forward_button"
+        android:src="@drawable/ic_repeat" />
 
 </RelativeLayout>

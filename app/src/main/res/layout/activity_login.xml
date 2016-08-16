@@ -34,8 +34,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/app_title"
-            android:textSize="30sp"
-            android:textColor="@color/theme_secondary_text_color"/>
+            android:textColor="@color/theme_secondary_text_color"
+            android:textSize="30sp" />
 
     </RelativeLayout>
 
@@ -46,8 +46,8 @@
         android:layout_alignParentEnd="false"
         android:layout_centerInParent="true"
         android:orientation="vertical"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp">
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -91,21 +91,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/action_sign_in"
-            android:textStyle="bold"
             android:background="@drawable/login_button_background"
-            android:textColor="@color/theme_primary_text_color"/>
+            android:text="@string/action_sign_in"
+            android:textColor="@color/theme_primary_text_color"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/sound_cloud_sign_in_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:layout_marginTop="16dp"
-            android:text="@string/log_in_using_sound_cloud"
-            android:textStyle="bold"
             android:background="@drawable/login_button_background"
+            android:text="@string/log_in_using_sound_cloud"
             android:textColor="@color/theme_primary_text_color"
-            android:layout_marginBottom="10dp" />
+            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -118,5 +118,6 @@
         android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="@string/forgot_password"
-        android:textColor="@color/theme_secondary_text_color"/>
+        android:textColor="@color/theme_secondary_text_color" />
+
 </RelativeLayout>

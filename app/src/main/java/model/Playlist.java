@@ -6,7 +6,6 @@ package model;
 public class Playlist {
 
     public String mPlaylistTitle;
-
     private int mSoundCloudId;
 
     public String getPlaylistTitle() {

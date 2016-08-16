@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -15,20 +16,22 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import architecture.BaseActivity;
+import fragments.DashboardDetailFragment;
 import fragments.LibraryFragment;
 
 public class LibraryActivity extends BaseActivity implements LibraryFragment.OnFragmentInteractionListener {
 
     Fragment mLibraryFragment;
-    private SearchView mSearchView;
-    private MenuItem searchMenuItem;
     String mQueryText;
     SearchView.OnQueryTextListener listener;
+    public CoordinatorLayout mCoordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_library);
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
+
         mLibraryFragment = new LibraryFragment();
         switchToLibraryFragment();
 
@@ -36,12 +39,12 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
             @Override
             public boolean onQueryTextSubmit(String query) {
                 mQueryText = query;
+                ((LibraryFragment) mLibraryFragment).updateTabFilter(mQueryText);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                // newText is text entered by user to SearchView
                 return false;
             }
         };
@@ -51,13 +54,13 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_library, menu);
-        searchMenuItem = menu.findItem(R.id.action_search);
-        mSearchView = (SearchView) searchMenuItem.getActionView();
+        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        SearchView mSearchView = (SearchView) searchMenuItem.getActionView();
         mSearchView.setOnQueryTextListener(listener);
         return true;
     }
 
-    public void switchToLibraryFragment(){
+    public void switchToLibraryFragment() {
         replaceFragment(mLibraryFragment, mLibraryFragment.getTag());
     }
 

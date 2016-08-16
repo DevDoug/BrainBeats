@@ -3,9 +3,6 @@ package fragments;
 
 import android.app.Dialog;
 import android.graphics.drawable.Drawable;
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioTrack;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,8 +31,8 @@ import java.util.List;
 
 import adapters.ImageAdapter;
 import adapters.MixItemAdapter;
-import data.MixContract;
-import data.MixDbHelper;
+import data.BrainBeatsContract;
+import data.BrainBeatsDbHelper;
 import model.Mix;
 import model.MixItem;
 import utils.Constants;
@@ -65,7 +62,9 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
         mMixTitle = (EditText) v.findViewById(R.id.track_title);
         mCoordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.main_content_coordinator_layout);
         mPlayMixButton = (ImageView) v.findViewById(R.id.play_song_button);
-        ((TextView)v.findViewById(R.id.separator_title)).setText(R.string.beat_levels);
+        ((TextView) v.findViewById(R.id.separator_title)).setText(R.string.beat_levels);
+
+
         return v;
     }
 
@@ -82,27 +81,29 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
             @Override
             public void onClick(View view) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
+
                 mSelectedMix.setMixTitle(mMixTitle.getText().toString());
+
                 int returnId = getActivity().getContentResolver().update(
-                        MixContract.MixEntry.CONTENT_URI,
+                        BrainBeatsContract.MixEntry.CONTENT_URI,
                         Constants.buildMixRecord(mSelectedMix),
-                        MixContract.MixEntry._ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                        BrainBeatsContract.MixEntry._ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                         new String[]{String.valueOf(mSelectedMix.getMixId())});
 
-                if(returnId != -1){
+                if (returnId != -1) {
                     for (int i = 0; i < mSelectedMix.getMixItems().size(); i++) {
                         MixItem item = mSelectedMix.getMixItems().get(i);
                         int returnIdMixItem = getActivity().getContentResolver().update(
-                                MixContract.MixItemsEntry.CONTENT_URI,
-                                Constants.buildMixItemsRecord(mSelectedMix.getMixId(),item),
-                                MixContract.MixEntry._ID + MixDbHelper.WHERE_CLAUSE_EQUAL,
+                                BrainBeatsContract.MixItemsEntry.CONTENT_URI,
+                                Constants.buildMixItemsRecord(mSelectedMix.getMixId(), item),
+                                BrainBeatsContract.MixEntry._ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                                 new String[]{String.valueOf(item.getMixItemId())});
                     }
                 }
                 InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
-                if(getActivity().getCurrentFocus() != null) //
+                if (getActivity().getCurrentFocus() != null) //
                     inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
-                    ((MixerActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
+                ((MixerActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
             }
         });
     }
@@ -110,17 +111,6 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mUserSelections = getArguments();
-        if (mUserSelections != null) {
-            mSelectedMix = (Mix) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_MIX);
-            mMixTitle.setText(mSelectedMix.getBeatTitle());
-            mixItemList = mSelectedMix.getMixItems();
-
-            MixItem addNewMix = new MixItem();
-            addNewMix.setMixItemTitle("Add New");
-            mixItemList.add(addNewMix);
-        }
-
         mMixerItemAdapter = new MixItemAdapter(getContext(), mixItemList, this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mMixerItemList.setLayoutManager(mLayoutManager);
@@ -135,7 +125,28 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
         });
     }
 
-    public void showAddBeatItemDialog(){
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        mUserSelections = getArguments();
+        if (mUserSelections != null) {
+
+            mSelectedMix = (Mix) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_MIX);
+            mMixTitle.setText(mSelectedMix.getBeatTitle());
+
+            if (mSelectedMix.getMixItems() != null){
+                mixItemList = new ArrayList<>();
+                mixItemList.addAll(mSelectedMix.getMixItems());
+            }
+
+            MixItem addNewMix = new MixItem();
+            addNewMix.setMixItemTitle("Add New");
+            mixItemList.add(addNewMix);
+        }
+    }
+
+    public void showAddBeatItemDialog() {
         mDialog = Constants.buildImageListDialogue(getContext(), getContext().getResources().getString(R.string.add_sound_item_to_current_beat), this);
     }
 
@@ -162,14 +173,14 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
         }
         item.setMixItemLevel(Constants.MIX_ITEM_DEFAULT_LEVEL);
         boolean mixItemExists = false;
-        for(MixItem mix : mixItemList) {
-            if(mix.getMixItemTitle().equalsIgnoreCase(item.getMixItemTitle())) {
+        for (MixItem mix : mixItemList) {
+            if (mix.getMixItemTitle().equalsIgnoreCase(item.getMixItemTitle())) {
                 mixItemExists = true;
             }
         }
 
         if (!mixItemExists) {
-            Uri returnRow = getContext().getContentResolver().insert(MixContract.MixItemsEntry.CONTENT_URI, Constants.buildMixItemsRecord(mSelectedMix.getMixId(), item));
+            Uri returnRow = getContext().getContentResolver().insert(BrainBeatsContract.MixItemsEntry.CONTENT_URI, Constants.buildMixItemsRecord(mSelectedMix.getMixId(), item));
             mixItemList.add(0, item);
             mMixerItemList.setAdapter(mMixerItemAdapter);
             mMixerItemAdapter.notifyDataSetChanged();
@@ -179,7 +190,7 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
         }
     }
 
-    public void playMix(){
+    public void playMix() {
         final Thread thread = new Thread(new Runnable() {
             public void run() {
                 handler.post(new Runnable() {

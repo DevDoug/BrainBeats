@@ -10,12 +10,13 @@ import android.net.Uri;
 
 /**
  * Created by douglas on 5/25/2016.
+ * Content provider for brain beats
  */
-public class MixDBContentProvider extends ContentProvider {
+public class BrainBeatsContentProvider extends ContentProvider {
 
     // The URI Matcher used by this content provider.
     private static final UriMatcher sUriMatcher = buildUriMatcher();
-    private MixDbHelper mOpenHelper;
+    private BrainBeatsDbHelper mOpenHelper;
     private static final SQLiteQueryBuilder sMixByIDQueryBuilder;
 
     static final int MIX                = 100;
@@ -32,22 +33,22 @@ public class MixDBContentProvider extends ContentProvider {
 
     static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        final String authority = MixContract.CONTENT_AUTHORITY;
+        final String authority = BrainBeatsContract.CONTENT_AUTHORITY;
 
         // For each type of URI you want to add, create a corresponding code.
-        matcher.addURI(authority, MixContract.PATH_MIX, MIX);
-        matcher.addURI(authority, MixContract.PATH_MIX_ITEM, MIXITEM);
-        matcher.addURI(authority, MixContract.PATH_MIX_RELATED, MIX_RELATED);
-        matcher.addURI(authority, MixContract.PATH_MIX_PLAYLIST, MIX_PLAYLIST);
-        matcher.addURI(authority, MixContract.PATH_USER, USER);
-        matcher.addURI(authority, MixContract.PATH_USER_FOLLOWERS, USER_FOLLOWERS);
-        matcher.addURI(authority, MixContract.PATH_RAW_QUERY, RAW_QUERY);
+        matcher.addURI(authority, BrainBeatsContract.PATH_MIX, MIX);
+        matcher.addURI(authority, BrainBeatsContract.PATH_MIX_ITEM, MIXITEM);
+        matcher.addURI(authority, BrainBeatsContract.PATH_MIX_RELATED, MIX_RELATED);
+        matcher.addURI(authority, BrainBeatsContract.PATH_MIX_PLAYLIST, MIX_PLAYLIST);
+        matcher.addURI(authority, BrainBeatsContract.PATH_USER, USER);
+        matcher.addURI(authority, BrainBeatsContract.PATH_USER_FOLLOWERS, USER_FOLLOWERS);
+        matcher.addURI(authority, BrainBeatsContract.PATH_RAW_QUERY, RAW_QUERY);
         return matcher;
     }
 
     @Override
     public boolean onCreate() {
-        mOpenHelper = new MixDbHelper(getContext());
+        mOpenHelper = new BrainBeatsDbHelper(getContext());
         return true;
     }
 
@@ -57,7 +58,7 @@ public class MixDBContentProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
             case MIX:
                 retCursor = mOpenHelper.getReadableDatabase().query(
-                        MixContract.MixEntry.TABLE_NAME,
+                        BrainBeatsContract.MixEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -68,7 +69,7 @@ public class MixDBContentProvider extends ContentProvider {
                 break;
             case MIXITEM:
                 retCursor = mOpenHelper.getReadableDatabase().query(
-                        MixContract.MixItemsEntry.TABLE_NAME,
+                        BrainBeatsContract.MixItemsEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -79,7 +80,7 @@ public class MixDBContentProvider extends ContentProvider {
                 break;
             case MIX_RELATED:
                 retCursor = mOpenHelper.getReadableDatabase().query(
-                        MixContract.MixRelatedEntry.TABLE_NAME,
+                        BrainBeatsContract.MixRelatedEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -90,7 +91,7 @@ public class MixDBContentProvider extends ContentProvider {
                 break;
             case MIX_PLAYLIST:
                 retCursor = mOpenHelper.getReadableDatabase().query(
-                        MixContract.MixPlaylistEntry.TABLE_NAME,
+                        BrainBeatsContract.MixPlaylistEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -101,7 +102,7 @@ public class MixDBContentProvider extends ContentProvider {
                 break;
             case USER:
                 retCursor = mOpenHelper.getReadableDatabase().query(
-                        MixContract.UserEntry.TABLE_NAME,
+                        BrainBeatsContract.UserEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -112,7 +113,7 @@ public class MixDBContentProvider extends ContentProvider {
                 break;
             case USER_FOLLOWERS:
                 retCursor = mOpenHelper.getReadableDatabase().query(
-                        MixContract.UserFollowersEntry.TABLE_NAME,
+                        BrainBeatsContract.UserFollowersEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -138,17 +139,17 @@ public class MixDBContentProvider extends ContentProvider {
 
         switch (match) {
             case MIX:
-                return MixContract.MixEntry.CONTENT_TYPE;
+                return BrainBeatsContract.MixEntry.CONTENT_TYPE;
             case MIXITEM:
-                return MixContract.MixItemsEntry.CONTENT_TYPE;
+                return BrainBeatsContract.MixItemsEntry.CONTENT_TYPE;
             case MIX_RELATED:
-                return MixContract.MixRelatedEntry.CONTENT_TYPE;
+                return BrainBeatsContract.MixRelatedEntry.CONTENT_TYPE;
             case MIX_PLAYLIST:
-                return MixContract.MixPlaylistEntry.CONTENT_TYPE;
+                return BrainBeatsContract.MixPlaylistEntry.CONTENT_TYPE;
             case USER:
-                return MixContract.UserEntry.CONTENT_TYPE;
+                return BrainBeatsContract.UserEntry.CONTENT_TYPE;
             case USER_FOLLOWERS:
-                return MixContract.UserFollowersEntry.CONTENT_TYPE;
+                return BrainBeatsContract.UserFollowersEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -161,44 +162,44 @@ public class MixDBContentProvider extends ContentProvider {
         Uri returnUri;
         switch (match) {
             case MIX:
-                long _id = db.insert(MixContract.MixEntry.TABLE_NAME, null, values);
+                long _id = db.insert(BrainBeatsContract.MixEntry.TABLE_NAME, null, values);
                 if (_id > 0)
-                    returnUri = MixContract.MixEntry.buildMixUriWithId(_id);
+                    returnUri = BrainBeatsContract.MixEntry.buildMixUriWithId(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case MIXITEM:
-                long _idMixItem = db.insert(MixContract.MixItemsEntry.TABLE_NAME, null, values);
+                long _idMixItem = db.insert(BrainBeatsContract.MixItemsEntry.TABLE_NAME, null, values);
                 if (_idMixItem > 0)
-                    returnUri = MixContract.MixItemsEntry.buildMixItemUriWithId(_idMixItem);
+                    returnUri = BrainBeatsContract.MixItemsEntry.buildMixItemUriWithId(_idMixItem);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case MIX_RELATED:
-                long _idMixRelated = db.insert(MixContract.MixRelatedEntry.TABLE_NAME, null, values);
+                long _idMixRelated = db.insert(BrainBeatsContract.MixRelatedEntry.TABLE_NAME, null, values);
                 if (_idMixRelated > 0)
-                    returnUri = MixContract.MixRelatedEntry.buildRelatedMixesUriWithId(_idMixRelated);
+                    returnUri = BrainBeatsContract.MixRelatedEntry.buildRelatedMixesUriWithId(_idMixRelated);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case MIX_PLAYLIST:
-                long _idMixPlaylist = db.insert(MixContract.MixPlaylistEntry.TABLE_NAME, null, values);
+                long _idMixPlaylist = db.insert(BrainBeatsContract.MixPlaylistEntry.TABLE_NAME, null, values);
                 if (_idMixPlaylist > 0)
-                    returnUri = MixContract.MixRelatedEntry.buildRelatedMixesUriWithId(_idMixPlaylist);
+                    returnUri = BrainBeatsContract.MixRelatedEntry.buildRelatedMixesUriWithId(_idMixPlaylist);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case USER:
-                long _idUser = db.insert(MixContract.UserEntry.TABLE_NAME, null, values);
+                long _idUser = db.insert(BrainBeatsContract.UserEntry.TABLE_NAME, null, values);
                 if (_idUser > 0)
-                    returnUri = MixContract.UserEntry.buildUserUriWithId(_idUser);
+                    returnUri = BrainBeatsContract.UserEntry.buildUserUriWithId(_idUser);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case USER_FOLLOWERS:
-                long _idUserFollow = db.insert(MixContract.UserFollowersEntry.TABLE_NAME, null, values);
+                long _idUserFollow = db.insert(BrainBeatsContract.UserFollowersEntry.TABLE_NAME, null, values);
                 if (_idUserFollow > 0)
-                    returnUri = MixContract.UserFollowersEntry.buildUserFollowerUriWithId(_idUserFollow);
+                    returnUri = BrainBeatsContract.UserFollowersEntry.buildUserFollowerUriWithId(_idUserFollow);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
@@ -219,19 +220,19 @@ public class MixDBContentProvider extends ContentProvider {
         switch (match) {
             case MIX:
                 rowsDeleted = db.delete(
-                        MixContract.MixEntry.TABLE_NAME, selection, selectionArgs);
+                        BrainBeatsContract.MixEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             case MIXITEM:
                 rowsDeleted = db.delete(
-                        MixContract.MixItemsEntry.TABLE_NAME, selection, selectionArgs);
+                        BrainBeatsContract.MixItemsEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             case USER:
                 rowsDeleted = db.delete(
-                        MixContract.UserEntry.TABLE_NAME, selection, selectionArgs);
+                        BrainBeatsContract.UserEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             case USER_FOLLOWERS:
                 rowsDeleted = db.delete(
-                        MixContract.UserFollowersEntry.TABLE_NAME, selection, selectionArgs);
+                        BrainBeatsContract.UserFollowersEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -251,13 +252,13 @@ public class MixDBContentProvider extends ContentProvider {
 
         switch (match) {
             case MIX:
-                rowsUpdated = db.update(MixContract.MixEntry.TABLE_NAME, values, selection, selectionArgs);
+                rowsUpdated = db.update(BrainBeatsContract.MixEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
             case MIXITEM:
-                rowsUpdated = db.update(MixContract.MixItemsEntry.TABLE_NAME, values, selection, selectionArgs);
+                rowsUpdated = db.update(BrainBeatsContract.MixItemsEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
             case USER:
-                rowsUpdated = db.update(MixContract.UserEntry.TABLE_NAME, values, selection, selectionArgs);
+                rowsUpdated = db.update(BrainBeatsContract.UserEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -277,7 +278,7 @@ public class MixDBContentProvider extends ContentProvider {
                 int returnCount = 0;
                 try {
                     for (ContentValues value : values) {
-                        long _id = db.insert(MixContract.MixEntry.TABLE_NAME, null, value);
+                        long _id = db.insert(BrainBeatsContract.MixEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             returnCount++;
                         }
@@ -293,7 +294,7 @@ public class MixDBContentProvider extends ContentProvider {
                 int returnCountMixItem = 0;
                 try {
                     for (ContentValues value : values) {
-                        long _id = db.insert(MixContract.MixItemsEntry.TABLE_NAME, null, value);
+                        long _id = db.insert(BrainBeatsContract.MixItemsEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             returnCountMixItem++;
                         }

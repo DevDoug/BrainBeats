@@ -1,10 +1,6 @@
 package fragments;
 
-import android.accounts.Account;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -16,7 +12,6 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
@@ -24,9 +19,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -36,43 +28,26 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.VolleyError;
 import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-
-import adapters.MixerAdapter;
-import adapters.RelatedTracksAdapter;
 import architecture.AccountManager;
-import data.MixContract;
-import data.MixDbHelper;
-import entity.Collection;
-import entity.RelatedTracksResponse;
+import data.BrainBeatsContract;
 import entity.Track;
 import service.AudioService;
 import utils.BeatLearner;
 import utils.Constants;
-import web.OfflineSyncManager;
-import web.WebApiManager;
+import sync.OfflineSyncManager;
 
-public class DashboardDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
+public class DashboardDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener, BeatLearner.RecommendationCompleteListener {
 
     public static final String TAG = "DashboardDetailFragment";
 
@@ -85,21 +60,24 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     private TextView mArtistName;
     private ShareActionProvider mShareActionProvider;
     private CoordinatorLayout mCoordinatorLayout;
-    private LinearLayout mFollowButton;
+    public Thread mUpdateSeekBar;
+    int mProgressStatus = 0;
 
-    public  Bundle mUserSelections;
+    public Bundle mUserSelections;
     public AudioService mAudioService;
     boolean mBound = false;
 
     public Track mSelectedTrack;
-    public  List<Collection> mCollections = new ArrayList<>();
-    private ListView mAlbumTrackList;
-    public RelatedTracksAdapter mRelatedTracksAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-
     private SeekBar mPlayTrackSeekBar;
     private OnFragmentInteractionListener mListener;
     public FloatingActionButton mFob;
+
+    FloatingActionButton mTrackOptionsFab;
+    FloatingActionButton mAddToLibraryFab;
+    FloatingActionButton mFavFab;
+    FloatingActionButton mFollowArtistFab;
+    private Animation fab_open, fab_close, rotate_forward, rotate_backward;
+    private boolean mIsFabOpen = false;
 
     public DashboardDetailFragment() {
         // Required empty public constructor
@@ -122,7 +100,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 ((MainActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
             }
         });
-
     }
 
     @Override
@@ -144,6 +121,15 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if (mUpdateSeekBar != null)
+            mUpdateSeekBar.interrupt(); // stop updating a the progress bar if out of view
+
+        mPlayTrackSeekBar.setProgress(0);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dashboard_detail, container, false);
         //mAlbumTrackList = (ListView) v.findViewById(R.id.album_title_list);
@@ -155,9 +141,25 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         mLoopSongButton = (ImageView) v.findViewById(R.id.repeat_button);
         mPlayTrackSeekBar = (SeekBar) v.findViewById(R.id.play_song_seek_bar);
         mArtistName = (TextView) v.findViewById(R.id.user_name);
-        mFollowButton = (LinearLayout) v.findViewById(R.id.follow_button);
+
         //((TextView) v.findViewById(R.id.separator_title)).setText(R.string.suggested_tracks);
         //mCoordinatorLayout = (CoordinatorLayout) v.findViewById(R.id.main_content_coordinator_layout);
+
+        mTrackOptionsFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_track_options);
+        mAddToLibraryFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_add_to_library);
+        mFavFab = (FloatingActionButton) v.findViewById(R.id.floating_action_favorite);
+        mFollowArtistFab = (FloatingActionButton) v.findViewById(R.id.floating_follow_artist);
+
+
+        fab_open = AnimationUtils.loadAnimation(getContext(), R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(getContext(), R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_backward);
+
+        mTrackOptionsFab.setOnClickListener(this);
+        mAddToLibraryFab.setOnClickListener(this);
+        mFavFab.setOnClickListener(this);
+        mFollowArtistFab.setOnClickListener(this);
 
         mPlaySongButton.setOnClickListener(this);
         mSkipBackwardButton.setOnClickListener(this);
@@ -171,7 +173,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean("LayoutShiftDetail", true);
-        outState.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK,mSelectedTrack);
+        outState.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
     }
 
     @Override
@@ -184,7 +186,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             if (mSelectedTrack != null) {
                 mTrackTitle.setText(mSelectedTrack.getTitle());
 
-                if(mSelectedTrack.getArtworkURL() == null)
+                if (mSelectedTrack.getArtworkURL() == null)
                     mAlbumCoverArt.setImageResource(R.drawable.placeholder);
                 else
                     Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
@@ -193,17 +195,12 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             }
         }
 
-        mFollowButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle settingsBundle = new Bundle();
-                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Users.getCode());
-                settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
-                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity)getActivity()).mCoordinatorLayout, settingsBundle,getActivity().getContentResolver());
-            }
-        });
+        getLoaderManager().initLoader(Constants.RELATED_TRACKS_LOADER, null, this);
+    }
 
-        getLoaderManager().initLoader(Constants.RELATED_TRACKS_LOADER,null,this);
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -223,8 +220,9 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Bundle settingsBundle = new Bundle();
-        settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE,Constants.SyncDataType.Mixes.getCode());
+        settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Mixes.getCode());
         settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
+
 
         //TODO move local db code out of sync adaper so that sync adapter only has api call's or network interaction.
         //TODO add sync to sound cloud for determing weather to update sc as well.
@@ -233,15 +231,15 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             case android.R.id.home:
                 getActivity().onBackPressed();
                 break;
-            case R.id.action_add_to_library:
-                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION,Constants.SyncDataAction.UpdateMix.getCode());
-                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity)getActivity()).mCoordinatorLayout, settingsBundle,getActivity().getContentResolver());
+/*            case R.id.action_add_to_library:
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateMix.getCode());
+                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
                 break;
             case R.id.action_favorite:
-                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION,Constants.SyncDataAction.UpdateFavorite.getCode());
-                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity)getActivity()).mCoordinatorLayout, settingsBundle,getActivity().getContentResolver());
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateFavorite.getCode());
+                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
                 break;
-/*            case R.id.action_rate:
+*//*            case R.id.action_rate:
                 break;*/
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
@@ -277,28 +275,33 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
 
     @Override
     public void onClick(View v) {
+        Bundle settingsBundle = new Bundle();
+        settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Mixes.getCode());
+        settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
+
         switch (v.getId()) {
             case R.id.play_song_button:
                 if (mBound) {
-                    if (mAudioService.mPlayer.isPlaying()) {
+                    if (mAudioService.getIsPlaying()) {
                         mAudioService.pauseSong();
                         mPlaySongButton.setImageResource(R.drawable.ic_play_circle);
                     } else {
                         mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
-                        mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
-                        mAudioService.setProgressIndicator(mPlaySongButton,mPlayTrackSeekBar, mSelectedTrack.getDuration());
+                        if(mSelectedTrack.getStreamURL() != null)
+                            mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
+                        startProgressBarThread();
                     }
                 }
                 break;
             case R.id.skip_backward_button:
-                BeatLearner.getInstance().loadLastBeat();
+                BeatLearner.getInstance(getContext()).loadLastBeat();
                 break;
             case R.id.skip_forward_button:
-                BeatLearner.getInstance().loadNextRecommendedBeat();
+                BeatLearner.getInstance(getContext()).loadNextRecommendedBeat(mSelectedTrack.getID(), this);
                 break;
             case R.id.repeat_button:
                 if (mBound) {
-                    if (!mAudioService.mPlayer.isLooping()) {
+                    if (!mAudioService.getIsLooping()) {
                         mAudioService.setSongLooping(true);
                         mLoopSongButton.setImageResource(R.drawable.ic_repeat);
                     } else {
@@ -309,9 +312,61 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 break;
             case R.id.shuffle__button:
                 break;
+            case R.id.floating_action_button_track_options:
+                animateFAB();
+                break;
+            case R.id.floating_action_button_add_to_library:
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateMix.getCode());
+                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
+                break;
+            case R.id.floating_action_favorite:
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateFavorite.getCode());
+                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
+                break;
+            case R.id.floating_follow_artist:
+                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Users.getCode());
+                settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
+                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
+                break;
             default:
                 break;
         }
+    }
+
+    public void startProgressBarThread() {
+        int trackDuration = mSelectedTrack.getDuration();
+        mPlayTrackSeekBar.setMax(trackDuration);
+        mPlayTrackSeekBar.setIndeterminate(false);
+        mUpdateSeekBar = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (mProgressStatus < trackDuration) {
+                    try {
+                        Thread.sleep(1000); //Update once per second
+                        mProgressStatus = mAudioService.mPlayer.getCurrentPosition();
+                        mPlayTrackSeekBar.setProgress(mProgressStatus);
+                        mPlayTrackSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                            @Override
+                            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                                if (fromUser) {
+                                    mAudioService.mPlayer.seekTo(progress);
+                                }
+                            }
+
+                            @Override
+                            public void onStartTrackingTouch(SeekBar seekBar) {}
+                            @Override
+                            public void onStopTrackingTouch(SeekBar seekBar) {}
+                        });
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        Log.i("Progress bar thread", "Exception occured" + e.toString());
+                    }
+                }
+            }
+        });
+        mUpdateSeekBar.start();
     }
 
     @Override
@@ -321,7 +376,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 // Returns a new CursorLoader
                 return new CursorLoader(
                         getActivity(),         // Parent activity context
-                        MixContract.MixEntry.CONTENT_URI,  // Table to query
+                        BrainBeatsContract.MixEntry.CONTENT_URI,  // Table to query
                         null,                          // Projection to return
                         null,                  // No selection clause
                         null,                  // No selection arguments
@@ -344,6 +399,25 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
 
     }
 
+    @Override
+    public Track recommendationComplete(Track track) {
+        mSelectedTrack = track;
+        mTrackTitle.setText(track.getTitle());
+        if (track.getArtworkURL() == null)
+            mAlbumCoverArt.setImageResource(R.drawable.placeholder);
+        else
+            Picasso.with(getContext()).load(track.getArtworkURL()).into(mAlbumCoverArt);
+        if (mBound) {
+            if (track.getStreamURL() != null) {
+                mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
+                mAudioService.playSong(Uri.parse(track.getStreamURL()));
+                startProgressBarThread();
+            }
+        }
+        mArtistName.setText(track.getUser().getUsername());
+        return null;
+    }
+
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
@@ -355,6 +429,11 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             AudioService.AudioBinder binder = (AudioService.AudioBinder) service;
             mAudioService = binder.getService();
             mBound = true;
+
+            if(mAudioService.getIsPlaying()){
+                mAudioService.stopSong();
+                mPlayTrackSeekBar.setProgress(0);
+            }
         }
 
         @Override
@@ -362,4 +441,26 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             mBound = false;
         }
     };
+
+    public void animateFAB() {
+        if (mIsFabOpen) {
+            mTrackOptionsFab.startAnimation(rotate_backward);
+            mAddToLibraryFab.startAnimation(fab_close);
+            mFavFab.startAnimation(fab_close);
+            mFollowArtistFab.startAnimation(fab_close);
+            mAddToLibraryFab.setClickable(false);
+            mFavFab.setClickable(false);
+            mFollowArtistFab.setClickable(false);
+            mIsFabOpen = false;
+        } else {
+            mTrackOptionsFab.startAnimation(rotate_forward);
+            mAddToLibraryFab.startAnimation(fab_open);
+            mFavFab.startAnimation(fab_open);
+            mFollowArtistFab.startAnimation(fab_open);
+            mAddToLibraryFab.setClickable(true);
+            mFavFab.setClickable(true);
+            mFollowArtistFab.setClickable(true);
+            mIsFabOpen = true;
+        }
+    }
 }

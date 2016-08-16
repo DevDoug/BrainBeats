@@ -1,5 +1,6 @@
 package service;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -23,29 +24,24 @@ import web.WebApiManager;
 
 public class AudioService extends Service implements MediaPlayer.OnPreparedListener,  MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
-    public MediaPlayer mPlayer;
+    public static MediaPlayer mPlayer;
     private IBinder mBinder = new AudioBinder();
     public boolean mIsPaused = false;
-    private Handler mHandler = new Handler();
     int mProgressStatus = 0;
     int mSongDuration = 0;
-    private SeekBar mSeekbar;
-    private ImageView mPlayButton;
-    public Thread mUpdateSeekBar;
 
     public AudioService() {
     }
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
-        mPlayer = new MediaPlayer();
-        mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
-        mPlayer.setOnPreparedListener(this);
-        mPlayer.setOnCompletionListener(this);
-        mPlayer.setOnErrorListener(this);
+        initMediaPlayer();
     }
 
     @Override
@@ -61,15 +57,26 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        if(mp.isLooping()) {
+        if (mp.isLooping()) {
             mp.seekTo(0);
-            mSeekbar.setProgress(0);
         }
     }
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         return false;
+    }
+
+    public void initMediaPlayer(){
+        if(mPlayer == null) {
+            mPlayer = new MediaPlayer();
+        }
+        mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+        mPlayer.setOnPreparedListener(this);
+        mPlayer.setOnCompletionListener(this);
+        mPlayer.setOnErrorListener(this);
     }
 
     public void playSong(Uri songPath) {
@@ -86,58 +93,30 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         }
     }
 
-    public void pauseSong(){
+    public void pauseSong() {
         mPlayer.pause();
         mIsPaused = true;
     }
 
-    public void setSongLooping(boolean isLooping){
+    public void setSongLooping(boolean isLooping) {
         mPlayer.setLooping(isLooping);
     }
 
-    public void stopSong(){
+    public void stopSong() {
         mPlayer.stop();
     }
 
-    public void setProgressIndicator(ImageView playPauseStop, final SeekBar bar, final int duration) {
-        mSeekbar = bar;
-        mPlayButton = playPauseStop;
-        bar.setMax(duration);
-        bar.setIndeterminate(false);
-        mUpdateSeekBar = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (mProgressStatus < duration) {
-                    try {
-                        Thread.sleep(1000); //Update once per second
-                        mProgressStatus = mPlayer.getCurrentPosition();
-                        bar.setProgress(mProgressStatus);
-                        bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                            @Override
-                            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                                if (fromUser) {
-                                    mPlayer.seekTo(progress);
-                                }
-                            }
-                            @Override
-                            public void onStartTrackingTouch(SeekBar seekBar) {
-                            }
-                            @Override
-                            public void onStopTrackingTouch(SeekBar seekBar) {
-                            }
-                        });
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-        });
-
-        mUpdateSeekBar.start();
+    public boolean getIsPlaying(){
+        return mPlayer.isPlaying();
     }
 
-    public class AudioBinder extends Binder{
-        public AudioService getService() {return AudioService.this;}
+    public boolean getIsLooping(){
+        return mPlayer.isLooping();
+    }
+
+    public class AudioBinder extends Binder {
+        public AudioService getService() {
+            return AudioService.this;
+        }
     }
 }

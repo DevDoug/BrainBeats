@@ -34,10 +34,10 @@ public class MixManager {
         return mInstance;
     }
 
-    public void createMixFromExistingTrack(Track track){
-        if(track.getDownloadable())
-            Log.i("downlaoadable","true");
-            //file = downloadSoundCloudAssetSourceFile(track.getDownloadUrl());
+    public void createMixFromExistingTrack(Track track) {
+        if (track.getDownloadable())
+            Log.i("downlaoadable", "true");
+        //file = downloadSoundCloudAssetSourceFile(track.getDownloadUrl());
 
     }
 
@@ -92,7 +92,7 @@ public class MixManager {
         //isPlaying = true;
     }
 
-    public double[][] buildSoundData(ArrayList<MixItem> mixItems){
+    public double[][] buildSoundData(ArrayList<MixItem> mixItems) {
         double[][] soundData = new double[1][4];
         soundData[0][0] = mixItems.get(0).getMixItemLevel();
         soundData[0][1] = mixItems.get(1).getMixItemLevel();

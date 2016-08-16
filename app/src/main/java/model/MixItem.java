@@ -6,12 +6,10 @@ package model;
 public class MixItem {
 
     private long mMixItemId;
-
     private String mMixItemTitle;
-
     private int mMixItemLevel;
 
-    public MixItem(){
+    public MixItem() {
     }
 
     public long getMixItemId() {

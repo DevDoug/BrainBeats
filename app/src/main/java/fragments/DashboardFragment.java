@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +18,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -39,7 +42,7 @@ import entity.Track;
 import utils.Constants;
 import web.WebApiManager;
 
-public class DashboardFragment extends Fragment {
+public class DashboardFragment extends Fragment implements View.OnClickListener, Constants.ConfirmDialogActionListener {
 
     public static final String TAG = "DashboardFragment";
 
@@ -47,8 +50,16 @@ public class DashboardFragment extends Fragment {
     private SearchMusicAdapter mTrackAdapter;
     private GridLayoutManager mBeatGridLayoutManager;
     List<Track> trackList = new ArrayList<>();
-    FloatingActionButton mAddCategoryFab;
+    FloatingActionButton mQuickFilterFab;
+    FloatingActionButton mFilerByPopularFab;
+    FloatingActionButton mFilterByRecentFab;
+    private Animation fab_open, fab_close, rotate_forward, rotate_backward;
     private OnFragmentInteractionListener mListener;
+    private boolean mIsFabOpen = false;
+    private SearchView mSearchView;
+    private MenuItem searchMenuItem;
+    String mQueryText = "";
+    SearchView.OnQueryTextListener listener;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -65,21 +76,43 @@ public class DashboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dashboard, container, false);
         mTrackGrid = (RecyclerView) v.findViewById(R.id.category_grid);
+        mQuickFilterFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_quick_filter);
+        mFilerByPopularFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_filter_by_popular);
+        mFilterByRecentFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_filter_by_recent);
 
+        fab_open = AnimationUtils.loadAnimation(getContext(), R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(getContext(), R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_backward);
 
-/*        mAddCategoryFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_fab_with_listview);
-        mAddCategoryFab.setOnClickListener(new View.OnClickListener() {
+        mQuickFilterFab.setOnClickListener(this);
+        mFilerByPopularFab.setOnClickListener(this);
+        mFilterByRecentFab.setOnClickListener(this);
+
+        listener = new SearchView.OnQueryTextListener() {
             @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(), "Add Category !", Toast.LENGTH_SHORT).show();
+            public boolean onQueryTextSubmit(String query) {
+                mQueryText = query;
+                getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_INSTRUMENTAL);
+                return true;
             }
-        });*/
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // newText is text entered by user to SearchView
+                return false;
+            }
+        };
+
         return v;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_dashboard, menu);
+        searchMenuItem = menu.findItem(R.id.action_search);
+        mSearchView = (SearchView) searchMenuItem.getActionView();
+        mSearchView.setOnQueryTextListener(listener);
     }
 
     @Override
@@ -87,7 +120,7 @@ public class DashboardFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
-                Intent loginIntent = new Intent(getContext(),LoginActivity.class);
+                Intent loginIntent = new Intent(getContext(), LoginActivity.class);
                 startActivity(loginIntent);
                 break;
         }
@@ -97,32 +130,7 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        final ProgressDialog loadingMusicDialog = new ProgressDialog(getContext());
-        loadingMusicDialog.setCancelable(false);
-        loadingMusicDialog.setMessage(getString(R.string.loading_message));
-        loadingMusicDialog.show();
-
-        WebApiManager.getMostPopularTracks(getContext(), new WebApiManager.OnArrayResponseListener() {
-            @Override
-            public void onArrayResponse(JSONArray array) {
-                loadingMusicDialog.dismiss();
-                Gson gson = new Gson();
-                Type token = new TypeToken<List<Track>>() {}.getType();
-                List<Track> trackList = gson.fromJson(array.toString(), token);
-                if(trackList != null) {
-                    mTrackAdapter = new SearchMusicAdapter(getContext(), trackList);
-                    mBeatGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
-                    mTrackGrid.setLayoutManager(mBeatGridLayoutManager);
-                    mTrackGrid.setAdapter(mTrackAdapter);
-                    mTrackAdapter.notifyDataSetChanged();
-                }
-            }
-        }, new WebApiManager.OnErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(getClass().getSimpleName(), "Response = " + error.toString());
-            }
-        });
+       getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_INSTRUMENTAL);
     }
 
     @Override
@@ -154,8 +162,87 @@ public class DashboardFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.floating_action_button_quick_filter:
+                animateFAB();
+                break;
+            case R.id.floating_action_button_filter_by_popular:
+                //sort by popular
+                //TODO hookup to local sync and remove api call
+                animateFAB();
+                getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR);
+                break;
+            case R.id.floating_action_button_filter_by_recent:
+                //sort by recet
+                animateFAB();
+                getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT);
+                break;
+        }
+    }
+
+    @Override
+    public void PerformDialogAction() {
+        startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+    }
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void animateFAB() {
+        if (mIsFabOpen) {
+            mQuickFilterFab.startAnimation(rotate_backward);
+            mFilerByPopularFab.startAnimation(fab_close);
+            mFilterByRecentFab.startAnimation(fab_close);
+            mFilerByPopularFab.setClickable(false);
+            mFilterByRecentFab.setClickable(false);
+            mIsFabOpen = false;
+        } else {
+            mQuickFilterFab.startAnimation(rotate_forward);
+            mFilerByPopularFab.startAnimation(fab_open);
+            mFilterByRecentFab.startAnimation(fab_open);
+            mFilerByPopularFab.setClickable(true);
+            mFilterByRecentFab.setClickable(true);
+            mIsFabOpen = true;
+        }
+    }
+
+    public void getTracks(String filterTag) {
+        if (Constants.isNetworkAvailable(getContext())){
+            final ProgressDialog loadingMusicDialog = new ProgressDialog(getContext());
+            loadingMusicDialog.setCancelable(false);
+            loadingMusicDialog.setMessage(getString(R.string.loading_message));
+            loadingMusicDialog.show();
+
+            WebApiManager.getTracks(getContext(), mQueryText, filterTag, new WebApiManager.OnArrayResponseListener() {
+                @Override
+                public void onArrayResponse(JSONArray array) {
+                    loadingMusicDialog.dismiss();
+                    Gson gson = new Gson();
+                    Type token = new TypeToken<List<Track>>() {
+                    }.getType();
+                    ArrayList<Track> trackList = gson.fromJson(array.toString(), token);
+                    if (trackList != null) {
+                        mTrackAdapter = new SearchMusicAdapter(getContext(), trackList);
+                        mBeatGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
+                        mTrackGrid.setLayoutManager(mBeatGridLayoutManager);
+                        mTrackGrid.setAdapter(mTrackAdapter);
+                        mTrackAdapter.notifyDataSetChanged();
+                    }
+                }
+            }, new WebApiManager.OnErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.i(getClass().getSimpleName(), "Response = " + error.toString());
+                }
+            });
+
+        } else {
+            Constants.buildConfirmDialog(getContext(),getString(R.string.connect_to_network_message),getString(R.string.enable_wifi_in_settings_message),getString(R.string.go_to_settings_message),this);
+        }
     }
 }

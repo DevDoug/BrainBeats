@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp">
-    <ImageView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/dialog_image_list_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
+        android:contentDescription="@string/navview_header_default_image_content_description"
         android:padding="@dimen/add_beat_item_icon_padding"
-        android:src="@drawable/ic_music_note_black"
-        android:id="@+id/dialog_image_list_item"
-        android:contentDescription="@string/navview_header_default_image_content_description" />
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_music_note_black" />
+
 </FrameLayout>

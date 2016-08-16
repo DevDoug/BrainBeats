@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<sync-adapter
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:contentAuthority="com.brainbeats"
+<sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
     android:accountType="com.example.android.datasync"
-    android:userVisible="false"
-    android:supportsUploading="false"
     android:allowParallelSyncs="false"
-    android:isAlwaysSyncable="true"/>
+    android:contentAuthority="com.brainbeats"
+    android:isAlwaysSyncable="true"
+    android:supportsUploading="false"
+    android:userVisible="false" />

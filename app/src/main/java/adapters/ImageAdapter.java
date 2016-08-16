@@ -19,7 +19,7 @@ public class ImageAdapter extends BaseAdapter {
     Context mAdapterContext;
     DialogImageSelectedListener mListener;
 
-    public interface DialogImageSelectedListener{
+    public interface DialogImageSelectedListener {
         void dialogImageSelected(int position);
     }
 

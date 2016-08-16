@@ -20,7 +20,7 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
         switchToSocialFragment();
     }
 
-    public void switchToSocialFragment(){
+    public void switchToSocialFragment() {
         replaceFragment(mSocialFragment, mSocialFragment.getTag());
     }
 
@@ -31,7 +31,7 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_dashboard, menu);
+        getMenuInflater().inflate(R.menu.menu_global, menu);
         return true;
     }
 }

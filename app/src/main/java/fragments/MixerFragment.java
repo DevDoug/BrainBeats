@@ -13,6 +13,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +27,8 @@ import com.brainbeats.LibraryActivity;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import adapters.MixerAdapter;
-import data.MixContract;
-import data.MixDbHelper;
+import data.BrainBeatsContract;
+import data.BrainBeatsDbHelper;
 import model.Mix;
 import utils.Constants;
 
@@ -35,7 +37,7 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private static final int URL_LOADER = 0;
 
-    private ListView mMixerItems;
+    private RecyclerView mMixerItems;
     private TextView mEmptyText;
     private MixerAdapter mMixerAdapter;
     private OnFragmentInteractionListener mListener;
@@ -54,9 +56,8 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mixer, container, false);
-        mMixerItems = (ListView) v.findViewById(R.id.mixer_list);
+        mMixerItems = (RecyclerView) v.findViewById(R.id.mixer_list);
         mEmptyText = (TextView) v.findViewById(R.id.empty_text);
-        ((TextView)v.findViewById(R.id.separator_title)).setText(R.string.mixes);
         mAddNewBeatButton = (FloatingActionButton) v.findViewById(R.id.mixer_fob);
         return v;
     }
@@ -65,17 +66,22 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getLoaderManager().initLoader(URL_LOADER, null, this);
-        mMixerItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mMixerItems.setLayoutManager(layoutManager);
+
+/*        mMixerItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Cursor c = mMixerAdapter.getCursor();
-                ((MixerActivity) getActivity()).loadMixerDetailFragment(Constants.buildMixFromCursor(getContext(),c,position));
+                ((MixerActivity) getActivity()).loadMixerDetailFragment(Constants.buildMixFromCursor(getContext(), c, position));
             }
-        });
+        });*/
         mAddNewBeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAddOptionsDialog = Constants.buildListDialogue(getContext(),getString(R.string.new_beat_title),R.array.new_beat_options,MixerFragment.this);
+                mAddOptionsDialog = Constants.buildListDialogue(getContext(), getString(R.string.new_beat_title), R.array.new_beat_options, MixerFragment.this);
             }
         });
     }
@@ -110,14 +116,14 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
                 Mix defaultMix = Constants.buildNewDefaultMixRecord(getContext());
                 defaultMix.setIsInMixer(1);
                 defaultMix.setIsInLibrary(1);
-                Uri returnRow = getActivity().getContentResolver().insert(MixContract.MixEntry.CONTENT_URI,Constants.buildMixRecord(defaultMix));
+                Uri returnRow = getActivity().getContentResolver().insert(BrainBeatsContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(defaultMix));
                 long returnRowId = ContentUris.parseId(returnRow);
-                getActivity().getContentResolver().bulkInsert(MixContract.MixItemsEntry.CONTENT_URI,Constants.buildMixItemsBulkRecord(returnRowId,defaultMix.getMixItems()));
+                getActivity().getContentResolver().bulkInsert(BrainBeatsContract.MixItemsEntry.CONTENT_URI, Constants.buildMixItemsBulkRecord(returnRowId, defaultMix.getMixItems()));
                 mAddOptionsDialog.dismiss();
                 break;
             case 1:
                 mAddOptionsDialog.dismiss();
-                mAddOptionsDialog = Constants.buildListDialogue(getContext(),getString(R.string.create_beat_from_title),R.array.new_from_existing_beat_options, new AdapterView.OnItemClickListener() {
+                mAddOptionsDialog = Constants.buildListDialogue(getContext(), getString(R.string.create_beat_from_title), R.array.new_from_existing_beat_options, new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         switch (position) {
@@ -145,10 +151,10 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
                 // Returns a new CursorLoader
                 return new CursorLoader(
                         getActivity(),         // Parent activity context
-                        MixContract.MixEntry.CONTENT_URI,  // Table to query
+                        BrainBeatsContract.MixEntry.CONTENT_URI,  // Table to query
                         null,                          // Projection to return
-                        MixContract.MixEntry.COLUMN_NAME_IS_IN_MIXER + MixDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
-                        new String[]{MixDbHelper.DB_TRUE_VALUE},                  // No selection arguments
+                        BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_MIXER + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
+                        new String[]{BrainBeatsDbHelper.DB_TRUE_VALUE},                  // No selection arguments
                         null                   // Default sort order
                 );
             default:
@@ -163,7 +169,7 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
             mMixerItems.setVisibility(View.GONE);
             mEmptyText.setVisibility(View.VISIBLE);
         } else {
-            mMixerAdapter = new MixerAdapter(getContext(), data,0);
+            mMixerAdapter = new MixerAdapter(getContext(), data);
             mMixerItems.setAdapter(mMixerAdapter);
         }
     }

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -44,6 +45,7 @@ public class LibraryFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     public LibraryFragment() {
+        // Required empty public constructor
     }
 
     @Override
@@ -101,8 +103,9 @@ public class LibraryFragment extends Fragment {
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
-    public void updateTabFilter(String query){
-        LibraryTabFragment frag = (LibraryTabFragment) ((ViewPagerAdapter)mViewPager.getAdapter()).getItem(mViewPager.getCurrentItem());
-        frag.updateFilterParams(query);
+    public void updateTabFilter(String query) {
+        LibraryTabFragment frag = (LibraryTabFragment) ((ViewPagerAdapter) mViewPager.getAdapter()).getItem(mViewPager.getCurrentItem());
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction().replace(mViewPager.getCurrentItem(),LibraryTabFragment.newInstance(Constants.LibraryDataType.Songs), getResources().getStringArray(R.array.library_tab_titles)[0]).commit();
     }
 }
