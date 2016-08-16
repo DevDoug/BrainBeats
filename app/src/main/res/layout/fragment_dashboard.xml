@@ -15,6 +15,7 @@
         android:layout_above="@+id/floating_action_button_filter_by_popular"
         android:layout_alignStart="@+id/floating_action_button_filter_by_popular"
         android:layout_marginBottom="15dp"
+        android:elevation="@dimen/fob_elevation"
         android:src="@drawable/ic_access_time_white"
         android:visibility="invisible" />
 
@@ -25,6 +26,7 @@
         android:layout_above="@+id/floating_action_button_quick_filter"
         android:layout_alignStart="@+id/floating_action_button_quick_filter"
         android:layout_marginBottom="15dp"
+        android:elevation="@dimen/fob_elevation"
         android:src="@drawable/ic_whatshot_white"
         android:visibility="invisible" />
 
