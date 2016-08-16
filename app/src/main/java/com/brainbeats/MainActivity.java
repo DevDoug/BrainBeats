@@ -16,7 +16,7 @@ import fragments.DashboardDetailFragment;
 import fragments.DashboardFragment;
 import model.Mix;
 import utils.Constants;
-import web.SyncManager;
+import sync.SyncManager;
 
 public class MainActivity extends BaseActivity implements DashboardFragment.OnFragmentInteractionListener, DashboardDetailFragment.OnFragmentInteractionListener {
 
@@ -24,7 +24,6 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     public Fragment mDashboardDetailFragment;
     public Bundle mUserSelections;
     public CoordinatorLayout mCoordinatorLayout;
-    public ContentObserver mDataObserver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

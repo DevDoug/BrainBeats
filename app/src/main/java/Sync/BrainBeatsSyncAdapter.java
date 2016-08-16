@@ -1,4 +1,4 @@
-package web;
+package sync;
 
 import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
@@ -33,6 +33,7 @@ import model.Mix;
 import model.Playlist;
 import model.User;
 import utils.Constants;
+import web.WebApiManager;
 
 /**
  * Created by douglas on 7/21/2016.

@@ -1,6 +1,5 @@
 package fragments;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,17 +9,11 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.brainbeats.LibraryActivity;
-import com.brainbeats.MainActivity;
-import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 
 import java.util.ArrayList;
@@ -30,9 +23,7 @@ import adapters.LibraryPlaylistAdapter;
 import data.BrainBeatsContract;
 import data.BrainBeatsDbHelper;
 import entity.Track;
-import model.Mix;
 import utils.Constants;
-import web.OfflineSyncManager;
 
 public class LibraryTabFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 

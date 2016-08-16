@@ -1,7 +1,5 @@
 package fragments;
 
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -33,7 +31,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -44,12 +41,11 @@ import com.squareup.picasso.Picasso;
 
 import architecture.AccountManager;
 import data.BrainBeatsContract;
-import entity.Collection;
 import entity.Track;
 import service.AudioService;
 import utils.BeatLearner;
 import utils.Constants;
-import web.OfflineSyncManager;
+import sync.OfflineSyncManager;
 
 public class DashboardDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener, BeatLearner.RecommendationCompleteListener {
 

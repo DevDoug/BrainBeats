@@ -1,4 +1,4 @@
-package web;
+package sync;
 
 import android.content.ContentResolver;
 import android.content.Context;

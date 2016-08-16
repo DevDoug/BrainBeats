@@ -1,4 +1,4 @@
-package web;
+package sync;
 
 import android.accounts.Account;
 import android.content.ContentResolver;

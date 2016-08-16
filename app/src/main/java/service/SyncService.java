@@ -8,7 +8,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-import web.BrainBeatsSyncAdapter;
+import sync.BrainBeatsSyncAdapter;
 
 /**
  * Define a Service that returns an IBinder for the
