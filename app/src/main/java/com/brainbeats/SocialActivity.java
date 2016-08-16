@@ -11,17 +11,23 @@ import fragments.SocialFragment;
 public class SocialActivity extends BaseActivity implements SocialFragment.OnFragmentInteractionListener {
 
     Fragment mSocialFragment;
+    Fragment mUserProfileFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
         mSocialFragment = new SocialFragment();
+        mUserProfileFragment = new SocialFragment();
         switchToSocialFragment();
     }
 
     public void switchToSocialFragment() {
         replaceFragment(mSocialFragment, mSocialFragment.getTag());
+    }
+
+    public void switchToUserProfileFragment() {
+        replaceFragment(mUserProfileFragment, mUserProfileFragment.getTag());
     }
 
     @Override

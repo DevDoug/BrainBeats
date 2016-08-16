@@ -1,6 +1,10 @@
 package com.brainbeats;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -24,6 +28,7 @@ public class LoginActivityTest {
 
     public LoginActivityTest() {
         MockitoAnnotations.initMocks(LoginActivityTest.class);
+
         try {
             testAttemptSoundCloudLogin();
         } catch (Exception e) {
@@ -41,9 +46,14 @@ public class LoginActivityTest {
 
     }
 
-    @org.junit.Test
+    @Test
     public void testAttemptSoundCloudLogin() throws Exception {
-        if(Constants.isNetworkAvailable(mMockContext)){
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) mMockContext. getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        boolean network =  (activeNetworkInfo != null && activeNetworkInfo.isConnected());
+
+        if(network){
 
         } else {
             onView(withText(mMockContext.getString(R.string.enable_wifi_in_settings_message))).check(matches(isDisplayed()));
