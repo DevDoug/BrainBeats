@@ -8,19 +8,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.brainbeats.LoginActivity">
 
-    <!-- Login progress -->
-    <ProgressBar
-        android:id="@+id/login_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
-
     <RelativeLayout
+        android:id="@+id/login_header_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/app_image"
@@ -32,10 +23,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:text="@string/app_title"
             android:textColor="@color/theme_secondary_text_color"
-            android:textSize="30sp" />
+            android:textSize="@dimen/title_text_size"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/app_image"
+            android:layout_marginStart="30dp"
+            android:layout_marginLeft="30dp" />
 
     </RelativeLayout>
 
@@ -43,11 +37,10 @@
         android:id="@+id/email_login_form"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="false"
-        android:layout_centerInParent="true"
         android:orientation="vertical"
         android:paddingBottom="10dp"
-        android:paddingTop="10dp">
+        android:paddingTop="10dp"
+        android:layout_centerVertical="true">
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -55,11 +48,12 @@
             android:layout_marginTop="60dp">
 
             <AutoCompleteTextView
-                android:id="@+id/email"
+                android:id="@+id/email_text_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_email"
                 android:inputType="textEmailAddress"
+                android:textSize="@dimen/login_text_size"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textColor="@color/theme_secondary_text_color" />
@@ -72,7 +66,7 @@
             android:layout_marginBottom="25dp">
 
             <EditText
-                android:id="@+id/password"
+                android:id="@+id/password_text_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_password"
@@ -80,6 +74,7 @@
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
+                android:textSize="@dimen/login_text_size"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textColor="@color/theme_secondary_text_color" />
@@ -118,6 +113,7 @@
         android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="@string/forgot_password"
+        android:textSize="@dimen/login_text_size"
         android:textColor="@color/theme_secondary_text_color" />
 
 </RelativeLayout>

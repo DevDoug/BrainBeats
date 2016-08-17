@@ -1,62 +1,73 @@
 package com.brainbeats;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.runners.MockitoJUnitRunner;
-import utils.Constants;
+
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 
 
 /**
  * Created by douglas on 8/15/2016.
  */
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(AndroidJUnit4.class)
 public class LoginActivityTest {
 
-    @Mock
-    Context mMockContext;
+    public String testIncorrectEmail = "fake.com";
+    public String testCorrectEmail = "Doug4less@gmail.com";
+    public String testIncorrectPassword = "le";
+    public String testCorrectPassword = "tacos";
 
     public LoginActivityTest() {
-        MockitoAnnotations.initMocks(LoginActivityTest.class);
-
-        try {
-            testAttemptSoundCloudLogin();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @org.junit.Before
     public void setUp() throws Exception {
-
     }
 
     @org.junit.After
     public void tearDown() throws Exception {
+    }
 
+    @Rule
+    public ActivityTestRule<LoginActivity> mActivityRule = new ActivityTestRule<>(LoginActivity.class);
+
+    @Test
+    public void testEmptyCredentialsLogin() throws Exception{
+        onView(withId(R.id.email_sign_in_button)).perform(click());
+        onView(withId(R.id.email_text_input)).check(matches(hasErrorText("This field is required.")));
     }
 
     @Test
-    public void testAttemptSoundCloudLogin() throws Exception {
+    public void testIncorrectEmailFormatLogin() throws Exception{
+        onView(withId(R.id.email_text_input)).perform(typeText(testIncorrectEmail), closeSoftKeyboard());
+        onView(withId(R.id.email_sign_in_button)).perform(click());
+        onView(withId(R.id.email_text_input)).check(matches(hasErrorText("This email address is invalid.")));
+    }
 
-        ConnectivityManager connectivityManager = (ConnectivityManager) mMockContext. getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        boolean network =  (activeNetworkInfo != null && activeNetworkInfo.isConnected());
+    @Test
+    public void testIncorrectPassword() throws Exception {
+        onView(withId(R.id.email_text_input)).perform(typeText(testCorrectEmail), closeSoftKeyboard());
+        onView(withId(R.id.password_text_input)).perform(typeText(testIncorrectPassword), closeSoftKeyboard());
+        onView(withId(R.id.email_sign_in_button)).perform(click());
+        onView(withId(R.id.password_text_input)).check(matches(hasErrorText("This password is too short.")));
+    }
 
-        if(network){
-
-        } else {
-            onView(withText(mMockContext.getString(R.string.enable_wifi_in_settings_message))).check(matches(isDisplayed()));
-        }
+    @Test
+    public void testUserCreatedSuccessfully() throws Exception {
+        onView(withId(R.id.email_text_input)).perform(typeText(testCorrectEmail), closeSoftKeyboard());
+        onView(withId(R.id.password_text_input)).perform(typeText(testCorrectPassword), closeSoftKeyboard());
+        onView(withId(R.id.email_sign_in_button)).perform(click());
     }
 }
