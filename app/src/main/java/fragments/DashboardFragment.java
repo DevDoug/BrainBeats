@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.brainbeats.LoginActivity;
@@ -36,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapters.SearchMusicAdapter;
-import adapters.TrackAdapter;
 import architecture.AccountManager;
 import entity.Track;
 import utils.Constants;
@@ -242,7 +240,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             });
 
         } else {
-            Constants.buildConfirmDialog(getContext(),getString(R.string.connect_to_network_message),getString(R.string.enable_wifi_in_settings_message),getString(R.string.go_to_settings_message),this);
+            Constants.buildActionDialog(getContext(),getString(R.string.connect_to_network_message),getString(R.string.enable_wifi_in_settings_message),getString(R.string.go_to_settings_message),this);
         }
     }
 }

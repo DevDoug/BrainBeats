@@ -7,21 +7,28 @@ import android.view.Menu;
 
 import architecture.BaseActivity;
 import fragments.SocialFragment;
+import fragments.UserProfileFragment;
 
 public class SocialActivity extends BaseActivity implements SocialFragment.OnFragmentInteractionListener {
 
     Fragment mSocialFragment;
+    Fragment mUserProfileFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
         mSocialFragment = new SocialFragment();
+        mUserProfileFragment = new UserProfileFragment();
         switchToSocialFragment();
     }
 
     public void switchToSocialFragment() {
         replaceFragment(mSocialFragment, mSocialFragment.getTag());
+    }
+
+    public void switchToUserProfileFragment() {
+        replaceFragment(mUserProfileFragment, mUserProfileFragment.getTag());
     }
 
     @Override

@@ -105,7 +105,7 @@
     <string name="error_invalid_email">This email address is invalid.</string>
     <string name="error_invalid_password">This password is too short.</string>
     <string name="error_incorrect_password">This password is incorrect.</string>
-    <string name="error_field_required">This field is required</string>
+    <string name="error_field_required">This field is required.</string>
     <string name="connect_to_network_message">Unable to connect to network</string>
     <string name="go_to_settings_message">Go to settings</string>
     <string name="enable_wifi_in_settings_message">Please connect to a network to use this feature.</string>
@@ -142,5 +142,7 @@
     <string name="sound_cloud_login_message">Log in to sound cloud</string>
     <string name="login_to_sound_cloud_title">Log in to sound cloud.</string>
     <string name="preference_sync_with_sound_cloud_text">Sync with Sound Cloud</string>
+    <string name="login_failed_error_message">Login Failed</string>
+    <string name="issue_creating_account_error_message">There was an issue creating this account.</string>
 
 </resources>

@@ -70,12 +70,11 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     public Track mSelectedTrack;
     private SeekBar mPlayTrackSeekBar;
     private OnFragmentInteractionListener mListener;
-    public FloatingActionButton mFob;
 
-    FloatingActionButton mTrackOptionsFab;
-    FloatingActionButton mAddToLibraryFab;
-    FloatingActionButton mFavFab;
-    FloatingActionButton mFollowArtistFab;
+    private FloatingActionButton mTrackOptionsFab;
+    private FloatingActionButton mAddToLibraryFab;
+    private FloatingActionButton mFavFab;
+    private FloatingActionButton mFollowArtistFab;
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;
     private boolean mIsFabOpen = false;
 
@@ -142,9 +141,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         mPlayTrackSeekBar = (SeekBar) v.findViewById(R.id.play_song_seek_bar);
         mArtistName = (TextView) v.findViewById(R.id.user_name);
 
-        //((TextView) v.findViewById(R.id.separator_title)).setText(R.string.suggested_tracks);
-        //mCoordinatorLayout = (CoordinatorLayout) v.findViewById(R.id.main_content_coordinator_layout);
-
         mTrackOptionsFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_track_options);
         mAddToLibraryFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_add_to_library);
         mFavFab = (FloatingActionButton) v.findViewById(R.id.floating_action_favorite);
@@ -201,6 +197,18 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     @Override
     public void onResume() {
         super.onResume();
+
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        Drawable up = DrawableCompat.wrap(ContextCompat.getDrawable(getContext(), R.drawable.ic_up));
+        DrawableCompat.setTint(up, getResources().getColor(R.color.theme_primary_text_color));
+        toolbar.setNavigationIcon(up);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                ((MainActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
+            }
+        });
     }
 
     @Override
@@ -219,28 +227,10 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Bundle settingsBundle = new Bundle();
-        settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Mixes.getCode());
-        settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
-
-
-        //TODO move local db code out of sync adaper so that sync adapter only has api call's or network interaction.
-        //TODO add sync to sound cloud for determing weather to update sc as well.
-
         switch (item.getItemId()) {
             case android.R.id.home:
                 getActivity().onBackPressed();
                 break;
-/*            case R.id.action_add_to_library:
-                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateMix.getCode());
-                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
-                break;
-            case R.id.action_favorite:
-                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateFavorite.getCode());
-                OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
-                break;
-*//*            case R.id.action_rate:
-                break;*/
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
                 Intent loginIntent = new Intent(getContext(), LoginActivity.class);

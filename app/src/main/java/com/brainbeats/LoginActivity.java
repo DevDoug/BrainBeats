@@ -4,9 +4,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.WifiManager;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -21,7 +19,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -49,38 +46,35 @@ import utils.Constants;
 import web.WebApiManager;
 
 /**
- * A login screen that offers login via email/password.
+ * Login screen
+ * Should allow the user to login with both sound cloud and with Brain Beats
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>, Constants.ConfirmDialogActionListener {
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>, Constants.ConfirmDialogActionListener, View.OnClickListener {
 
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
     private UserLoginTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
-    private Button mLoginButton;
-    private Button mSoundCloudLogin;
     public CoordinatorLayout mCoordinatorLayout;
-
-
-    public static final String OAUTH_CALLBACK_SCHEME = "brainbeats";
-    public static final String OAUTH_CALLBACK_HOST = "soundcloud/callback";
-    public static final String CALLBACK_URL = OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
+    public Button mLoginButton;
+    public Button mSoundCloudLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+
+        //UI components.
+        mEmailView = (AutoCompleteTextView) findViewById(R.id.email_text_input);
         mLoginButton = (Button) findViewById(R.id.email_sign_in_button);
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = (EditText) findViewById(R.id.password_text_input);
         mSoundCloudLogin = (Button) findViewById(R.id.sound_cloud_sign_in_button);
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
 
-        populateAutoComplete();
+        getLoaderManager().initLoader(0, null, this);
+        mLoginButton.setOnClickListener(this);
+        mSoundCloudLogin.setOnClickListener(this);
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -93,25 +87,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        mLoginButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
-        mSoundCloudLogin.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                attemptSoundCloudLogin();
-            }
-        });
-
         final Button signInButton = mLoginButton;
         mEmailView.addTextChangedListener(new TextWatcher() { //if the user exists
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() >= Constants.PASSWORD_MINIMUM_LENGTH) {
@@ -124,8 +103,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     );
 
                     String message = getString(R.string.register_text);
-                    assert userCursor != null;
-                    if (userCursor.getCount() >= 1) {
+                    if (userCursor != null && userCursor.getCount() >= 1) {
                         userCursor.moveToFirst();
                         while (!userCursor.isAfterLast()) {
                             String userName = userCursor.getString(userCursor.getColumnIndexOrThrow(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME));
@@ -137,20 +115,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                             userCursor.moveToNext();
                         }
+                        userCursor.close();
                     }
                     signInButton.setText(message);
-                    userCursor.close();
                 }
             }
-
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void afterTextChanged(Editable s) {}
         });
-    }
-
-    private void populateAutoComplete() {
-        getLoaderManager().initLoader(0, null, this);
     }
 
     /**
@@ -206,26 +178,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     public void attemptSoundCloudLogin() {
-        if (Constants.isNetworkAvailable(LoginActivity.this)){
-            String authSoundCloudURL = WebApiManager.API_CONNECT_URL + "?client_id=" + Constants.SOUND_CLOUD_CLIENT_ID + "&redirect_uri=" + CALLBACK_URL + "&response_type=token";
+        if (Constants.isNetworkAvailable(LoginActivity.this)) {
+            String authSoundCloudURL = WebApiManager.API_CONNECT_URL + "?client_id=" + Constants.SOUND_CLOUD_CLIENT_ID + "&redirect_uri=" + Constants.CALLBACK_URL + "&response_type=token";
             Intent loginIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(authSoundCloudURL));
             loginIntent.addCategory(Intent.CATEGORY_DEFAULT);
             loginIntent.addCategory(Intent.CATEGORY_BROWSABLE);
             startActivity(loginIntent);
         } else {
-            Constants.buildConfirmDialog(LoginActivity.this,getString(R.string.connect_to_network_message),getString(R.string.enable_wifi_in_settings_message),getString(R.string.go_to_settings_message),this);
+            Constants.buildActionDialog(LoginActivity.this, getString(R.string.connect_to_network_message), getString(R.string.enable_wifi_in_settings_message), getString(R.string.go_to_settings_message), this);
         }
     }
 
     @Override
     public void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+
         Uri returnData = intent.getData();
         String uriFrag = returnData.getFragment();
         HashMap<String, String> map = Constants.mapQueryParams(uriFrag);
 
         AccountManager.getInstance(this).setAccessToken(map.get(Constants.HASH_KEY_ACCESS_TOKEN));
-
         WebApiManager.getSoundCloudUser(this, map.get(Constants.HASH_KEY_ACCESS_TOKEN), new WebApiManager.OnObjectResponseListener() {
             @Override
             public void onObjectResponse(JSONObject object) {
@@ -257,27 +229,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             }
                             userCursor.moveToNext();
                         }
-
                         userCursor.close();
                     }
 
-                    //if we have reached this point and not returned a false this user username does not exist so create a new account
+                    //If we have reached this point and not returned a false this user username does not exist so create a new account.
                     ContentValues values = new ContentValues();
                     values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME, soundCloudUser.getUsername());
                     values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PASSWORD, Constants.generateEncryptedPass());
                     values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID, soundCloudUser.getId());
                     Uri returnRow = getContentResolver().insert(BrainBeatsContract.UserEntry.CONTENT_URI, values);
-                    long returnRowId = ContentUris.parseId(returnRow);
 
-                    if (returnRowId != -1) { //new user create with sound cloud if success login
+                    long returnRowId = ContentUris.parseId(returnRow);
+                    if (returnRowId != -1) { //New user create with sound cloud if success login.
                         finish();
                         Intent dashboardIntent = new Intent(LoginActivity.this, MainActivity.class);
                         AccountManager.getInstance(LoginActivity.this).setUserId(String.valueOf(soundCloudUser.getId()));
                         startActivity(dashboardIntent);
                     } else {
-                        Toast.makeText(LoginActivity.this, "Account Creation Failed", Toast.LENGTH_LONG).show();
+                        Constants.buildInfoDialog(LoginActivity.this, getString(R.string.login_failed_error_message), getString(R.string.issue_creating_account_error_message));
                     }
-
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -302,10 +272,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        //Get all users
         return new CursorLoader(
                 this,
-                BrainBeatsContract.UserEntry.CONTENT_URI,
+                BrainBeatsContract.UserEntry.CONTENT_URI, // Get users.
                 null,
                 null,
                 null,
@@ -330,17 +299,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(LoginActivity.this,
-                        android.R.layout.select_dialog_item, emailAddressCollection);
-
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(LoginActivity.this, android.R.layout.select_dialog_item, emailAddressCollection);
         mEmailView.setAdapter(adapter);
     }
 
     @Override
     public void PerformDialogAction() {
         startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.email_sign_in_button:
+                attemptLogin();
+                break;
+            case R.id.sound_cloud_sign_in_button:
+                attemptSoundCloudLogin();
+            default:
+                break;
+        }
     }
 
     /**
@@ -362,8 +340,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected Boolean doInBackground(Void... params) {
             Cursor userCursor = getContentResolver().query(
-                    BrainBeatsContract.UserEntry.CONTENT_URI, //Get users
-                    null,  //return everything
+                    BrainBeatsContract.UserEntry.CONTENT_URI, //Get users.
+                    null,  //Return everything.
                     BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                     new String[]{mEmail},
                     null
@@ -384,7 +362,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 userCursor.close();
             }
 
-            //if we have reached this point and not returned a false this user username does not exist so create a new account
+            //If we have reached this point and not returned a false this user username does not exist so create a new account.
             ContentValues values = new ContentValues();
             values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME, mEmail);
             values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PASSWORD, mPassword);
@@ -395,14 +373,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 return true;
             } else {
                 Toast.makeText(mContext, "Account Creation Failed", Toast.LENGTH_LONG).show();
-                return false; //specify account creation failed here.
+                return false; //Specify account creation failed here.
             }
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-            //showProgress(false);
             if (success) {
                 finish();
                 Intent dashboardIntent = new Intent(mContext, MainActivity.class);
@@ -417,7 +394,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected void onCancelled() {
             mAuthTask = null;
-            //showProgress(false);
         }
     }
 }
