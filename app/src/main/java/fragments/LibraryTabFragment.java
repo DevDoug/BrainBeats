@@ -39,11 +39,11 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
         // Required empty public constructor
     }
 
-    public static LibraryTabFragment newInstance(Constants.LibraryDataType dataType) {
+    public static LibraryTabFragment newInstance(Constants.LibraryDataType dataType, String tabFilter) {
         LibraryTabFragment tabFragment = new LibraryTabFragment();
         Bundle args = new Bundle();
         args.putInt(Constants.KEY_LIBRARY_DATA_TYPE, dataType.getCode());
-        //args.putString(Constants.KEY_EXTRA_LIBRARY_FILTER_TEXT,tabFilter);
+        args.putString(Constants.KEY_EXTRA_LIBRARY_FILTER_TEXT,tabFilter);
         tabFragment.setArguments(args);
         return tabFragment;
     }
@@ -55,6 +55,7 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
         Bundle args = getArguments();
         if (args != null) {
             mDataType = args.getInt(Constants.KEY_LIBRARY_DATA_TYPE);
+            mFilter = args.getString(Constants.KEY_EXTRA_LIBRARY_FILTER_TEXT);
         }
     }
 

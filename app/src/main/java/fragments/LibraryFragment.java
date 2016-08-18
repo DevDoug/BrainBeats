@@ -96,9 +96,9 @@ public class LibraryFragment extends Fragment {
 
     public void setupViewPager() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
-        adapter.addFragment(LibraryTabFragment.newInstance(Constants.LibraryDataType.Songs), getResources().getStringArray(R.array.library_tab_titles)[0]);
-        adapter.addFragment(LibraryTabFragment.newInstance(Constants.LibraryDataType.Playlists), getResources().getStringArray(R.array.library_tab_titles)[1]);
-        adapter.addFragment(LibraryTabFragment.newInstance(Constants.LibraryDataType.Favorites), getResources().getStringArray(R.array.library_tab_titles)[2]);
+        adapter.addFragment(LibraryTabFragment.newInstance(Constants.LibraryDataType.Songs,""), getResources().getStringArray(R.array.library_tab_titles)[0]);
+        adapter.addFragment(LibraryTabFragment.newInstance(Constants.LibraryDataType.Playlists,""), getResources().getStringArray(R.array.library_tab_titles)[1]);
+        adapter.addFragment(LibraryTabFragment.newInstance(Constants.LibraryDataType.Favorites,""), getResources().getStringArray(R.array.library_tab_titles)[2]);
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);
     }
@@ -106,6 +106,10 @@ public class LibraryFragment extends Fragment {
     public void updateTabFilter(String query) {
         LibraryTabFragment frag = (LibraryTabFragment) ((ViewPagerAdapter) mViewPager.getAdapter()).getItem(mViewPager.getCurrentItem());
         FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().replace(mViewPager.getCurrentItem(),LibraryTabFragment.newInstance(Constants.LibraryDataType.Songs), getResources().getStringArray(R.array.library_tab_titles)[0]).commit();
+        fm.beginTransaction().replace(
+                frag.getId(),
+                LibraryTabFragment.newInstance(Constants.LibraryDataType.Songs,query), getResources().getStringArray(R.array.library_tab_titles)[0])
+                .commit();
     }
+
 }

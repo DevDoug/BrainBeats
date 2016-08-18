@@ -280,6 +280,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                         if(mSelectedTrack.getStreamURL() != null)
                             mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
                         startProgressBarThread();
+                        mAudioService.setRunInForeground();
                     }
                 }
                 break;

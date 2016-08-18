@@ -72,6 +72,7 @@ public class Constants {
     public static final int PASSWORD_MINIMUM_LENGTH = 3;
     public static final String OREINTATION_SHIFT = "LayoutShift";
 
+
     public enum AudioServiceRepeatType {
         RepeatOff(0),
         RepeatOne(1),
