@@ -70,12 +70,11 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     public Track mSelectedTrack;
     private SeekBar mPlayTrackSeekBar;
     private OnFragmentInteractionListener mListener;
-    public FloatingActionButton mFob;
 
-    FloatingActionButton mTrackOptionsFab;
-    FloatingActionButton mAddToLibraryFab;
-    FloatingActionButton mFavFab;
-    FloatingActionButton mFollowArtistFab;
+    private FloatingActionButton mTrackOptionsFab;
+    private FloatingActionButton mAddToLibraryFab;
+    private FloatingActionButton mFavFab;
+    private FloatingActionButton mFollowArtistFab;
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;
     private boolean mIsFabOpen = false;
 

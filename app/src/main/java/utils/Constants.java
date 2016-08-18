@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.brainbeats.R;
 import java.util.ArrayList;
@@ -23,6 +22,7 @@ import java.util.HashMap;
 
 import adapters.ImageAdapter;
 import data.BrainBeatsContract;
+import data.BrainBeatsDbHelper;
 import entity.Track;
 import model.Mix;
 import model.MixItem;
@@ -70,6 +70,7 @@ public class Constants {
     public static final int MIX_ITEM_DEFAULT_LEVEL = 50;
     public static final int BEAT_ITEM_DRAWABLES[] = new int[]{R.drawable.ic_alpha, R.drawable.ic_beta, R.drawable.ic_google, R.drawable.ic_theta,};
     public static final int PASSWORD_MINIMUM_LENGTH = 3;
+    public static final String OREINTATION_SHIFT = "LayoutShift";
 
     public enum AudioServiceRepeatType {
         RepeatOff(0),
@@ -152,6 +153,7 @@ public class Constants {
 
     public static Mix buildMixFromCursor(Context context, Cursor cursor, int position) {
         cursor.moveToPosition(position);
+
         Mix mix = new Mix();
         mix.setMixId(cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.MixEntry._ID)));
         mix.setMixTitle(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE)));
@@ -163,12 +165,29 @@ public class Constants {
         mix.setIsInMixer(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_MIXER)));
         mix.setStreamURL(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_STREAM_URL)));
 
-        String whereClause = BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + "= ?";
-        String[] whereArgs = new String[]{
-                " " + cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.MixEntry._ID)),
-        };
+        Cursor userCursor = context.getContentResolver().query( //get this mixes user
+                BrainBeatsContract.UserEntry.CONTENT_URI,
+                null,  //return everything
+                BrainBeatsContract.UserEntry._ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
+                new String[]{String.valueOf(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_USER_ID_FK)))},
+                null);
 
-        Cursor mixItemsCursor = context.getContentResolver().query(BrainBeatsContract.MixItemsEntry.CONTENT_URI, null, whereClause, whereArgs, null); // get the mix items associated with this mix
+        User brainBeatsUser = new User();
+        if (userCursor != null) {
+            userCursor.moveToFirst();
+
+            brainBeatsUser.setUserId(userCursor.getLong(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
+            brainBeatsUser.setUserName(userCursor.getString(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));
+            brainBeatsUser.setSoundCloudUserId(userCursor.getInt(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID)));
+        }
+
+        Cursor mixItemsCursor = context.getContentResolver().query( //get this mixes mix items
+                BrainBeatsContract.MixItemsEntry.CONTENT_URI,
+                null,  //return everything
+                BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
+                new String[]{" " + cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.MixEntry._ID))},
+                null);
+
 
         if (mixItemsCursor != null) {
             mixItemsCursor.moveToFirst();
@@ -202,7 +221,7 @@ public class Constants {
 
     public static ContentValues buildMixRecord(Mix mix) {
         ContentValues values = new ContentValues();
-        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE, mix.getBeatTitle());
+        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE, mix.getMixTitle());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL, mix.getMixAlbumCoverArt());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_FAVORITE, mix.getMixFavorite());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_USER_ID_FK, mix.getMixUserId());

@@ -1,11 +1,18 @@
 package com.brainbeats;
 
+import android.database.Cursor;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.test.ProviderTestCase2;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import data.BrainBeatsContentProvider;
+import data.BrainBeatsContract;
+import data.BrainBeatsDbHelper;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -22,18 +29,21 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
  */
 
 @RunWith(AndroidJUnit4.class)
-public class LoginActivityTest {
+public class LoginActivityTest extends ProviderTestCase2 {
 
     public String testIncorrectEmail = "fake.com";
     public String testCorrectEmail = "Doug4less@gmail.com";
     public String testIncorrectPassword = "le";
     public String testCorrectPassword = "tacos";
 
-    public LoginActivityTest() {
+    public LoginActivityTest(){
+        super(BrainBeatsContentProvider.class,"com.brainbeats");
     }
 
     @org.junit.Before
     public void setUp() throws Exception {
+        setContext(InstrumentationRegistry.getTargetContext());
+        super.setUp();
     }
 
     @org.junit.After
@@ -64,10 +74,22 @@ public class LoginActivityTest {
         onView(withId(R.id.password_text_input)).check(matches(hasErrorText("This password is too short.")));
     }
 
-    @Test
+/*    @Test
     public void testUserCreatedSuccessfully() throws Exception {
         onView(withId(R.id.email_text_input)).perform(typeText(testCorrectEmail), closeSoftKeyboard());
         onView(withId(R.id.password_text_input)).perform(typeText(testCorrectPassword), closeSoftKeyboard());
         onView(withId(R.id.email_sign_in_button)).perform(click());
-    }
+
+        //Add check to database here to see if account was created successfully
+        Cursor userCursor = getMockContentResolver().query(
+                BrainBeatsContract.UserEntry.CONTENT_URI, //Get users.
+                null,  //Return everything.
+                BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
+                new String[]{testCorrectEmail},
+                null);
+
+        if (userCursor != null) {
+            assertTrue(userCursor.getCount() > 0); //assert that we entered our record
+        }
+    }*/
 }
