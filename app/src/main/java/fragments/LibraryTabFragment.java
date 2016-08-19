@@ -106,10 +106,12 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderID, Bundle args) {
-        String query = "";
+        String query;
 
         if (args!= null)
-            args.getString(Constants.KEY_EXTRA_LIBRARY_FILTER_TEXT);
+            query = args.getString(Constants.KEY_EXTRA_LIBRARY_FILTER_TEXT);
+        else
+            query = "";
 
         switch (loaderID) {
             case 0:
