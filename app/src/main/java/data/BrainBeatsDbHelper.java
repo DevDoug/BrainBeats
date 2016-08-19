@@ -28,6 +28,7 @@ public class BrainBeatsDbHelper extends SQLiteOpenHelper {
     public static final String WHERE_CLAUSE_LIKE                    = " LIKE ?";
     public static final String WHERE_CLAUSE_EQUAL                   = " = ? ";
     public static final String AND_CLAUSE                           = "AND ";
+    public static final String OR_CLAUSE                           = "OR ";
 
     //Db lookup fields
     public static final String DB_TRUE_VALUE                        = "1";
@@ -96,12 +97,19 @@ public class BrainBeatsDbHelper extends SQLiteOpenHelper {
                         BrainBeatsContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID + COLUMN_TYPE_INT_NOT_NULL +
                         CREATE_TABLE_TERMINATION;
 
+        final String CREATE_TABLE_MIX_TAG = CREATE_TABLE + BrainBeatsContract.MixTagEntry.TABLE_NAME + " (" +
+                        BrainBeatsContract.MixTagEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
+                        BrainBeatsContract.MixTagEntry.COLUMN_NAME_TAG_TITLE + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
+                        BrainBeatsContract.MixTagEntry.COLUMN_NAME_MIX_ID + COLUMN_TYPE_INT_NOT_NULL +
+                        CREATE_TABLE_TERMINATION;
+
         db.execSQL(CREATE_TABLE_MIX);
         db.execSQL(CREATE_TABLE_MIX_ITEMS);
         db.execSQL(CREATE_TABLE_RELATED_MIX);
         db.execSQL(CREATE_TABLE_PLAYLIST);
         db.execSQL(CREATE_TABLE_USER);
         db.execSQL(CREATE_TABLE_USER_FOLLOWERS);
+        db.execSQL(CREATE_TABLE_MIX_TAG);
     }
 
     @Override
@@ -112,6 +120,8 @@ public class BrainBeatsDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + BrainBeatsContract.MixPlaylistEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + BrainBeatsContract.UserEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + BrainBeatsContract.UserFollowersEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + BrainBeatsContract.UserEntry.TABLE_NAME);
+
         onCreate(db);
     }
 }

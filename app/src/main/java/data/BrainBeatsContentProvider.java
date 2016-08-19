@@ -26,6 +26,8 @@ public class BrainBeatsContentProvider extends ContentProvider {
     static final int USER               = 500;
     static final int USER_FOLLOWERS     = 600;
     static final int RAW_QUERY          = 700;
+    static final int MIX_TAG            = 800;
+
 
     static {
         sMixByIDQueryBuilder = new SQLiteQueryBuilder();
@@ -43,6 +45,7 @@ public class BrainBeatsContentProvider extends ContentProvider {
         matcher.addURI(authority, BrainBeatsContract.PATH_USER, USER);
         matcher.addURI(authority, BrainBeatsContract.PATH_USER_FOLLOWERS, USER_FOLLOWERS);
         matcher.addURI(authority, BrainBeatsContract.PATH_RAW_QUERY, RAW_QUERY);
+        matcher.addURI(authority, BrainBeatsContract.PATH_MIX_TAG, MIX_TAG);
         return matcher;
     }
 
@@ -122,6 +125,17 @@ public class BrainBeatsContentProvider extends ContentProvider {
                         sortOrder
                 );
                 break;
+            case MIX_TAG:
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        BrainBeatsContract.MixTagEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
             case RAW_QUERY:
                 retCursor = mOpenHelper.getReadableDatabase().rawQuery(selection,selectionArgs);
                 break;
@@ -150,6 +164,8 @@ public class BrainBeatsContentProvider extends ContentProvider {
                 return BrainBeatsContract.UserEntry.CONTENT_TYPE;
             case USER_FOLLOWERS:
                 return BrainBeatsContract.UserFollowersEntry.CONTENT_TYPE;
+            case MIX_TAG:
+                return BrainBeatsContract.MixTagEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -200,6 +216,13 @@ public class BrainBeatsContentProvider extends ContentProvider {
                 long _idUserFollow = db.insert(BrainBeatsContract.UserFollowersEntry.TABLE_NAME, null, values);
                 if (_idUserFollow > 0)
                     returnUri = BrainBeatsContract.UserFollowersEntry.buildUserFollowerUriWithId(_idUserFollow);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            case MIX_TAG:
+                long _idMixTag = db.insert(BrainBeatsContract.MixTagEntry.TABLE_NAME, null, values);
+                if (_idMixTag > 0)
+                    returnUri = BrainBeatsContract.MixTagEntry.buildTagUriWithId(_idMixTag);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;

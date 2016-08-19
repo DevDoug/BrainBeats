@@ -358,7 +358,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     }
                     userCursor.moveToNext();
                 }
-
                 userCursor.close();
             }
 

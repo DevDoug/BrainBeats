@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/library_record_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:padding="20dp">
+    <Button
+        android:id="@+id/sound_cloud_tag"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:textColor="#fff"
+        android:padding="10dp"
+        android:textSize="12sp"
+        android:elevation="1dp"
+        android:background="@drawable/mix_tag_background" />
+</LinearLayout>

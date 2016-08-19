@@ -78,10 +78,12 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     @Override
     public void onResume() {
         super.onResume();
-        if (SyncManager.getInstance().getIsGlobalSyncRequired()) {
+        SyncManager.getInstance().updateAllTables(AccountManager.getInstance(MainActivity.this).getUserId(), mAccount, BrainBeatsContract.CONTENT_AUTHORITY);
+
+/*        if (SyncManager.getInstance().getIsGlobalSyncRequired()) {
             SyncManager.getInstance().updateAllTables(AccountManager.getInstance(MainActivity.this).getUserId(), mAccount, BrainBeatsContract.CONTENT_AUTHORITY);
             SyncManager.mIsGlobalSyncRequired = false;
-        }
+        }*/
     }
 
     @Override

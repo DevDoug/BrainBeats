@@ -105,11 +105,9 @@ public class LibraryFragment extends Fragment {
 
     public void updateTabFilter(String query) {
         LibraryTabFragment frag = (LibraryTabFragment) ((ViewPagerAdapter) mViewPager.getAdapter()).getItem(mViewPager.getCurrentItem());
-        FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().replace(
-                frag.getId(),
-                LibraryTabFragment.newInstance(Constants.LibraryDataType.Songs,query), getResources().getStringArray(R.array.library_tab_titles)[0])
-                .commit();
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.KEY_EXTRA_LIBRARY_FILTER_TEXT,query);
+        getLoaderManager().restartLoader(Constants.LibraryDataType.Songs.getCode(), bundle, frag);
     }
 
 }

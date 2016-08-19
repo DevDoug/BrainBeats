@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.SyncResult;
 import android.database.Cursor;
@@ -333,7 +334,6 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                         Log.i("User fetch fail", "fail");
                     }
                 });
-
                 // break;
             default:
                 break;
@@ -349,6 +349,19 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             Uri result = provider.insert(BrainBeatsContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(newMix));
+            long returnRowId = ContentUris.parseId(result);
+            if(returnRowId != -1){
+                String[] tagList = newMix.getMixTagList().split(":");
+
+                for(String tag : tagList){
+                    Uri tagResult = provider.insert(BrainBeatsContract.MixTagEntry.CONTENT_URI, Constants.buildTagRecord(tag,track.getID()));
+                    long returnRowIdTag = ContentUris.parseId(result);
+                    Log.i("Add SoundCloudTag", "Tag ID " + String.valueOf(returnRowIdTag));
+                    Log.i("Add SoundCloudTag", "Mix ID " + String.valueOf(track.getID()));
+
+
+                }
+            }
             //getContext().getContentResolver().notifyChange(BrainBeatsContract.MixEntry.CONTENT_URI, null, false);
         } catch (RemoteException e) {
             e.printStackTrace();

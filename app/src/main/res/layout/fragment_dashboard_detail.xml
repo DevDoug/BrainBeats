@@ -124,21 +124,19 @@
             android:layout_below="@+id/beat_detail_header"
             android:layout_marginTop="@dimen/content_margin_top" />
 
-        <FrameLayout
+        <android.support.v7.widget.CardView
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_view"
-            android:layout_gravity="center"
             android:layout_below="@id/blue_line_seperator"
             android:layout_width="match_parent"
             android:layout_height="80dp"
-
             android:elevation="1dp"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="1dp">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/custom_list_text_background"
@@ -146,16 +144,30 @@
                 android:padding="15dp"
                 android:gravity="center_vertical">
 
+                <ImageView
+                    android:id="@+id/artist_thumbnail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
                 <TextView
                     android:id="@+id/user_name"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="start"
-                    android:textColor="@color/theme_secondary_text_color"
-                    android:textSize="@dimen/dialog_item_text_size" />
 
-            </LinearLayout>
-        </FrameLayout>
+                    android:textColor="@color/theme_secondary_text_color"
+                    android:textSize="@dimen/dialog_item_text_size"
+                    android:layout_alignStart="@id/artist_thumbnail"
+                    android:layout_marginLeft="15dp" />
+
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/mix_tag_grid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/card_view" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/floating_follow_artist"
@@ -183,7 +195,6 @@
             android:id="@+id/floating_action_button_add_to_library"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:elevation="@dimen/fob_elevation"
             android:src="@drawable/ic_library_add_white"
             android:visibility="invisible"
@@ -195,28 +206,15 @@
             android:id="@+id/floating_action_button_track_options"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="16dp"
             android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
             android:clickable="true"
             android:elevation="@dimen/fob_elevation"
-            android:src="@drawable/ic_android_white" />
-
-<!--        <Button
-            android:layout_width="80dp"
-            android:layout_height="50dp"
-            android:id="@+id/imageButton"
-            android:text="#Sample tag"
-            android:textColor="#fff"
-            android:padding="10dp"
-            android:textSize="12sp"
-            android:background="@drawable/mix_tag_background"
-            android:layout_below="@+id/card_view"
-            android:layout_alignStart="@+id/card_view" />-->
+            android:src="@drawable/ic_android_white"
+            android:layout_alignBottom="@+id/mix_tag_grid"
+            android:layout_alignEnd="@+id/mix_tag_grid" />
 
     </RelativeLayout>
-
     </ScrollView>
 
 </RelativeLayout>

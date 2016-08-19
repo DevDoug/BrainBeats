@@ -25,6 +25,9 @@ public class Track implements Parcelable {
     @SerializedName("duration")
     private int mDuration;
 
+    @SerializedName("tag_list")
+    private String mTagList;
+
     @SerializedName("downloadable")
     private boolean mDownloadable;
 
@@ -49,6 +52,7 @@ public class Track implements Parcelable {
         mDownloadable = in.readByte() != 0;
         mDownloadUrl = in.readString();
         // mUserFavorite = in.read();
+        mTagList = in.readString();
     }
 
     public String getTitle() {
@@ -115,6 +119,14 @@ public class Track implements Parcelable {
         mUserFavorite = favorite;
     }
 
+    public String getTagList() {
+        return mTagList;
+    }
+
+    public void setTagList(String tagList) {
+        this.mTagList = tagList;
+    }
+
 
     public User getUser() {
         return user;
@@ -138,6 +150,7 @@ public class Track implements Parcelable {
         dest.writeInt(mDuration);
         dest.writeByte((byte) (mDownloadable ? 1 : 0));
         dest.writeString(mDownloadUrl);
+        dest.writeString(mTagList);
     }
 
     public static final Creator<Track> CREATOR = new Creator<Track>() {

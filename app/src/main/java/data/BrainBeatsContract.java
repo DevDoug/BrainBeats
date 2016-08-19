@@ -23,10 +23,10 @@ public class BrainBeatsContract {
     public static final String PATH_USER_FOLLOWERS      = "userfollowers";
     public static final String PATH_MIX_RELATED         = "mixrelated";
     public static final String PATH_MIX_PLAYLIST        = "playlist";
+    public static final String PATH_MIX_TAG             = "tag";
     public static final String PATH_RAW_QUERY           = "rawquery";
 
     public static final Uri CONTENT_URI_RAW_QUERY = BASE_CONTENT_URI.buildUpon().appendPath(PATH_RAW_QUERY).build();
-
 
     public static final class MixEntry implements BaseColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_MIX).build();
@@ -120,6 +120,20 @@ public class BrainBeatsContract {
         public static final String COLUMN_NAME_USER_FOLLOWER_ID         = "userfollowerid";
 
         public static Uri buildUserFollowerUriWithId(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
+    public static final class MixTagEntry implements BaseColumns {
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_MIX_TAG).build();
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_TAG;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_TAG;
+
+        public static final String TABLE_NAME                           = "mixtag";
+        public static final String COLUMN_NAME_TAG_TITLE                = "tagtitle";
+        public static final String COLUMN_NAME_MIX_ID                   = "mixid";
+
+        public static Uri buildTagUriWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }

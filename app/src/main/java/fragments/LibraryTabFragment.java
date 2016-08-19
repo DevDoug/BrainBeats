@@ -106,6 +106,11 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderID, Bundle args) {
+        String query = "";
+
+        if (args!= null)
+            args.getString(Constants.KEY_EXTRA_LIBRARY_FILTER_TEXT);
+
         switch (loaderID) {
             case 0:
                 return new CursorLoader(
@@ -117,7 +122,7 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
                                 BrainBeatsDbHelper.AND_CLAUSE +
                                 BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE +
                                 BrainBeatsDbHelper.WHERE_CLAUSE_LIKE, // where the mix is in the lib
-                        new String[]{BrainBeatsDbHelper.DB_TRUE_VALUE, mFilter + "%"},                  // No selection arguments
+                        new String[]{BrainBeatsDbHelper.DB_TRUE_VALUE, query + "%"},                  // No selection arguments
                         null                   // Default sort order
                 );
             case 1:
@@ -169,7 +174,7 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        if (mLibraryMixAdapter != null)
-                mLibraryMixAdapter.changeCursor(null);
+        if(mLibraryMixAdapter != null)
+            mLibraryMixAdapter.changeCursor(null);
     }
 }

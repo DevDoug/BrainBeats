@@ -1,6 +1,5 @@
 package model;
 
-import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -23,7 +22,8 @@ public class Mix implements Parcelable {
     private int mIsinMixer;
     private int mMixUserId;
     private String mStreamURL;
-    private User user;
+    private String mMixTagList;
+    private User mUser;
 
     public Mix() {
     }
@@ -125,11 +125,19 @@ public class Mix implements Parcelable {
     }
 
     public User getUser() {
-        return user;
+        return mUser;
     }
 
     public void setUser(User user) {
-        this.user = user;
+        this.mUser = user;
+    }
+
+    public String getMixTagList() {
+        return mMixTagList;
+    }
+
+    public void setMixTagList(String mixertaglist) {
+        this.mMixTagList = mixertaglist;
     }
 
     @Override
@@ -148,6 +156,7 @@ public class Mix implements Parcelable {
         dest.writeInt(mIsinMixer);
         dest.writeInt(mMixUserId);
         dest.writeString(mStreamURL);
+        dest.writeParcelable(mUser,0);
     }
 
     protected Mix(Parcel in) {
@@ -160,6 +169,7 @@ public class Mix implements Parcelable {
         mIsinMixer = in.readInt();
         mMixUserId = in.readInt();
         mStreamURL = in.readString();
+        mUser = in.readParcelable(User.class.getClassLoader());
     }
 
     public static final Creator<Mix> CREATOR = new Creator<Mix>() {

@@ -19,6 +19,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -39,8 +41,11 @@ import com.brainbeats.MainActivity;
 import com.brainbeats.R;
 import com.squareup.picasso.Picasso;
 
+import adapters.MixTagAdapter;
+import adapters.MixerAdapter;
 import architecture.AccountManager;
 import data.BrainBeatsContract;
+import data.BrainBeatsDbHelper;
 import entity.Track;
 import service.AudioService;
 import utils.BeatLearner;
@@ -77,6 +82,11 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     private FloatingActionButton mFollowArtistFab;
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;
     private boolean mIsFabOpen = false;
+
+    private MixTagAdapter mMixTagAdapter;
+    private RecyclerView mMixerTags;
+    private GridLayoutManager mTagGridLayoutManager;
+
 
     public DashboardDetailFragment() {
         // Required empty public constructor
@@ -132,6 +142,8 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dashboard_detail, container, false);
         //mAlbumTrackList = (ListView) v.findViewById(R.id.album_title_list);
+        mMixerTags = (RecyclerView) v.findViewById(R.id.mix_tag_grid);
+
         mTrackTitle = (TextView) v.findViewById(R.id.track_title);
         mAlbumCoverArt = (ImageView) v.findViewById(R.id.album_cover_art);
         mPlaySongButton = (ImageView) v.findViewById(R.id.play_song_button);
@@ -191,7 +203,11 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             }
         }
 
-        getLoaderManager().initLoader(Constants.RELATED_TRACKS_LOADER, null, this);
+        mTagGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
+        mMixerTags.setLayoutManager(mTagGridLayoutManager);
+        mMixerTags.setAdapter(mMixTagAdapter);
+
+        getLoaderManager().initLoader(Constants.MIX_TAGS_LOADER, null, this);
     }
 
     @Override
@@ -363,14 +379,14 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
-            case Constants.RELATED_TRACKS_LOADER:
+            case Constants.MIX_TAGS_LOADER:
                 // Returns a new CursorLoader
                 return new CursorLoader(
                         getActivity(),         // Parent activity context
-                        BrainBeatsContract.MixEntry.CONTENT_URI,  // Table to query
+                        BrainBeatsContract.MixTagEntry.CONTENT_URI,  // Table to query
                         null,                          // Projection to return
-                        null,                  // No selection clause
-                        null,                  // No selection arguments
+                        BrainBeatsContract.MixTagEntry.COLUMN_NAME_MIX_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the li,
+                        new String[]{String.valueOf(mSelectedTrack.getID())},                  // No selection arguments
                         null                   // Default sort order
                 );
             default:
@@ -381,12 +397,14 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-/*        mRelatedTracksAdapter = new RelatedTracksAdapter(getContext(), data,0);
-        mAlbumTrackList.setAdapter(mRelatedTracksAdapter);*/
+        mMixTagAdapter = new MixTagAdapter(getContext(), data);
+        mMixerTags.setAdapter(mMixTagAdapter);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        if(mMixTagAdapter != null)
+            mMixTagAdapter.swapCursor(null);
 
     }
 
