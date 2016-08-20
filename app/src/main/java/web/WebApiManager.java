@@ -116,7 +116,6 @@ public class WebApiManager {
         if (queryFilter != null && !queryFilter.equalsIgnoreCase(""))
             mParams.put(SOUND_CLOUD_QUERY_FILTER_QUERY, queryFilter);
 
-
         String url = API_ROOT_URL + API_TRACKS_URL;
         try {
             JSONArray jsonRequest = new JSONArray();
@@ -305,14 +304,11 @@ public class WebApiManager {
                         i++;
                     }
                 }
-
-                String url = stringBuilder.toString();
-                return url;
+                return stringBuilder.toString();
             }
 
             @Override
             public Map<String, String> getHeaders() {
-                //NOTE: Code in here need to be replicated in the other case below (in case of JsonObjectRequest).
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
@@ -355,8 +351,7 @@ public class WebApiManager {
                     }
                 }
 
-                String url = stringBuilder.toString();
-                return url;
+                return stringBuilder.toString();
             }
 
             @Override

@@ -47,15 +47,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private RecyclerView mTrackGrid;
     private SearchMusicAdapter mTrackAdapter;
     private GridLayoutManager mBeatGridLayoutManager;
-    List<Track> trackList = new ArrayList<>();
     FloatingActionButton mQuickFilterFab;
     FloatingActionButton mFilerByPopularFab;
     FloatingActionButton mFilterByRecentFab;
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;
     private OnFragmentInteractionListener mListener;
     private boolean mIsFabOpen = false;
-    private SearchView mSearchView;
-    private MenuItem searchMenuItem;
     String mQueryText = "";
     SearchView.OnQueryTextListener listener;
 
@@ -108,8 +105,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_dashboard, menu);
-        searchMenuItem = menu.findItem(R.id.action_search);
-        mSearchView = (SearchView) searchMenuItem.getActionView();
+        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        SearchView mSearchView = (SearchView) searchMenuItem.getActionView();
         mSearchView.setOnQueryTextListener(listener);
     }
 
@@ -168,13 +165,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 animateFAB();
                 break;
             case R.id.floating_action_button_filter_by_popular:
-                //sort by popular
-                //TODO hookup to local sync and remove api call
+                //Sort by popular.
                 animateFAB();
                 getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR);
                 break;
             case R.id.floating_action_button_filter_by_recent:
-                //sort by recet
+                //Sort by recent.
                 animateFAB();
                 getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT);
                 break;
@@ -187,7 +183,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
