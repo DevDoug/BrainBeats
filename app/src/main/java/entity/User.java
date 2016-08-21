@@ -25,6 +25,9 @@ public class User {
     @SerializedName("avatar_url")
     private String avatarUrl;
 
+    @SerializedName("description")
+    private String description;
+
     public Integer getId() {
         return id;
     }
@@ -71,5 +74,13 @@ public class User {
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+
+    public String getDescription(){
+        return description;
+    }
+
+    public void setDescription(String description){
+        this.description = description;
     }
 }

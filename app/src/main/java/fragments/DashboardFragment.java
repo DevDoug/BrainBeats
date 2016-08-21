@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import com.android.volley.NoConnectionError;
 import com.android.volley.VolleyError;
 import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
@@ -47,14 +48,14 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private RecyclerView mTrackGrid;
     private SearchMusicAdapter mTrackAdapter;
     private GridLayoutManager mBeatGridLayoutManager;
-    FloatingActionButton mQuickFilterFab;
-    FloatingActionButton mFilerByPopularFab;
-    FloatingActionButton mFilterByRecentFab;
+    private FloatingActionButton mQuickFilterFab;
+    private FloatingActionButton mFilerByPopularFab;
+    private FloatingActionButton mFilterByRecentFab;
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;
     private OnFragmentInteractionListener mListener;
     private boolean mIsFabOpen = false;
-    String mQueryText = "";
-    SearchView.OnQueryTextListener listener;
+    private String mQueryText = "";
+    private SearchView.OnQueryTextListener listener;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -94,11 +95,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                // newText is text entered by user to SearchView
                 return false;
             }
         };
-
         return v;
     }
 
@@ -165,12 +164,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 animateFAB();
                 break;
             case R.id.floating_action_button_filter_by_popular:
-                //Sort by popular.
                 animateFAB();
                 getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR);
                 break;
             case R.id.floating_action_button_filter_by_recent:
-                //Sort by recent.
                 animateFAB();
                 getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT);
                 break;
@@ -216,8 +213,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 public void onArrayResponse(JSONArray array) {
                     loadingMusicDialog.dismiss();
                     Gson gson = new Gson();
-                    Type token = new TypeToken<List<Track>>() {
-                    }.getType();
+                    Type token = new TypeToken<List<Track>>() {}.getType();
                     ArrayList<Track> trackList = gson.fromJson(array.toString(), token);
                     if (trackList != null) {
                         mTrackAdapter = new SearchMusicAdapter(getContext(), trackList);
@@ -231,9 +227,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.i(getClass().getSimpleName(), "Response = " + error.toString());
+                    if(error instanceof NoConnectionError){ //network failed to connect
+                        loadingMusicDialog.dismiss();
+                        Constants.buildActionDialog(getContext(),getString(R.string.connect_to_network_message),getString(R.string.enable_wifi_in_settings_message),getString(R.string.go_to_settings_message),DashboardFragment.this);
+                    }
                 }
             });
-
         } else {
             Constants.buildActionDialog(getContext(),getString(R.string.connect_to_network_message),getString(R.string.enable_wifi_in_settings_message),getString(R.string.go_to_settings_message),this);
         }

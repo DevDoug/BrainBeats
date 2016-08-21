@@ -125,36 +125,6 @@ public class WebApiManager {
         }
     }
 
-    public static void getMostPopularTracks(Context context, final OnArrayResponseListener responseListener, final OnErrorListener errorListener) {
-        HashMap<String, String> mParams = new HashMap<>();
-        mParams.put(SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
-        mParams.put(SOUND_CLOUD_QUERY_FILTER_TAGS, SOUND_CLOUD_QUERY_FILTER_INSTRUMENTAL);
-        mParams.put(SOUND_CLOUD_QUERY_FILTER_LIMIT, SOUND_CLOUD_QUERY_FILTER_PARAM_LIMIT_ONE_HUNDRED);
-        //mParams.put(SOUND_CLOUD_QUERY_FILTER_LINKED_PARTITIONING,"1");
-
-        String url = API_ROOT_URL + API_TRACKS_URL;
-        try {
-            JSONArray jsonRequest = new JSONArray();
-            sendArrayRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
-        } catch (Exception ex) {
-            errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
-        }
-    }
-
-    public static void searchTrackWithKeyword(Context context, String searchKeyword, final OnArrayResponseListener responseListener, final OnErrorListener errorListener) {
-        HashMap<String, String> mParams = new HashMap<>();
-        mParams.put(SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
-        mParams.put("q", searchKeyword);
-
-        String url = API_ROOT_URL + API_TRACKS_URL;
-        try {
-            JSONArray jsonRequest = new JSONArray();
-            sendArrayRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
-        } catch (Exception ex) {
-            errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
-        }
-    }
-
     public static void getRelatedTracks(Context context, String urlPart, final OnObjectResponseListener responseListener, final OnErrorListener errorListener) {
         HashMap<String, String> mParams = new HashMap<>();
         mParams.put(SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
@@ -238,7 +208,20 @@ public class WebApiManager {
         }
     }
 
-    public static void getSoundCloudUser(Context context, String oauthToken, final OnObjectResponseListener responseListener, final OnErrorListener errorListener) {
+    public static void getSoundCloudUser(Context context, String userId, final OnObjectResponseListener responseListener, final OnErrorListener errorListener) {
+        HashMap<String, String> mParams = new HashMap<>();
+        mParams.put(SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
+
+        String url = API_ROOT_URL + API_USER_URL + userId;
+        try {
+            JSONObject jsonRequest = new JSONObject();
+            sendObjectRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
+        } catch (Exception ex) {
+            errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
+        }
+    }
+
+    public static void getSoundCloudSelf(Context context, String oauthToken, final OnObjectResponseListener responseListener, final OnErrorListener errorListener) {
         HashMap<String, String> mParams = new HashMap<>();
         mParams.put(SOUND_CLOUD_API_KEY_OAUTH_TOKEN, oauthToken);
         String url = API_ROOT_URL + API_ME_URL;
@@ -262,18 +245,6 @@ public class WebApiManager {
         }
 
     }
-
- /*   public static void getPlayList(Context context, String playlistId, final OnResponseListener responseListener, final OnErrorListener errorListener){
-        HashMap<String, String> mParams = new HashMap<>();
-        mParams.put(API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
-        String url = API_ROOT_URL + API_PLAYLIST_URL + playlistId;
-        try {
-            JSONObject jsonRequest = new JSONObject();
-            sendArrayRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
-        } catch (Exception ex) {
-            errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
-        }
-    }*/
 
     public static void sendArrayRequest(Context context, int method, final String url, final HashMap<String, String> urlParams, final JSONArray requestParam, final OnArrayResponseListener onArrayResponseListener, final OnErrorListener onErrorListener) {
         JsonRequest request = new JsonArrayRequest(method, url, requestParam, new Response.Listener<JSONArray>() {

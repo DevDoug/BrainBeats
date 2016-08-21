@@ -10,8 +10,7 @@ import android.provider.BaseColumns;
  */
 public class BrainBeatsContract {
 
-    public BrainBeatsContract() {
-    }
+    public BrainBeatsContract() {}
 
     public static final String CONTENT_AUTHORITY = "com.brainbeats";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
@@ -31,7 +30,6 @@ public class BrainBeatsContract {
     public static final class MixEntry implements BaseColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_MIX).build();
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX;
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX;
 
         public static final String TABLE_NAME                           = "mix";
         public static final String COLUMN_NAME_MIX_TITLE                = "mixtitle";
@@ -54,7 +52,6 @@ public class BrainBeatsContract {
     public static final class MixItemsEntry implements BaseColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_MIX_ITEM).build();
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_ITEM;
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_ITEM;
 
         public static final String TABLE_NAME                           = "mixitem";
         public static final String COLUMN_NAME_MIX_ITEM_TITLE           = "mixitemtitle";
@@ -69,7 +66,6 @@ public class BrainBeatsContract {
     public static final class MixRelatedEntry implements BaseColumns{
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_MIX_RELATED).build();
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_RELATED;
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_RELATED;
 
         public static final String TABLE_NAME                           = "mixesrelated";
         public static final String COLUMN_NAME_TAG_CLOUD_ID             = "tagcloudid";
@@ -101,6 +97,7 @@ public class BrainBeatsContract {
 
         public static final String TABLE_NAME                           = "user";
         public static final String COLUMN_NAME_USER_NAME                = "username";
+        public static final String COLUMN_NAME_USER_DESCRIPTION         = "description";
         public static final String COLUMN_NAME_USER_PASSWORD            = "password";
         public static final String COLUMN_NAME_USER_PROFILE_IMG         = "userprofileimg";
         public static final String COLUMN_NAME_USER_SOUND_CLOUD_ID      = "soundcloudid";

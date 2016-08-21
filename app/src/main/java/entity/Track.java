@@ -5,16 +5,18 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import model.Mix;
+
 /**
  * Created by douglas on 5/24/2016.
  */
 public class Track implements Parcelable {
 
-    @SerializedName("title")
-    private String mTitle;
-
     @SerializedName("id")
     public int mID;
+
+    @SerializedName("title")
+    private String mTitle;
 
     @SerializedName("stream_url")
     private String mStreamURL;
@@ -38,21 +40,18 @@ public class Track implements Parcelable {
     private boolean mUserFavorite;
 
     @SerializedName("user")
-    private User user;
+    private User mUser;
 
     public Track() {
     }
 
-    protected Track(Parcel in) {
-        mTitle = in.readString();
-        mID = in.readInt();
-        mStreamURL = in.readString();
-        mArtworkURL = in.readString();
-        mDuration = in.readInt();
-        mDownloadable = in.readByte() != 0;
-        mDownloadUrl = in.readString();
-        // mUserFavorite = in.read();
-        mTagList = in.readString();
+    public Track(Mix mix) {
+        this.mID = mix.getSoundCloudId();
+        this.mTitle = mix.getMixTitle();
+        this.mArtworkURL = mix.getMixAlbumCoverArt();
+        this.mStreamURL = mix.getStreamURL();
+        this.mUserFavorite = mix.getMixFavorite() == 1;
+        //this.mUser = new model.User(mix.getUser());
     }
 
     public String getTitle() {
@@ -127,18 +126,29 @@ public class Track implements Parcelable {
         this.mTagList = tagList;
     }
 
-
     public User getUser() {
-        return user;
+        return mUser;
     }
 
     public void setUser(User user) {
-        this.user = user;
+        this.mUser = user;
     }
 
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    protected Track(Parcel in) {
+        mTitle = in.readString();
+        mID = in.readInt();
+        mStreamURL = in.readString();
+        mArtworkURL = in.readString();
+        mDuration = in.readInt();
+        mDownloadable = in.readByte() != 0;
+        mDownloadUrl = in.readString();
+        // mUserFavorite = in.read();
+        mTagList = in.readString();
     }
 
     @Override

@@ -16,6 +16,7 @@ import com.brainbeats.MainActivity;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import com.brainbeats.SocialActivity;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import data.BrainBeatsContract;
@@ -39,10 +40,12 @@ public class SocialAdapter extends RecyclerViewCursorAdapter<SocialAdapter.ViewH
         if(title != null)
             viewHolder.mUsername.setText(title);
 
+        Picasso.with(mAdapterContext).load(cursor.getString(cursor.getColumnIndexOrThrow(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PROFILE_IMG))).into(viewHolder.mArtistThumbnail);
         viewHolder.mArtistContainerCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((SocialActivity) mAdapterContext).switchToUserProfileFragment();
+                //TODO Implement user prof in next version
+                //((SocialActivity) mAdapterContext).switchToUserProfileFragment();
             }
         });
     }
@@ -50,10 +53,12 @@ public class SocialAdapter extends RecyclerViewCursorAdapter<SocialAdapter.ViewH
     public class ViewHolder extends RecyclerView.ViewHolder {
         CardView mArtistContainerCard;
         TextView mUsername;
+        ImageView mArtistThumbnail;
 
         public ViewHolder(View view){
             super(view);
             mUsername = (TextView) view.findViewById(R.id.user_name);
+            mArtistThumbnail = (ImageView) view.findViewById(R.id.artist_thumbnail);
             mArtistContainerCard = (CardView) view.findViewById(R.id.card_view);
         }
     }

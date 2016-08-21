@@ -12,7 +12,6 @@ import com.brainbeats.MainActivity;
 import com.brainbeats.R;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import entity.Track;
@@ -42,7 +41,7 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
             mAlbumArtCover.setOnClickListener(new View.OnClickListener() { //Mix selected load detail screen
                 @Override
                 public void onClick(View v) {
-                    ((MainActivity) mAdapterContext).switchTBeatDetailFragment(mTracks.get(getAdapterPosition()));
+                    ((MainActivity) mAdapterContext).switchToBeatDetailFragment(mTracks.get(getAdapterPosition()));
                 }
             });
         }

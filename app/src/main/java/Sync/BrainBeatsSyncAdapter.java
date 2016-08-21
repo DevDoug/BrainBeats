@@ -22,6 +22,10 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import architecture.AccountManager;
 import data.BrainBeatsContract;
@@ -38,20 +42,19 @@ import web.WebApiManager;
 
 /**
  * Created by douglas on 7/21/2016.
+ * Sync adapter for brain beats should keep all Sound Cloud API data in sync.
  */
 public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
 
     // Global variables
     // Define a variable to contain a content resolver instance
     ContentResolver mContentResolver;
-    private Context mContext;
 
     /**
      * Set up the sync adapter
      */
     public BrainBeatsSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
-        mContext = context;
         /*
          * If your app uses a content resolver, get an instance of it
          * from the incoming Context
@@ -201,7 +204,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                         break;
                 }
                 break;
-            case 1: //sync mix related
+            case 1: //sync mix related     //TODO - implement in version 2.0 beta version
                 /*WebApiManager.getRelatedTracks(getContext(), String.valueOf(selectedTrackId), new WebApiManager.OnObjectResponseListener() {
                     @Override
                     public void onObjectResponse(JSONObject object) {
@@ -350,19 +353,17 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         try {
             Uri result = provider.insert(BrainBeatsContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(newMix));
             long returnRowId = ContentUris.parseId(result);
-            if(returnRowId != -1){
-                String[] tagList = newMix.getMixTagList().split(":");
-
-                for(String tag : tagList){
+            //TODO - implement in version 2.0 beta version
+/*            if(returnRowId != -1){
+                String[] tagList = newMix.getMixTagList().split(" ");
+                Set<String> set = new HashSet<String>();
+                Collections.addAll(set, tagList);
+                for(String tag : set){
+                    tag = tag.replaceAll("\"","");
+                    tag = new StringBuilder(tag).insert(0,'#').toString();
                     Uri tagResult = provider.insert(BrainBeatsContract.MixTagEntry.CONTENT_URI, Constants.buildTagRecord(tag,track.getID()));
-                    long returnRowIdTag = ContentUris.parseId(result);
-                    Log.i("Add SoundCloudTag", "Tag ID " + String.valueOf(returnRowIdTag));
-                    Log.i("Add SoundCloudTag", "Mix ID " + String.valueOf(track.getID()));
-
-
                 }
-            }
-            //getContext().getContentResolver().notifyChange(BrainBeatsContract.MixEntry.CONTENT_URI, null, false);
+            }*/
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -375,7 +376,6 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             Uri result = provider.insert(BrainBeatsContract.MixPlaylistEntry.CONTENT_URI, Constants.buildPlaylistRecord(playlist));
-            //getContext().getContentResolver().notifyChange(BrainBeatsContract.MixEntry.CONTENT_URI, null, false);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -384,7 +384,9 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
     public void addUser(UserCollectionEntry collection, boolean isFollowing, ContentProviderClient provider) {
         User user = new User();
         user.setUserName(collection.getUsername());
+        user.setDescription(collection.getDescription());
         user.setSoundCloudUserId(collection.getId());
+        user.setUserProfileImage(collection.getAvatarUrl());
 
         try {
             Uri result = provider.insert(BrainBeatsContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(user)); //insert user rec
@@ -397,6 +399,27 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
+    public void favoriteTrackOnSoundCloud(int trackId, ContentProviderClient provider) {
+        WebApiManager.putUserFavorite(getContext(), architecture.AccountManager.getInstance(getContext()).getUserId(), String.valueOf(trackId), new WebApiManager.OnObjectResponseListener() {
+            @Override
+            public void onObjectResponse(JSONObject object) {
+                Log.i("", "Success track has been favorite on Sound Cloud"); //we have succesfully updated the api with our local change inform the user !
+            }
+        }, new WebApiManager.OnErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String errorMessage = new String(error.networkResponse.data);
+                Log.i("", errorMessage);
+                if (AccountManager.getInstance(getContext()).isConnnectedToSoundCloud()) { //if the user is auhorized to use sound cloud there was an issue
+                    Log.i("", "Fail track has not been favorite on Sound Cloud"); //There was an issue
+                } else { //otherwise have them connect to soundcloud
+                    Log.i("", "Fail track has not been favorite on Sound Cloud user not authorized"); //There was an issue user not authorized
+                }
+            }
+        });
+    }
+
+    //TODO - implement in version 2.0 beta version
 /*    public void updateRelateMixes(ArrayList<Collection> mCollections, ContentProviderClient provider){
         //update all mixes in the collection
         Cursor mixCursor;
@@ -431,26 +454,4 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
             }
         }
     }*/
-
-    public void favoriteTrackOnSoundCloud(int trackId, ContentProviderClient provider) {
-        WebApiManager.putUserFavorite(getContext(), architecture.AccountManager.getInstance(getContext()).getUserId(), String.valueOf(trackId), new WebApiManager.OnObjectResponseListener() {
-            @Override
-            public void onObjectResponse(JSONObject object) {
-                Log.i("", "Success track has been favorite on Sound Cloud"); //we have succesfully updated the api with our local change inform the user !
-            }
-        }, new WebApiManager.OnErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                String errorMessage = new String(error.networkResponse.data);
-                Log.i("", errorMessage);
-                if (AccountManager.getInstance(getContext()).isConnnectedToSoundCloud()) { //if the user is auhorized to use sound cloud there was an issue
-                    //getContext().getContentResolver().notifyChange(Constants.FAVORITE_ERROR_URI, null, false);
-                    Log.i("", "Fail track has not been favorite on Sound Cloud"); //There was an issue
-                } else { //otherwise have them connect to soundcloud
-                    //getContext().getContentResolver().notifyChange(Constants.NOT_LOGGED_IN_TO_SOUNDCLOUD_URI, null, false);
-                    Log.i("", "Fail track has not been favorite on Sound Cloud user not authorized"); //There was an issue user not authorized
-                }
-            }
-        });
-    }
 }

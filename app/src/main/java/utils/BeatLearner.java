@@ -48,6 +48,7 @@ public class BeatLearner {
 
     //TODO:Implement machine learning recommendation
     public void loadNextRecommendedBeat(int selectedTrackId, RecommendationCompleteListener listener) {
+
         //for now do something very basic and just return a random related mix.
         WebApiManager.getRelatedTracks(mContext, String.valueOf(selectedTrackId), new WebApiManager.OnObjectResponseListener() {
             @Override
@@ -70,13 +71,12 @@ public class BeatLearner {
                             Gson gson = new Gson();
                             Type token = new TypeToken<Track>() {
                             }.getType();
-                            Track relatedTracks = gson.fromJson(object.toString(), token);
-                            listener.recommendationComplete(relatedTracks);
+                            Track relatedTrack = gson.fromJson(object.toString(), token);
+                            listener.recommendationComplete(relatedTrack);
                         }
                     }, new WebApiManager.OnErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-
                         }
                     });
                 } catch (Exception ex) {
@@ -91,7 +91,11 @@ public class BeatLearner {
         });
     }
 
-    public Track loadLastBeat() { //load the last track they played
-        return mPreviousTrack;
+    public Track downVoteTrack() { //load the last track they played
+        return null;
+    }
+
+    public Track upVoteTrack(){
+        return null;
     }
 }

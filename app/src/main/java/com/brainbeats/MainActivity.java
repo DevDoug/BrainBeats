@@ -10,7 +10,6 @@ import architecture.AccountManager;
 import architecture.BaseActivity;
 import data.BrainBeatsContract;
 import entity.Track;
-import entity.User;
 import fragments.DashboardDetailFragment;
 import fragments.DashboardFragment;
 import model.Mix;
@@ -21,7 +20,6 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
 
     public Fragment mDashboardFragment;
     public Fragment mDashboardDetailFragment;
-    public Bundle mUserSelections;
     public CoordinatorLayout mCoordinatorLayout;
 
     @Override
@@ -37,7 +35,7 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
             Track track = savedInstanceState.getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
             boolean orientationChange = savedInstanceState.getBoolean(Constants.OREINTATION_SHIFT);
             if (orientationChange) {
-                switchTBeatDetailFragment(track);
+                switchToBeatDetailFragment(track);
             }
         } else {
             mDashboardFragment = new DashboardFragment();
@@ -49,16 +47,9 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
         if (intentBundle != null) {
             if (intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX) != null) {
                 Mix sentMix = (Mix) intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX);
-                Track playTrack = new Track();
                 if (sentMix != null) {
-                    playTrack.setTitle(sentMix.getMixTitle());
-                    playTrack.setArtworkURL(sentMix.getMixAlbumCoverArt());
-                    playTrack.setID(sentMix.getSoundCloudId());
-                    playTrack.setStreamURL(sentMix.getStreamURL());
-                    User scUser = new User();
-                    scUser.setUsername(sentMix.getUser().getUserName());
-                    playTrack.setUser(scUser);
-                    switchTBeatDetailFragment(playTrack);
+                    Track playTrack = new Track(sentMix);
+                    switchToBeatDetailFragment(playTrack);
                 }
             }
         }
@@ -80,6 +71,7 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
         super.onResume();
         SyncManager.getInstance().updateAllTables(AccountManager.getInstance(MainActivity.this).getUserId(), mAccount, BrainBeatsContract.CONTENT_AUTHORITY);
 
+        //TODO uncomment after testing
 /*        if (SyncManager.getInstance().getIsGlobalSyncRequired()) {
             SyncManager.getInstance().updateAllTables(AccountManager.getInstance(MainActivity.this).getUserId(), mAccount, BrainBeatsContract.CONTENT_AUTHORITY);
             SyncManager.mIsGlobalSyncRequired = false;
@@ -96,9 +88,8 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
         replaceFragment(mDashboardFragment, mDashboardFragment.getTag());
     }
 
-    public void switchTBeatDetailFragment(Track track) {
+    public void switchToBeatDetailFragment(Track track) {
         toggleNavDrawerIcon();
-
         Bundle args = new Bundle();
         args.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, track);
         mDashboardDetailFragment.setArguments(args);
@@ -106,6 +97,5 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-    }
+    public void onFragmentInteraction(Uri uri) {}
 }

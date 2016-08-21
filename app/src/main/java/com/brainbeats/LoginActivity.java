@@ -198,7 +198,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         HashMap<String, String> map = Constants.mapQueryParams(uriFrag);
 
         AccountManager.getInstance(this).setAccessToken(map.get(Constants.HASH_KEY_ACCESS_TOKEN));
-        WebApiManager.getSoundCloudUser(this, map.get(Constants.HASH_KEY_ACCESS_TOKEN), new WebApiManager.OnObjectResponseListener() {
+        WebApiManager.getSoundCloudSelf(this, map.get(Constants.HASH_KEY_ACCESS_TOKEN), new WebApiManager.OnObjectResponseListener() {
             @Override
             public void onObjectResponse(JSONObject object) {
                 Log.i(getClass().getSimpleName(), "Response = " + object.toString());
@@ -236,11 +236,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     ContentValues values = new ContentValues();
                     values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME, soundCloudUser.getUsername());
                     values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PASSWORD, Constants.generateEncryptedPass());
+                    values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PROFILE_IMG, soundCloudUser.getAvatarUrl());
                     values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID, soundCloudUser.getId());
                     Uri returnRow = getContentResolver().insert(BrainBeatsContract.UserEntry.CONTENT_URI, values);
 
                     long returnRowId = ContentUris.parseId(returnRow);
                     if (returnRowId != -1) { //New user create with sound cloud if success login.
+                        AccountManager.getInstance(LoginActivity.this).setSyncToSoundCloud(true); // logged in with sound cloud enable sync by default
                         finish();
                         Intent dashboardIntent = new Intent(LoginActivity.this, MainActivity.class);
                         AccountManager.getInstance(LoginActivity.this).setUserId(String.valueOf(soundCloudUser.getId()));

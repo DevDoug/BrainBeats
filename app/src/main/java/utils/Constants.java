@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -73,6 +74,9 @@ public class Constants {
     public static final int BEAT_ITEM_DRAWABLES[] = new int[]{R.drawable.ic_alpha, R.drawable.ic_beta, R.drawable.ic_google, R.drawable.ic_theta,};
     public static final int PASSWORD_MINIMUM_LENGTH = 3;
     public static final String OREINTATION_SHIFT = "LayoutShift";
+
+    //Fragment Uris
+    public static final Uri DASHBOARD_DETAIL_URI = Uri.parse("main://dashboard_detail");
 
 
     public enum AudioServiceRepeatType {
@@ -269,7 +273,9 @@ public class Constants {
     public static ContentValues buildUserRecord(User user) {
         ContentValues values = new ContentValues();
         values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME, user.getUserName());
+        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_DESCRIPTION, user.getDescription());
         values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PASSWORD, Constants.generateEncryptedPass());
+        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PROFILE_IMG, user.getUserProfileImage());
         values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID, user.getSoundCloudUserId());
         return values;
     }
@@ -419,6 +425,12 @@ public class Constants {
         return queryMap;
     }
 
+    public static String generateUIFriendlyString(String string){
+        String friendlyString = string.split("-")[0];
+        return friendlyString;
+    }
+
+    //TODO:implement actuall encryption
     public static String generateEncryptedPass() {
         return "Password1";
     }

@@ -10,10 +10,20 @@ public class User implements Parcelable {
 
     private long mUserId;
     private String mUserName;
+    private String mDescription;
     private String mPassword;
+    private String mUserProfileImage;
     private int mSoundCloudUserId;
 
     public User(){}
+
+    public User(entity.User user){
+        this.mUserId = user.getId();
+        this.mUserName = user.getUsername();
+        this.mDescription = user.getDescription();
+        this.mUserProfileImage = user.getAvatarUrl();
+        this.mSoundCloudUserId = user.getId();
+    }
 
     public long getUserId() {
         return mUserId;
@@ -29,6 +39,22 @@ public class User implements Parcelable {
 
     public void setUserName(String UserName) {
         this.mUserName = UserName;
+    }
+
+    public String getDescription() {
+        return mDescription;
+    }
+
+    public void setDescription(String description) {
+        this.mDescription = description;
+    }
+
+    public String getUserProfileImage() {
+        return mUserProfileImage;
+    }
+
+    public void setUserProfileImage(String userProfileImage) {
+        this.mUserProfileImage = userProfileImage;
     }
 
     public long getSoundCloudUserId() {

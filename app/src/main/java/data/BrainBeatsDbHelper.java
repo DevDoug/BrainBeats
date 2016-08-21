@@ -35,6 +35,9 @@ public class BrainBeatsDbHelper extends SQLiteOpenHelper {
 
     //Sort Types
     public static final String DB_SORT_TYPE_DESC                    = " DESC";
+    public static final String DB_SORT_TYPE_LIMIT_FIVE              = " ROWID LIMIT 5";
+
+
 
     public BrainBeatsDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -86,8 +89,9 @@ public class BrainBeatsDbHelper extends SQLiteOpenHelper {
         final String CREATE_TABLE_USER = CREATE_TABLE + BrainBeatsContract.UserEntry.TABLE_NAME + " (" +
                         BrainBeatsContract.UserEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
                         BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
+                        BrainBeatsContract.UserEntry.COLUMN_NAME_USER_DESCRIPTION + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
                         BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PASSWORD + COLUMN_TYPE_TEXT_NOT_NULL + COMMA_SEPERATOR +
-                        BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PROFILE_IMG + COLUMN_TYPE_BLOB_NULL + COMMA_SEPERATOR +
+                        BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PROFILE_IMG + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
                         BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + COLUMN_TYPE_INT_NULL +
                         CREATE_TABLE_TERMINATION;
 

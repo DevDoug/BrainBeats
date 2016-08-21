@@ -3,6 +3,7 @@ package service;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,7 +27,7 @@ import com.brainbeats.R;
 import utils.Constants;
 import web.WebApiManager;
 
-public class AudioService extends Service implements MediaPlayer.OnPreparedListener,  MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
+public class AudioService extends Service implements MediaPlayer.OnPreparedListener,  MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, AudioManager.OnAudioFocusChangeListener {
 
     public static MediaPlayer mPlayer;
 
@@ -40,11 +41,8 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     private IBinder mBinder = new AudioBinder();
     public boolean mIsPaused = false;
-    int mProgressStatus = 0;
-    int mSongDuration = 0;
 
-    public AudioService() {
-    }
+    public AudioService() {}
 
     @Override
     public void onCreate() {
@@ -60,7 +58,6 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public void onPrepared(MediaPlayer mp) {
         mPlayer.start();
-        mSongDuration = mp.getDuration();
     }
 
     @Override
@@ -122,6 +119,12 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         return mPlayer.isLooping();
     }
 
+    public void seekPlayerTo(int pos){ mPlayer.seekTo(pos);}
+
+    public int getPlayerPosition(){
+        return mPlayer.getCurrentPosition();
+    }
+
     public void setRunInForeground(){
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
@@ -149,22 +152,42 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
                 .setTicker("BrainBeats Music Player")
                 .setContentText("My Music")
                 .setSmallIcon(R.drawable.ic_music_note_black)
-                .setLargeIcon(
-                        Bitmap.createScaledBitmap(icon, 128, 128, false))
+                .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
-                .addAction(android.R.drawable.ic_media_previous,
-                        "Previous", ppreviousIntent)
-                .addAction(android.R.drawable.ic_media_play, "Play",
-                        pplayIntent)
-                .addAction(android.R.drawable.ic_media_next, "Next",
-                        pnextIntent).build();
+                .addAction(android.R.drawable.ic_media_previous, "Previous", ppreviousIntent)
+                .addAction(android.R.drawable.ic_media_play, "Play", pplayIntent)
+                .addAction(android.R.drawable.ic_media_next, "Next", pnextIntent).build();
         startForeground(FOREGROUND_SERVICE, notification);
+    }
+
+    @Override
+    public void onAudioFocusChange(int focusChange) {
+        if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
+            // Pause playback
+            pauseSong();
+        } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+            // Resume playback
+        } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+            //am.unregisterMediaButtonEventReceiver(RemoteControlReceiver);
+            //am.abandonAudioFocus(afChangeListener);
+            // Stop playback
+        }
     }
 
     public class AudioBinder extends Binder {
         public AudioService getService() {
             return AudioService.this;
         }
+    }
+
+    public boolean requestAudioFocus(Context context){
+        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        int result = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+            return true;
+        else
+            return false;
+
     }
 }

@@ -56,7 +56,9 @@
                 android:layout_marginLeft="@dimen/seek_bar_margin_left"
                 android:layout_marginRight="@dimen/seek_bar_margin_left"
                 android:layout_marginStart="@dimen/seek_bar_start_margin"
+                android:layout_marginEnd="@dimen/seek_bar_start_margin"
                 android:layout_marginTop="10dp"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true" />
 
             <LinearLayout
@@ -67,22 +69,22 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/shuffle__button"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:id="@+id/arrow_up"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:contentDescription="@string/content_description_shuffle_button"
-                    android:src="@drawable/ic_shuffle_off" />
+                    android:src="@drawable/ic_arrow_upward_black" />
 
                 <ImageView
-                    android:id="@+id/skip_backward_button"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:id="@+id/arrow_down"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:contentDescription="@string/content_description_play_prev_button"
-                    android:src="@drawable/ic_skip_previous" />
+                    android:src="@drawable/ic_arrow_downward_black" />
 
                 <ImageView
                     android:id="@+id/play_song_button"
@@ -129,7 +131,7 @@
             android:id="@+id/card_view"
             android:layout_below="@id/blue_line_seperator"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="140dp"
             android:elevation="1dp"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
@@ -146,19 +148,29 @@
 
                 <ImageView
                     android:id="@+id/artist_thumbnail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="80dp"
+                    android:layout_height="80dp" />
 
                 <TextView
                     android:id="@+id/user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="start"
-
                     android:textColor="@color/theme_secondary_text_color"
-                    android:textSize="@dimen/dialog_item_text_size"
-                    android:layout_alignStart="@id/artist_thumbnail"
+                    android:textSize="22sp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_toRightOf="@id/artist_thumbnail"
                     android:layout_marginLeft="15dp" />
+
+                <TextView
+                    android:id="@+id/artist_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/artist_thumbnail"
+                    android:layout_below="@id/user_name"
+                    android:maxLines="3"
+                    android:textColor="@color/theme_secondary_text_color"
+                    android:textSize="13sp"
+                    android:layout_marginLeft="15dp"/>
 
             </RelativeLayout>
         </android.support.v7.widget.CardView>

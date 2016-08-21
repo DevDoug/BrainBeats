@@ -1,5 +1,6 @@
 package fragments;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,7 +21,6 @@ import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,35 +35,44 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+
 import adapters.MixTagAdapter;
-import adapters.MixerAdapter;
 import architecture.AccountManager;
 import data.BrainBeatsContract;
 import data.BrainBeatsDbHelper;
 import entity.Track;
+import entity.User;
 import service.AudioService;
 import utils.BeatLearner;
 import utils.Constants;
 import sync.OfflineSyncManager;
+import web.WebApiManager;
 
 public class DashboardDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener, BeatLearner.RecommendationCompleteListener {
 
     public static final String TAG = "DashboardDetailFragment";
 
     private TextView mTrackTitle;
+    private TextView mArtistDescription;
     private ImageView mAlbumCoverArt;
     private ImageView mPlaySongButton;
-    private ImageView mSkipBackwardButton;
+    private ImageView mUpvoteArrow;
+    private ImageView mDownVoteArrow;
     private ImageView mSkipForwardButton;
     private ImageView mLoopSongButton;
     private TextView mArtistName;
-    private ShareActionProvider mShareActionProvider;
-    private CoordinatorLayout mCoordinatorLayout;
+    private ImageView mArtistThumbnail;
     public Thread mUpdateSeekBar;
     int mProgressStatus = 0;
 
@@ -85,8 +93,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
 
     private MixTagAdapter mMixTagAdapter;
     private RecyclerView mMixerTags;
-    private GridLayoutManager mTagGridLayoutManager;
-
 
     public DashboardDetailFragment() {
         // Required empty public constructor
@@ -117,6 +123,17 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         // Bind to LocalService
         Intent intent = new Intent(getContext(), AudioService.class);
         getContext().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        mPlayTrackSeekBar.setProgress(0);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener");
+        }
     }
 
     @Override
@@ -134,22 +151,22 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         super.onPause();
         if (mUpdateSeekBar != null)
             mUpdateSeekBar.interrupt(); // stop updating a the progress bar if out of view
-
-        mPlayTrackSeekBar.setProgress(0);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dashboard_detail, container, false);
-        //mAlbumTrackList = (ListView) v.findViewById(R.id.album_title_list);
         mMixerTags = (RecyclerView) v.findViewById(R.id.mix_tag_grid);
 
         mTrackTitle = (TextView) v.findViewById(R.id.track_title);
+        mArtistDescription = (TextView) v.findViewById(R.id.artist_description);
         mAlbumCoverArt = (ImageView) v.findViewById(R.id.album_cover_art);
         mPlaySongButton = (ImageView) v.findViewById(R.id.play_song_button);
-        mSkipBackwardButton = (ImageView) v.findViewById(R.id.skip_backward_button);
+        mUpvoteArrow = (ImageView) v.findViewById(R.id.arrow_up);
+        mDownVoteArrow = (ImageView) v.findViewById(R.id.arrow_down);
         mSkipForwardButton = (ImageView) v.findViewById(R.id.skip_forward_button);
         mLoopSongButton = (ImageView) v.findViewById(R.id.repeat_button);
+        mArtistThumbnail = (ImageView) v.findViewById(R.id.artist_thumbnail);
         mPlayTrackSeekBar = (SeekBar) v.findViewById(R.id.play_song_seek_bar);
         mArtistName = (TextView) v.findViewById(R.id.user_name);
 
@@ -157,7 +174,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         mAddToLibraryFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_add_to_library);
         mFavFab = (FloatingActionButton) v.findViewById(R.id.floating_action_favorite);
         mFollowArtistFab = (FloatingActionButton) v.findViewById(R.id.floating_follow_artist);
-
 
         fab_open = AnimationUtils.loadAnimation(getContext(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getContext(), R.anim.fab_close);
@@ -170,7 +186,8 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         mFollowArtistFab.setOnClickListener(this);
 
         mPlaySongButton.setOnClickListener(this);
-        mSkipBackwardButton.setOnClickListener(this);
+        mUpvoteArrow.setOnClickListener(this);
+        mDownVoteArrow.setOnClickListener(this);
         mSkipForwardButton.setOnClickListener(this);
         mLoopSongButton.setOnClickListener(this);
 
@@ -192,18 +209,18 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         if (mUserSelections != null) {
             mSelectedTrack = (Track) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_TRACK);
             if (mSelectedTrack != null) {
-                mTrackTitle.setText(mSelectedTrack.getTitle());
+                mTrackTitle.setText(Constants.generateUIFriendlyString(mSelectedTrack.getTitle()));
 
                 if (mSelectedTrack.getArtworkURL() == null)
                     mAlbumCoverArt.setImageResource(R.drawable.placeholder);
                 else
                     Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
 
-                mArtistName.setText(mSelectedTrack.getUser().getUsername());
+                getUserInfo(mSelectedTrack.getUser().getId());
             }
         }
 
-        mTagGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
+        GridLayoutManager mTagGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
         mMixerTags.setLayoutManager(mTagGridLayoutManager);
         mMixerTags.setAdapter(mMixTagAdapter);
 
@@ -288,23 +305,26 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         switch (v.getId()) {
             case R.id.play_song_button:
                 if (mBound) {
-                    if (mAudioService.getIsPlaying()) {
-                        mAudioService.pauseSong();
-                        mPlaySongButton.setImageResource(R.drawable.ic_play_circle);
-                    } else {
-                        mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
-                        if(mSelectedTrack.getStreamURL() != null)
-                            mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
-                        startProgressBarThread();
-                        mAudioService.setRunInForeground();
+                    if(mAudioService.requestAudioFocus(getContext())) { //make sure are audio focus request returns true before playback
+                        if (mAudioService.getIsPlaying()) {
+                            mAudioService.pauseSong();
+                            mPlaySongButton.setImageResource(R.drawable.ic_play_circle);
+                        } else {
+                            mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
+                            if(mSelectedTrack.getStreamURL() != null)
+                                mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
+                            startProgressBarThread();
+                            mAudioService.setRunInForeground();
+                        }
                     }
                 }
                 break;
-            case R.id.skip_backward_button:
-                BeatLearner.getInstance(getContext()).loadLastBeat();
+            case R.id.arrow_down:
+                mSelectedTrack = BeatLearner.getInstance(getContext()).downVoteTrack(); // downvote this track
                 break;
             case R.id.skip_forward_button:
                 BeatLearner.getInstance(getContext()).loadNextRecommendedBeat(mSelectedTrack.getID(), this);
+                BeatLearner.getInstance(getContext()).mPreviousTrack = mSelectedTrack;
                 break;
             case R.id.repeat_button:
                 if (mBound) {
@@ -317,7 +337,8 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                     }
                 }
                 break;
-            case R.id.shuffle__button:
+            case R.id.arrow_up:
+                mSelectedTrack = BeatLearner.getInstance(getContext()).upVoteTrack(); // downvote this track
                 break;
             case R.id.floating_action_button_track_options:
                 animateFAB();
@@ -350,16 +371,15 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 while (mProgressStatus < trackDuration) {
                     try {
                         Thread.sleep(1000); //Update once per second
-                        mProgressStatus = mAudioService.mPlayer.getCurrentPosition();
+                        mProgressStatus = mAudioService.getPlayerPosition();
                         mPlayTrackSeekBar.setProgress(mProgressStatus);
                         mPlayTrackSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                             @Override
                             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                                 if (fromUser) {
-                                    mAudioService.mPlayer.seekTo(progress);
+                                    mAudioService.seekPlayerTo(progress);
                                 }
                             }
-
                             @Override
                             public void onStartTrackingTouch(SeekBar seekBar) {}
                             @Override
@@ -386,8 +406,8 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                         BrainBeatsContract.MixTagEntry.CONTENT_URI,  // Table to query
                         null,                          // Projection to return
                         BrainBeatsContract.MixTagEntry.COLUMN_NAME_MIX_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the li,
-                        new String[]{String.valueOf(mSelectedTrack.getID())},                  // No selection arguments
-                        null                   // Default sort order
+                        new String[]{String.valueOf(mSelectedTrack.getID())},         // No selection arguments
+                        BrainBeatsDbHelper.DB_SORT_TYPE_LIMIT_FIVE                   // Default sort order
                 );
             default:
                 // An invalid id was passed in
@@ -411,19 +431,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     @Override
     public Track recommendationComplete(Track track) {
         mSelectedTrack = track;
-        mTrackTitle.setText(track.getTitle());
-        if (track.getArtworkURL() == null)
-            mAlbumCoverArt.setImageResource(R.drawable.placeholder);
-        else
-            Picasso.with(getContext()).load(track.getArtworkURL()).into(mAlbumCoverArt);
-        if (mBound) {
-            if (track.getStreamURL() != null) {
-                mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
-                mAudioService.playSong(Uri.parse(track.getStreamURL()));
-                startProgressBarThread();
-            }
-        }
-        mArtistName.setText(track.getUser().getUsername());
+        updateCurrentTrack(mSelectedTrack);
         return null;
     }
 
@@ -471,5 +479,41 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             mFollowArtistFab.setClickable(true);
             mIsFabOpen = true;
         }
+    }
+
+    public void updateCurrentTrack(Track track){
+        mTrackTitle.setText(track.getTitle());
+        if (track.getArtworkURL() == null)
+            mAlbumCoverArt.setImageResource(R.drawable.placeholder);
+        else
+            Picasso.with(getContext()).load(track.getArtworkURL()).into(mAlbumCoverArt);
+        if (mBound) {
+            if (track.getStreamURL() != null) {
+                mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
+                mAudioService.playSong(Uri.parse(track.getStreamURL()));
+                startProgressBarThread();
+            }
+        }
+        getUserInfo(track.getUser().getId());
+    }
+
+    public void getUserInfo(int userId){
+        WebApiManager.getSoundCloudUser(getContext(), String.valueOf(userId), new WebApiManager.OnObjectResponseListener() {
+            @Override
+            public void onObjectResponse(JSONObject object) {
+                Gson gson = new Gson();
+                Type token = new TypeToken<User>() {}.getType();
+                User soundCloudUser = gson.fromJson(object.toString(), token);
+                mArtistName.setText(soundCloudUser.getUsername());
+                Picasso.with(getContext()).load(soundCloudUser.getAvatarUrl()).into(mArtistThumbnail);
+                mArtistDescription.setText(soundCloudUser.getDescription());
+            }
+        }, new WebApiManager.OnErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
     }
 }
