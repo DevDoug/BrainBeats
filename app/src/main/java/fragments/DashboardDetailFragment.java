@@ -320,7 +320,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 }
                 break;
             case R.id.arrow_down:
-                mSelectedTrack = BeatLearner.getInstance(getContext()).downVoteTrack(); // downvote this track
+                mSelectedTrack = BeatLearner.getInstance(getContext()).downVoteTrack(mSelectedTrack.getID()); // downvote this track
                 break;
             case R.id.skip_forward_button:
                 BeatLearner.getInstance(getContext()).loadNextRecommendedBeat(mSelectedTrack.getID(), this);
@@ -338,7 +338,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 }
                 break;
             case R.id.arrow_up:
-                mSelectedTrack = BeatLearner.getInstance(getContext()).upVoteTrack(); // downvote this track
+                mSelectedTrack = BeatLearner.getInstance(getContext()).upVoteTrack(mSelectedTrack.getID()); // downvote this track
                 break;
             case R.id.floating_action_button_track_options:
                 animateFAB();
