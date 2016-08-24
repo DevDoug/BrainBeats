@@ -90,6 +90,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     private FloatingActionButton mFollowArtistFab;
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;
     private boolean mIsFabOpen = false;
+    private boolean mLooping = false;
 
     private MixTagAdapter mMixTagAdapter;
     private RecyclerView mMixerTags;
@@ -328,12 +329,22 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 break;
             case R.id.repeat_button:
                 if (mBound) {
-                    if (!mAudioService.getIsLooping()) {
-                        mAudioService.setSongLooping(true);
-                        mLoopSongButton.setImageResource(R.drawable.ic_repeat);
+                    if(mAudioService.getIsPlaying()){
+                        if (!mAudioService.getIsLooping()) {
+                            mAudioService.setSongLooping(true);
+                            mLoopSongButton.setImageResource(R.drawable.ic_repeat);
+                        } else {
+                            mAudioService.setSongLooping(false);
+                            mLoopSongButton.setImageResource(R.drawable.ic_repeat_off);
+                        }
                     } else {
-                        mAudioService.setSongLooping(false);
-                        mLoopSongButton.setImageResource(R.drawable.ic_repeat_off);
+                        if(!mLooping) {
+                            mLoopSongButton.setImageResource(R.drawable.ic_repeat);
+                            mLooping = true;
+                        } else {
+                            mLoopSongButton.setImageResource(R.drawable.ic_repeat_off);
+                            mLooping = false;
+                        }
                     }
                 }
                 break;
@@ -514,6 +525,5 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
 
             }
         });
-
     }
 }

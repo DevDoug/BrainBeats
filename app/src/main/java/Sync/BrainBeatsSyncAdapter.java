@@ -16,6 +16,7 @@ import android.util.Log;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -293,11 +294,9 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                 });
                 break;
             case 3: // sync user's
-                //TODO add get people the user is following and convert it to a Brain Beats user.
                 WebApiManager.getUserFollowing(getContext(), AccountManager.getInstance(getContext()).getUserId(), new WebApiManager.OnObjectResponseListener() {
                     @Override
                     public void onObjectResponse(JSONObject object) {
-                        Log.i("User fetch succsess", "success");
                         Gson gson = new Gson();
                         Type token = new TypeToken<UserCollection>() {
                         }.getType();
@@ -317,8 +316,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                                         userCursor.close();
                                     } else {
                                         if (!String.valueOf(collection.getId()).equalsIgnoreCase(AccountManager.getInstance(getContext()).getUserId())) // if this user is not the current user
-                                            addUser(collection, true, provider); // create this as a user from sound cloud
-                                        Log.i("User Added", "Added");
+                                            getUserInfo(collection.getId(),provider); // create this as a user from sound cloud
                                         if (userCursor != null) {
                                             userCursor.close();
                                         }
@@ -381,7 +379,42 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    public void addUser(UserCollectionEntry collection, boolean isFollowing, ContentProviderClient provider) {
+    public void getUserInfo(int userId, ContentProviderClient provider){
+        WebApiManager.getSoundCloudUser(getContext(), String.valueOf(userId), new WebApiManager.OnObjectResponseListener() {
+            @Override
+            public void onObjectResponse(JSONObject object) {
+                Gson gson = new Gson();
+                Type token = new TypeToken<entity.User>() {}.getType();
+                entity.User soundCloudUser = gson.fromJson(object.toString(), token);
+                addUser(soundCloudUser, true, provider);
+            }
+        }, new WebApiManager.OnErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+    }
+
+    public void addUser(entity.User soundCloudUser, boolean isFollowing, ContentProviderClient provider) {
+        User user = new User();
+        user.setUserName(soundCloudUser.getUsername());
+        user.setDescription(soundCloudUser.getDescription());
+        user.setSoundCloudUserId(soundCloudUser.getId());
+        user.setUserProfileImage(soundCloudUser.getAvatarUrl());
+
+        try {
+            Uri result = provider.insert(BrainBeatsContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(user)); //insert user rec
+            if (isFollowing) { //if the user is following this person add the record to the following table, now when quered
+                Uri relatedResult = provider.insert(BrainBeatsContract.UserFollowersEntry.CONTENT_URI, Constants.buildUserFollowingRecord(AccountManager.getInstance(getContext()).getUserId(), String.valueOf(user.getSoundCloudUserId())));
+                Log.i("Add user following rec", "user collection Id " + String.valueOf(user.getSoundCloudUserId()));
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+/*    public void addUser(UserCollectionEntry collection, boolean isFollowing, ContentProviderClient provider) {
         User user = new User();
         user.setUserName(collection.getUsername());
         user.setDescription(collection.getDescription());
@@ -397,7 +430,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     public void favoriteTrackOnSoundCloud(int trackId, ContentProviderClient provider) {
         WebApiManager.putUserFavorite(getContext(), architecture.AccountManager.getInstance(getContext()).getUserId(), String.valueOf(trackId), new WebApiManager.OnObjectResponseListener() {

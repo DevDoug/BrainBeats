@@ -5,52 +5,51 @@
     android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_view"
-    android:layout_width="match_parent"
-    android:layout_height="140dp"
-    android:elevation="1dp"
-    android:layout_marginBottom="10dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:layout_marginTop="1dp">
-
-    <RelativeLayout
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/custom_list_text_background"
-        android:orientation="horizontal"
-        android:padding="15dp"
-        android:gravity="center_vertical">
+        android:layout_height="140dp"
+        android:elevation="1dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="1dp">
 
-        <ImageView
-            android:id="@+id/artist_thumbnail"
-            android:layout_width="80dp"
-            android:layout_height="80dp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_list_text_background"
+            android:orientation="horizontal"
+            android:padding="15dp"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/theme_secondary_text_color"
-            android:textSize="22sp"
-            android:layout_toRightOf="@id/artist_thumbnail"
-            android:layout_marginLeft="15dp"
-            android:layout_marginBottom="5dp"/>
+            <ImageView
+                android:id="@+id/artist_thumbnail"
+                android:layout_width="80dp"
+                android:layout_height="80dp" />
 
-        <TextView
-            android:id="@+id/artist_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/artist_thumbnail"
-            android:layout_below="@id/user_name"
-            android:maxLines="3"
-            android:textColor="@color/theme_secondary_text_color"
-            android:textSize="13sp"
-            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac elit sed purus sodales maximus non ac purus. Donec vehicula elementum posuere. Pellentesque placerat dolor eget mauris placerat, vitae ultrices libero commodo. Suspendisse vitae dolor scelerisque, dignissim est sed, sodales odio."
-            android:layout_marginLeft="15dp"/>
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/theme_secondary_text_color"
+                android:textSize="22sp"
+                android:layout_marginBottom="5dp"
+                android:layout_toRightOf="@id/artist_thumbnail"
+                android:layout_marginLeft="15dp" />
 
-    </RelativeLayout>
-</android.support.v7.widget.CardView>
+            <TextView
+                android:id="@+id/artist_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/artist_thumbnail"
+                android:layout_below="@id/user_name"
+                android:maxLines="3"
+                android:textColor="@color/theme_secondary_text_color"
+                android:textSize="13sp"
+                android:layout_marginLeft="15dp"/>
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
 
 </LinearLayout>
