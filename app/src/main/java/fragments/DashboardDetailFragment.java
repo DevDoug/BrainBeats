@@ -316,16 +316,19 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                                 mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
                             startProgressBarThread();
                             mAudioService.setRunInForeground();
+                            if(mLooping){
+                                mAudioService.setSongLooping(true);
+                            }
                         }
                     }
                 }
                 break;
             case R.id.arrow_down:
                 mSelectedTrack = BeatLearner.getInstance(getContext()).downVoteTrack(mSelectedTrack.getID()); // downvote this track
+                BeatLearner.getInstance(getContext()).loadNextRecommendedBeat(mSelectedTrack.getID(), this);
                 break;
             case R.id.skip_forward_button:
                 BeatLearner.getInstance(getContext()).loadNextRecommendedBeat(mSelectedTrack.getID(), this);
-                BeatLearner.getInstance(getContext()).mPreviousTrack = mSelectedTrack;
                 break;
             case R.id.repeat_button:
                 if (mBound) {

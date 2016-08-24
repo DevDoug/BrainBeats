@@ -27,8 +27,6 @@ import web.WebApiManager;
 public class BeatLearner {
 
     public static BeatLearner mBeatLearnerInstance;
-    public boolean mHasStartedLearning;    //if false new user so we have data to work with
-    public Track mPreviousTrack;
     public Context mContext;
 
     public BeatLearner(Context context) {
@@ -90,10 +88,12 @@ public class BeatLearner {
         });
     }
 
+    //TODO - implement in version 2.0 beta version
     public Track downVoteTrack(int selectedTrackId) { //load the last track they played
         return null;
     }
 
+    //TODO - implement in version 2.0 beta version
     public Track upVoteTrack(int selectedTrackId){
         return null;
     }
