@@ -11,7 +11,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
@@ -95,6 +97,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     private MixTagAdapter mMixTagAdapter;
     private RecyclerView mMixerTags;
 
+
     public DashboardDetailFragment() {
         // Required empty public constructor
     }
@@ -124,7 +127,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         // Bind to LocalService
         Intent intent = new Intent(getContext(), AudioService.class);
         getContext().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        mPlayTrackSeekBar.setProgress(0);
     }
 
     @Override
@@ -324,8 +326,12 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 }
                 break;
             case R.id.arrow_down:
-                mSelectedTrack = BeatLearner.getInstance(getContext()).downVoteTrack(mSelectedTrack.getID()); // downvote this track
+                BeatLearner.getInstance(getContext()).downVoteTrack(mSelectedTrack.getID()); // downvote this track
                 BeatLearner.getInstance(getContext()).loadNextRecommendedBeat(mSelectedTrack.getID(), this);
+
+                Snackbar downVoteSnack;
+                downVoteSnack = Snackbar.make(((MainActivity) getActivity()).mCoordinatorLayout, getString(R.string.downvote_track), Snackbar.LENGTH_LONG);
+                downVoteSnack.show();
                 break;
             case R.id.skip_forward_button:
                 BeatLearner.getInstance(getContext()).loadNextRecommendedBeat(mSelectedTrack.getID(), this);
@@ -352,7 +358,11 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 }
                 break;
             case R.id.arrow_up:
-                mSelectedTrack = BeatLearner.getInstance(getContext()).upVoteTrack(mSelectedTrack.getID()); // downvote this track
+                BeatLearner.getInstance(getContext()).upVoteTrack(mSelectedTrack.getID()); // upvote this track
+
+                Snackbar upvoteSnack;
+                upvoteSnack = Snackbar.make(((MainActivity) getActivity()).mCoordinatorLayout, getString(R.string.upvote_track), Snackbar.LENGTH_LONG);
+                upvoteSnack.show();
                 break;
             case R.id.floating_action_button_track_options:
                 animateFAB();
@@ -360,15 +370,18 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             case R.id.floating_action_button_add_to_library:
                 settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateMix.getCode());
                 OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
+                animateFAB();
                 break;
             case R.id.floating_action_favorite:
                 settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateFavorite.getCode());
                 OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
+                animateFAB();
                 break;
             case R.id.floating_follow_artist:
                 settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Users.getCode());
                 settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
                 OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
+                animateFAB();
                 break;
             default:
                 break;

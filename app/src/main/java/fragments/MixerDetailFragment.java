@@ -170,6 +170,10 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
                 item.setMixItemTitle(getContext().getResources().getStringArray(R.array.default_mix_items)[3]);
                 mDialog.dismiss();
                 break;
+            case 4:
+                item.setMixItemTitle(getContext().getResources().getStringArray(R.array.default_mix_items)[4]);
+                mDialog.dismiss();
+                break;
         }
         item.setMixItemLevel(Constants.MIX_ITEM_DEFAULT_LEVEL);
         boolean mixItemExists = false;

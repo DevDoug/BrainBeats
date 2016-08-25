@@ -62,6 +62,7 @@
         <item name="beta_option">Beta</item>
         <item name="gamma_option">Gamma</item>
         <item name="theta_option">Theta</item>
+        <item name="voice_option">Voice</item>
     </string-array>
 
     <string name="beat_levels">Beat Levels</string>
@@ -144,5 +145,8 @@
     <string name="preference_sync_with_sound_cloud_text">Sync with Sound Cloud</string>
     <string name="login_failed_error_message">Login Failed</string>
     <string name="issue_creating_account_error_message">There was an issue creating this account.</string>
+
+    <string name="downvote_track">Got it we wont play this mix again.</string>
+    <string name="upvote_track">Great we will play more mixes like this one in the future.</string>
 
 </resources>

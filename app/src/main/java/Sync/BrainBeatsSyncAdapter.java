@@ -414,24 +414,6 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-/*    public void addUser(UserCollectionEntry collection, boolean isFollowing, ContentProviderClient provider) {
-        User user = new User();
-        user.setUserName(collection.getUsername());
-        user.setDescription(collection.getDescription());
-        user.setSoundCloudUserId(collection.getId());
-        user.setUserProfileImage(collection.getAvatarUrl());
-
-        try {
-            Uri result = provider.insert(BrainBeatsContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(user)); //insert user rec
-            if (isFollowing) { //if the user is following this person add the record to the following table, now when quered
-                Uri relatedResult = provider.insert(BrainBeatsContract.UserFollowersEntry.CONTENT_URI, Constants.buildUserFollowingRecord(AccountManager.getInstance(getContext()).getUserId(), String.valueOf(collection.getId())));
-                Log.i("Add user following rec", "user collection Id " + String.valueOf(collection.getId()));
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }*/
-
     public void favoriteTrackOnSoundCloud(int trackId, ContentProviderClient provider) {
         WebApiManager.putUserFavorite(getContext(), architecture.AccountManager.getInstance(getContext()).getUserId(), String.valueOf(trackId), new WebApiManager.OnObjectResponseListener() {
             @Override
