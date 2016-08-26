@@ -1,10 +1,13 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content_container"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     tools:context="fragments.DashboardDetailFragment">
 
     <ScrollView
+        android:id="@+id/main_container_scroll"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
