@@ -63,12 +63,13 @@
         <item name="gamma_option">Gamma</item>
         <item name="theta_option">Theta</item>
         <item name="voice_option">Voice</item>
+        <item name="guitar_option">Guitar</item>
+        <item name="piano_option">Piano</item>
+        <item name="drums_option">Drums</item>
     </string-array>
 
     <string name="beat_levels">Beat Levels</string>
     <string name="album_cover_art_image_description">Album cover art</string>
-    <string name="increase_beat_amount_icon_content_description">Increase beat amount icon</string>
-    <string name="decrease_beat_amount_icon_content_description">Increase Beat Amount</string>
 
     <!--Error strings -->
     <string name="unknown_volley_error">Unknown error.</string>
@@ -103,10 +104,6 @@
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid.</string>
-    <string name="error_invalid_password">This password is too short.</string>
-    <string name="error_incorrect_password">This password is incorrect.</string>
-    <string name="error_field_required">This field is required.</string>
     <string name="connect_to_network_message">Unable to connect to network</string>
     <string name="go_to_settings_message">Go to settings</string>
     <string name="enable_wifi_in_settings_message">Please connect to a network to use this feature.</string>
@@ -118,14 +115,18 @@
 
     <!-- Item updated messages -->
     <string name="item_updated_mix">This mix has been updated.</string>
+
     <!-- Error message strings -->
-    <string name="error_favoriting_message">There was a problem favoriting this mix.</string>
+    <string name="error_favoriting_message">There was a problem adding this mix to favorites.</string>
     <string name="error_this_mix_is_already_a_favorite">This mix is already a favorite.</string>
     <string name="error_this_mix_is_already_in_library">This mix is already in your library.</string>
     <string name="error_this_mix_is_in_the_mixer">This mix is already in the mixer.</string>
     <string name="error_rating_message">There was a problem rating this mix.</string>
     <string name="error_unkown_message">An unexpected error occurred.</string>
-
+    <string name="error_invalid_email">This email address is invalid.</string>
+    <string name="error_invalid_password">This password is too short.</string>
+    <string name="error_incorrect_password">This password is incorrect.</string>
+    <string name="error_field_required">This field is required.</string>
     <string name="search_hint">Search</string>
     <string name="please_sign_in_to_sound_cloud_dialog">Please sign in to sound cloud before using this feature.</string>
 
@@ -136,6 +137,9 @@
     <string name="content_description_play_button">Play button</string>
     <string name="content_description_play_next_button">Play next button</string>
     <string name="content_description_repeat_button">Repeat button</string>
+    <string name="increase_beat_amount_icon_content_description">Increase beat amount icon</string>
+    <string name="decrease_beat_amount_icon_content_description">Increase Beat Amount</string>
+
 
     <string name="no_songs_placeholder">No songs yet.</string>
     <string name="log_in_using_sound_cloud">Log in using Sound Cloud</string>
