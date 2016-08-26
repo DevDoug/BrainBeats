@@ -93,6 +93,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;
     private boolean mIsFabOpen = false;
     private boolean mLooping = false;
+    private boolean mIsAlive = true;
 
     private MixTagAdapter mMixTagAdapter;
     private RecyclerView mMixerTags;
@@ -245,6 +246,8 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 ((MainActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
             }
         });
+
+        mIsAlive = true;
     }
 
     @Override
@@ -395,7 +398,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         mUpdateSeekBar = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (mProgressStatus < trackDuration) {
+                while (mProgressStatus < trackDuration && mIsAlive) {
                     try {
                         Thread.sleep(1000); //Update once per second
                         mProgressStatus = mAudioService.getPlayerPosition();
@@ -416,6 +419,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                         Log.i("Progress bar thread", "Exception occured" + e.toString());
+                        mIsAlive = false;
                     }
                 }
             }

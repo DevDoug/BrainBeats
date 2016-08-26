@@ -156,7 +156,7 @@ public class Constants {
         mix.setSoundCloudId(track.getID());
         mix.setStreamURL(track.getStreamURL());
         mix.setMixTagList(track.getTagList());
-        //mix.setRelatedTracksId(relatedTracksId);
+        mix.setUser(new User(track.getUser()));
         return mix;
     }
 

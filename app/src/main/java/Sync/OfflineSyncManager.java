@@ -67,7 +67,7 @@ public class OfflineSyncManager {
                                         if (mix.getIsInLibrary() == 0) {
                                             mix.setIsInLibrary(1);
                                             updateMixRecord(provider, mix, selectedTrack.getID());
-                                            showSnackMessage(coordinatorLayout, R.string.item_updated_mix);
+                                            showSnackMessage(coordinatorLayout, R.string.song_added_to_library_snack_message);
                                         } else if (mix.getIsInLibrary() == 1) {
                                             showSnackMessage(coordinatorLayout, R.string.error_this_mix_is_already_in_library);
                                         }

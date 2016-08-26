@@ -64,6 +64,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     public void onCompletion(MediaPlayer mp) {
         if (mp.isLooping()) {
             mp.seekTo(0);
+
         }
     }
 

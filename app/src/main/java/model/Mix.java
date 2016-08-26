@@ -16,7 +16,7 @@ public class Mix implements Parcelable {
     private int mMixFavorite;
     private int mMixRating;
     private ArrayList<MixItem> mMixItems;
-    private int mSoundCloudId;
+    private int mMixSoundCloudId;
     private int mRelatedTracksId;
     private int mIsInLibrary;
     private int mIsinMixer;
@@ -77,11 +77,11 @@ public class Mix implements Parcelable {
     }
 
     public int getSoundCloudId() {
-        return mSoundCloudId;
+        return mMixSoundCloudId;
     }
 
     public void setSoundCloudId(int soundCloudId) {
-        this.mSoundCloudId = soundCloudId;
+        this.mMixSoundCloudId = soundCloudId;
     }
 
     public int getRelatedTracksId() {
@@ -150,7 +150,7 @@ public class Mix implements Parcelable {
         dest.writeLong(mId);
         dest.writeString(mMixTitle);
         dest.writeString(mBeatAlbumCoverArtSource);
-        dest.writeInt(mSoundCloudId);
+        dest.writeInt(mMixSoundCloudId);
         dest.writeInt(mRelatedTracksId);
         dest.writeInt(mIsInLibrary);
         dest.writeInt(mIsinMixer);
@@ -163,7 +163,7 @@ public class Mix implements Parcelable {
         mId = in.readLong();
         mMixTitle = in.readString();
         mBeatAlbumCoverArtSource = in.readString();
-        mSoundCloudId = in.readInt();
+        mMixSoundCloudId = in.readInt();
         mRelatedTracksId = in.readInt();
         mIsInLibrary = in.readInt();
         mIsinMixer = in.readInt();
