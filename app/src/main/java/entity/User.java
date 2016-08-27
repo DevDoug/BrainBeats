@@ -28,6 +28,11 @@ public class User {
     @SerializedName("description")
     private String description;
 
+    public User(model.User modelUser){
+        id = (int) modelUser.getSoundCloudUserId();
+    }
+
+
     public Integer getId() {
         return id;
     }
