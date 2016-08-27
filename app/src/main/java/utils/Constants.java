@@ -48,24 +48,27 @@ public class Constants {
     public static final String KEY_EXTRA_SELECTED_TRACK_ID                  = "TrackId";
 
     //Hash map keys
-    public static final String HASH_KEY_ACCESS_TOKEN     = "access_token";
+    public static final String HASH_KEY_ACCESS_TOKEN                = "access_token";
 
     //Shared Preferences
-    public static final String KEY_EXTRA_IS_INCOGNITO_PREF  = "IsIncognito";
-    public static final String KEY_EXTRA_IS_SYNCED_TO_SC    = "SyncedToSoundCloud";
-    public static final String KEY_EXTRA_IS_GLOBAL_SYNC_REQUIRED = "IsGlobalSyncRequired";
+    public static final String KEY_EXTRA_IS_INCOGNITO_PREF          = "IsIncognito";
+    public static final String KEY_EXTRA_IS_SYNCED_TO_SC            = "SyncedToSoundCloud";
+    public static final String KEY_EXTRA_IS_GLOBAL_SYNC_REQUIRED    = "IsGlobalSyncRequired";
 
     //Sound Cloud
-    public static final String SOUND_CLOUD_CLIENT_ID       = "6af4e9b999eaa63f5d797d466cdc4ccb";
-    public static final String SOUND_CLOUD_CLIENT_SECRET   = "09e8c5b6f91e2ab440b9137008d2d32c";
-    public static final String OAUTH_CALLBACK_SCHEME = "brainbeats";
-    public static final String OAUTH_CALLBACK_HOST = "soundcloud/callback";
+    public static final String SOUND_CLOUD_CLIENT_ID                = "6af4e9b999eaa63f5d797d466cdc4ccb";
+    public static final String SOUND_CLOUD_CLIENT_SECRET            = "09e8c5b6f91e2ab440b9137008d2d32c";
+    public static final String OAUTH_CALLBACK_SCHEME                = "brainbeats";
+    public static final String OAUTH_CALLBACK_HOST                  = "soundcloud/callback";
     public static final String CALLBACK_URL = OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
 
     //Loader Types
     public static final int SOCIAL_LOADER  = 101;
     public static final int RELATED_TRACKS_LOADER  = 102;
     public static final int MIX_TAGS_LOADER  = 103;
+
+    //Intents and Communication
+    public static final String SONG_COMPLETE_BROADCAST_ACTION = "com.brainbeats.play.next";
 
     //Misc
     public static final int GRID_SPAN_COUNT = 3;

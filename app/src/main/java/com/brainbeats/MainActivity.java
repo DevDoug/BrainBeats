@@ -1,10 +1,14 @@
 package com.brainbeats;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 
 import architecture.AccountManager;
 import architecture.BaseActivity;
@@ -21,12 +25,16 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     public Fragment mDashboardFragment;
     public Fragment mDashboardDetailFragment;
     public CoordinatorLayout mCoordinatorLayout;
+    private IntentFilter mIntentFilter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
 
         mDashboardFragment = new DashboardFragment();
         mDashboardDetailFragment = new DashboardDetailFragment();
@@ -63,6 +71,7 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
 
     @Override
     public void onPause() {
+        unregisterReceiver(mReceiver);
         super.onPause();
     }
 
@@ -76,6 +85,8 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
             SyncManager.getInstance().updateAllTables(AccountManager.getInstance(MainActivity.this).getUserId(), mAccount, BrainBeatsContract.CONTENT_AUTHORITY);
             SyncManager.mIsGlobalSyncRequired = false;
         }*/
+
+        registerReceiver(mReceiver, mIntentFilter);
     }
 
     @Override
@@ -98,4 +109,14 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
 
     @Override
     public void onFragmentInteraction(Uri uri) {}
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION))
+                if(mDashboardDetailFragment.isVisible()){
+                    (((DashboardDetailFragment) mDashboardDetailFragment)).loadNextTrack();
+                }
+        }
+    };
 }

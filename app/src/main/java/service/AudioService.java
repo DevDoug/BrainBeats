@@ -26,7 +26,7 @@ import com.brainbeats.R;
 
 import utils.Constants;
 import web.WebApiManager;
-
+/*Audio service should handle playing all music, should be a bound service and a started service which will allow us to bind to ui and keep the music in the background when not on the detail activity*/
 public class AudioService extends Service implements MediaPlayer.OnPreparedListener,  MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, AudioManager.OnAudioFocusChangeListener {
 
     public static MediaPlayer mPlayer;
@@ -43,6 +43,13 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     public boolean mIsPaused = false;
 
     public AudioService() {}
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        // We want this service to continue running until it is explicitly
+        // stopped, so return sticky.
+        return START_STICKY;
+    }
 
     @Override
     public void onCreate() {
@@ -64,6 +71,10 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     public void onCompletion(MediaPlayer mp) {
         if (mp.isLooping()) {
             mp.seekTo(0);
+        } else {
+            Intent broadcastIntent = new Intent(); // send broadcast to main to tell it to load next song
+            broadcastIntent.setAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
+            sendBroadcast(broadcastIntent);
         }
     }
 

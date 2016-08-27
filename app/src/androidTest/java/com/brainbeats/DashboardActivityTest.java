@@ -78,7 +78,7 @@ public class DashboardActivityTest extends Instrumentation {
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
 
-/*    @Test
+    @Test
     public void testDashboardAppears() throws Exception {
         IdlingPolicies.setMasterPolicyTimeout(mWaitingTime * 2, TimeUnit.MILLISECONDS);
         IdlingPolicies.setIdlingResourceTimeout(mWaitingTime * 2, TimeUnit.MILLISECONDS);
@@ -99,7 +99,7 @@ public class DashboardActivityTest extends Instrumentation {
 
         // Clean up.
         Espresso.unregisterIdlingResources(idlingResource);
-    }*/
+    }
 
     @Test
     public void testAddTrackToUserLibrary(){
@@ -115,9 +115,6 @@ public class DashboardActivityTest extends Instrumentation {
 
         //Add the first item to the user library.
         onView(withId(R.id.floating_action_button_track_options)).perform(click());
-
-        IdlingResource idlingResourceTwo = new ElapsedTimeIdlingResource(mWaitingTime);
-        Espresso.registerIdlingResources(idlingResource);
 
         //Click on add to add this item to the users item's
         onView(withId(R.id.floating_action_button_add_to_library)).perform(click());

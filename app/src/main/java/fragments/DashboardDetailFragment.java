@@ -1,9 +1,11 @@
 package fragments;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -108,7 +110,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         setHasOptionsMenu(true);
         setRetainInstance(true);
 
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+/*        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         Drawable up = DrawableCompat.wrap(ContextCompat.getDrawable(getContext(), R.drawable.ic_up));
         DrawableCompat.setTint(up, getResources().getColor(R.color.theme_primary_text_color));
         toolbar.setNavigationIcon(up);
@@ -118,7 +120,8 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 ((MainActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
             }
-        });
+        });*/
+
     }
 
     @Override
@@ -327,14 +330,14 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 break;
             case R.id.arrow_down:
                 BeatLearner.getInstance(getContext()).downVoteTrack(mSelectedTrack.getID()); // downvote this track
-                BeatLearner.getInstance(getContext()).loadNextRecommendedBeat(mSelectedTrack.getID(), this);
+                loadNextTrack();
 
                 Snackbar downVoteSnack;
                 downVoteSnack = Snackbar.make(((MainActivity) getActivity()).mCoordinatorLayout, getString(R.string.downvote_track), Snackbar.LENGTH_LONG);
                 downVoteSnack.show();
                 break;
             case R.id.skip_forward_button:
-                BeatLearner.getInstance(getContext()).loadNextRecommendedBeat(mSelectedTrack.getID(), this);
+                loadNextTrack();
                 break;
             case R.id.repeat_button:
                 if (mBound) {
@@ -506,6 +509,10 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             mFollowArtistFab.setClickable(true);
             mIsFabOpen = true;
         }
+    }
+
+    public void loadNextTrack(){
+        BeatLearner.getInstance(getContext()).loadNextRecommendedBeat(mSelectedTrack.getID(), this);
     }
 
     public void updateCurrentTrack(Track track){
