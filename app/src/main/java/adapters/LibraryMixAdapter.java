@@ -47,6 +47,7 @@ public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapt
                 //start intent to send user to play this mix in player
                 Intent dashboardIntent = new Intent(mAdapterContext, MainActivity.class);
                 dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, selectedMix);
+                dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_USER, selectedMix.getUser());
                 mAdapterContext.startActivity(dashboardIntent);
             }
         });

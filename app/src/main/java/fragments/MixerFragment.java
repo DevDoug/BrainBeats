@@ -71,13 +71,6 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mMixerItems.setLayoutManager(layoutManager);
 
-/*        mMixerItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Cursor c = mMixerAdapter.getCursor();
-                ((MixerActivity) getActivity()).loadMixerDetailFragment(Constants.buildMixFromCursor(getContext(), c, position));
-            }
-        });*/
         mAddNewBeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

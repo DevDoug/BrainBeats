@@ -29,7 +29,7 @@ import entity.Track;
 import model.Mix;
 import model.MixItem;
 import model.Playlist;
-import model.User;
+import model.BrainBeatsUser;
 
 /**
  * Created by Douglas on 4/20/2016.
@@ -42,6 +42,7 @@ public class Constants {
     public static final String KEY_EXTRA_LIBRARY_FILTER_TEXT                = "Filter";
     public static final String KEY_EXTRA_SELECTED_TRACK                     = "SelectedTrack";
     public static final String KEY_EXTRA_SELECTED_MIX                       = "SelectedMix";
+    public static final String KEY_EXTRA_SELECTED_USER                      = "SelectedUser";
     public static final String KEY_EXTRA_SEARCH_KEYWORD                     = "SearchKeyword";
     public static final String KEY_EXTRA_SYNC_TYPE                          = "SyncType";
     public static final String KEY_EXTRA_SYNC_ACTION                        = "SyncAction";
@@ -159,7 +160,6 @@ public class Constants {
         mix.setSoundCloudId(track.getID());
         mix.setStreamURL(track.getStreamURL());
         mix.setMixTagList(track.getTagList());
-        mix.setUser(new User(track.getUser()));
         return mix;
     }
 
@@ -180,18 +180,18 @@ public class Constants {
         Cursor userCursor = context.getContentResolver().query( //get this mixes user
                 BrainBeatsContract.UserEntry.CONTENT_URI,
                 null,  //return everything
-                BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL + BrainBeatsDbHelper.OR_CLAUSE + BrainBeatsContract.UserEntry._ID,
+                BrainBeatsContract.UserEntry._ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                 new String[]{String.valueOf(mix.getMixUserId())},
                 null);
 
-        User brainBeatsUser = new User();
-        if (userCursor != null) {
+        BrainBeatsUser brainBeatsBrainBeatsUser = new BrainBeatsUser();
+        if (userCursor != null && userCursor.getCount() != 0) {
             userCursor.moveToFirst();
-            brainBeatsUser.setUserId(userCursor.getLong(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
-            brainBeatsUser.setUserName(userCursor.getString(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));
-            brainBeatsUser.setSoundCloudUserId(userCursor.getInt(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID)));
+            brainBeatsBrainBeatsUser.setUserId(userCursor.getLong(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
+            brainBeatsBrainBeatsUser.setUserName(userCursor.getString(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));
+            brainBeatsBrainBeatsUser.setSoundCloudUserId(userCursor.getInt(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID)));
             userCursor.close();
-            mix.setUser(brainBeatsUser);
+            mix.setUser(brainBeatsBrainBeatsUser);
         }
 
         Cursor mixItemsCursor = context.getContentResolver().query( //get this mixes mix items
@@ -220,15 +220,15 @@ public class Constants {
         return mix;
     }
 
-    public static User buildUserFromCursor(Context context, Cursor cursor) {
+    public static BrainBeatsUser buildUserFromCursor(Context context, Cursor cursor) {
         cursor.moveToFirst();
 
-        User user = new User();
-        user.setUserId(cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
-        user.setUserName(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));
-        user.setSoundCloudUserId(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID)));
+        BrainBeatsUser brainBeatsUser = new BrainBeatsUser();
+        brainBeatsUser.setUserId(cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
+        brainBeatsUser.setUserName(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));
+        brainBeatsUser.setSoundCloudUserId(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID)));
 
-        return user;
+        return brainBeatsUser;
     }
 
     public static ContentValues buildMixRecord(Mix mix) {
@@ -273,13 +273,13 @@ public class Constants {
         return values;
     }
 
-    public static ContentValues buildUserRecord(User user) {
+    public static ContentValues buildUserRecord(BrainBeatsUser brainBeatsUser) {
         ContentValues values = new ContentValues();
-        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME, user.getUserName());
-        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_DESCRIPTION, user.getDescription());
+        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME, brainBeatsUser.getUserName());
+        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_DESCRIPTION, brainBeatsUser.getDescription());
         values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PASSWORD, Constants.generateEncryptedPass());
-        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PROFILE_IMG, user.getUserProfileImage());
-        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID, user.getSoundCloudUserId());
+        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PROFILE_IMG, brainBeatsUser.getUserProfileImage());
+        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID, brainBeatsUser.getSoundCloudUserId());
         return values;
     }
 
@@ -319,7 +319,7 @@ public class Constants {
                 userCursor.close();
             }
         } else {
-            defaultMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(context).getUserId())); //User is logged in to sound cloud
+            defaultMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(context).getUserId())); //BrainBeatsUser is logged in to sound cloud
         }
 
         ArrayList<MixItem> defaultMixItems = new ArrayList<>(); //build mix items

@@ -20,10 +20,10 @@ public class Mix implements Parcelable {
     private int mRelatedTracksId;
     private int mIsInLibrary;
     private int mIsinMixer;
-    private int mMixUserId;
+    private long mMixUserId;
     private String mStreamURL;
     private String mMixTagList;
-    private User mUser;
+    private BrainBeatsUser mBrainBeatsUser;
 
     public Mix() {
     }
@@ -108,11 +108,11 @@ public class Mix implements Parcelable {
         this.mIsinMixer = isinMixer;
     }
 
-    public int getMixUserId() {
+    public long getMixUserId() {
         return mMixUserId;
     }
 
-    public void setMixUserId(int mixUserId) {
+    public void setMixUserId(long mixUserId) {
         this.mMixUserId = mixUserId;
     }
 
@@ -124,12 +124,12 @@ public class Mix implements Parcelable {
         this.mStreamURL = streamURL;
     }
 
-    public User getUser() {
-        return mUser;
+    public BrainBeatsUser getUser() {
+        return mBrainBeatsUser;
     }
 
-    public void setUser(User user) {
-        this.mUser = user;
+    public void setUser(BrainBeatsUser brainBeatsUser) {
+        this.mBrainBeatsUser = brainBeatsUser;
     }
 
     public String getMixTagList() {
@@ -154,9 +154,9 @@ public class Mix implements Parcelable {
         dest.writeInt(mRelatedTracksId);
         dest.writeInt(mIsInLibrary);
         dest.writeInt(mIsinMixer);
-        dest.writeInt(mMixUserId);
+        dest.writeLong(mMixUserId);
         dest.writeString(mStreamURL);
-        dest.writeParcelable(mUser,0);
+        dest.writeParcelable(mBrainBeatsUser,0);
     }
 
     protected Mix(Parcel in) {
@@ -169,7 +169,7 @@ public class Mix implements Parcelable {
         mIsinMixer = in.readInt();
         mMixUserId = in.readInt();
         mStreamURL = in.readString();
-        mUser = in.readParcelable(User.class.getClassLoader());
+        mBrainBeatsUser = (BrainBeatsUser) in.readParcelable(BrainBeatsUser.class.getClassLoader());
     }
 
     public static final Creator<Mix> CREATOR = new Creator<Mix>() {

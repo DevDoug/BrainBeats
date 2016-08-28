@@ -14,8 +14,10 @@ import architecture.AccountManager;
 import architecture.BaseActivity;
 import data.BrainBeatsContract;
 import entity.Track;
+import entity.User;
 import fragments.DashboardDetailFragment;
 import fragments.DashboardFragment;
+import model.BrainBeatsUser;
 import model.Mix;
 import utils.Constants;
 import sync.SyncManager;
@@ -55,8 +57,11 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
         if (intentBundle != null) {
             if (intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX) != null) {
                 Mix sentMix = (Mix) intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX);
+                BrainBeatsUser mixUser = (BrainBeatsUser) intentBundle.get(Constants.KEY_EXTRA_SELECTED_USER);
                 if (sentMix != null) {
                     Track playTrack = new Track(sentMix);
+                    playTrack.setUser(new entity.User(mixUser));
+                    //playTrack.getUser().setId(sentMix.getMixUserId());
                     switchToBeatDetailFragment(playTrack);
                 }
             }
@@ -115,7 +120,8 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION))
                 if(mDashboardDetailFragment.isVisible()){
-                    (((DashboardDetailFragment) mDashboardDetailFragment)).loadNextTrack();
+                    Track newTrack = (Track) intent.getExtras().get(Constants.KEY_EXTRA_SELECTED_TRACK);
+                    (((DashboardDetailFragment) mDashboardDetailFragment)).updateTrackUI(newTrack);
                 }
         }
     };

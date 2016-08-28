@@ -64,7 +64,6 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
         mPlayMixButton = (ImageView) v.findViewById(R.id.play_song_button);
         ((TextView) v.findViewById(R.id.separator_title)).setText(R.string.beat_levels);
 
-
         return v;
     }
 

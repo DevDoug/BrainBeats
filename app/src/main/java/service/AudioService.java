@@ -23,11 +23,15 @@ import android.widget.SeekBar;
 
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
+import com.squareup.picasso.Picasso;
 
+import entity.Track;
+import utils.BeatLearner;
 import utils.Constants;
 import web.WebApiManager;
+
 /*Audio service should handle playing all music, should be a bound service and a started service which will allow us to bind to ui and keep the music in the background when not on the detail activity*/
-public class AudioService extends Service implements MediaPlayer.OnPreparedListener,  MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, AudioManager.OnAudioFocusChangeListener {
+public class AudioService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, AudioManager.OnAudioFocusChangeListener, BeatLearner.RecommendationCompleteListener {
 
     public static MediaPlayer mPlayer;
 
@@ -42,12 +46,15 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     private IBinder mBinder = new AudioBinder();
     public boolean mIsPaused = false;
 
+    public int mSelectedTrackId;
+
     public AudioService() {}
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // We want this service to continue running until it is explicitly
         // stopped, so return sticky.
+        mSelectedTrackId = intent.getExtras().getInt("StartedTrackId");
         return START_STICKY;
     }
 
@@ -72,9 +79,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         if (mp.isLooping()) {
             mp.seekTo(0);
         } else {
-            Intent broadcastIntent = new Intent(); // send broadcast to main to tell it to load next song
-            broadcastIntent.setAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
-            sendBroadcast(broadcastIntent);
+            loadNextTrack(); //load next track on service side
         }
     }
 
@@ -145,8 +150,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
         Intent previousIntent = new Intent(this, AudioService.class);
         previousIntent.setAction(PREV_ACTION);
-        PendingIntent ppreviousIntent = PendingIntent.getService(this, 0,
-                previousIntent, 0);
+        PendingIntent ppreviousIntent = PendingIntent.getService(this, 0, previousIntent, 0);
 
         Intent playIntent = new Intent(this, AudioService.class);
         playIntent.setAction(PLAY_ACTION);
@@ -186,6 +190,16 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         }
     }
 
+    @Override
+    public void recommendationComplete(Track track) {
+        playSong(Uri.parse(track.getStreamURL()));
+
+        Intent broadcastIntent = new Intent(); // send broadcast to activity to tell it to update ui
+        broadcastIntent.setAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
+        broadcastIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK,track);
+        sendBroadcast(broadcastIntent);
+    }
+
     public class AudioBinder extends Binder {
         public AudioService getService() {
             return AudioService.this;
@@ -199,6 +213,9 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
             return true;
         else
             return false;
+    }
 
+    public void loadNextTrack(){
+        BeatLearner.getInstance(getApplicationContext()).loadNextRecommendedBeat(mSelectedTrackId, this);
     }
 }

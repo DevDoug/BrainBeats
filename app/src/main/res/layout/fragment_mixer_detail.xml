@@ -123,7 +123,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/blue_line_seperator"
-            android:paddingTop="@dimen/recycler_view_top_padding"/>
+            android:paddingTop="@dimen/recycler_view_top_padding">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/mixer_fob"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="@dimen/floating_action_button_bottom_margin"
+            android:layout_marginEnd="@dimen/floating_action_button_right_margin"
+            android:elevation="@dimen/fob_elevation"
+            android:src="@drawable/ic_add_white" />
     </RelativeLayout>
 
 </ScrollView>

@@ -63,7 +63,7 @@ import utils.Constants;
 import sync.OfflineSyncManager;
 import web.WebApiManager;
 
-public class DashboardDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener, BeatLearner.RecommendationCompleteListener {
+public class DashboardDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
     public static final String TAG = "DashboardDetailFragment";
 
@@ -313,6 +313,11 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
 
         switch (v.getId()) {
             case R.id.play_song_button:
+                //Start our audio service
+                Intent audioService = new Intent(getContext(), AudioService.class);
+                audioService.putExtra("StartedTrackId", mSelectedTrack.getID());
+                getContext().startService(audioService);
+
                 if (mBound) {
                     if(mAudioService.requestAudioFocus(getContext())) { //make sure are audio focus request returns true before playback
                         if (mAudioService.getIsPlaying()) {
@@ -333,14 +338,14 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 break;
             case R.id.arrow_down:
                 BeatLearner.getInstance(getContext()).downVoteTrack(mSelectedTrack.getID()); // downvote this track
-                loadNextTrack();
+                mAudioService.loadNextTrack();
 
                 Snackbar downVoteSnack;
                 downVoteSnack = Snackbar.make(((MainActivity) getActivity()).mCoordinatorLayout, getString(R.string.downvote_track), Snackbar.LENGTH_LONG);
                 downVoteSnack.show();
                 break;
             case R.id.skip_forward_button:
-                loadNextTrack();
+                mAudioService.loadNextTrack();
                 break;
             case R.id.repeat_button:
                 if (mBound) {
@@ -462,13 +467,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
 
     }
 
-    @Override
-    public Track recommendationComplete(Track track) {
-        mSelectedTrack = track;
-        updateCurrentTrack(mSelectedTrack);
-        return null;
-    }
-
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
@@ -515,11 +513,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         }
     }
 
-    public void loadNextTrack(){
-        BeatLearner.getInstance(getContext()).loadNextRecommendedBeat(mSelectedTrack.getID(), this);
-    }
-
-    public void updateCurrentTrack(Track track){
+    public void updateTrackUI(Track track){
         mTrackTitle.setText(track.getTitle());
         if (track.getArtworkURL() == null)
             mAlbumCoverArt.setImageResource(R.drawable.placeholder);
@@ -528,11 +522,10 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         if (mBound) {
             if (track.getStreamURL() != null) {
                 mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
-                mAudioService.playSong(Uri.parse(track.getStreamURL()));
                 startProgressBarThread();
             }
         }
-        getUserInfo(track.getUser().getId());
+       // getUserInfo(track.getUser().getId());
     }
 
     public void getUserInfo(int userId){

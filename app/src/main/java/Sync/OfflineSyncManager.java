@@ -1,6 +1,7 @@
 package sync;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -15,8 +16,8 @@ import architecture.AccountManager;
 import data.BrainBeatsContract;
 import data.BrainBeatsDbHelper;
 import entity.Track;
+import model.BrainBeatsUser;
 import model.Mix;
-import model.User;
 import utils.Constants;
 
 /**
@@ -79,11 +80,11 @@ public class OfflineSyncManager {
                                 case 1: //add to fav
                                     if (mixCursor.getCount() != 0) { // this mix exists so update the record.
                                         Mix mix = Constants.buildMixFromCursor(mContext, mixCursor, 0);
-                                        if (mix.getIsInLibrary() == 0) {
+                                        if (mix.getMixFavorite() == 0) {
                                             mix.setMixFavorite(1);
                                             updateMixRecord(provider, mix, selectedTrack.getID());
-                                            showSnackMessage(coordinatorLayout, R.string.item_updated_mix);
-                                        } else if (mix.getIsInLibrary() == 1) {
+                                            showSnackMessage(coordinatorLayout, R.string.song_added_to_favorites_snack_message);
+                                        } else if (mix.getMixFavorite() == 1) {
                                             showSnackMessage(coordinatorLayout, R.string.error_this_mix_is_already_a_favorite);
                                         }
                                     } else {
@@ -182,7 +183,26 @@ public class OfflineSyncManager {
         newMix.setMixFavorite((isFavorite) ? 1 : 0);
         newMix.setIsInLibrary((inLibrary) ? 1 : 0);
         newMix.setIsInMixer((inMixer) ? 1 : 0);
-        newMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(mContext).getUserId()));
+
+        //Before adding this mix add the mix user if they are not already in the Brain beats system
+        Cursor userCursor = mContext.getContentResolver().query( //get this mixes user
+                BrainBeatsContract.UserEntry.CONTENT_URI,
+                null,  //return everything
+                BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
+                new String[]{String.valueOf(track.getUser().getId())},
+                null);
+
+        long userId;
+        if(userCursor != null && userCursor.getCount() != 0 ) {
+            // this user already exists so just get the user id
+            userCursor.moveToFirst();
+            userId = userCursor.getLong(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID));
+            newMix.setMixUserId(userId);
+        } else { //otherwise add the user this mix belongs to
+            Uri result = provider.insert(BrainBeatsContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(new BrainBeatsUser(track.getUser())));
+            userId = ContentUris.parseId(result);
+            newMix.setMixUserId(userId);
+        }
 
         Log.i("New Mix", "Adding new mix");
         try {
@@ -194,15 +214,15 @@ public class OfflineSyncManager {
     }
 
     public void addUser(entity.User collection, boolean isFollowing, ContentResolver provider) {
-        User user = new User();
-        user.setUserName(collection.getUsername());
-        user.setSoundCloudUserId(collection.getId());
+        BrainBeatsUser brainBeatsUser = new BrainBeatsUser();
+        brainBeatsUser.setUserName(collection.getUsername());
+        brainBeatsUser.setSoundCloudUserId(collection.getId());
 
         try {
-            Uri result = provider.insert(BrainBeatsContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(user)); //insert user rec
-            if (isFollowing) { //if the user is following this person add the record to the following table, now when quered
+            Uri result = provider.insert(BrainBeatsContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(brainBeatsUser)); //insert brainBeatsUser rec
+            if (isFollowing) { //if the brainBeatsUser is following this person add the record to the following table, now when quered
                 Uri relatedResult = provider.insert(BrainBeatsContract.UserFollowersEntry.CONTENT_URI, Constants.buildUserFollowingRecord(AccountManager.getInstance(mContext).getUserId(), String.valueOf(collection.getId())));
-                Log.i("Add user following rec", "user collection Id " + String.valueOf(collection.getId()));
+                Log.i("Add brainBeatsUser following rec", "brainBeatsUser collection Id " + String.valueOf(collection.getId()));
             }
         } catch (Exception e) {
             e.printStackTrace();

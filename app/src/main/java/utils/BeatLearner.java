@@ -41,7 +41,7 @@ public class BeatLearner {
     }
 
     public interface RecommendationCompleteListener {
-        Track recommendationComplete(Track track);
+        void recommendationComplete(Track track);
     }
 
     //TODO:Implement machine learning recommendation
