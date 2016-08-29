@@ -326,7 +326,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                 }, new WebApiManager.OnErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i("BrainBeatsUser fetch fail", "fail");
+                        Log.i("User fetch fail", "fail");
                     }
                 });
                 // break;
@@ -340,7 +340,35 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         newMix.setMixFavorite((isFavorite) ? 1 : 0);
         newMix.setIsInLibrary((inLibrary) ? 1 : 0);
         newMix.setIsInMixer((inMixer) ? 1 : 0);
-        newMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(getContext()).getUserId()));
+
+        //Before adding this mix add the mix user if they are not already in the Brain beats system
+        Cursor userCursor = null;
+        try {
+            userCursor = provider.query( //get this mixes user
+                    BrainBeatsContract.UserEntry.CONTENT_URI,
+                    null,  //return everything
+                    BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
+                    new String[]{String.valueOf(track.getUser().getId())},
+                    null);
+
+            long userId;
+            if(userCursor != null && userCursor.getCount() != 0 ) {
+                // this user already exists so just get the user id
+                userCursor.moveToFirst();
+                userId = userCursor.getLong(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID));
+                newMix.setMixUserId(userId);
+                Log.i("found user id", String.valueOf(userId));
+            } else { //otherwise add the user this mix belongs to
+                Uri result = provider.insert(BrainBeatsContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(new BrainBeatsUser(track.getUser())));
+                userId = ContentUris.parseId(result);
+                newMix.setMixUserId(userId);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+
+        //newMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(getContext()).getUserId()));
 
         try {
             Uri result = provider.insert(BrainBeatsContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(newMix));
@@ -401,7 +429,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
             Uri result = provider.insert(BrainBeatsContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(brainBeatsUser)); //insert brainBeatsUser rec
             if (isFollowing) { //if the brainBeatsUser is following this person add the record to the following table, now when quered
                 Uri relatedResult = provider.insert(BrainBeatsContract.UserFollowersEntry.CONTENT_URI, Constants.buildUserFollowingRecord(AccountManager.getInstance(getContext()).getUserId(), String.valueOf(brainBeatsUser.getSoundCloudUserId())));
-                Log.i("Add brainBeatsUser following rec", "brainBeatsUser collection Id " + String.valueOf(brainBeatsUser.getSoundCloudUserId()));
+                Log.i("Add following rec", "brainBeatsUser collection Id " + String.valueOf(brainBeatsUser.getSoundCloudUserId()));
             }
         } catch (RemoteException e) {
             e.printStackTrace();

@@ -29,7 +29,6 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     public CoordinatorLayout mCoordinatorLayout;
     private IntentFilter mIntentFilter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
