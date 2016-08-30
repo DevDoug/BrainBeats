@@ -15,12 +15,12 @@ public class Mix implements Parcelable {
     private String mBeatAlbumCoverArtSource;
     private int mMixFavorite;
     private int mMixRating;
-    private ArrayList<MixItem> mMixItems;
     private int mMixSoundCloudId;
     private int mRelatedTracksId;
     private int mIsInLibrary;
     private int mIsinMixer;
     private long mMixUserId;
+    private long mMixItemsId;
     private String mStreamURL;
     private String mMixTagList;
     private BrainBeatsUser mBrainBeatsUser;
@@ -66,14 +66,6 @@ public class Mix implements Parcelable {
 
     public void setMixRating(int rating) {
         this.mMixRating = rating;
-    }
-
-    public ArrayList<MixItem> getMixItems() {
-        return mMixItems;
-    }
-
-    public void setMixItems(ArrayList<MixItem> mixItems) {
-        this.mMixItems = mixItems;
     }
 
     public int getSoundCloudId() {
@@ -138,6 +130,14 @@ public class Mix implements Parcelable {
 
     public void setMixTagList(String mixertaglist) {
         this.mMixTagList = mixertaglist;
+    }
+
+    public long getMixItemsId() {
+        return mMixItemsId;
+    }
+
+    public void setMixItemsUserId(long mixItemsUserId) {
+        this.mMixItemsId = mixItemsUserId;
     }
 
     @Override

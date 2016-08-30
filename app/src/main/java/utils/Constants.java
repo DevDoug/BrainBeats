@@ -67,6 +67,8 @@ public class Constants {
     public static final int SOCIAL_LOADER  = 101;
     public static final int RELATED_TRACKS_LOADER  = 102;
     public static final int MIX_TAGS_LOADER  = 103;
+    public static final int MIXES_LOADER = 104;
+    public static final int MIX_ITEMS_LOADER = 105;
 
     //Intents and Communication
     public static final String SONG_COMPLETE_BROADCAST_ACTION = "com.brainbeats.play.next";
@@ -201,7 +203,7 @@ public class Constants {
                 new String[]{" " + cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.MixEntry._ID))},
                 null);
 
-        if (mixItemsCursor != null) {
+/*        if (mixItemsCursor != null) {
             mixItemsCursor.moveToFirst();
 
             ArrayList<MixItem> mixItems = new ArrayList<>();
@@ -215,7 +217,7 @@ public class Constants {
             }
             mix.setMixItems(mixItems);
             mixItemsCursor.close();
-        }
+        }*/
 
         return mix;
     }
@@ -290,12 +292,38 @@ public class Constants {
         return values;
     }
 
-    public static ContentValues[] buildMixItemsBulkRecord(long mixId, ArrayList<MixItem> mixitems) {
-        ContentValues[] contentValues = new ContentValues[mixitems.size()];
-        for (int i = 0; i < mixitems.size(); i++) {
-            contentValues[i] = buildMixItemsRecord(mixId, mixitems.get(i));
+    public static ContentValues[] buildMixItemsBulkRecord(Context context, long mixId) {
+
+        Cursor mixItemsCursor = context.getContentResolver().query( //get this mixes mix items
+                BrainBeatsContract.MixItemsEntry.CONTENT_URI,
+                null,  //return everything
+                BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
+                new String[]{" " + mixId},
+                null);
+
+        if (mixItemsCursor != null) {
+            mixItemsCursor.moveToFirst();
+
+            ArrayList<MixItem> mixItems = new ArrayList<>();
+            for (int i = 0; i < mixItemsCursor.getCount(); i++) {
+                MixItem mixItem = new MixItem();
+                mixItem.setMixItemId(mixItemsCursor.getLong(mixItemsCursor.getColumnIndex(BrainBeatsContract.MixItemsEntry._ID)));
+                mixItem.setMixItemTitle(mixItemsCursor.getString(mixItemsCursor.getColumnIndex(BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_TITLE)));
+                mixItem.setMixItemLevel(mixItemsCursor.getInt(mixItemsCursor.getColumnIndex(BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_LEVEL)));
+                mixItems.add(mixItem);
+                mixItemsCursor.moveToNext();
+            }
+
+            ContentValues[] contentValues = new ContentValues[mixItems.size()];
+            for (int i = 0; i < mixItems.size(); i++) {
+                contentValues[i] = buildMixItemsRecord(mixId, mixItems.get(i));
+            }
+
+            mixItemsCursor.close();
+            return contentValues;
         }
-        return contentValues;
+
+        return null;
     }
 
     public static Mix buildNewDefaultMixRecord(Context context) {
@@ -322,14 +350,14 @@ public class Constants {
             defaultMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(context).getUserId())); //BrainBeatsUser is logged in to sound cloud
         }
 
-        ArrayList<MixItem> defaultMixItems = new ArrayList<>(); //build mix items
+/*        ArrayList<MixItem> defaultMixItems = new ArrayList<>(); //build mix items
         for (int i = 0; i < context.getResources().getStringArray(R.array.default_mix_items).length; i++) {
             MixItem item = new MixItem();
             item.setMixItemTitle(context.getResources().getStringArray(R.array.default_mix_items)[i]);
             item.setMixItemLevel(MIX_ITEM_DEFAULT_LEVEL);
             defaultMixItems.add(item);
         }
-        defaultMix.setMixItems(defaultMixItems);
+        defaultMix.setMixItems(defaultMixItems);*/
 
         return defaultMix;
     }

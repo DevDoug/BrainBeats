@@ -2,6 +2,7 @@ package fragments;
 
 
 import android.app.Dialog;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,7 +12,10 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +35,7 @@ import java.util.List;
 
 import adapters.ImageAdapter;
 import adapters.MixItemAdapter;
+import adapters.MixerAdapter;
 import data.BrainBeatsContract;
 import data.BrainBeatsDbHelper;
 import model.Mix;
@@ -38,7 +43,7 @@ import model.MixItem;
 import utils.Constants;
 import utils.MixManager;
 
-public class MixerDetailFragment extends Fragment implements ImageAdapter.DialogImageSelectedListener {
+public class MixerDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, ImageAdapter.DialogImageSelectedListener {
 
     private List<MixItem> mixItemList = new ArrayList<>();
     private RecyclerView mMixerItemList;
@@ -47,9 +52,7 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
     public EditText mMixTitle;
     public Mix mSelectedMix;
     private ImageView mPlayMixButton;
-    private CoordinatorLayout mCoordinatorLayout;
     private Handler handler = new Handler();
-    private Dialog mDialog;
 
     public MixerDetailFragment() {
         // Required empty public constructor
@@ -60,7 +63,6 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
         View v = inflater.inflate(R.layout.fragment_mixer_detail, container, false);
         mMixerItemList = (RecyclerView) v.findViewById(R.id.beat_mix_item_list);
         mMixTitle = (EditText) v.findViewById(R.id.track_title);
-        mCoordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.main_content_coordinator_layout);
         mPlayMixButton = (ImageView) v.findViewById(R.id.play_song_button);
         ((TextView) v.findViewById(R.id.separator_title)).setText(R.string.beat_levels);
 
@@ -80,9 +82,7 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
             @Override
             public void onClick(View view) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
-
-                mSelectedMix.setMixTitle(mMixTitle.getText().toString());
-
+/*                mSelectedMix.setMixTitle(mMixTitle.getText().toString());
                 int returnId = getActivity().getContentResolver().update(
                         BrainBeatsContract.MixEntry.CONTENT_URI,
                         Constants.buildMixRecord(mSelectedMix),
@@ -98,7 +98,7 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
                                 BrainBeatsContract.MixEntry._ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                                 new String[]{String.valueOf(item.getMixItemId())});
                     }
-                }
+                }*/
                 InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
                 if (getActivity().getCurrentFocus() != null) //
                     inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
@@ -110,11 +110,10 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mMixerItemAdapter = new MixItemAdapter(getContext(), mixItemList, this);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        mMixerItemList.setLayoutManager(mLayoutManager);
-        mMixerItemList.setAdapter(mMixerItemAdapter);
-        mMixerItemAdapter.notifyDataSetChanged();
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mMixerItemList.setLayoutManager(layoutManager);
 
         mPlayMixButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,31 +126,22 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
     @Override
     public void onResume(){
         super.onResume();
-
         mUserSelections = getArguments();
         if (mUserSelections != null) {
-
             mSelectedMix = (Mix) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_MIX);
             mMixTitle.setText(mSelectedMix.getMixTitle());
-
-            if (mSelectedMix.getMixItems() != null){
-                mixItemList = new ArrayList<>();
-                mixItemList.addAll(mSelectedMix.getMixItems());
-            }
-
-            MixItem addNewMix = new MixItem();
-            addNewMix.setMixItemTitle("Add New");
-            mixItemList.add(addNewMix);
         }
     }
 
+/*
     public void showAddBeatItemDialog() {
         mDialog = Constants.buildImageListDialogue(getContext(), getContext().getResources().getString(R.string.add_sound_item_to_current_beat), this);
     }
+*/
 
     @Override
     public void dialogImageSelected(int position) {
-        MixItem item = new MixItem();
+/*        MixItem item = new MixItem();
         switch (position) {
             case 0:
                 item.setMixItemTitle(getContext().getResources().getStringArray(R.array.default_mix_items)[0]);
@@ -174,6 +164,7 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
                 mDialog.dismiss();
                 break;
         }
+
         item.setMixItemLevel(Constants.MIX_ITEM_DEFAULT_LEVEL);
         boolean mixItemExists = false;
         for (MixItem mix : mixItemList) {
@@ -190,7 +181,7 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
         } else {
             Snackbar errorSnack = Snackbar.make(mCoordinatorLayout, String.format(getContext().getString(R.string.mix_item_exists_snack_message), item.getMixItemTitle()), Snackbar.LENGTH_LONG);
             errorSnack.show();
-        }
+        }*/
     }
 
     public void playMix() {
@@ -204,5 +195,39 @@ public class MixerDetailFragment extends Fragment implements ImageAdapter.Dialog
             }
         });
         thread.start();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case Constants.MIX_ITEMS_LOADER:
+                // Returns a new CursorLoader
+                return new CursorLoader(
+                        getActivity(),         // Parent activity context
+                        BrainBeatsContract.MixItemsEntry.CONTENT_URI,  // Table to query
+                        null,                          // Projection to return
+                        BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
+                        new String[]{String.valueOf(mSelectedMix.getMixItemsId())},                  // No selection arguments
+                        null                   // Default sort order
+                );
+            default:
+                // An invalid id was passed in
+                return null;
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data == null) { //no mix data found
+            mMixerItemList.setVisibility(View.GONE);
+        } else {
+            mMixerItemAdapter = new MixItemAdapter(getContext(), data);
+            mMixerItemList.setAdapter(mMixerItemAdapter);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }
