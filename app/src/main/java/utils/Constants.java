@@ -350,15 +350,6 @@ public class Constants {
             defaultMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(context).getUserId())); //BrainBeatsUser is logged in to sound cloud
         }
 
-/*        ArrayList<MixItem> defaultMixItems = new ArrayList<>(); //build mix items
-        for (int i = 0; i < context.getResources().getStringArray(R.array.default_mix_items).length; i++) {
-            MixItem item = new MixItem();
-            item.setMixItemTitle(context.getResources().getStringArray(R.array.default_mix_items)[i]);
-            item.setMixItemLevel(MIX_ITEM_DEFAULT_LEVEL);
-            defaultMixItems.add(item);
-        }
-        defaultMix.setMixItems(defaultMixItems);*/
-
         return defaultMix;
     }
 

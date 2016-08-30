@@ -9,6 +9,8 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import architecture.AccountManager;
 import architecture.BaseActivity;
@@ -19,6 +21,7 @@ import fragments.DashboardDetailFragment;
 import fragments.DashboardFragment;
 import model.BrainBeatsUser;
 import model.Mix;
+import service.AudioService;
 import utils.Constants;
 import sync.SyncManager;
 
@@ -60,7 +63,6 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
                 if (sentMix != null) {
                     Track playTrack = new Track(sentMix);
                     playTrack.setUser(new entity.User(mixUser));
-                    //playTrack.getUser().setId(sentMix.getMixUserId());
                     switchToBeatDetailFragment(playTrack);
                 }
             }
@@ -89,7 +91,6 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
             SyncManager.getInstance().updateAllTables(AccountManager.getInstance(MainActivity.this).getUserId(), mAccount, BrainBeatsContract.CONTENT_AUTHORITY);
             SyncManager.mIsGlobalSyncRequired = false;
         }*/
-
         registerReceiver(mReceiver, mIntentFilter);
     }
 

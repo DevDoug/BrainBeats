@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -53,6 +54,9 @@ public class MixerDetailFragment extends Fragment implements LoaderManager.Loade
     public Mix mSelectedMix;
     private ImageView mPlayMixButton;
     private Handler handler = new Handler();
+    private Dialog mDialog;
+    public FloatingActionButton mAddNewBeatButton;
+
 
     public MixerDetailFragment() {
         // Required empty public constructor
@@ -65,6 +69,8 @@ public class MixerDetailFragment extends Fragment implements LoaderManager.Loade
         mMixTitle = (EditText) v.findViewById(R.id.track_title);
         mPlayMixButton = (ImageView) v.findViewById(R.id.play_song_button);
         ((TextView) v.findViewById(R.id.separator_title)).setText(R.string.beat_levels);
+        mAddNewBeatButton = (FloatingActionButton) v.findViewById(R.id.mixer_fob);
+
 
         return v;
     }
@@ -121,27 +127,31 @@ public class MixerDetailFragment extends Fragment implements LoaderManager.Loade
                 playMix();
             }
         });
-    }
+        mAddNewBeatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialog = Constants.buildImageListDialogue(getContext(), getContext().getResources().getString(R.string.add_sound_item_to_current_beat), MixerDetailFragment.this);
+                mDialog.show();
+            }
+        });
 
-    @Override
-    public void onResume(){
-        super.onResume();
         mUserSelections = getArguments();
         if (mUserSelections != null) {
             mSelectedMix = (Mix) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_MIX);
             mMixTitle.setText(mSelectedMix.getMixTitle());
         }
+
+        getLoaderManager().initLoader(Constants.MIX_ITEMS_LOADER, null, this);
     }
 
-/*
-    public void showAddBeatItemDialog() {
-        mDialog = Constants.buildImageListDialogue(getContext(), getContext().getResources().getString(R.string.add_sound_item_to_current_beat), this);
+    @Override
+    public void onResume(){
+        super.onResume();
     }
-*/
 
     @Override
     public void dialogImageSelected(int position) {
-/*        MixItem item = new MixItem();
+        MixItem item = new MixItem();
         switch (position) {
             case 0:
                 item.setMixItemTitle(getContext().getResources().getStringArray(R.array.default_mix_items)[0]);
@@ -164,24 +174,8 @@ public class MixerDetailFragment extends Fragment implements LoaderManager.Loade
                 mDialog.dismiss();
                 break;
         }
-
         item.setMixItemLevel(Constants.MIX_ITEM_DEFAULT_LEVEL);
-        boolean mixItemExists = false;
-        for (MixItem mix : mixItemList) {
-            if (mix.getMixItemTitle().equalsIgnoreCase(item.getMixItemTitle())) {
-                mixItemExists = true;
-            }
-        }
-
-        if (!mixItemExists) {
-            Uri returnRow = getContext().getContentResolver().insert(BrainBeatsContract.MixItemsEntry.CONTENT_URI, Constants.buildMixItemsRecord(mSelectedMix.getMixId(), item));
-            mixItemList.add(0, item);
-            mMixerItemList.setAdapter(mMixerItemAdapter);
-            mMixerItemAdapter.notifyDataSetChanged();
-        } else {
-            Snackbar errorSnack = Snackbar.make(mCoordinatorLayout, String.format(getContext().getString(R.string.mix_item_exists_snack_message), item.getMixItemTitle()), Snackbar.LENGTH_LONG);
-            errorSnack.show();
-        }*/
+        Uri returnRow = getActivity().getContentResolver().insert(BrainBeatsContract.MixItemsEntry.CONTENT_URI, Constants.buildMixItemsRecord(mSelectedMix.getMixId(), item));
     }
 
     public void playMix() {
@@ -207,7 +201,7 @@ public class MixerDetailFragment extends Fragment implements LoaderManager.Loade
                         BrainBeatsContract.MixItemsEntry.CONTENT_URI,  // Table to query
                         null,                          // Projection to return
                         BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
-                        new String[]{String.valueOf(mSelectedMix.getMixItemsId())},                  // No selection arguments
+                        new String[]{String.valueOf(mSelectedMix.getMixId())},                  // No selection arguments
                         null                   // Default sort order
                 );
             default:
@@ -228,6 +222,5 @@ public class MixerDetailFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 }
