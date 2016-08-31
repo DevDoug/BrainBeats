@@ -1,10 +1,13 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content_container"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     tools:context="fragments.DashboardDetailFragment">
 
     <ScrollView
+        android:id="@+id/main_container_scroll"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -70,8 +73,8 @@
 
                 <ImageView
                     android:id="@+id/arrow_up"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:contentDescription="@string/content_description_shuffle_button"
@@ -79,8 +82,8 @@
 
                 <ImageView
                     android:id="@+id/arrow_down"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:contentDescription="@string/content_description_play_prev_button"
@@ -97,8 +100,8 @@
 
                 <ImageView
                     android:id="@+id/skip_forward_button"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:contentDescription="@string/content_description_play_next_button"

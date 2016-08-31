@@ -39,7 +39,61 @@
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        </FrameLayout>
+
+        <RelativeLayout
+            android:id="@+id/current_track_container"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/current_track_playing_background"
+            android:layout_gravity="center_horizontal|bottom"
+            android:gravity="center_vertical"
+            android:visibility="invisible">
+
+            <ImageView
+                android:id="@+id/album_thumbnail"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="25dp"
+                android:src="@drawable/placeholder" />
+
+            <TextView
+                android:id="@+id/playing_mix_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#212121"
+                android:textSize="14sp"
+                android:text="Lorem ispsum"
+                android:layout_marginLeft="10dp"
+                android:layout_toEndOf="@+id/album_thumbnail"
+                android:layout_alignTop="@id/album_thumbnail"/>
+
+            <TextView
+                android:id="@+id/playing_mix_artist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#424242"
+                android:textSize="12sp"
+                android:text="Lorem ispsum"
+                android:layout_marginLeft="10dp"
+                android:layout_toEndOf="@+id/album_thumbnail"
+                android:layout_below="@id/playing_mix_title"/>
+
+            <android.support.v7.widget.AppCompatSeekBar
+                android:id="@+id/playing_mix_seek_bar"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/playing_mix_title" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/playing_mix_seek_bar"
+                />
+        </RelativeLayout>
 
     </android.support.design.widget.CoordinatorLayout>
 

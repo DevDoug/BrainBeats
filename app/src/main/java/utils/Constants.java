@@ -29,7 +29,7 @@ import entity.Track;
 import model.Mix;
 import model.MixItem;
 import model.Playlist;
-import model.User;
+import model.BrainBeatsUser;
 
 /**
  * Created by Douglas on 4/20/2016.
@@ -42,30 +42,36 @@ public class Constants {
     public static final String KEY_EXTRA_LIBRARY_FILTER_TEXT                = "Filter";
     public static final String KEY_EXTRA_SELECTED_TRACK                     = "SelectedTrack";
     public static final String KEY_EXTRA_SELECTED_MIX                       = "SelectedMix";
+    public static final String KEY_EXTRA_SELECTED_USER                      = "SelectedUser";
     public static final String KEY_EXTRA_SEARCH_KEYWORD                     = "SearchKeyword";
     public static final String KEY_EXTRA_SYNC_TYPE                          = "SyncType";
     public static final String KEY_EXTRA_SYNC_ACTION                        = "SyncAction";
     public static final String KEY_EXTRA_SELECTED_TRACK_ID                  = "TrackId";
 
     //Hash map keys
-    public static final String HASH_KEY_ACCESS_TOKEN     = "access_token";
+    public static final String HASH_KEY_ACCESS_TOKEN                = "access_token";
 
     //Shared Preferences
-    public static final String KEY_EXTRA_IS_INCOGNITO_PREF  = "IsIncognito";
-    public static final String KEY_EXTRA_IS_SYNCED_TO_SC    = "SyncedToSoundCloud";
-    public static final String KEY_EXTRA_IS_GLOBAL_SYNC_REQUIRED = "IsGlobalSyncRequired";
+    public static final String KEY_EXTRA_IS_INCOGNITO_PREF          = "IsIncognito";
+    public static final String KEY_EXTRA_IS_SYNCED_TO_SC            = "SyncedToSoundCloud";
+    public static final String KEY_EXTRA_IS_GLOBAL_SYNC_REQUIRED    = "IsGlobalSyncRequired";
 
     //Sound Cloud
-    public static final String SOUND_CLOUD_CLIENT_ID       = "6af4e9b999eaa63f5d797d466cdc4ccb";
-    public static final String SOUND_CLOUD_CLIENT_SECRET   = "09e8c5b6f91e2ab440b9137008d2d32c";
-    public static final String OAUTH_CALLBACK_SCHEME = "brainbeats";
-    public static final String OAUTH_CALLBACK_HOST = "soundcloud/callback";
+    public static final String SOUND_CLOUD_CLIENT_ID                = "6af4e9b999eaa63f5d797d466cdc4ccb";
+    public static final String SOUND_CLOUD_CLIENT_SECRET            = "09e8c5b6f91e2ab440b9137008d2d32c";
+    public static final String OAUTH_CALLBACK_SCHEME                = "brainbeats";
+    public static final String OAUTH_CALLBACK_HOST                  = "soundcloud/callback";
     public static final String CALLBACK_URL = OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
 
     //Loader Types
     public static final int SOCIAL_LOADER  = 101;
     public static final int RELATED_TRACKS_LOADER  = 102;
     public static final int MIX_TAGS_LOADER  = 103;
+    public static final int MIXES_LOADER = 104;
+    public static final int MIX_ITEMS_LOADER = 105;
+
+    //Intents and Communication
+    public static final String SONG_COMPLETE_BROADCAST_ACTION = "com.brainbeats.play.next";
 
     //Misc
     public static final int GRID_SPAN_COUNT = 3;
@@ -156,7 +162,6 @@ public class Constants {
         mix.setSoundCloudId(track.getID());
         mix.setStreamURL(track.getStreamURL());
         mix.setMixTagList(track.getTagList());
-        //mix.setRelatedTracksId(relatedTracksId);
         return mix;
     }
 
@@ -177,18 +182,18 @@ public class Constants {
         Cursor userCursor = context.getContentResolver().query( //get this mixes user
                 BrainBeatsContract.UserEntry.CONTENT_URI,
                 null,  //return everything
-                BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL + BrainBeatsDbHelper.OR_CLAUSE + BrainBeatsContract.UserEntry._ID,
+                BrainBeatsContract.UserEntry._ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                 new String[]{String.valueOf(mix.getMixUserId())},
                 null);
 
-        User brainBeatsUser = new User();
-        if (userCursor != null) {
+        BrainBeatsUser brainBeatsBrainBeatsUser = new BrainBeatsUser();
+        if (userCursor != null && userCursor.getCount() != 0) {
             userCursor.moveToFirst();
-            brainBeatsUser.setUserId(userCursor.getLong(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
-            brainBeatsUser.setUserName(userCursor.getString(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));
-            brainBeatsUser.setSoundCloudUserId(userCursor.getInt(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID)));
+            brainBeatsBrainBeatsUser.setUserId(userCursor.getLong(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
+            brainBeatsBrainBeatsUser.setUserName(userCursor.getString(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));
+            brainBeatsBrainBeatsUser.setSoundCloudUserId(userCursor.getInt(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID)));
             userCursor.close();
-            mix.setUser(brainBeatsUser);
+            mix.setUser(brainBeatsBrainBeatsUser);
         }
 
         Cursor mixItemsCursor = context.getContentResolver().query( //get this mixes mix items
@@ -198,7 +203,7 @@ public class Constants {
                 new String[]{" " + cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.MixEntry._ID))},
                 null);
 
-        if (mixItemsCursor != null) {
+/*        if (mixItemsCursor != null) {
             mixItemsCursor.moveToFirst();
 
             ArrayList<MixItem> mixItems = new ArrayList<>();
@@ -212,20 +217,20 @@ public class Constants {
             }
             mix.setMixItems(mixItems);
             mixItemsCursor.close();
-        }
+        }*/
 
         return mix;
     }
 
-    public static User buildUserFromCursor(Context context, Cursor cursor) {
+    public static BrainBeatsUser buildUserFromCursor(Context context, Cursor cursor) {
         cursor.moveToFirst();
 
-        User user = new User();
-        user.setUserId(cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
-        user.setUserName(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));
-        user.setSoundCloudUserId(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID)));
+        BrainBeatsUser brainBeatsUser = new BrainBeatsUser();
+        brainBeatsUser.setUserId(cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
+        brainBeatsUser.setUserName(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));
+        brainBeatsUser.setSoundCloudUserId(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID)));
 
-        return user;
+        return brainBeatsUser;
     }
 
     public static ContentValues buildMixRecord(Mix mix) {
@@ -270,13 +275,13 @@ public class Constants {
         return values;
     }
 
-    public static ContentValues buildUserRecord(User user) {
+    public static ContentValues buildUserRecord(BrainBeatsUser brainBeatsUser) {
         ContentValues values = new ContentValues();
-        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME, user.getUserName());
-        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_DESCRIPTION, user.getDescription());
+        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME, brainBeatsUser.getUserName());
+        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_DESCRIPTION, brainBeatsUser.getDescription());
         values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PASSWORD, Constants.generateEncryptedPass());
-        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PROFILE_IMG, user.getUserProfileImage());
-        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID, user.getSoundCloudUserId());
+        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PROFILE_IMG, brainBeatsUser.getUserProfileImage());
+        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID, brainBeatsUser.getSoundCloudUserId());
         return values;
     }
 
@@ -287,12 +292,38 @@ public class Constants {
         return values;
     }
 
-    public static ContentValues[] buildMixItemsBulkRecord(long mixId, ArrayList<MixItem> mixitems) {
-        ContentValues[] contentValues = new ContentValues[mixitems.size()];
-        for (int i = 0; i < mixitems.size(); i++) {
-            contentValues[i] = buildMixItemsRecord(mixId, mixitems.get(i));
+    public static ContentValues[] buildMixItemsBulkRecord(Context context, long mixId) {
+
+        Cursor mixItemsCursor = context.getContentResolver().query( //get this mixes mix items
+                BrainBeatsContract.MixItemsEntry.CONTENT_URI,
+                null,  //return everything
+                BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
+                new String[]{" " + mixId},
+                null);
+
+        if (mixItemsCursor != null) {
+            mixItemsCursor.moveToFirst();
+
+            ArrayList<MixItem> mixItems = new ArrayList<>();
+            for (int i = 0; i < mixItemsCursor.getCount(); i++) {
+                MixItem mixItem = new MixItem();
+                mixItem.setMixItemId(mixItemsCursor.getLong(mixItemsCursor.getColumnIndex(BrainBeatsContract.MixItemsEntry._ID)));
+                mixItem.setMixItemTitle(mixItemsCursor.getString(mixItemsCursor.getColumnIndex(BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_TITLE)));
+                mixItem.setMixItemLevel(mixItemsCursor.getInt(mixItemsCursor.getColumnIndex(BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_LEVEL)));
+                mixItems.add(mixItem);
+                mixItemsCursor.moveToNext();
+            }
+
+            ContentValues[] contentValues = new ContentValues[mixItems.size()];
+            for (int i = 0; i < mixItems.size(); i++) {
+                contentValues[i] = buildMixItemsRecord(mixId, mixItems.get(i));
+            }
+
+            mixItemsCursor.close();
+            return contentValues;
         }
-        return contentValues;
+
+        return null;
     }
 
     public static Mix buildNewDefaultMixRecord(Context context) {
@@ -316,17 +347,8 @@ public class Constants {
                 userCursor.close();
             }
         } else {
-            defaultMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(context).getUserId())); //User is logged in to sound cloud
+            defaultMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(context).getUserId())); //BrainBeatsUser is logged in to sound cloud
         }
-
-        ArrayList<MixItem> defaultMixItems = new ArrayList<>(); //build mix items
-        for (int i = 0; i < context.getResources().getStringArray(R.array.default_mix_items).length; i++) {
-            MixItem item = new MixItem();
-            item.setMixItemTitle(context.getResources().getStringArray(R.array.default_mix_items)[i]);
-            item.setMixItemLevel(MIX_ITEM_DEFAULT_LEVEL);
-            defaultMixItems.add(item);
-        }
-        defaultMix.setMixItems(defaultMixItems);
 
         return defaultMix;
     }
@@ -440,4 +462,5 @@ public class Constants {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
 }

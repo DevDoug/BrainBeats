@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * Created by douglas on 5/13/2016.
  */
-public class User implements Parcelable {
+public class BrainBeatsUser implements Parcelable {
 
     private long mUserId;
     private String mUserName;
@@ -15,10 +15,9 @@ public class User implements Parcelable {
     private String mUserProfileImage;
     private int mSoundCloudUserId;
 
-    public User(){}
+    public BrainBeatsUser(){}
 
-    public User(entity.User user){
-        this.mUserId = user.getId();
+    public BrainBeatsUser(entity.User user){
         this.mUserName = user.getUsername();
         this.mDescription = user.getDescription();
         this.mUserProfileImage = user.getAvatarUrl();
@@ -74,24 +73,30 @@ public class User implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(mUserId);
         dest.writeString(mUserName);
+        dest.writeString(mDescription);
+        dest.writeString(mUserProfileImage);
+        dest.writeString(mPassword);
         dest.writeInt(mSoundCloudUserId);
     }
 
-    protected User(Parcel in) {
+    protected BrainBeatsUser(Parcel in) {
         mUserId = in.readLong();
         mUserName = in.readString();
+        mDescription = in.readString();
+        mUserProfileImage = in.readString();
+        mPassword = in.readString();
         mSoundCloudUserId = in.readInt();
     }
 
-    public static final Creator<User> CREATOR = new Creator<User>() {
+    public static final Creator<BrainBeatsUser> CREATOR = new Creator<BrainBeatsUser>() {
         @Override
-        public User createFromParcel(Parcel in) {
-            return new User(in);
+        public BrainBeatsUser createFromParcel(Parcel in) {
+            return new BrainBeatsUser(in);
         }
 
         @Override
-        public User[] newArray(int size) {
-            return new User[size];
+        public BrainBeatsUser[] newArray(int size) {
+            return new BrainBeatsUser[size];
         }
     };
 }

@@ -2,6 +2,8 @@ package entity;
 
 import com.google.gson.annotations.SerializedName;
 
+import model.BrainBeatsUser;
+
 /**
  * Created by douglas on 8/2/2016.
  */
@@ -27,6 +29,15 @@ public class User {
 
     @SerializedName("description")
     private String description;
+
+    public User(){}
+
+    public User(BrainBeatsUser modelBrainBeatsUser){
+        id = (int) modelBrainBeatsUser.getSoundCloudUserId();
+        username = modelBrainBeatsUser.getUserName();
+        avatarUrl = modelBrainBeatsUser.getUserProfileImage();
+
+    }
 
     public Integer getId() {
         return id;

@@ -2,6 +2,7 @@ package architecture;
 
 import android.accounts.Account;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -19,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
+import android.widget.RelativeLayout;
 
 import com.brainbeats.LibraryActivity;
 import com.brainbeats.MainActivity;
@@ -26,6 +28,8 @@ import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import com.brainbeats.SettingsActivity;
 import com.brainbeats.SocialActivity;
+
+import service.AudioService;
 
 /**
  * Created by Douglas on 4/21/2016.
@@ -38,6 +42,7 @@ public class BaseActivity extends AppCompatActivity {
     public DrawerLayout mNavigationDrawer;
     public Toolbar mToolBar;
     public ActionBarDrawerToggle mDrawerToggle;
+    public RelativeLayout mCurrentSongPlayingView;
     public NavigationView mNavView;
     public Account mAccount;
 
@@ -50,13 +55,17 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //AccountManager.getInstance(BaseActivity.this).setGlobalSyncRequired(true);
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        mCurrentSongPlayingView = (RelativeLayout) findViewById(R.id.current_track_container);
         setUpNavDrawer();
+
+        if(isMyServiceRunning(AudioService.class)){
+            mCurrentSongPlayingView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -188,5 +197,15 @@ public class BaseActivity extends AppCompatActivity {
         } else {
             return accountManager.getAccountsByType(ACCOUNT_TYPE)[0];
         }
+    }
+
+    public boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

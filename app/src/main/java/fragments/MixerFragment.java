@@ -35,8 +35,6 @@ import utils.Constants;
 
 public class MixerFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 
-    private static final int URL_LOADER = 0;
-
     private RecyclerView mMixerItems;
     private TextView mEmptyText;
     private MixerAdapter mMixerAdapter;
@@ -65,19 +63,12 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(URL_LOADER, null, this);
+        getLoaderManager().initLoader(Constants.MIXES_LOADER, null, this);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mMixerItems.setLayoutManager(layoutManager);
 
-/*        mMixerItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Cursor c = mMixerAdapter.getCursor();
-                ((MixerActivity) getActivity()).loadMixerDetailFragment(Constants.buildMixFromCursor(getContext(), c, position));
-            }
-        });*/
         mAddNewBeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,7 +109,7 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
                 defaultMix.setIsInLibrary(1);
                 Uri returnRow = getActivity().getContentResolver().insert(BrainBeatsContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(defaultMix));
                 long returnRowId = ContentUris.parseId(returnRow);
-                getActivity().getContentResolver().bulkInsert(BrainBeatsContract.MixItemsEntry.CONTENT_URI, Constants.buildMixItemsBulkRecord(returnRowId, defaultMix.getMixItems()));
+               // getActivity().getContentResolver().bulkInsert(BrainBeatsContract.MixItemsEntry.CONTENT_URI, Constants.buildMixItemsBulkRecord(getContext(), returnRowId));
                 mAddOptionsDialog.dismiss();
                 break;
             case 1:
@@ -147,7 +138,7 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public Loader<Cursor> onCreateLoader(int loaderID, Bundle args) {
         switch (loaderID) {
-            case URL_LOADER:
+            case Constants.MIXES_LOADER:
                 // Returns a new CursorLoader
                 return new CursorLoader(
                         getActivity(),         // Parent activity context

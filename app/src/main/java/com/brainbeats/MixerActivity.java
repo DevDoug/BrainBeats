@@ -1,15 +1,19 @@
 package com.brainbeats;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 
 import architecture.BaseActivity;
 import fragments.MixerDetailFragment;
 import fragments.MixerFragment;
 import model.Mix;
+import utils.BeatLearner;
 import utils.Constants;
 
 public class MixerActivity extends BaseActivity implements MixerFragment.OnFragmentInteractionListener {

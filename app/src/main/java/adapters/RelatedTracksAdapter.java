@@ -14,6 +14,7 @@ import data.BrainBeatsContract;
 
 /**
  * Created by douglas on 4/29/2016.
+ * TODO Implement in beta version 2
  */
 public class RelatedTracksAdapter extends CursorAdapter {
 

@@ -15,15 +15,15 @@ public class Mix implements Parcelable {
     private String mBeatAlbumCoverArtSource;
     private int mMixFavorite;
     private int mMixRating;
-    private ArrayList<MixItem> mMixItems;
-    private int mSoundCloudId;
+    private int mMixSoundCloudId;
     private int mRelatedTracksId;
     private int mIsInLibrary;
     private int mIsinMixer;
-    private int mMixUserId;
+    private long mMixUserId;
+    private long mMixItemsId;
     private String mStreamURL;
     private String mMixTagList;
-    private User mUser;
+    private BrainBeatsUser mBrainBeatsUser;
 
     public Mix() {
     }
@@ -68,20 +68,12 @@ public class Mix implements Parcelable {
         this.mMixRating = rating;
     }
 
-    public ArrayList<MixItem> getMixItems() {
-        return mMixItems;
-    }
-
-    public void setMixItems(ArrayList<MixItem> mixItems) {
-        this.mMixItems = mixItems;
-    }
-
     public int getSoundCloudId() {
-        return mSoundCloudId;
+        return mMixSoundCloudId;
     }
 
     public void setSoundCloudId(int soundCloudId) {
-        this.mSoundCloudId = soundCloudId;
+        this.mMixSoundCloudId = soundCloudId;
     }
 
     public int getRelatedTracksId() {
@@ -108,11 +100,11 @@ public class Mix implements Parcelable {
         this.mIsinMixer = isinMixer;
     }
 
-    public int getMixUserId() {
+    public long getMixUserId() {
         return mMixUserId;
     }
 
-    public void setMixUserId(int mixUserId) {
+    public void setMixUserId(long mixUserId) {
         this.mMixUserId = mixUserId;
     }
 
@@ -124,12 +116,12 @@ public class Mix implements Parcelable {
         this.mStreamURL = streamURL;
     }
 
-    public User getUser() {
-        return mUser;
+    public BrainBeatsUser getUser() {
+        return mBrainBeatsUser;
     }
 
-    public void setUser(User user) {
-        this.mUser = user;
+    public void setUser(BrainBeatsUser brainBeatsUser) {
+        this.mBrainBeatsUser = brainBeatsUser;
     }
 
     public String getMixTagList() {
@@ -138,6 +130,14 @@ public class Mix implements Parcelable {
 
     public void setMixTagList(String mixertaglist) {
         this.mMixTagList = mixertaglist;
+    }
+
+    public long getMixItemsId() {
+        return mMixItemsId;
+    }
+
+    public void setMixItemsUserId(long mixItemsUserId) {
+        this.mMixItemsId = mixItemsUserId;
     }
 
     @Override
@@ -150,26 +150,26 @@ public class Mix implements Parcelable {
         dest.writeLong(mId);
         dest.writeString(mMixTitle);
         dest.writeString(mBeatAlbumCoverArtSource);
-        dest.writeInt(mSoundCloudId);
+        dest.writeInt(mMixSoundCloudId);
         dest.writeInt(mRelatedTracksId);
         dest.writeInt(mIsInLibrary);
         dest.writeInt(mIsinMixer);
-        dest.writeInt(mMixUserId);
+        dest.writeLong(mMixUserId);
         dest.writeString(mStreamURL);
-        dest.writeParcelable(mUser,0);
+        dest.writeParcelable(mBrainBeatsUser,0);
     }
 
     protected Mix(Parcel in) {
         mId = in.readLong();
         mMixTitle = in.readString();
         mBeatAlbumCoverArtSource = in.readString();
-        mSoundCloudId = in.readInt();
+        mMixSoundCloudId = in.readInt();
         mRelatedTracksId = in.readInt();
         mIsInLibrary = in.readInt();
         mIsinMixer = in.readInt();
         mMixUserId = in.readInt();
         mStreamURL = in.readString();
-        mUser = in.readParcelable(User.class.getClassLoader());
+        mBrainBeatsUser = (BrainBeatsUser) in.readParcelable(BrainBeatsUser.class.getClassLoader());
     }
 
     public static final Creator<Mix> CREATOR = new Creator<Mix>() {

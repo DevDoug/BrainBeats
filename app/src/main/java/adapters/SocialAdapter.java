@@ -39,12 +39,13 @@ public class SocialAdapter extends RecyclerViewCursorAdapter<SocialAdapter.ViewH
         String title = cursor.getString(cursor.getColumnIndexOrThrow(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME));
         if(title != null)
             viewHolder.mUsername.setText(title);
-
         Picasso.with(mAdapterContext).load(cursor.getString(cursor.getColumnIndexOrThrow(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PROFILE_IMG))).into(viewHolder.mArtistThumbnail);
+        viewHolder.mDescription.setText(cursor.getString(cursor.getColumnIndexOrThrow(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_DESCRIPTION)));
+
         viewHolder.mArtistContainerCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO Implement user prof in next version
+                //TODO - implement in version 2.0 beta version
                 //((SocialActivity) mAdapterContext).switchToUserProfileFragment();
             }
         });
@@ -53,11 +54,13 @@ public class SocialAdapter extends RecyclerViewCursorAdapter<SocialAdapter.ViewH
     public class ViewHolder extends RecyclerView.ViewHolder {
         CardView mArtistContainerCard;
         TextView mUsername;
+        TextView mDescription;
         ImageView mArtistThumbnail;
 
         public ViewHolder(View view){
             super(view);
             mUsername = (TextView) view.findViewById(R.id.user_name);
+            mDescription = (TextView) view.findViewById(R.id.artist_description);
             mArtistThumbnail = (ImageView) view.findViewById(R.id.artist_thumbnail);
             mArtistContainerCard = (CardView) view.findViewById(R.id.card_view);
         }
@@ -66,10 +69,8 @@ public class SocialAdapter extends RecyclerViewCursorAdapter<SocialAdapter.ViewH
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(mAdapterContext).inflate(R.layout.user_item, parent, false);
-        ViewHolder vh = new ViewHolder(itemView);
-        return vh;
+        return new ViewHolder(itemView);
     }
-
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {

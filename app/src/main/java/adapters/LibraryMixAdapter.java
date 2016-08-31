@@ -47,6 +47,7 @@ public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapt
                 //start intent to send user to play this mix in player
                 Intent dashboardIntent = new Intent(mAdapterContext, MainActivity.class);
                 dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, selectedMix);
+                dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_USER, selectedMix.getUser());
                 mAdapterContext.startActivity(dashboardIntent);
             }
         });
@@ -75,8 +76,7 @@ public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapt
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(mAdapterContext).inflate(R.layout.library_beat_item, parent, false);
-        ViewHolder vh = new ViewHolder(itemView);
-        return vh;
+        return new ViewHolder(itemView);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

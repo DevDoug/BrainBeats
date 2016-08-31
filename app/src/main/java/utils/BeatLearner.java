@@ -27,8 +27,6 @@ import web.WebApiManager;
 public class BeatLearner {
 
     public static BeatLearner mBeatLearnerInstance;
-    public boolean mHasStartedLearning;    //if false new user so we have data to work with
-    public Track mPreviousTrack;
     public Context mContext;
 
     public BeatLearner(Context context) {
@@ -43,12 +41,11 @@ public class BeatLearner {
     }
 
     public interface RecommendationCompleteListener {
-        Track recommendationComplete(Track track);
+        void recommendationComplete(Track track);
     }
 
     //TODO:Implement machine learning recommendation
     public void loadNextRecommendedBeat(int selectedTrackId, RecommendationCompleteListener listener) {
-
         //for now do something very basic and just return a random related mix.
         WebApiManager.getRelatedTracks(mContext, String.valueOf(selectedTrackId), new WebApiManager.OnObjectResponseListener() {
             @Override
@@ -91,11 +88,13 @@ public class BeatLearner {
         });
     }
 
-    public Track downVoteTrack() { //load the last track they played
+    //TODO - implement in version 2.0 beta version
+    public Track downVoteTrack(int selectedTrackId) { //load the last track they played
         return null;
     }
 
-    public Track upVoteTrack(){
+    //TODO - implement in version 2.0 beta version
+    public Track upVoteTrack(int selectedTrackId){
         return null;
     }
 }

@@ -40,6 +40,9 @@ public class SyncManager {
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         settingsBundle.putString("userid", userId);
 
+        settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Users.getCode());
+        ContentResolver.requestSync(mAccount, BrainBeatsContract.CONTENT_AUTHORITY, settingsBundle); //Sync users
+
         settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Mixes.getCode());
         settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateMix.getCode());
         ContentResolver.requestSync(mAccount, BrainBeatsContract.CONTENT_AUTHORITY, settingsBundle); // Sync mixes
@@ -50,9 +53,6 @@ public class SyncManager {
 
         settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Playlists.getCode());
         ContentResolver.requestSync(mAccount, BrainBeatsContract.CONTENT_AUTHORITY, settingsBundle); //Sync Playlists
-
-        settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Users.getCode());
-        ContentResolver.requestSync(mAccount, BrainBeatsContract.CONTENT_AUTHORITY, settingsBundle); //Sync users
 
         ContentResolver.addPeriodicSync(mAccount, authority, Bundle.EMPTY, SYNC_INTERVAL); // sets our sync adapter to go after a period of time.
     }
