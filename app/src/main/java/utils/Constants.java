@@ -350,6 +350,8 @@ public class Constants {
             defaultMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(context).getUserId())); //BrainBeatsUser is logged in to sound cloud
         }
 
+
+
         return defaultMix;
     }
 

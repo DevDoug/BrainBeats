@@ -30,6 +30,7 @@ import adapters.MixerAdapter;
 import data.BrainBeatsContract;
 import data.BrainBeatsDbHelper;
 import model.Mix;
+import model.MixItem;
 import utils.Constants;
 
 
@@ -109,7 +110,7 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
                 defaultMix.setIsInLibrary(1);
                 Uri returnRow = getActivity().getContentResolver().insert(BrainBeatsContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(defaultMix));
                 long returnRowId = ContentUris.parseId(returnRow);
-               // getActivity().getContentResolver().bulkInsert(BrainBeatsContract.MixItemsEntry.CONTENT_URI, Constants.buildMixItemsBulkRecord(getContext(), returnRowId));
+                //getActivity().getContentResolver().bulkInsert(BrainBeatsContract.MixItemsEntry.CONTENT_URI, Constants.buildMixItemsBulkRecord(getContext(), returnRowId));
                 mAddOptionsDialog.dismiss();
                 break;
             case 1:

@@ -36,6 +36,7 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
+
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
@@ -79,6 +80,8 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     public void onPause() {
         unregisterReceiver(mReceiver);
         super.onPause();
+
+
     }
 
     @Override
@@ -91,6 +94,11 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
             SyncManager.getInstance().updateAllTables(AccountManager.getInstance(MainActivity.this).getUserId(), mAccount, BrainBeatsContract.CONTENT_AUTHORITY);
             SyncManager.mIsGlobalSyncRequired = false;
         }*/
+
+        if(isMyServiceRunning(AudioService.class)){
+            mCurrentSongPlayingView.setVisibility(View.VISIBLE);
+        }
+
         registerReceiver(mReceiver, mIntentFilter);
     }
 
