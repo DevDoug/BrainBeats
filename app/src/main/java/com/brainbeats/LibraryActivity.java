@@ -24,6 +24,9 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
     Fragment mLibraryFragment;
     String mQueryText;
     SearchView.OnQueryTextListener listener;
+    SearchView.OnCloseListener mCloseListener;
+    MenuItem.OnActionExpandListener searchViewExpandListener;
+    SearchView mSearchView;
     public CoordinatorLayout mCoordinatorLayout;
 
     @Override
@@ -55,7 +58,7 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_library, menu);
         MenuItem searchMenuItem = menu.findItem(R.id.action_search);
-        SearchView mSearchView = (SearchView) searchMenuItem.getActionView();
+        mSearchView = (SearchView) searchMenuItem.getActionView();
         mSearchView.setOnQueryTextListener(listener);
         return true;
     }

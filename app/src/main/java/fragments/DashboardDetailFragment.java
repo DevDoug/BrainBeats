@@ -110,27 +110,14 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         setRetainInstance(true);
-
-/*        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-        Drawable up = DrawableCompat.wrap(ContextCompat.getDrawable(getContext(), R.drawable.ic_up));
-        DrawableCompat.setTint(up, getResources().getColor(R.color.theme_primary_text_color));
-        toolbar.setNavigationIcon(up);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                ((MainActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
-            }
-        });*/
-
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        // Bind to LocalService
         Intent intent = new Intent(getContext(), AudioService.class);
         getContext().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        //((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -158,6 +145,9 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         super.onPause();
         if (mUpdateSeekBar != null)
             mUpdateSeekBar.interrupt(); // stop updating a the progress bar if out of view
+
+        if(mAudioService.getIsPlaying() || mAudioService.mIsPaused)
+            ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.VISIBLE);
     }
 
     @Override
