@@ -46,7 +46,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     private IBinder mBinder = new AudioBinder();
     public boolean mIsPaused = false;
 
-    public int mSelectedTrackId;
+    public Track mPlayingSong;
 
     public AudioService() {}
 
@@ -54,7 +54,8 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     public int onStartCommand(Intent intent, int flags, int startId) {
         // We want this service to continue running until it is explicitly
         // stopped, so return sticky.
-        mSelectedTrackId = intent.getExtras().getInt("StartedTrackId");
+        mPlayingSong = intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+
         return START_STICKY;
     }
 
@@ -216,6 +217,6 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void loadNextTrack(){
-        BeatLearner.getInstance(getApplicationContext()).loadNextRecommendedBeat(mSelectedTrackId, this);
+        BeatLearner.getInstance(getApplicationContext()).loadNextRecommendedBeat(mPlayingSong.getID(), this);
     }
 }

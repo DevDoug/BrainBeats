@@ -137,6 +137,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         if (mBound) {
             getContext().unbindService(mConnection);
             mBound = false;
+            ((MainActivity) getActivity()).mCurrentSong = mSelectedTrack;
         }
     }
 
@@ -305,7 +306,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             case R.id.play_song_button:
                 //Start our audio service
                 Intent audioService = new Intent(getContext(), AudioService.class);
-                audioService.putExtra("StartedTrackId", mSelectedTrack.getID());
+                audioService.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack.getID());
                 getContext().startService(audioService);
 
                 if (mBound) {

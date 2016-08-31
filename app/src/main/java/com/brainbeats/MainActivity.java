@@ -8,15 +8,12 @@ import android.net.Uri;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.RelativeLayout;
 
 import architecture.AccountManager;
 import architecture.BaseActivity;
 import data.BrainBeatsContract;
 import entity.Track;
-import entity.User;
 import fragments.DashboardDetailFragment;
 import fragments.DashboardFragment;
 import model.BrainBeatsUser;
@@ -95,7 +92,7 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
             SyncManager.mIsGlobalSyncRequired = false;
         }*/
 
-        if(isMyServiceRunning(AudioService.class)){
+        if(isAudioServiceRunning(AudioService.class)){
             mCurrentSongPlayingView.setVisibility(View.VISIBLE);
         }
 

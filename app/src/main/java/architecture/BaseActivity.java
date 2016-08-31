@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.brainbeats.LibraryActivity;
 import com.brainbeats.MainActivity;
@@ -29,6 +30,7 @@ import com.brainbeats.R;
 import com.brainbeats.SettingsActivity;
 import com.brainbeats.SocialActivity;
 
+import entity.Track;
 import service.AudioService;
 
 /**
@@ -43,8 +45,10 @@ public class BaseActivity extends AppCompatActivity {
     public Toolbar mToolBar;
     public ActionBarDrawerToggle mDrawerToggle;
     public RelativeLayout mCurrentSongPlayingView;
+    public TextView mCurrentSongTitle;
     public NavigationView mNavView;
     public Account mAccount;
+    public Track mCurrentSong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +65,10 @@ public class BaseActivity extends AppCompatActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mCurrentSongPlayingView = (RelativeLayout) findViewById(R.id.current_track_container);
+        mCurrentSongTitle = (TextView) findViewById(R.id.playing_mix_title);
         setUpNavDrawer();
 
-        if(isMyServiceRunning(AudioService.class)){
+        if(isAudioServiceRunning(AudioService.class)){
             mCurrentSongPlayingView.setVisibility(View.VISIBLE);
         }
     }
@@ -199,7 +204,7 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public boolean isMyServiceRunning(Class<?> serviceClass) {
+    public boolean isAudioServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
