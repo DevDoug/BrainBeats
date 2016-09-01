@@ -117,7 +117,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         super.onStart();
         Intent intent = new Intent(getContext(), AudioService.class);
         getContext().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        //((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.INVISIBLE);
+        ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -137,7 +137,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         if (mBound) {
             getContext().unbindService(mConnection);
             mBound = false;
-            ((MainActivity) getActivity()).mCurrentSong = mSelectedTrack;
         }
     }
 
@@ -147,8 +146,12 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         if (mUpdateSeekBar != null)
             mUpdateSeekBar.interrupt(); // stop updating a the progress bar if out of view
 
-        if(mAudioService.getIsPlaying() || mAudioService.mIsPaused)
+        if(mAudioService.getIsPlaying() || mAudioService.mIsPaused) {
             ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.VISIBLE);
+            ((MainActivity) getActivity()).mCurrentSong = mSelectedTrack;
+            ((MainActivity) getActivity()).mCurrentSongTitle.setText(mSelectedTrack.getTitle());
+            Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL());
+        }
     }
 
     @Override
@@ -306,8 +309,11 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             case R.id.play_song_button:
                 //Start our audio service
                 Intent audioService = new Intent(getContext(), AudioService.class);
+                audioService.setAction(AudioService.MAIN_ACTION);
                 audioService.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack.getID());
                 getContext().startService(audioService);
+
+                //mAudioService.setRunInForeground();
 
                 if (mBound) {
                     if(mAudioService.requestAudioFocus(getContext())) { //make sure are audio focus request returns true before playback
@@ -318,8 +324,9 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                             mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
                             if(mSelectedTrack.getStreamURL() != null)
                                 mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
+
                             startProgressBarThread();
-                            mAudioService.setRunInForeground();
+
                             if(mLooping){
                                 mAudioService.setSongLooping(true);
                             }

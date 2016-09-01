@@ -20,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,7 +30,9 @@ import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import com.brainbeats.SettingsActivity;
 import com.brainbeats.SocialActivity;
+import com.squareup.picasso.Picasso;
 
+import data.BrainBeatsContract;
 import entity.Track;
 import service.AudioService;
 
@@ -46,9 +49,11 @@ public class BaseActivity extends AppCompatActivity {
     public ActionBarDrawerToggle mDrawerToggle;
     public RelativeLayout mCurrentSongPlayingView;
     public TextView mCurrentSongTitle;
+    public TextView mCurrentSongArtistName;
+    public ImageView mAlbumThumbnail;
     public NavigationView mNavView;
     public Account mAccount;
-    public Track mCurrentSong;
+    public static Track mCurrentSong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +71,16 @@ public class BaseActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
         mCurrentSongPlayingView = (RelativeLayout) findViewById(R.id.current_track_container);
         mCurrentSongTitle = (TextView) findViewById(R.id.playing_mix_title);
+        mCurrentSongArtistName = (TextView) findViewById(R.id.playing_mix_artist);
+        mAlbumThumbnail = (ImageView) findViewById(R.id.album_thumbnail);
         setUpNavDrawer();
 
-        if(isAudioServiceRunning(AudioService.class)){
+        if (isAudioServiceRunning(AudioService.class)) {
             mCurrentSongPlayingView.setVisibility(View.VISIBLE);
+            if (mCurrentSong != null) {
+                mCurrentSongTitle.setText(mCurrentSong.getTitle());
+                Picasso.with(BaseActivity.this).load(mCurrentSong.getArtworkURL());
+            }
         }
     }
 

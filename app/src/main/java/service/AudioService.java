@@ -37,7 +37,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     public static int FOREGROUND_SERVICE = 101;
     public static String MAIN_ACTION = "com.brainbeats.foregroundservice.action.main";
-    public static String PREV_ACTION = "com.brainbeats.foregroundservice.action.prev";
+    public static String DOWNVOTE_ACTION = "com.brainbeats.foregroundservice.action.prev";
     public static String PLAY_ACTION = "com.brainbeats.foregroundservice.action.play";
     public static String NEXT_ACTION = "com.brainbeats.foregroundservice.action.next";
     public static String STARTFOREGROUND_ACTION = "com.brainbeats.foregroundservice.action.startforeground";
@@ -45,17 +45,22 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     private IBinder mBinder = new AudioBinder();
     public boolean mIsPaused = false;
-
-    public Track mPlayingSong;
+    public static Track mPlayingSong;
 
     public AudioService() {}
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // We want this service to continue running until it is explicitly
-        // stopped, so return sticky.
-        mPlayingSong = intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
-
+        if(intent.getAction().equals(MAIN_ACTION)){
+            mPlayingSong = intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+        } else if (intent.getAction().equals(PLAY_ACTION)) {
+            //TODO play/pause song
+        } else if (intent.getAction().equals(NEXT_ACTION)) {
+            loadNextTrack();
+        } else if (intent.getAction().equals(DOWNVOTE_ACTION)) {
+            //TODO downvote this track
+            loadNextTrack();
+        }
         return START_STICKY;
     }
 
@@ -150,7 +155,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         Intent previousIntent = new Intent(this, AudioService.class);
-        previousIntent.setAction(PREV_ACTION);
+        previousIntent.setAction(DOWNVOTE_ACTION);
         PendingIntent ppreviousIntent = PendingIntent.getService(this, 0, previousIntent, 0);
 
         Intent playIntent = new Intent(this, AudioService.class);
@@ -164,16 +169,16 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_album);
 
         Notification notification = new NotificationCompat.Builder(this)
-                .setContentTitle("BrainBeats Music Player")
+                .setContentTitle("BrainBeats")
                 .setTicker("BrainBeats Music Player")
-                .setContentText("My Music")
+                .setContentText("Title")
                 .setSmallIcon(R.drawable.ic_music_note_black)
                 .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
-                .addAction(android.R.drawable.ic_media_previous, "Previous", ppreviousIntent)
-                .addAction(android.R.drawable.ic_media_play, "Play", pplayIntent)
-                .addAction(android.R.drawable.ic_media_next, "Next", pnextIntent).build();
+                .addAction(R.drawable.ic_arrow_downward_black, "Skip", ppreviousIntent)
+                .addAction(R.drawable.ic_play_circle, "Play", pplayIntent)
+                .addAction(R.drawable.ic_skip_next, "Next", pnextIntent).build();
         startForeground(FOREGROUND_SERVICE, notification);
     }
 
