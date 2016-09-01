@@ -310,7 +310,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 //Start our audio service
                 Intent audioService = new Intent(getContext(), AudioService.class);
                 audioService.setAction(AudioService.MAIN_ACTION);
-                audioService.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack.getID());
+                audioService.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
                 getContext().startService(audioService);
 
                 //mAudioService.setRunInForeground();
