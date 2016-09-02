@@ -45,7 +45,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     private IBinder mBinder = new AudioBinder();
     public boolean mIsPaused = false;
-    public static Track mPlayingSong;
+    public  Track mPlayingSong;
 
     public AudioService() {}
 

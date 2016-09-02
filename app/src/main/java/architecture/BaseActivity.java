@@ -152,26 +152,31 @@ public class BaseActivity extends AppCompatActivity {
                     case R.id.action_dashboard:
                         Intent dashboardIntent = new Intent(getApplicationContext(), MainActivity.class);
                         dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                        dashboardIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(dashboardIntent);
                         break;
                     case R.id.action_library:
                         Intent libraryIntent = new Intent(getApplicationContext(), LibraryActivity.class);
                         libraryIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                        libraryIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(libraryIntent);
                         break;
                     case R.id.action_mixer:
                         Intent mixerIntent = new Intent(getApplicationContext(), MixerActivity.class);
                         mixerIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                        mixerIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(mixerIntent);
                         break;
                     case R.id.action_social:
                         Intent socialIntent = new Intent(getApplicationContext(), SocialActivity.class);
                         socialIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                        socialIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(socialIntent);
                         break;
                     case R.id.action_settings:
                         Intent settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
                         settingsIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                        settingsIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(settingsIntent);
                         break;
                     default:

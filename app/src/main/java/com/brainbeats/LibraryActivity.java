@@ -31,6 +31,7 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
     SearchView.OnQueryTextListener listener;
     SearchView mSearchView;
     public CoordinatorLayout mCoordinatorLayout;
+    Track mPlayingTrack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,13 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
 
         mLibraryFragment = new LibraryFragment();
         switchToLibraryFragment();
+
+        Bundle intentBundle = getIntent().getExtras(); //If an intent is passed to main activity.
+        if (intentBundle != null) {
+            if (intentBundle.get(Constants.KEY_EXTRA_SELECTED_TRACK) != null) {
+                mPlayingTrack = (Track) intentBundle.get(Constants.KEY_EXTRA_SELECTED_TRACK);
+            }
+        }
 
         listener = new SearchView.OnQueryTextListener() {
             @Override
@@ -56,7 +64,14 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
         };
     }
 
-
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        if(mPlayingTrack != null){
+            mCurrentSong = mPlayingTrack;
+            updateCurrentSongNotificationUI();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 
 import architecture.BaseActivity;
+import entity.Track;
 import fragments.MixerDetailFragment;
 import fragments.MixerFragment;
 import model.Mix;
@@ -21,6 +22,8 @@ public class MixerActivity extends BaseActivity implements MixerFragment.OnFragm
     Fragment mMixerFragment;
     Fragment mMixerDetailFragment;
     Bundle mUserSelections;
+    Track mPlayingTrack;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,13 +39,27 @@ public class MixerActivity extends BaseActivity implements MixerFragment.OnFragm
 
         Intent intent = getIntent();
         if (intent.getExtras() != null) {
-            Mix mix = (Mix) intent.getExtras().get(Constants.KEY_EXTRA_SELECTED_MIX);
-            loadMixerDetailFragment(mix);
+            String intentAction = intent.getAction();
+            if(intentAction.equalsIgnoreCase(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT)){
+                Mix mix = (Mix) intent.getExtras().get(Constants.KEY_EXTRA_SELECTED_MIX);
+                loadMixerDetailFragment(mix);
+            } else if (intentAction.equalsIgnoreCase(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK)){
+                mPlayingTrack = (Track) intent.getExtras().get(Constants.KEY_EXTRA_SELECTED_TRACK);
+            }
         }
     }
 
     public void switchToMixerFragment() {
         replaceFragment(mMixerFragment, mMixerFragment.getTag());
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        if(mPlayingTrack != null){
+            mCurrentSong = mPlayingTrack;
+            updateCurrentSongNotificationUI();
+        }
     }
 
     @Override

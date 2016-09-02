@@ -72,6 +72,8 @@ public class Constants {
 
     //Intents and Communication
     public static final String SONG_COMPLETE_BROADCAST_ACTION = "com.brainbeats.play.next";
+    public static final String INTENT_ACTION_GO_TO_DETAIL_FRAGMENT = "LoadDetailFragment";
+    public static final String INTENT_ACTION_DISPLAY_CURRENT_TRACK = "DisplayCurrentTrack";
 
     //Misc
     public static final int GRID_SPAN_COUNT = 3;
