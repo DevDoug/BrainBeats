@@ -488,6 +488,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     }
 
     public void updateTrackUI(Track track){
+        mSelectedTrack = track;
         mTrackTitle.setText(track.getTitle());
         if (track.getArtworkURL() == null)
             mAlbumCoverArt.setImageResource(R.drawable.placeholder);
