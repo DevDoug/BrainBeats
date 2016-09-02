@@ -94,6 +94,8 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     private boolean mLooping = false;
     private boolean mIsAlive = true;
 
+    public Animation popUpPlayingSongNotificationAnimation;
+
     private MixTagAdapter mMixTagAdapter;
     private RecyclerView mMixerTags;
 
@@ -115,8 +117,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     @Override
     public void onStart() {
         super.onStart();
-        mAudioService = ((MainActivity) getActivity()).mAudioService;
-        mBound = ((MainActivity) getActivity()).mBound;
     }
 
     @Override
@@ -136,10 +136,10 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             mUpdateSeekBar.interrupt(); // stop updating a the progress bar if out of view
 
         if(((MainActivity) getActivity()).mAudioService.getIsPlaying() || ((MainActivity) getActivity()).mAudioService.mIsPaused) {
+            AccountManager.getInstance(getContext()).setDisplayFadeInPlayingNotification(true);
             ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.VISIBLE);
             ((MainActivity) getActivity()).mCurrentSong = mSelectedTrack;
             ((MainActivity) getActivity()).updateCurrentSongNotificationUI();
-
         }
     }
 
@@ -169,6 +169,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         fab_close = AnimationUtils.loadAnimation(getContext(), R.anim.fab_close);
         rotate_forward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_backward);
+        popUpPlayingSongNotificationAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.pop_up_song_notification);
 
         mTrackOptionsFab.setOnClickListener(this);
         mAddToLibraryFab.setOnClickListener(this);
@@ -215,6 +216,11 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         mMixerTags.setAdapter(mMixTagAdapter);
 
         getLoaderManager().initLoader(Constants.MIX_TAGS_LOADER, null, this);
+
+        if(((MainActivity) getActivity()).mAudioService != null) { // if we are navigating from main activity
+            mAudioService = ((MainActivity) getActivity()).mAudioService;
+            mBound = ((MainActivity) getActivity()).mBound;
+        }
     }
 
     @Override
@@ -234,6 +240,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         });
 
         mIsAlive = true;
+
     }
 
     @Override

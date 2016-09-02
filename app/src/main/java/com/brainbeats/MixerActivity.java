@@ -45,6 +45,9 @@ public class MixerActivity extends BaseActivity implements MixerFragment.OnFragm
                 loadMixerDetailFragment(mix);
             } else if (intentAction.equalsIgnoreCase(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK)){
                 mPlayingTrack = (Track) intent.getExtras().get(Constants.KEY_EXTRA_SELECTED_TRACK);
+            } else if (intentAction.equalsIgnoreCase(Constants.INTENT_ACTION_GO_TO_MIX_DETAIL_FRAGMENT)) {
+/*                Mix mix = (Mix) intent.getExtras().get(Constants.KEY_EXTRA_SELECTED_MIX);
+                loadMixerDetailFragment(mix);*/
             }
         }
     }

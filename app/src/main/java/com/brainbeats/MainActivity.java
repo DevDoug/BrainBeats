@@ -60,12 +60,14 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
         Bundle intentBundle = getIntent().getExtras(); //If an intent is passed to main activity.
         if (intentBundle != null) {
             if (intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX) != null) {
-                Mix sentMix = (Mix) intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX);
-                BrainBeatsUser mixUser = (BrainBeatsUser) intentBundle.get(Constants.KEY_EXTRA_SELECTED_USER);
-                if (sentMix != null) {
-                    Track playTrack = new Track(sentMix);
-                    playTrack.setUser(new entity.User(mixUser));
-                    switchToBeatDetailFragment(playTrack);
+                if(getIntent().getAction().equalsIgnoreCase(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT)) {
+                    Mix sentMix = (Mix) intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX);
+                    BrainBeatsUser mixUser = (BrainBeatsUser) intentBundle.get(Constants.KEY_EXTRA_SELECTED_USER);
+                    if (sentMix != null) {
+                        Track playTrack = new Track(sentMix);
+                        playTrack.setUser(new entity.User(mixUser));
+                        switchToBeatDetailFragment(playTrack);
+                    }
                 }
             }
         }
@@ -86,14 +88,10 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     @Override
     public void onResume() {
         super.onResume();
-        SyncManager.getInstance().updateAllTables(AccountManager.getInstance(MainActivity.this).getUserId(), mAccount, BrainBeatsContract.CONTENT_AUTHORITY);
-
-        //TODO uncomment after testing
-/*        if (SyncManager.getInstance().getIsGlobalSyncRequired()) {
+        if (SyncManager.getInstance().getIsGlobalSyncRequired()) {
             SyncManager.getInstance().updateAllTables(AccountManager.getInstance(MainActivity.this).getUserId(), mAccount, BrainBeatsContract.CONTENT_AUTHORITY);
             SyncManager.mIsGlobalSyncRequired = false;
-        }*/
-
+        }
         registerReceiver(mReceiver, mIntentFilter);
     }
 
@@ -140,7 +138,6 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
 
                     mCurrentSongArtistName.setText(newTrack.getUser().getUsername());
                 }
-
             }
         }
     };

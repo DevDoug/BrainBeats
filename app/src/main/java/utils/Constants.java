@@ -55,6 +55,7 @@ public class Constants {
     public static final String KEY_EXTRA_IS_INCOGNITO_PREF          = "IsIncognito";
     public static final String KEY_EXTRA_IS_SYNCED_TO_SC            = "SyncedToSoundCloud";
     public static final String KEY_EXTRA_IS_GLOBAL_SYNC_REQUIRED    = "IsGlobalSyncRequired";
+    public static final String KEY_EXTRA_IS_DISPLAY_CURRENT_PLAYING_SONG = "currentPlayingSong";
 
     //Sound Cloud
     public static final String SOUND_CLOUD_CLIENT_ID                = "6af4e9b999eaa63f5d797d466cdc4ccb";
@@ -73,6 +74,7 @@ public class Constants {
     //Intents and Communication
     public static final String SONG_COMPLETE_BROADCAST_ACTION = "com.brainbeats.play.next";
     public static final String INTENT_ACTION_GO_TO_DETAIL_FRAGMENT = "LoadDetailFragment";
+    public static final String INTENT_ACTION_GO_TO_MIX_DETAIL_FRAGMENT = "LoadMixDetailFragment";
     public static final String INTENT_ACTION_DISPLAY_CURRENT_TRACK = "DisplayCurrentTrack";
 
     //Misc

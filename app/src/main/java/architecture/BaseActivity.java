@@ -69,7 +69,6 @@ public class BaseActivity extends AppCompatActivity {
     public AudioService mAudioService;
     public boolean mBound = false;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,8 +95,6 @@ public class BaseActivity extends AppCompatActivity {
         super.onStart();
         Intent intent = new Intent(BaseActivity.this, AudioService.class);
         BaseActivity.this.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-
-
     }
 
     @Override
@@ -119,6 +116,10 @@ public class BaseActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //TODO go to currently playing song
+                Intent dashboardIntent = new Intent(getApplicationContext(), MainActivity.class);
+                dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                dashboardIntent.setAction(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT);
+                createBackStack(dashboardIntent);
             }
         });
     }
@@ -279,7 +280,7 @@ public class BaseActivity extends AppCompatActivity {
         return false;
     }
 
-    private ServiceConnection mConnection = new ServiceConnection() {
+    public ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance

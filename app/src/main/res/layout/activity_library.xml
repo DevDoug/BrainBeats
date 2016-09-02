@@ -50,13 +50,14 @@
             android:background="@drawable/current_track_playing_background"
             android:layout_gravity="center_horizontal|bottom"
             android:gravity="center_vertical"
-            android:visibility="invisible">
+            android:elevation="@dimen/fob_elevation"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/album_thumbnail"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginLeft="25dp"
+                android:layout_marginLeft="10dp"
                 android:src="@drawable/placeholder" />
 
             <TextView
@@ -65,6 +66,9 @@
                 android:layout_height="wrap_content"
                 android:textColor="#212121"
                 android:textSize="14sp"
+                android:maxLength="15"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:text="Lorem ispsum"
                 android:layout_marginLeft="10dp"
                 android:layout_toEndOf="@+id/album_thumbnail"
@@ -76,6 +80,9 @@
                 android:layout_height="wrap_content"
                 android:textColor="#424242"
                 android:textSize="12sp"
+                android:maxLength="15"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:text="Lorem ispsum"
                 android:layout_marginLeft="10dp"
                 android:layout_toEndOf="@+id/album_thumbnail"
@@ -83,17 +90,35 @@
 
             <android.support.v7.widget.AppCompatSeekBar
                 android:id="@+id/playing_mix_seek_bar"
-                android:layout_width="150dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="5dp"
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/playing_mix_title" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/playing_mix_seek_bar"
-                />
+            <!--            <ImageView
+                            android:id="@+id/play_song_button"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@+id/playing_mix_seek_bar"
+                            android:contentDescription="@string/content_description_play_button"
+                            android:src="@drawable/ic_play_circle" />
+
+                        <ImageView
+                            android:id="@+id/skip_forward_button"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@+id/play_song_button"
+                            android:contentDescription="@string/content_description_play_next_button"
+                            android:src="@drawable/ic_skip_next" />-->
+
+
         </RelativeLayout>
 
     </android.support.design.widget.CoordinatorLayout>
