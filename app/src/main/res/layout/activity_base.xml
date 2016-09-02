@@ -50,7 +50,8 @@
             android:layout_gravity="center_horizontal|bottom"
             android:gravity="center_vertical"
             android:layout_marginTop="15dp"
-            android:visibility="invisible">
+            android:elevation="@dimen/fob_elevation"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/album_thumbnail"

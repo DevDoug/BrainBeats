@@ -11,10 +11,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import architecture.AccountManager;
 import architecture.BaseActivity;
 import data.BrainBeatsContract;
 import entity.Track;
+import entity.User;
 import fragments.DashboardDetailFragment;
 import fragments.DashboardFragment;
 import model.BrainBeatsUser;
@@ -107,6 +110,12 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     public void switchToBeatDetailFragment(Track track) {
         toggleNavDrawerIcon();
         Bundle args = new Bundle();
+        if(mBound && mCurrentSong != null) //if another song is selected reset our player
+            resetPlayer();
+
+        if(mCurrentSongPlayingView != null)
+            mCurrentSongPlayingView.setVisibility(View.INVISIBLE);
+
         args.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, track);
         mDashboardDetailFragment.setArguments(args);
         replaceFragment(mDashboardDetailFragment, mDashboardDetailFragment.getTag());
@@ -118,11 +127,21 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION))
-                if(mDashboardDetailFragment.isVisible()){
-                    Track newTrack = (Track) intent.getExtras().get(Constants.KEY_EXTRA_SELECTED_TRACK);
+            if(intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
+                Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+                if(mDashboardDetailFragment.isVisible()){ //if they are on the dashboard detail screen update the detail widgets
                     (((DashboardDetailFragment) mDashboardDetailFragment)).updateTrackUI(newTrack);
+                } else { // else update the current playing notification view
+                    mCurrentSongTitle.setText(newTrack.getTitle());
+                    if (newTrack.getArtworkURL() == null)
+                        mAlbumThumbnail.setImageResource(R.drawable.placeholder);
+                    else
+                        Picasso.with(MainActivity.this).load(newTrack.getArtworkURL()).into(mAlbumThumbnail);
+
+                    mCurrentSongArtistName.setText(newTrack.getUser().getUsername());
                 }
+
+            }
         }
     };
 }

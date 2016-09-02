@@ -17,8 +17,12 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import architecture.BaseActivity;
+import entity.Track;
 import fragments.DashboardDetailFragment;
 import fragments.LibraryFragment;
+import model.BrainBeatsUser;
+import model.Mix;
+import utils.Constants;
 
 public class LibraryActivity extends BaseActivity implements LibraryFragment.OnFragmentInteractionListener {
 
@@ -51,6 +55,8 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
             }
         };
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

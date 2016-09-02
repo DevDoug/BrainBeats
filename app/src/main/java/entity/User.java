@@ -1,5 +1,8 @@
 package entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import model.BrainBeatsUser;
@@ -7,10 +10,10 @@ import model.BrainBeatsUser;
 /**
  * Created by douglas on 8/2/2016.
  */
-public class User {
+public class User implements Parcelable {
 
     @SerializedName("id")
-    private Integer id;
+    private int id;
 
     @SerializedName("permalink")
     private String permalink;
@@ -39,11 +42,11 @@ public class User {
 
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -94,4 +97,40 @@ public class User {
     public void setDescription(String description){
         this.description = description;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(permalink);
+        parcel.writeString(username);
+        parcel.writeString(uri);
+        parcel.writeString(permalinkUrl);
+        parcel.writeString(avatarUrl);
+        parcel.writeString(description);
+    }
+
+    protected User(Parcel in) {
+        permalink = in.readString();
+        username = in.readString();
+        uri = in.readString();
+        permalinkUrl = in.readString();
+        avatarUrl = in.readString();
+        description = in.readString();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }

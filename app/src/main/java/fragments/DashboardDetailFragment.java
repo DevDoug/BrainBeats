@@ -81,9 +81,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     int mProgressStatus = 0;
 
     public Bundle mUserSelections;
-    public AudioService mAudioService;
-    boolean mBound = false;
-
     public Track mSelectedTrack;
     private SeekBar mPlayTrackSeekBar;
     private OnFragmentInteractionListener mListener;
@@ -100,6 +97,9 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     private MixTagAdapter mMixTagAdapter;
     private RecyclerView mMixerTags;
 
+    public AudioService mAudioService;
+    public boolean mBound;
+
 
     public DashboardDetailFragment() {
         // Required empty public constructor
@@ -115,9 +115,8 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     @Override
     public void onStart() {
         super.onStart();
-        Intent intent = new Intent(getContext(), AudioService.class);
-        getContext().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.INVISIBLE);
+        mAudioService = ((MainActivity) getActivity()).mAudioService;
+        mBound = ((MainActivity) getActivity()).mBound;
     }
 
     @Override
@@ -131,26 +130,16 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        // Unbind from the service
-        if (mBound) {
-            getContext().unbindService(mConnection);
-            mBound = false;
-        }
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         if (mUpdateSeekBar != null)
             mUpdateSeekBar.interrupt(); // stop updating a the progress bar if out of view
 
-        if(mAudioService.getIsPlaying() || mAudioService.mIsPaused) {
+        if(((MainActivity) getActivity()).mAudioService.getIsPlaying() || ((MainActivity) getActivity()).mAudioService.mIsPaused) {
             ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.VISIBLE);
             ((MainActivity) getActivity()).mCurrentSong = mSelectedTrack;
-            ((MainActivity) getActivity()).mCurrentSongTitle.setText(mSelectedTrack.getTitle());
-            Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL());
+            ((MainActivity) getActivity()).updateCurrentSongNotificationUI();
+
         }
     }
 
@@ -315,7 +304,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
 
                 //mAudioService.setRunInForeground();
 
-                if (mBound) {
+                if (((MainActivity) getActivity()).mBound) {
                     if(mAudioService.requestAudioFocus(getContext())) { //make sure are audio focus request returns true before playback
                         if (mAudioService.getIsPlaying()) {
                             mAudioService.pauseSong();
@@ -469,26 +458,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         void onFragmentInteraction(Uri uri);
     }
 
-    private ServiceConnection mConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            AudioService.AudioBinder binder = (AudioService.AudioBinder) service;
-            mAudioService = binder.getService();
-            mBound = true;
-
-            if(mAudioService.getIsPlaying()){
-                mAudioService.stopSong();
-                mPlayTrackSeekBar.setProgress(0);
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mBound = false;
-        }
-    };
-
     public void animateFAB() {
         if (mIsFabOpen) {
             mTrackOptionsFab.startAnimation(rotate_backward);
@@ -520,10 +489,13 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         if (mBound) {
             if (track.getStreamURL() != null) {
                 mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
-                startProgressBarThread();
+                //startProgressBarThread();
             }
         }
-       // getUserInfo(track.getUser().getId());
+
+        mArtistName.setText(track.getUser().getUsername());
+        Picasso.with(getContext()).load(track.getUser().getAvatarUrl()).into(mArtistThumbnail);
+        mArtistDescription.setText(track.getUser().getDescription());
     }
 
     public void getUserInfo(int userId){

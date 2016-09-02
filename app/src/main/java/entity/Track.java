@@ -149,6 +149,7 @@ public class Track implements Parcelable {
         mDownloadUrl = in.readString();
         // mUserFavorite = in.read();
         mTagList = in.readString();
+        mUser = in.readParcelable(User.class.getClassLoader());
     }
 
     @Override
@@ -161,6 +162,7 @@ public class Track implements Parcelable {
         dest.writeByte((byte) (mDownloadable ? 1 : 0));
         dest.writeString(mDownloadUrl);
         dest.writeString(mTagList);
+        dest.writeParcelable(mUser, 0);
     }
 
     public static final Creator<Track> CREATOR = new Creator<Track>() {
