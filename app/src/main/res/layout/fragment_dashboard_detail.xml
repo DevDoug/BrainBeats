@@ -184,7 +184,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/card_view" />
 
-        <android.support.design.widget.FloatingActionButton
+<!--        <android.support.design.widget.FloatingActionButton
             android:id="@+id/floating_follow_artist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -227,7 +227,7 @@
             android:elevation="@dimen/fob_elevation"
             android:src="@drawable/ic_android_white"
             android:layout_alignBottom="@+id/mix_tag_grid"
-            android:layout_alignEnd="@+id/mix_tag_grid" />
+            android:layout_alignEnd="@+id/mix_tag_grid" />-->
 
     </RelativeLayout>
     </ScrollView>

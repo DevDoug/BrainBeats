@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.squareup.picasso.Picasso;
 
@@ -17,21 +19,26 @@ import architecture.AccountManager;
 import architecture.BaseActivity;
 import data.BrainBeatsContract;
 import entity.Track;
-import entity.User;
 import fragments.DashboardDetailFragment;
 import fragments.DashboardFragment;
 import model.BrainBeatsUser;
 import model.Mix;
-import service.AudioService;
 import utils.Constants;
 import sync.SyncManager;
+import web.WebApiManager;
 
-public class MainActivity extends BaseActivity implements DashboardFragment.OnFragmentInteractionListener, DashboardDetailFragment.OnFragmentInteractionListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener, DashboardFragment.OnFragmentInteractionListener, DashboardDetailFragment.OnFragmentInteractionListener {
 
     public Fragment mDashboardFragment;
     public Fragment mDashboardDetailFragment;
     public CoordinatorLayout mCoordinatorLayout;
     private IntentFilter mIntentFilter;
+    private FloatingActionButton mMainActionFab;
+    private FloatingActionButton mExtraActionOneFab;
+    private FloatingActionButton mExtraActionTwoFab;
+    private FloatingActionButton mExtraActionThreeFab;
+    private Animation fab_open, fab_close, rotate_forward, rotate_backward;
+    private boolean mIsFabOpen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +46,16 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
         setContentView(R.layout.activity_base);
 
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
+
+        mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
+        mExtraActionOneFab = (FloatingActionButton) findViewById(R.id.action_one_fob);
+        mExtraActionTwoFab = (FloatingActionButton) findViewById(R.id.action_two_fob);
+
+        fab_open = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate_backward);
+
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
 
@@ -77,6 +94,10 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
             startActivity(loginIntent);
             finish();
         }
+
+        mMainActionFab.setOnClickListener(this);
+        mExtraActionOneFab.setOnClickListener(this);
+        mExtraActionTwoFab.setOnClickListener(this);
     }
 
     @Override
@@ -99,6 +120,26 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
     protected void onDestroy() {
         super.onDestroy();
         AccountManager.getInstance(MainActivity.this).setGlobalSyncRequired(true);
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.main_action_fob:
+                animateFAB();
+                break;
+            case R.id.action_one_fob:
+                animateFAB();
+                if(mDashboardFragment.isVisible())
+                    ((DashboardFragment)mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR);
+                break;
+            case R.id.action_two_fob:
+                animateFAB();
+                if(mDashboardFragment.isVisible())
+                    ((DashboardFragment)mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT);
+                break;
+        }
     }
 
     public void switchToDashboardFragment() {
@@ -141,4 +182,22 @@ public class MainActivity extends BaseActivity implements DashboardFragment.OnFr
             }
         }
     };
+
+    public void animateFAB() {
+        if (mIsFabOpen) {
+            mMainActionFab.startAnimation(rotate_backward);
+            mExtraActionOneFab.startAnimation(fab_close);
+            mExtraActionTwoFab.startAnimation(fab_close);
+            mExtraActionOneFab.setClickable(false);
+            mExtraActionTwoFab.setClickable(false);
+            mIsFabOpen = false;
+        } else {
+            mMainActionFab.startAnimation(rotate_forward);
+            mExtraActionOneFab.startAnimation(fab_open);
+            mExtraActionTwoFab.startAnimation(fab_open);
+            mExtraActionOneFab.setClickable(true);
+            mExtraActionTwoFab.setClickable(true);
+            mIsFabOpen = true;
+        }
+    }
 }

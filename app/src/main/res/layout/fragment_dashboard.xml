@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <android.support.design.widget.FloatingActionButton
+<!--    <android.support.design.widget.FloatingActionButton
         android:id="@+id/floating_action_button_filter_by_recent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,19 +28,7 @@
         android:layout_marginBottom="15dp"
         android:elevation="@dimen/fob_elevation"
         android:src="@drawable/ic_whatshot_white"
-        android:visibility="invisible" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floating_action_button_quick_filter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="16dp"
-        android:clickable="true"
-        android:elevation="@dimen/fob_elevation"
-        android:src="@drawable/ic_filter_list_white" />
+        android:visibility="invisible" />-->
 
 </RelativeLayout>
 

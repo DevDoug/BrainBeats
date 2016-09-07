@@ -42,19 +42,19 @@ import entity.Track;
 import utils.Constants;
 import web.WebApiManager;
 
-public class DashboardFragment extends Fragment implements View.OnClickListener, Constants.ConfirmDialogActionListener {
+public class DashboardFragment extends Fragment implements Constants.ConfirmDialogActionListener {
 
     public static final String TAG = "DashboardFragment";
 
     private RecyclerView mTrackGrid;
     private SearchMusicAdapter mTrackAdapter;
     private GridLayoutManager mBeatGridLayoutManager;
-    private FloatingActionButton mQuickFilterFab;
+/*    private FloatingActionButton mQuickFilterFab;
     private FloatingActionButton mFilerByPopularFab;
     private FloatingActionButton mFilterByRecentFab;
-    private Animation fab_open, fab_close, rotate_forward, rotate_backward;
+    private Animation fab_open, fab_close, rotate_forward, rotate_backward;*/
     private OnFragmentInteractionListener mListener;
-    private boolean mIsFabOpen = false;
+/*    private boolean mIsFabOpen = false;*/
     private String mQueryText = "";
     private SearchView.OnQueryTextListener listener;
 
@@ -73,18 +73,20 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dashboard, container, false);
         mTrackGrid = (RecyclerView) v.findViewById(R.id.category_grid);
-        mQuickFilterFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_quick_filter);
-        mFilerByPopularFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_filter_by_popular);
-        mFilterByRecentFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_filter_by_recent);
 
-        fab_open = AnimationUtils.loadAnimation(getContext(), R.anim.fab_open);
+        //mQuickFilterFab = (FloatingActionButton) container.findViewById(R.id.floating_action_button_quick_filter);
+
+/*        mFilerByPopularFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_filter_by_popular);
+        mFilterByRecentFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_filter_by_recent);*/
+
+/*        fab_open = AnimationUtils.loadAnimation(getContext(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getContext(), R.anim.fab_close);
         rotate_forward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_backward);
 
         mQuickFilterFab.setOnClickListener(this);
         mFilerByPopularFab.setOnClickListener(this);
-        mFilterByRecentFab.setOnClickListener(this);
+        mFilterByRecentFab.setOnClickListener(this);*/
 
         listener = new SearchView.OnQueryTextListener() {
             @Override
@@ -177,24 +179,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     }
 
     @Override
-    public void onClick(View v) {
-        int id = v.getId();
-        switch (id) {
-            case R.id.floating_action_button_quick_filter:
-                animateFAB();
-                break;
-            case R.id.floating_action_button_filter_by_popular:
-                animateFAB();
-                getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR);
-                break;
-            case R.id.floating_action_button_filter_by_recent:
-                animateFAB();
-                getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT);
-                break;
-        }
-    }
-
-    @Override
     public void PerformDialogAction() {
         startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
     }
@@ -203,7 +187,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         void onFragmentInteraction(Uri uri);
     }
 
-    public void animateFAB() {
+/*    public void animateFAB() {
         if (mIsFabOpen) {
             mQuickFilterFab.startAnimation(rotate_backward);
             mFilerByPopularFab.startAnimation(fab_close);
@@ -219,7 +203,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             mFilterByRecentFab.setClickable(true);
             mIsFabOpen = true;
         }
-    }
+    }*/
 
     public void getTracks(String filterTag) {
         if (Constants.isNetworkAvailable(getContext())){

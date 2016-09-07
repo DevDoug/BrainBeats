@@ -42,6 +42,61 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
         </FrameLayout>
 
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/action_four_fob"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_anchor="@+id/action_three_fob"
+            app:layout_anchorGravity="top|end"
+            android:layout_gravity="top"
+            android:elevation="@dimen/fob_elevation"
+            android:src="@drawable/ic_access_time_white"
+            android:visibility="invisible" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/action_three_fob"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_anchor="@+id/action_two_fob"
+            app:layout_anchorGravity="top|end"
+            android:layout_gravity="top"
+            android:elevation="@dimen/fob_elevation"
+            android:src="@drawable/ic_access_time_white"
+            android:visibility="invisible" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/action_two_fob"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_anchor="@+id/action_one_fob"
+            app:layout_anchorGravity="top|end"
+            android:layout_gravity="top"
+            android:elevation="@dimen/fob_elevation"
+            android:src="@drawable/ic_access_time_white"
+            android:visibility="invisible" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/action_one_fob"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_anchor="@+id/main_action_fob"
+            app:layout_anchorGravity="top|end"
+            android:layout_gravity="top"
+            android:elevation="@dimen/fob_elevation"
+            android:src="@drawable/ic_whatshot_white"
+            android:visibility="invisible" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/main_action_fob"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            android:clickable="true"
+            android:elevation="@dimen/fob_elevation"
+            android:src="@drawable/ic_filter_list_white" />
+
         <RelativeLayout
             android:id="@+id/current_track_container"
             android:layout_width="match_parent"

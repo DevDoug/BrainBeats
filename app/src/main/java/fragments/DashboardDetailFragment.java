@@ -85,12 +85,14 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     private SeekBar mPlayTrackSeekBar;
     private OnFragmentInteractionListener mListener;
 
-    private FloatingActionButton mTrackOptionsFab;
+/*    private FloatingActionButton mTrackOptionsFab;
     private FloatingActionButton mAddToLibraryFab;
     private FloatingActionButton mFavFab;
     private FloatingActionButton mFollowArtistFab;
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;
-    private boolean mIsFabOpen = false;
+    private boolean mIsFabOpen = false;*/
+
+
     private boolean mLooping = false;
     private boolean mIsAlive = true;
 
@@ -160,21 +162,22 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         mPlayTrackSeekBar = (SeekBar) v.findViewById(R.id.play_song_seek_bar);
         mArtistName = (TextView) v.findViewById(R.id.user_name);
 
-        mTrackOptionsFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_track_options);
+
+/*        mTrackOptionsFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_track_options);
         mAddToLibraryFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_add_to_library);
         mFavFab = (FloatingActionButton) v.findViewById(R.id.floating_action_favorite);
-        mFollowArtistFab = (FloatingActionButton) v.findViewById(R.id.floating_follow_artist);
+        mFollowArtistFab = (FloatingActionButton) v.findViewById(R.id.floating_follow_artist);*/
 
-        fab_open = AnimationUtils.loadAnimation(getContext(), R.anim.fab_open);
+/*        fab_open = AnimationUtils.loadAnimation(getContext(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getContext(), R.anim.fab_close);
         rotate_forward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_forward);
-        rotate_backward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_backward);
-        popUpPlayingSongNotificationAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.pop_up_song_notification);
+        rotate_backward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_backward);*/
+       // popUpPlayingSongNotificationAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.pop_up_song_notification);
 
-        mTrackOptionsFab.setOnClickListener(this);
+/*        mTrackOptionsFab.setOnClickListener(this);
         mAddToLibraryFab.setOnClickListener(this);
         mFavFab.setOnClickListener(this);
-        mFollowArtistFab.setOnClickListener(this);
+        mFollowArtistFab.setOnClickListener(this);*/
 
         mPlaySongButton.setOnClickListener(this);
         mUpvoteArrow.setOnClickListener(this);
@@ -240,7 +243,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         });
 
         mIsAlive = true;
-
     }
 
     @Override
@@ -369,7 +371,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 upvoteSnack = Snackbar.make(((MainActivity) getActivity()).mCoordinatorLayout, getString(R.string.upvote_track), Snackbar.LENGTH_LONG);
                 upvoteSnack.show();
                 break;
-            case R.id.floating_action_button_track_options:
+/*            case R.id.floating_action_button_track_options:
                 animateFAB();
                 break;
             case R.id.floating_action_button_add_to_library:
@@ -387,7 +389,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
                 OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
                 animateFAB();
-                break;
+                break;*/
             default:
                 break;
         }
@@ -465,7 +467,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         void onFragmentInteraction(Uri uri);
     }
 
-    public void animateFAB() {
+/*    public void animateFAB() {
         if (mIsFabOpen) {
             mTrackOptionsFab.startAnimation(rotate_backward);
             mAddToLibraryFab.startAnimation(fab_close);
@@ -485,7 +487,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             mFollowArtistFab.setClickable(true);
             mIsFabOpen = true;
         }
-    }
+    }*/
 
     public void updateTrackUI(Track track){
         mSelectedTrack = track;
