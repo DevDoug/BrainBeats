@@ -237,6 +237,14 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if(((MainActivity) getActivity()).mIsFabOpen)
+                    ((MainActivity) getActivity()).animateFAB();
+
+                ((MainActivity) getActivity()).mMainActionFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_filter_list_white));
+                ((MainActivity) getActivity()).mExtraActionOneFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_whatshot_white));
+                ((MainActivity) getActivity()).mExtraActionTwoFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_access_time_white));
+
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 ((MainActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
             }
@@ -525,5 +533,9 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
 
             }
         });
+    }
+
+    public void updateOfflineSyncManager(){
+
     }
 }

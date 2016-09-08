@@ -23,6 +23,7 @@ import fragments.DashboardDetailFragment;
 import fragments.DashboardFragment;
 import model.BrainBeatsUser;
 import model.Mix;
+import sync.OfflineSyncManager;
 import utils.Constants;
 import sync.SyncManager;
 import web.WebApiManager;
@@ -33,12 +34,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public Fragment mDashboardDetailFragment;
     public CoordinatorLayout mCoordinatorLayout;
     private IntentFilter mIntentFilter;
-    private FloatingActionButton mMainActionFab;
-    private FloatingActionButton mExtraActionOneFab;
-    private FloatingActionButton mExtraActionTwoFab;
-    private FloatingActionButton mExtraActionThreeFab;
+    public FloatingActionButton mMainActionFab;
+    public FloatingActionButton mExtraActionOneFab;
+    public FloatingActionButton mExtraActionTwoFab;
+    public FloatingActionButton mExtraActionThreeFab;
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;
-    private boolean mIsFabOpen = false;
+    public boolean mIsFabOpen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
         mExtraActionOneFab = (FloatingActionButton) findViewById(R.id.action_one_fob);
         mExtraActionTwoFab = (FloatingActionButton) findViewById(R.id.action_two_fob);
+        mExtraActionThreeFab = (FloatingActionButton) findViewById(R.id.action_three_fob);
 
         fab_open = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_close);
@@ -98,6 +100,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mMainActionFab.setOnClickListener(this);
         mExtraActionOneFab.setOnClickListener(this);
         mExtraActionTwoFab.setOnClickListener(this);
+        mExtraActionThreeFab.setOnClickListener(this);
     }
 
     @Override
@@ -133,11 +136,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 animateFAB();
                 if(mDashboardFragment.isVisible())
                     ((DashboardFragment)mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR);
-                break;
+                else if(mDashboardDetailFragment.isVisible())
+                    ((DashboardDetailFragment)mDashboardDetailFragment).updateOfflineSyncManager();
+                    break;
             case R.id.action_two_fob:
                 animateFAB();
                 if(mDashboardFragment.isVisible())
                     ((DashboardFragment)mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT);
+                else if(mDashboardDetailFragment.isVisible())
+                    ((DashboardDetailFragment)mDashboardDetailFragment).updateOfflineSyncManager();
+                break;
+            case R.id.action_three_fob:
+                if(mDashboardDetailFragment.isVisible())
+                    ((DashboardDetailFragment)mDashboardDetailFragment).updateOfflineSyncManager();
                 break;
         }
     }
@@ -157,6 +168,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         args.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, track);
         mDashboardDetailFragment.setArguments(args);
+
+        mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_android_white));
+        mExtraActionOneFab.setImageDrawable(getDrawable(R.drawable.ic_library_add_white));
+        mExtraActionTwoFab.setImageDrawable(getDrawable(R.drawable.ic_favorite_white));
+        mExtraActionThreeFab.setImageDrawable(getDrawable(R.drawable.ic_person_add_white));
         replaceFragment(mDashboardDetailFragment, mDashboardDetailFragment.getTag());
     }
 
@@ -190,6 +206,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             mExtraActionTwoFab.startAnimation(fab_close);
             mExtraActionOneFab.setClickable(false);
             mExtraActionTwoFab.setClickable(false);
+
+            if(mDashboardDetailFragment.isVisible()){
+                mExtraActionThreeFab.startAnimation(fab_close);
+                mExtraActionThreeFab.setClickable(false);
+            }
+
             mIsFabOpen = false;
         } else {
             mMainActionFab.startAnimation(rotate_forward);
@@ -197,6 +219,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             mExtraActionTwoFab.startAnimation(fab_open);
             mExtraActionOneFab.setClickable(true);
             mExtraActionTwoFab.setClickable(true);
+
+            if(mDashboardDetailFragment.isVisible()){
+                mExtraActionThreeFab.startAnimation(fab_open);
+                mExtraActionThreeFab.setClickable(true);
+            }
+
             mIsFabOpen = true;
         }
     }
