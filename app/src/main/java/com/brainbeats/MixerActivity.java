@@ -79,7 +79,13 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
         int id = v.getId();
         switch (id) {
             case R.id.main_action_fob:
-                ((MixerFragment) mMixerFragment).mAddOptionsDialog = Constants.buildListDialogue(MixerActivity.this, getString(R.string.new_beat_title), R.array.new_beat_options, ((MixerFragment) mMixerFragment));
+                if(mMixerFragment.isVisible())
+                    ((MixerFragment) mMixerFragment).mAddOptionsDialog = Constants.buildListDialogue(MixerActivity.this, getString(R.string.new_beat_title), R.array.new_beat_options, ((MixerFragment) mMixerFragment));
+                else if(mMixerDetailFragment.isVisible()) {
+                    ((MixerDetailFragment) mMixerDetailFragment).mDialog = Constants.buildImageListDialogue(MixerActivity.this, MixerActivity.this.getResources().getString(R.string.add_sound_item_to_current_beat), ((MixerDetailFragment) mMixerDetailFragment));
+                    ((MixerDetailFragment) mMixerDetailFragment).mDialog.show();
+                }
+
                 break;
         }
     }

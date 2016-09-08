@@ -72,7 +72,6 @@ public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapt
                 mixerIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, selectedMix);
                 mixerIntent.setAction(Constants.INTENT_ACTION_GO_TO_MIX_DETAIL_FRAGMENT);
                 mAdapterContext.startActivity(mixerIntent);
-
             }
         });
     }

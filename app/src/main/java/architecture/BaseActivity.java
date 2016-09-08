@@ -41,6 +41,7 @@ import com.squareup.picasso.Picasso;
 import data.BrainBeatsContract;
 import entity.Track;
 import fragments.DashboardDetailFragment;
+import model.Mix;
 import service.AudioService;
 import utils.Constants;
 
@@ -78,6 +79,12 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        // Unbind from the service
         if (mBound) {
             BaseActivity.this.unbindService(mConnection);
             mBound = false;
@@ -85,16 +92,15 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        // Unbind from the service
+    protected void onResume() {
+        super.onResume();
+        Intent intent = new Intent(BaseActivity.this, AudioService.class);
+        BaseActivity.this.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Intent intent = new Intent(BaseActivity.this, AudioService.class);
-        BaseActivity.this.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -116,10 +122,11 @@ public class BaseActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //TODO go to currently playing song
-                Intent dashboardIntent = new Intent(getApplicationContext(), MainActivity.class);
-                dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
-                dashboardIntent.setAction(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT);
-                createBackStack(dashboardIntent);
+                Intent dashboardIntent = new Intent(BaseActivity.this, MainActivity.class);
+                //dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, new Mix(mCurrentSong));
+                //dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_USER, selectedMix.getUser());
+                //dashboardIntent.setAction(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT);
+                startActivity(dashboardIntent);
             }
         });
     }
@@ -268,16 +275,6 @@ public class BaseActivity extends AppCompatActivity {
         } else {
             return accountManager.getAccountsByType(ACCOUNT_TYPE)[0];
         }
-    }
-
-    public boolean isAudioServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public ServiceConnection mConnection = new ServiceConnection() {

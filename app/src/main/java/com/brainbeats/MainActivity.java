@@ -137,18 +137,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 if(mDashboardFragment.isVisible())
                     ((DashboardFragment)mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR);
                 else if(mDashboardDetailFragment.isVisible())
-                    ((DashboardDetailFragment)mDashboardDetailFragment).updateOfflineSyncManager();
+                    ((DashboardDetailFragment)mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateMix, null);
                     break;
             case R.id.action_two_fob:
                 animateFAB();
                 if(mDashboardFragment.isVisible())
                     ((DashboardFragment)mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT);
                 else if(mDashboardDetailFragment.isVisible())
-                    ((DashboardDetailFragment)mDashboardDetailFragment).updateOfflineSyncManager();
+                    ((DashboardDetailFragment)mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateFavorite, null);
                 break;
             case R.id.action_three_fob:
+                animateFAB();
                 if(mDashboardDetailFragment.isVisible())
-                    ((DashboardDetailFragment)mDashboardDetailFragment).updateOfflineSyncManager();
+                    ((DashboardDetailFragment)mDashboardDetailFragment).updateOfflineSyncManager(null, Constants.SyncDataType.Users);
                 break;
         }
     }

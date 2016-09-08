@@ -101,8 +101,8 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     private MixTagAdapter mMixTagAdapter;
     private RecyclerView mMixerTags;
 
-    public AudioService mAudioService;
-    public boolean mBound;
+/*    public AudioService mAudioService;
+    public boolean mBound;*/
 
 
     public DashboardDetailFragment() {
@@ -220,10 +220,10 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
 
         getLoaderManager().initLoader(Constants.MIX_TAGS_LOADER, null, this);
 
-        if(((MainActivity) getActivity()).mAudioService != null) { // if we are navigating from main activity
+/*        if(((MainActivity) getActivity()).mAudioService != null) { // if we are navigating from main activity
             mAudioService = ((MainActivity) getActivity()).mAudioService;
             mBound = ((MainActivity) getActivity()).mBound;
-        }
+        }*/
     }
 
     @Override
@@ -322,19 +322,19 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 //mAudioService.setRunInForeground();
 
                 if (((MainActivity) getActivity()).mBound) {
-                    if(mAudioService.requestAudioFocus(getContext())) { //make sure are audio focus request returns true before playback
-                        if (mAudioService.getIsPlaying()) {
-                            mAudioService.pauseSong();
+                    if(((MainActivity) getActivity()).mAudioService.requestAudioFocus(getContext())) { //make sure are audio focus request returns true before playback
+                        if (((MainActivity) getActivity()).mAudioService.getIsPlaying()) {
+                            ((MainActivity) getActivity()).mAudioService.pauseSong();
                             mPlaySongButton.setImageResource(R.drawable.ic_play_circle);
                         } else {
                             mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
                             if(mSelectedTrack.getStreamURL() != null)
-                                mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
+                                ((MainActivity) getActivity()).mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
 
                             startProgressBarThread();
 
                             if(mLooping){
-                                mAudioService.setSongLooping(true);
+                                ((MainActivity) getActivity()).mAudioService.setSongLooping(true);
                             }
                         }
                     }
@@ -342,23 +342,23 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 break;
             case R.id.arrow_down:
                 BeatLearner.getInstance(getContext()).downVoteTrack(mSelectedTrack.getID()); // downvote this track
-                mAudioService.loadNextTrack();
+                ((MainActivity) getActivity()).mAudioService.loadNextTrack();
 
                 Snackbar downVoteSnack;
                 downVoteSnack = Snackbar.make(((MainActivity) getActivity()).mCoordinatorLayout, getString(R.string.downvote_track), Snackbar.LENGTH_LONG);
                 downVoteSnack.show();
                 break;
             case R.id.skip_forward_button:
-                mAudioService.loadNextTrack();
+                ((MainActivity) getActivity()).mAudioService.loadNextTrack();
                 break;
             case R.id.repeat_button:
-                if (mBound) {
-                    if(mAudioService.getIsPlaying()){
-                        if (!mAudioService.getIsLooping()) {
-                            mAudioService.setSongLooping(true);
+                if (((MainActivity) getActivity()).mBound) {
+                    if(((MainActivity) getActivity()).mAudioService.getIsPlaying()){
+                        if (!((MainActivity) getActivity()).mAudioService.getIsLooping()) {
+                            ((MainActivity) getActivity()).mAudioService.setSongLooping(true);
                             mLoopSongButton.setImageResource(R.drawable.ic_repeat);
                         } else {
-                            mAudioService.setSongLooping(false);
+                            ((MainActivity) getActivity()).mAudioService.setSongLooping(false);
                             mLoopSongButton.setImageResource(R.drawable.ic_repeat_off);
                         }
                     } else {
@@ -413,13 +413,13 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 while (mProgressStatus < trackDuration && mIsAlive) {
                     try {
                         Thread.sleep(1000); //Update once per second
-                        mProgressStatus = mAudioService.getPlayerPosition();
+                        mProgressStatus = ((MainActivity) getActivity()).mAudioService.getPlayerPosition();
                         mPlayTrackSeekBar.setProgress(mProgressStatus);
                         mPlayTrackSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                             @Override
                             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                                 if (fromUser) {
-                                    mAudioService.seekPlayerTo(progress);
+                                    ((MainActivity) getActivity()).mAudioService.seekPlayerTo(progress);
                                 }
                             }
                             @Override
@@ -504,7 +504,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             mAlbumCoverArt.setImageResource(R.drawable.placeholder);
         else
             Picasso.with(getContext()).load(track.getArtworkURL()).into(mAlbumCoverArt);
-        if (mBound) {
+        if (((MainActivity) getActivity()).mBound) {
             if (track.getStreamURL() != null) {
                 mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
                 //startProgressBarThread();
@@ -535,7 +535,15 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         });
     }
 
-    public void updateOfflineSyncManager(){
+    public void updateOfflineSyncManager(Constants.SyncDataAction syncAction, Constants.SyncDataType syncDataType){
+        Bundle settingsBundle = new Bundle();
 
+        if(syncAction != null)
+            settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, syncAction.getCode());
+        if(syncDataType != null)
+            settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, syncDataType.getCode());
+
+        settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
+        OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
     }
 }

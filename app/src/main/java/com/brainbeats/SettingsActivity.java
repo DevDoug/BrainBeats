@@ -3,9 +3,11 @@ package com.brainbeats;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import architecture.BaseActivity;
 import entity.Track;
@@ -16,11 +18,15 @@ public class SettingsActivity extends BaseActivity implements SettingFragment.On
 
     public Fragment mSettingsFragment;
     Track mPlayingTrack;
-    
+    public FloatingActionButton mMainActionFab;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
+        mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
+
         mSettingsFragment = new SettingFragment();
         switchToSettingsFragment();
 
@@ -32,6 +38,9 @@ public class SettingsActivity extends BaseActivity implements SettingFragment.On
                 mPlayingTrack = (Track) intent.getExtras().get(Constants.KEY_EXTRA_SELECTED_TRACK);
             }
         }
+
+        mMainActionFab.setVisibility(View.INVISIBLE);
+        mMainActionFab.setClickable(false);
     }
 
     public void switchToSettingsFragment() {

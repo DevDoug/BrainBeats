@@ -2,9 +2,11 @@ package com.brainbeats;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
 
 import architecture.BaseActivity;
 import entity.Track;
@@ -18,11 +20,13 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
     Fragment mSocialFragment;
     Fragment mUserProfileFragment;
     Track mPlayingTrack;
+    public FloatingActionButton mMainActionFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
+        mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
         mSocialFragment = new SocialFragment();
         mUserProfileFragment = new UserProfileFragment();
         switchToSocialFragment();
@@ -35,6 +39,9 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
                 mPlayingTrack = (Track) intent.getExtras().get(Constants.KEY_EXTRA_SELECTED_TRACK);
             }
         }
+
+        mMainActionFab.setVisibility(View.INVISIBLE);
+        mMainActionFab.setClickable(false);
     }
 
     @Override
