@@ -41,6 +41,7 @@ import com.squareup.picasso.Picasso;
 import data.BrainBeatsContract;
 import entity.Track;
 import fragments.DashboardDetailFragment;
+import model.BrainBeatsUser;
 import model.Mix;
 import service.AudioService;
 import utils.Constants;
@@ -123,9 +124,9 @@ public class BaseActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //TODO go to currently playing song
                 Intent dashboardIntent = new Intent(BaseActivity.this, MainActivity.class);
-                //dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, new Mix(mCurrentSong));
-                //dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_USER, selectedMix.getUser());
-                //dashboardIntent.setAction(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT);
+                dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, new Mix(mCurrentSong));
+                dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_USER,new BrainBeatsUser(mCurrentSong.getUser()));
+                dashboardIntent.setAction(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT);
                 startActivity(dashboardIntent);
             }
         });
