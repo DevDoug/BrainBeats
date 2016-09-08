@@ -4,10 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 
 import architecture.BaseActivity;
 import entity.Track;
@@ -17,18 +19,22 @@ import model.Mix;
 import utils.BeatLearner;
 import utils.Constants;
 
-public class MixerActivity extends BaseActivity implements MixerFragment.OnFragmentInteractionListener {
+public class MixerActivity extends BaseActivity implements View.OnClickListener, MixerFragment.OnFragmentInteractionListener {
 
     Fragment mMixerFragment;
     Fragment mMixerDetailFragment;
     Bundle mUserSelections;
     Track mPlayingTrack;
+    public FloatingActionButton mMainActionFab;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
+
+        mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
+
         mMixerFragment = new MixerFragment();
         mMixerDetailFragment = new MixerDetailFragment();
         switchToMixerFragment();
@@ -50,6 +56,9 @@ public class MixerActivity extends BaseActivity implements MixerFragment.OnFragm
                 loadMixerDetailFragment(mix);*/
             }
         }
+
+        mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_add_white));
+        mMainActionFab.setOnClickListener(this);
     }
 
     public void switchToMixerFragment() {
@@ -62,6 +71,16 @@ public class MixerActivity extends BaseActivity implements MixerFragment.OnFragm
         if(mPlayingTrack != null){
             mCurrentSong = mPlayingTrack;
             updateCurrentSongNotificationUI();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.main_action_fob:
+                ((MixerFragment) mMixerFragment).mAddOptionsDialog = Constants.buildListDialogue(MixerActivity.this, getString(R.string.new_beat_title), R.array.new_beat_options, ((MixerFragment) mMixerFragment));
+                break;
         }
     }
 

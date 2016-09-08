@@ -3,14 +3,11 @@ package ui;
 import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.brainbeats.R;
-
-import custom.AudioPlayerNotificationView;
 
 /**
  * Created by douglas on 9/7/2016.
@@ -23,7 +20,8 @@ public class PlayerNotificationCoordinatorLayoutBehavior extends CoordinatorLayo
 
     @Override
     public boolean layoutDependsOn(CoordinatorLayout parent, FloatingActionButton child, View dependency) {
-        return dependency instanceof AudioPlayerNotificationView;
+        RelativeLayout audioNotificationBar = (RelativeLayout) parent.findViewById(R.id.current_track_container);
+        return audioNotificationBar != null && audioNotificationBar.getVisibility() == View.VISIBLE;
     }
 
     @Override

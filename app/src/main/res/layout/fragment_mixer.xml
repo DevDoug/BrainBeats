@@ -26,7 +26,7 @@
         android:textSize="26sp"
         android:visibility="gone" />
 
-    <android.support.design.widget.FloatingActionButton
+<!--    <android.support.design.widget.FloatingActionButton
         android:id="@+id/mixer_fob"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -35,6 +35,6 @@
         android:layout_marginBottom="@dimen/floating_action_button_bottom_margin"
         android:layout_marginEnd="@dimen/floating_action_button_right_margin"
         android:elevation="@dimen/fob_elevation"
-        android:src="@drawable/ic_add_white" />
+        android:src="@drawable/ic_add_white" />-->
 
 </RelativeLayout>
