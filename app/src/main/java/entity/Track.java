@@ -51,6 +51,7 @@ public class Track implements Parcelable {
         this.mArtworkURL = mix.getMixAlbumCoverArt();
         this.mStreamURL = mix.getStreamURL();
         this.mUserFavorite = mix.getMixFavorite() == 1;
+        this.mDuration = mix.getDuration();
         //this.mUser = new User(mix.getUser());
     }
 

@@ -43,6 +43,7 @@ public class BrainBeatsContract {
         public static final String COLUMN_NAME_IS_IN_LIBRARY            = "isinlibrary";
         public static final String COLUMN_NAME_IS_IN_MIXER              = "isInMixer";
         public static final String COLUMN_NAME_STREAM_URL               = "mixStreamUrl";
+        public static final String COLUMN_NAME_DURATION                 = "mixDuration";
         public static final String COLUMN_NAME_IS_UPVOTE                = "isUpvoted";
 
         public static Uri buildMixUriWithId(long id) {

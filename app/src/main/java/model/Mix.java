@@ -38,6 +38,8 @@ public class Mix implements Parcelable {
 
     private String mMixTagList;
 
+    private int mDuration;
+
     private BrainBeatsUser mBrainBeatsUser;
 
     public Mix() {
@@ -182,6 +184,7 @@ public class Mix implements Parcelable {
         dest.writeLong(mMixItemsId);
         dest.writeString(mStreamURL);
         dest.writeString(mMixTagList);
+        dest.writeInt(mDuration);
         dest.writeParcelable(mBrainBeatsUser,0);
     }
 
@@ -199,6 +202,7 @@ public class Mix implements Parcelable {
         mMixItemsId = in.readLong();
         mStreamURL = in.readString();
         mMixTagList = in.readString();
+        mDuration = in.readInt();
         mBrainBeatsUser = (BrainBeatsUser) in.readParcelable(BrainBeatsUser.class.getClassLoader());
     }
 
@@ -213,4 +217,12 @@ public class Mix implements Parcelable {
             return new Mix[size];
         }
     };
+
+    public int getDuration() {
+        return mDuration;
+    }
+
+    public void setDuration(int duration) {
+        this.mDuration = duration;
+    }
 }

@@ -165,6 +165,7 @@ public class Constants {
         mix.setMixAlbumCoverArt(track.getArtworkURL());
         mix.setSoundCloudId(track.getID());
         mix.setStreamURL(track.getStreamURL());
+        mix.setDuration(track.getDuration());
         mix.setMixTagList(track.getTagList());
         return mix;
     }
@@ -182,6 +183,7 @@ public class Constants {
         mix.setIsInLibrary(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY)));
         mix.setIsInMixer(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_MIXER)));
         mix.setStreamURL(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_STREAM_URL)));
+        mix.setDuration(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_DURATION)));
 
         Cursor userCursor = context.getContentResolver().query( //get this mixes user
                 BrainBeatsContract.UserEntry.CONTENT_URI,
@@ -248,6 +250,7 @@ public class Constants {
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY, mix.getIsInLibrary());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_MIXER, mix.getIsInMixer());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_STREAM_URL, mix.getStreamURL());
+        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_DURATION, mix.getDuration());
         return values;
     }
 
