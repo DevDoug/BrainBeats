@@ -30,6 +30,7 @@ import adapters.MixerAdapter;
 import data.BrainBeatsContract;
 import data.BrainBeatsDbHelper;
 import model.Mix;
+import model.MixItem;
 import utils.Constants;
 
 
@@ -39,7 +40,7 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
     private TextView mEmptyText;
     private MixerAdapter mMixerAdapter;
     private OnFragmentInteractionListener mListener;
-    public FloatingActionButton mAddNewBeatButton;
+    //public FloatingActionButton mAddNewBeatButton;
     public AlertDialog mAddOptionsDialog;
 
     public MixerFragment() {
@@ -56,7 +57,7 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
         View v = inflater.inflate(R.layout.fragment_mixer, container, false);
         mMixerItems = (RecyclerView) v.findViewById(R.id.mixer_list);
         mEmptyText = (TextView) v.findViewById(R.id.empty_text);
-        mAddNewBeatButton = (FloatingActionButton) v.findViewById(R.id.mixer_fob);
+        //mAddNewBeatButton = (FloatingActionButton) v.findViewById(R.id.mixer_fob);
         return v;
     }
 
@@ -69,12 +70,12 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mMixerItems.setLayoutManager(layoutManager);
 
-        mAddNewBeatButton.setOnClickListener(new View.OnClickListener() {
+/*        mAddNewBeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mAddOptionsDialog = Constants.buildListDialogue(getContext(), getString(R.string.new_beat_title), R.array.new_beat_options, MixerFragment.this);
             }
-        });
+        });*/
     }
 
     public void onButtonPressed(Uri uri) {
@@ -109,7 +110,6 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
                 defaultMix.setIsInLibrary(1);
                 Uri returnRow = getActivity().getContentResolver().insert(BrainBeatsContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(defaultMix));
                 long returnRowId = ContentUris.parseId(returnRow);
-               // getActivity().getContentResolver().bulkInsert(BrainBeatsContract.MixItemsEntry.CONTENT_URI, Constants.buildMixItemsBulkRecord(getContext(), returnRowId));
                 mAddOptionsDialog.dismiss();
                 break;
             case 1:

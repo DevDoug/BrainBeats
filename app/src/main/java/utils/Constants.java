@@ -55,6 +55,7 @@ public class Constants {
     public static final String KEY_EXTRA_IS_INCOGNITO_PREF          = "IsIncognito";
     public static final String KEY_EXTRA_IS_SYNCED_TO_SC            = "SyncedToSoundCloud";
     public static final String KEY_EXTRA_IS_GLOBAL_SYNC_REQUIRED    = "IsGlobalSyncRequired";
+    public static final String KEY_EXTRA_IS_DISPLAY_CURRENT_PLAYING_SONG = "currentPlayingSong";
 
     //Sound Cloud
     public static final String SOUND_CLOUD_CLIENT_ID                = "6af4e9b999eaa63f5d797d466cdc4ccb";
@@ -72,6 +73,9 @@ public class Constants {
 
     //Intents and Communication
     public static final String SONG_COMPLETE_BROADCAST_ACTION = "com.brainbeats.play.next";
+    public static final String INTENT_ACTION_GO_TO_DETAIL_FRAGMENT = "LoadDetailFragment";
+    public static final String INTENT_ACTION_GO_TO_MIX_DETAIL_FRAGMENT = "LoadMixDetailFragment";
+    public static final String INTENT_ACTION_DISPLAY_CURRENT_TRACK = "DisplayCurrentTrack";
 
     //Misc
     public static final int GRID_SPAN_COUNT = 3;
@@ -83,6 +87,10 @@ public class Constants {
 
     //Fragment Uris
     public static final Uri DASHBOARD_DETAIL_URI = Uri.parse("main://dashboard_detail");
+
+    public static final Uri DASHBOARD_DETAIL_PLAY_SONG_URI = Uri.parse("main://dashboard_detail_play_song");
+
+
 
 
     public enum AudioServiceRepeatType {
@@ -161,6 +169,7 @@ public class Constants {
         mix.setMixAlbumCoverArt(track.getArtworkURL());
         mix.setSoundCloudId(track.getID());
         mix.setStreamURL(track.getStreamURL());
+        mix.setDuration(track.getDuration());
         mix.setMixTagList(track.getTagList());
         return mix;
     }
@@ -178,6 +187,7 @@ public class Constants {
         mix.setIsInLibrary(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY)));
         mix.setIsInMixer(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_MIXER)));
         mix.setStreamURL(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_STREAM_URL)));
+        mix.setDuration(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_DURATION)));
 
         Cursor userCursor = context.getContentResolver().query( //get this mixes user
                 BrainBeatsContract.UserEntry.CONTENT_URI,
@@ -244,6 +254,7 @@ public class Constants {
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY, mix.getIsInLibrary());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_MIXER, mix.getIsInMixer());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_STREAM_URL, mix.getStreamURL());
+        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_DURATION, mix.getDuration());
         return values;
     }
 
@@ -349,6 +360,8 @@ public class Constants {
         } else {
             defaultMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(context).getUserId())); //BrainBeatsUser is logged in to sound cloud
         }
+
+
 
         return defaultMix;
     }

@@ -124,4 +124,17 @@ public class AccountManager  {
         editor.putBoolean(Constants.KEY_EXTRA_IS_GLOBAL_SYNC_REQUIRED, isGlobalSyncRequired);
         editor.commit();
     }
+
+    public boolean getDisplayCurrentSongView() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        boolean isDisplayFadeInPlayingNotification = sharedPreferences.getBoolean(Constants.KEY_EXTRA_IS_DISPLAY_CURRENT_PLAYING_SONG, false);
+        return isDisplayFadeInPlayingNotification;
+    }
+
+    public void setDisplayCurrentSongView(boolean isDisplayFadeInPlayingNotification) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constants.KEY_EXTRA_IS_DISPLAY_CURRENT_PLAYING_SONG, isDisplayFadeInPlayingNotification);
+        editor.commit();
+    }
 }

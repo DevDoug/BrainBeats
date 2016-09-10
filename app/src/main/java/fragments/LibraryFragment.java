@@ -109,5 +109,4 @@ public class LibraryFragment extends Fragment {
         bundle.putString(Constants.KEY_EXTRA_LIBRARY_FILTER_TEXT,query);
         getLoaderManager().restartLoader(Constants.LibraryDataType.Songs.getCode(), bundle, frag);
     }
-
 }

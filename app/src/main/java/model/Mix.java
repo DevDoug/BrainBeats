@@ -5,27 +5,51 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 
+import entity.Track;
+
 /**
  * Created by Douglas on 4/15/2016.
  */
 public class Mix implements Parcelable {
 
     private long mId;
+
     private String mMixTitle;
+
     private String mBeatAlbumCoverArtSource;
+
     private int mMixFavorite;
+
     private int mMixRating;
+
     private int mMixSoundCloudId;
+
     private int mRelatedTracksId;
+
     private int mIsInLibrary;
+
     private int mIsinMixer;
+
     private long mMixUserId;
+
     private long mMixItemsId;
+
     private String mStreamURL;
+
     private String mMixTagList;
+
+    private int mDuration;
+
     private BrainBeatsUser mBrainBeatsUser;
 
     public Mix() {
+    }
+
+    public Mix(Track track){
+        mMixTitle = track.getTitle();
+        mBeatAlbumCoverArtSource = track.getArtworkURL();
+        mMixSoundCloudId = track.getID();
+        mStreamURL = track.getStreamURL();
     }
 
     public long getMixId() {
@@ -150,12 +174,17 @@ public class Mix implements Parcelable {
         dest.writeLong(mId);
         dest.writeString(mMixTitle);
         dest.writeString(mBeatAlbumCoverArtSource);
+        dest.writeInt(mMixFavorite);
+        dest.writeInt(mMixRating);
         dest.writeInt(mMixSoundCloudId);
         dest.writeInt(mRelatedTracksId);
         dest.writeInt(mIsInLibrary);
         dest.writeInt(mIsinMixer);
         dest.writeLong(mMixUserId);
+        dest.writeLong(mMixItemsId);
         dest.writeString(mStreamURL);
+        dest.writeString(mMixTagList);
+        dest.writeInt(mDuration);
         dest.writeParcelable(mBrainBeatsUser,0);
     }
 
@@ -163,12 +192,17 @@ public class Mix implements Parcelable {
         mId = in.readLong();
         mMixTitle = in.readString();
         mBeatAlbumCoverArtSource = in.readString();
+        mMixFavorite = in.readInt();
+        mMixRating = in.readInt();
         mMixSoundCloudId = in.readInt();
         mRelatedTracksId = in.readInt();
         mIsInLibrary = in.readInt();
         mIsinMixer = in.readInt();
-        mMixUserId = in.readInt();
+        mMixUserId = in.readLong();
+        mMixItemsId = in.readLong();
         mStreamURL = in.readString();
+        mMixTagList = in.readString();
+        mDuration = in.readInt();
         mBrainBeatsUser = (BrainBeatsUser) in.readParcelable(BrainBeatsUser.class.getClassLoader());
     }
 
@@ -183,4 +217,12 @@ public class Mix implements Parcelable {
             return new Mix[size];
         }
     };
+
+    public int getDuration() {
+        return mDuration;
+    }
+
+    public void setDuration(int duration) {
+        this.mDuration = duration;
+    }
 }

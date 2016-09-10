@@ -54,8 +54,8 @@ public class MixerDetailFragment extends Fragment implements LoaderManager.Loade
     public Mix mSelectedMix;
     private ImageView mPlayMixButton;
     private Handler handler = new Handler();
-    private Dialog mDialog;
-    public FloatingActionButton mAddNewBeatButton;
+    public Dialog mDialog;
+    //public FloatingActionButton mAddNewBeatButton;
 
 
     public MixerDetailFragment() {
@@ -69,7 +69,7 @@ public class MixerDetailFragment extends Fragment implements LoaderManager.Loade
         mMixTitle = (EditText) v.findViewById(R.id.track_title);
         mPlayMixButton = (ImageView) v.findViewById(R.id.play_song_button);
         ((TextView) v.findViewById(R.id.separator_title)).setText(R.string.beat_levels);
-        mAddNewBeatButton = (FloatingActionButton) v.findViewById(R.id.mixer_fob);
+        //mAddNewBeatButton = (FloatingActionButton) v.findViewById(R.id.mixer_fob);
 
 
         return v;
@@ -127,13 +127,13 @@ public class MixerDetailFragment extends Fragment implements LoaderManager.Loade
                 playMix();
             }
         });
-        mAddNewBeatButton.setOnClickListener(new View.OnClickListener() {
+/*        mAddNewBeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mDialog = Constants.buildImageListDialogue(getContext(), getContext().getResources().getString(R.string.add_sound_item_to_current_beat), MixerDetailFragment.this);
                 mDialog.show();
             }
-        });
+        });*/
 
         mUserSelections = getArguments();
         if (mUserSelections != null) {

@@ -69,7 +69,24 @@ public class BeatLearner {
                             Type token = new TypeToken<Track>() {
                             }.getType();
                             Track relatedTrack = gson.fromJson(object.toString(), token);
-                            listener.recommendationComplete(relatedTrack);
+
+                            WebApiManager.getSoundCloudUser(mContext, String.valueOf(relatedTrack.getUser().getId()), new WebApiManager.OnObjectResponseListener() {
+                                @Override
+                                public void onObjectResponse(JSONObject object) {
+                                    Gson gson = new Gson();
+                                    Type token = new TypeToken<entity.User>() {}.getType();
+                                    entity.User soundCloudUser = gson.fromJson(object.toString(), token);
+                                    relatedTrack.setUser(soundCloudUser);
+                                    listener.recommendationComplete(relatedTrack);
+                                }
+                            }, new WebApiManager.OnErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+
+                                }
+                            });
+
+                            //listener.recommendationComplete(relatedTrack);
                         }
                     }, new WebApiManager.OnErrorListener() {
                         @Override
