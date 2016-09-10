@@ -3,6 +3,7 @@ package com.brainbeats;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+
+import com.squareup.picasso.Picasso;
 
 import architecture.BaseActivity;
 import entity.Track;
@@ -24,8 +27,9 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
     Fragment mMixerFragment;
     Fragment mMixerDetailFragment;
     Bundle mUserSelections;
-    Track mPlayingTrack;
     public FloatingActionButton mMainActionFab;
+
+    private IntentFilter mIntentFilter;
 
 
     @Override
@@ -39,6 +43,9 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
         mMixerDetailFragment = new MixerDetailFragment();
         switchToMixerFragment();
 
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
+
         if (mUserSelections == null) {
             mUserSelections = new Bundle();
         }
@@ -49,11 +56,6 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
             if(intentAction.equalsIgnoreCase(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT)){
                 Mix mix = (Mix) intent.getExtras().get(Constants.KEY_EXTRA_SELECTED_MIX);
                 loadMixerDetailFragment(mix);
-            } else if (intentAction.equalsIgnoreCase(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK)){
-                mPlayingTrack = (Track) intent.getExtras().get(Constants.KEY_EXTRA_SELECTED_TRACK);
-            } else if (intentAction.equalsIgnoreCase(Constants.INTENT_ACTION_GO_TO_MIX_DETAIL_FRAGMENT)) {
-/*                Mix mix = (Mix) intent.getExtras().get(Constants.KEY_EXTRA_SELECTED_MIX);
-                loadMixerDetailFragment(mix);*/
             }
         }
 
@@ -63,15 +65,6 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
 
     public void switchToMixerFragment() {
         replaceFragment(mMixerFragment, mMixerFragment.getTag());
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        if(mPlayingTrack != null){
-            mCurrentSong = mPlayingTrack;
-            updateCurrentSongNotificationUI();
-        }
     }
 
     @Override
@@ -109,4 +102,32 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
         getMenuInflater().inflate(R.menu.menu_global, menu);
         return true;
     }
+
+    @Override
+    public void onPause() {
+        unregisterReceiver(mReceiver);
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerReceiver(mReceiver, mIntentFilter);
+    }
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
+                Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+                mCurrentSongTitle.setText(newTrack.getTitle());
+                if (newTrack.getArtworkURL() == null)
+                    mAlbumThumbnail.setImageResource(R.drawable.placeholder);
+                else
+                    Picasso.with(MixerActivity.this).load(newTrack.getArtworkURL()).into(mAlbumThumbnail);
+
+                mCurrentSongArtistName.setText(newTrack.getUser().getUsername());
+            }
+        }
+    };
 }

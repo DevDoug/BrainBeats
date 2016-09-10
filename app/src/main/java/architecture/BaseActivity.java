@@ -12,6 +12,7 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -57,17 +58,22 @@ public class BaseActivity extends AppCompatActivity {
     public DrawerLayout mNavigationDrawer;
     public Toolbar mToolBar;
     public ActionBarDrawerToggle mDrawerToggle;
+
     public RelativeLayout mCurrentSongPlayingView;
     public TextView mCurrentSongTitle;
     public TextView mCurrentSongArtistName;
     public ImageView mAlbumThumbnail;
     public NavigationView mNavView;
     public Account mAccount;
-    public static Track mCurrentSong;
+    public FloatingActionButton mMainActionFab;
 
+    //Audio members for base activity.
     public Thread mUpdateSeekBar;
     private SeekBar mPlayTrackSeekBar;
     int mProgressStatus = 0;
+    public Track mCurrentSong;
+
+    //Audio service members
     public AudioService mAudioService;
     public boolean mBound = false;
 
@@ -75,6 +81,20 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAccount = CreateSyncAccount(this);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) { //If our activity is recreated.
+            mCurrentSong = savedInstanceState.getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+        }
     }
 
     @Override
@@ -97,6 +117,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onResume();
         Intent intent = new Intent(BaseActivity.this, AudioService.class);
         BaseActivity.this.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
     }
 
     @Override
@@ -104,20 +125,20 @@ public class BaseActivity extends AppCompatActivity {
         super.onStart();
     }
 
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setUpNavDrawer();
 
+        //Current song ui components
         mCurrentSongPlayingView = (RelativeLayout) findViewById(R.id.current_track_container);
         mCurrentSongTitle = (TextView) findViewById(R.id.playing_mix_title);
         mCurrentSongArtistName = (TextView) findViewById(R.id.playing_mix_artist);
         mAlbumThumbnail = (ImageView) findViewById(R.id.album_thumbnail);
         mPlayTrackSeekBar = (SeekBar) findViewById(R.id.playing_mix_seek_bar);
 
-        if(mBound && (mAudioService.getIsPlaying() || mAudioService.mIsPaused)) {
-            updateCurrentSongNotificationUI();
-        }
+        mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
 
         mCurrentSongPlayingView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,8 +181,6 @@ public class BaseActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.action_dashboard:
                         Intent dashboardIntent = new Intent(getApplicationContext(), MainActivity.class);
-                        dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
-                        dashboardIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(dashboardIntent);
                         break;
                     case R.id.action_library:
@@ -172,8 +191,6 @@ public class BaseActivity extends AppCompatActivity {
                         break;
                     case R.id.action_mixer:
                         Intent mixerIntent = new Intent(getApplicationContext(), MixerActivity.class);
-                        mixerIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
-                        mixerIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(mixerIntent);
                         break;
                     case R.id.action_social:
@@ -278,6 +295,16 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    public boolean isAudioServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -285,6 +312,14 @@ public class BaseActivity extends AppCompatActivity {
             AudioService.AudioBinder binder = (AudioService.AudioBinder) service;
             mAudioService = binder.getService();
             mBound = true;
+            if(mAudioService.getIsPlaying() || mAudioService.mIsPaused) {
+                if(mAudioService.mPlayingSong != null)
+                    mCurrentSong = mAudioService.mPlayingSong;
+                else if(mCurrentSong != null && mAudioService.mPlayingSong == null)
+                    mAudioService.mPlayingSong = mCurrentSong;
+
+                updateCurrentSongNotificationUI();
+            }
         }
 
         @Override
@@ -305,6 +340,11 @@ public class BaseActivity extends AppCompatActivity {
         Picasso.with(BaseActivity.this).load(mCurrentSong.getArtworkURL()).into(mAlbumThumbnail);
         mCurrentSongArtistName.setText(mCurrentSong.getUser().getUsername());
         startProgressBarThread();
+    }
+
+    public void hideMainFAB(){
+        mMainActionFab.setVisibility(View.INVISIBLE);
+        mMainActionFab.setClickable(false);
     }
 
     public void startProgressBarThread() {

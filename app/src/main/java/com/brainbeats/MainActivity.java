@@ -34,6 +34,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public Fragment mDashboardDetailFragment;
     public CoordinatorLayout mCoordinatorLayout;
     private IntentFilter mIntentFilter;
+
     public FloatingActionButton mMainActionFab;
     public FloatingActionButton mExtraActionOneFab;
     public FloatingActionButton mExtraActionTwoFab;
@@ -174,11 +175,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mExtraActionOneFab.setImageDrawable(getDrawable(R.drawable.ic_library_add_white));
         mExtraActionTwoFab.setImageDrawable(getDrawable(R.drawable.ic_favorite_white));
         mExtraActionThreeFab.setImageDrawable(getDrawable(R.drawable.ic_person_add_white));
+
         replaceFragment(mDashboardDetailFragment, mDashboardDetailFragment.getTag());
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {}
+    public void onFragmentInteraction(Uri uri) {
+    }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override

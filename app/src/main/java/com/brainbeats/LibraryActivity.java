@@ -1,8 +1,10 @@
 package com.brainbeats;
 
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -16,12 +18,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
+import architecture.AccountManager;
 import architecture.BaseActivity;
+import data.BrainBeatsContract;
 import entity.Track;
 import fragments.DashboardDetailFragment;
 import fragments.LibraryFragment;
 import model.BrainBeatsUser;
 import model.Mix;
+import sync.SyncManager;
 import utils.Constants;
 
 public class LibraryActivity extends BaseActivity implements LibraryFragment.OnFragmentInteractionListener {
@@ -31,7 +38,7 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
     SearchView.OnQueryTextListener listener;
     SearchView mSearchView;
     public CoordinatorLayout mCoordinatorLayout;
-    Track mPlayingTrack;
+    private IntentFilter mIntentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +49,8 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
         mLibraryFragment = new LibraryFragment();
         switchToLibraryFragment();
 
-        Bundle intentBundle = getIntent().getExtras(); //If an intent is passed to main activity.
-        if (intentBundle != null) {
-            if (intentBundle.get(Constants.KEY_EXTRA_SELECTED_TRACK) != null) {
-                mPlayingTrack = (Track) intentBundle.get(Constants.KEY_EXTRA_SELECTED_TRACK);
-            }
-        }
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
 
         listener = new SearchView.OnQueryTextListener() {
             @Override
@@ -65,12 +68,15 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        if(mPlayingTrack != null){
-            mCurrentSong = mPlayingTrack;
-            updateCurrentSongNotificationUI();
-        }
+    public void onPause() {
+        unregisterReceiver(mReceiver);
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerReceiver(mReceiver, mIntentFilter);
     }
 
     @Override
@@ -109,4 +115,20 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
     @Override
     public void onFragmentInteraction(Uri uri) {
     }
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
+                Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+                mCurrentSongTitle.setText(newTrack.getTitle());
+                if (newTrack.getArtworkURL() == null)
+                    mAlbumThumbnail.setImageResource(R.drawable.placeholder);
+                else
+                    Picasso.with(LibraryActivity.this).load(newTrack.getArtworkURL()).into(mAlbumThumbnail);
+
+                mCurrentSongArtistName.setText(newTrack.getUser().getUsername());
+            }
+        }
+    };
 }

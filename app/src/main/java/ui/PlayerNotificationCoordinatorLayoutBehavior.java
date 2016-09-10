@@ -26,7 +26,7 @@ public class PlayerNotificationCoordinatorLayoutBehavior extends CoordinatorLayo
 
     @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, FloatingActionButton child, View dependency) {
-        float translationY = Math.min(0, dependency.getTranslationY() - dependency.getHeight());
+        float translationY = Math.min(0, dependency.getTranslationY() - ((dependency.getHeight()/2) + 30));
         child.setTranslationY(translationY);
         return true;
     }

@@ -45,7 +45,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     private IBinder mBinder = new AudioBinder();
     public boolean mIsPaused = false;
-    public  Track mPlayingSong;
+    public Track mPlayingSong;
 
     public AudioService() {}
 
@@ -198,6 +198,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public void recommendationComplete(Track track) {
+        mPlayingSong = track;
         playSong(Uri.parse(track.getStreamURL()));
 
         Intent broadcastIntent = new Intent(); // send broadcast to activity to tell it to update ui

@@ -1,12 +1,17 @@
 package com.brainbeats;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+
+import com.squareup.picasso.Picasso;
 
 import architecture.BaseActivity;
 import entity.Track;
@@ -19,8 +24,7 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
 
     Fragment mSocialFragment;
     Fragment mUserProfileFragment;
-    Track mPlayingTrack;
-    public FloatingActionButton mMainActionFab;
+    private IntentFilter mIntentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,26 +35,14 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
         mUserProfileFragment = new UserProfileFragment();
         switchToSocialFragment();
 
-        Intent intent = getIntent();
-        if (intent.getExtras() != null) {
-            String intentAction = intent.getAction();
-
-            if (intentAction.equalsIgnoreCase(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK)){
-                mPlayingTrack = (Track) intent.getExtras().get(Constants.KEY_EXTRA_SELECTED_TRACK);
-            }
-        }
-
-        mMainActionFab.setVisibility(View.INVISIBLE);
-        mMainActionFab.setClickable(false);
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        if(mPlayingTrack != null){
-            mCurrentSong = mPlayingTrack;
-            updateCurrentSongNotificationUI();
-        }
+        hideMainFAB();
     }
 
     public void switchToSocialFragment() {
@@ -71,4 +63,32 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
         getMenuInflater().inflate(R.menu.menu_global, menu);
         return true;
     }
+
+    @Override
+    public void onPause() {
+        unregisterReceiver(mReceiver);
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerReceiver(mReceiver, mIntentFilter);
+    }
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
+                Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+                mCurrentSongTitle.setText(newTrack.getTitle());
+                if (newTrack.getArtworkURL() == null)
+                    mAlbumThumbnail.setImageResource(R.drawable.placeholder);
+                else
+                    Picasso.with(SocialActivity.this).load(newTrack.getArtworkURL()).into(mAlbumThumbnail);
+
+                mCurrentSongArtistName.setText(newTrack.getUser().getUsername());
+            }
+        }
+    };
 }
