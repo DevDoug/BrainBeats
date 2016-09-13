@@ -72,6 +72,7 @@ public class BaseActivity extends AppCompatActivity {
     private SeekBar mPlayTrackSeekBar;
     int mProgressStatus = 0;
     public Track mCurrentSong;
+    private boolean mIsAlive = true;
 
     //Audio service members
     public AudioService mAudioService;
@@ -87,6 +88,9 @@ public class BaseActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+
+        if(mUpdateSeekBar.isAlive())
+            mUpdateSeekBar.interrupt();
     }
 
     @Override
@@ -117,7 +121,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onResume();
         Intent intent = new Intent(BaseActivity.this, AudioService.class);
         BaseActivity.this.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-
+        mIsAlive = true;
     }
 
     @Override
@@ -360,7 +364,7 @@ public class BaseActivity extends AppCompatActivity {
         mUpdateSeekBar = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (mProgressStatus < trackDuration) {
+                while (mProgressStatus < trackDuration  && mIsAlive) {
                     try {
                         Thread.sleep(1000); //Update once per second
                         mProgressStatus = mAudioService.getPlayerPosition();
@@ -381,6 +385,7 @@ public class BaseActivity extends AppCompatActivity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                         Log.i("Progress bar thread", "Exception occured" + e.toString());
+                        mIsAlive = false;
                     }
                 }
             }
