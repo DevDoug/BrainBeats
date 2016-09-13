@@ -60,6 +60,7 @@ public class WebApiManager {
     public static final String SOUND_CLOUD_QUERY_FILTER_INSTRUMENTAL            =  "instrumental";
     public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR           =  "popular";
     public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT            =  "recent";
+    public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_A_TO_Z         =  "popular";
     public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_LIMIT_ONE_HUNDRED = "100";
     public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_LIMIT_TWO_HUNDRED = "200";
     public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_LINKED_ENABLED = "1";

@@ -76,7 +76,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     private SeekBar mPlayTrackSeekBar;
     private OnFragmentInteractionListener mListener;
     private boolean mLooping = false;
-    private boolean mIsAlive = true;
+    private volatile boolean mIsAlive = true;
     public Animation popUpPlayingSongNotificationAnimation;
     private MixTagAdapter mMixTagAdapter;
     private RecyclerView mMixerTags;
@@ -112,7 +112,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     public void onPause() {
         super.onPause();
         if (mUpdateSeekBar != null)
-            mUpdateSeekBar.interrupt(); // stop updating a the progress bar if out of view
+            mUpdateSeekBar.interrupt(); // stop updating a the progress bar
 
         if(((MainActivity) getActivity()).mAudioService.getIsPlaying() || ((MainActivity) getActivity()).mAudioService.mIsPaused) {
             AccountManager.getInstance(getContext()).setDisplayCurrentSongView(true);
@@ -198,7 +198,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 ((MainActivity) getActivity()).mMainActionFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_filter_list_white));
                 ((MainActivity) getActivity()).mExtraActionOneFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_whatshot_white));
                 ((MainActivity) getActivity()).mExtraActionTwoFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_access_time_white));
-
+                ((MainActivity) getActivity()).mExtraActionThreeFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_sort_by_alpha_white));
 
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 ((MainActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
@@ -206,6 +206,8 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         });
 
         mIsAlive = true;
+
+        ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.INVISIBLE); // hide our playing sound view
     }
 
     @Override
@@ -351,7 +353,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         mUpdateSeekBar = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (mProgressStatus < trackDuration && mIsAlive) {
+                while ((mProgressStatus < trackDuration) && mIsAlive) {
                     try {
                         Thread.sleep(1000); //Update once per second
                         mProgressStatus = ((MainActivity) getActivity()).mAudioService.getPlayerPosition();
@@ -370,7 +372,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                         });
 
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
                         Log.i("Progress bar thread", "Exception occured" + e.toString());
                         mIsAlive = false;
                     }

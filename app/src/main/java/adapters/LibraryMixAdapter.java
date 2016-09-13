@@ -16,6 +16,7 @@ import com.brainbeats.MainActivity;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 
+import architecture.AccountManager;
 import data.BrainBeatsContract;
 import model.Mix;
 import utils.Constants;
@@ -43,6 +44,7 @@ public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapt
             @Override
             public void onClick(View view) {
                 //TODO open this mix in player
+                AccountManager.getInstance(mAdapterContext).setDisplayCurrentSongView(false);
                 Mix selectedMix = Constants.buildMixFromCursor(mAdapterContext,getCursor(), viewHolder.getAdapterPosition()); // get the selected mix item
 
                 //start intent to send user to play this mix in player

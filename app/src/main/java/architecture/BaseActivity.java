@@ -88,9 +88,6 @@ public class BaseActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
-
-        if(mUpdateSeekBar.isAlive())
-            mUpdateSeekBar.interrupt();
     }
 
     @Override
@@ -147,6 +144,8 @@ public class BaseActivity extends AppCompatActivity {
         mCurrentSongPlayingView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                AccountManager.getInstance(BaseActivity.this).setDisplayCurrentSongView(false);
+
                 //TODO go to currently playing song
                 Intent dashboardIntent = new Intent(BaseActivity.this, MainActivity.class);
                 dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, new Mix(mCurrentSong));
@@ -241,6 +240,11 @@ public class BaseActivity extends AppCompatActivity {
             startActivity(backStackIntent);
             finish();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     public Toolbar getToolBar() {
@@ -339,11 +343,13 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void updateCurrentSongNotificationUI(){
-        mCurrentSongPlayingView.setVisibility(View.VISIBLE);
-        mCurrentSongTitle.setText(mCurrentSong.getTitle());
-        Picasso.with(BaseActivity.this).load(mCurrentSong.getArtworkURL()).into(mAlbumThumbnail);
-        mCurrentSongArtistName.setText(mCurrentSong.getUser().getUsername());
-        startProgressBarThread();
+        if(AccountManager.getInstance(BaseActivity.this).getDisplayCurrentSongView()) {
+            mCurrentSongPlayingView.setVisibility(View.VISIBLE);
+            mCurrentSongTitle.setText(mCurrentSong.getTitle());
+            Picasso.with(BaseActivity.this).load(mCurrentSong.getArtworkURL()).into(mAlbumThumbnail);
+            mCurrentSongArtistName.setText(mCurrentSong.getUser().getUsername());
+            startProgressBarThread();
+        }
     }
 
     public void hideMainFAB(){
