@@ -282,7 +282,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
 
                 if (((MainActivity) getActivity()).mBound) {
                     if(((MainActivity) getActivity()).mAudioService.requestAudioFocus(getContext())) { //make sure are audio focus request returns true before playback
-                        if (((MainActivity) getActivity()).mAudioService.getIsPlaying()) {
+                        if (((MainActivity) getActivity()).mAudioService.getIsPlaying() && ((MainActivity) getActivity()).mAudioService.mPlayingSong.getID() == mSelectedTrack.getID()) { //if the current song is the one being played pause else start new song
                             ((MainActivity) getActivity()).mAudioService.pauseSong();
                             mPlaySongButton.setImageResource(R.drawable.ic_play_circle);
                         } else {

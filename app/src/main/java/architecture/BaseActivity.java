@@ -352,6 +352,11 @@ public class BaseActivity extends AppCompatActivity {
         mPlayTrackSeekBar.setMax(trackDuration);
         mPlayTrackSeekBar.setIndeterminate(false);
 
+        if(mBound && mAudioService.getPlayerPosition() != 0){ // if already playing set to current player position before thread runs
+            mProgressStatus = mAudioService.getPlayerPosition();
+            mPlayTrackSeekBar.setProgress(mProgressStatus);
+        }
+
         mUpdateSeekBar = new Thread(new Runnable() {
             @Override
             public void run() {
