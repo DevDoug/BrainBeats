@@ -55,6 +55,7 @@ public class DashboardFragment extends Fragment implements Constants.ConfirmDial
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;*/
     private OnFragmentInteractionListener mListener;
 /*    private boolean mIsFabOpen = false;*/
+    SearchView mSearchView;
     private String mQueryText = "";
     private SearchView.OnQueryTextListener listener;
 
@@ -73,20 +74,6 @@ public class DashboardFragment extends Fragment implements Constants.ConfirmDial
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dashboard, container, false);
         mTrackGrid = (RecyclerView) v.findViewById(R.id.category_grid);
-
-        //mQuickFilterFab = (FloatingActionButton) container.findViewById(R.id.floating_action_button_quick_filter);
-
-/*        mFilerByPopularFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_filter_by_popular);
-        mFilterByRecentFab = (FloatingActionButton) v.findViewById(R.id.floating_action_button_filter_by_recent);*/
-
-/*        fab_open = AnimationUtils.loadAnimation(getContext(), R.anim.fab_open);
-        fab_close = AnimationUtils.loadAnimation(getContext(), R.anim.fab_close);
-        rotate_forward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_forward);
-        rotate_backward = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_backward);
-
-        mQuickFilterFab.setOnClickListener(this);
-        mFilerByPopularFab.setOnClickListener(this);
-        mFilterByRecentFab.setOnClickListener(this);*/
 
         listener = new SearchView.OnQueryTextListener() {
             @Override
@@ -108,8 +95,14 @@ public class DashboardFragment extends Fragment implements Constants.ConfirmDial
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_dashboard, menu);
         MenuItem searchMenuItem = menu.findItem(R.id.action_search);
-        SearchView mSearchView = (SearchView) searchMenuItem.getActionView();
+        mSearchView = (SearchView) searchMenuItem.getActionView();
         mSearchView.setOnQueryTextListener(listener);
+
+        if(!mQueryText.equalsIgnoreCase("")) {
+            searchMenuItem.expandActionView();
+            ((SearchView) searchMenuItem.getActionView()).setQuery(mQueryText, true);
+        }
+
 
         // Define the listener
         MenuItemCompat.OnActionExpandListener expandListener = new MenuItemCompat.OnActionExpandListener() {
@@ -146,7 +139,9 @@ public class DashboardFragment extends Fragment implements Constants.ConfirmDial
     @Override
     public void onResume() {
         super.onResume();
-       getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_INSTRUMENTAL);
+        if(mQueryText.equalsIgnoreCase("")) {
+            getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_INSTRUMENTAL);
+        }
     }
 
     @Override
