@@ -103,7 +103,6 @@ public class DashboardFragment extends Fragment implements Constants.ConfirmDial
             ((SearchView) searchMenuItem.getActionView()).setQuery(mQueryText, true);
         }
 
-
         // Define the listener
         MenuItemCompat.OnActionExpandListener expandListener = new MenuItemCompat.OnActionExpandListener() {
             @Override
