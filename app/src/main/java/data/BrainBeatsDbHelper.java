@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class BrainBeatsDbHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 12;
+    public static final int DATABASE_VERSION = 13;
     public static final String DATABASE_NAME = "Mix.db";
 
     //Common sql statments.
@@ -127,7 +127,7 @@ public class BrainBeatsDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + BrainBeatsContract.MixPlaylistEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + BrainBeatsContract.UserEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + BrainBeatsContract.UserFollowersEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + BrainBeatsContract.UserEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + BrainBeatsContract.MixTagEntry.TABLE_NAME);
 
         onCreate(db);
     }

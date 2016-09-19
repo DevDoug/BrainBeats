@@ -149,7 +149,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             case R.id.action_three_fob:
                 animateFAB();
-                if(mDashboardDetailFragment.isVisible())
+                if(mDashboardFragment.isVisible())
+                    ((DashboardFragment)mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_A_TO_Z);
+                else if(mDashboardDetailFragment.isVisible())
                     ((DashboardDetailFragment)mDashboardDetailFragment).updateOfflineSyncManager(null, Constants.SyncDataType.Users);
                 break;
         }
@@ -164,9 +166,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         Bundle args = new Bundle();
         if(mBound && mCurrentSong != null) //if another song is selected reset our player
             resetPlayer();
-
-        if(mCurrentSongPlayingView != null)
-            mCurrentSongPlayingView.setVisibility(View.INVISIBLE);
 
         args.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, track);
         mDashboardDetailFragment.setArguments(args);
@@ -210,11 +209,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             mExtraActionTwoFab.startAnimation(fab_close);
             mExtraActionOneFab.setClickable(false);
             mExtraActionTwoFab.setClickable(false);
-
-            if(mDashboardDetailFragment.isVisible()){
-                mExtraActionThreeFab.startAnimation(fab_close);
-                mExtraActionThreeFab.setClickable(false);
-            }
+            mExtraActionThreeFab.startAnimation(fab_close);
+            mExtraActionThreeFab.setClickable(false);
 
             mIsFabOpen = false;
         } else {
@@ -223,11 +219,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             mExtraActionTwoFab.startAnimation(fab_open);
             mExtraActionOneFab.setClickable(true);
             mExtraActionTwoFab.setClickable(true);
-
-            if(mDashboardDetailFragment.isVisible()){
-                mExtraActionThreeFab.startAnimation(fab_open);
-                mExtraActionThreeFab.setClickable(true);
-            }
+            mExtraActionThreeFab.startAnimation(fab_open);
+            mExtraActionThreeFab.setClickable(true);
 
             mIsFabOpen = true;
         }

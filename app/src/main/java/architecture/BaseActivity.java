@@ -72,6 +72,7 @@ public class BaseActivity extends AppCompatActivity {
     private SeekBar mPlayTrackSeekBar;
     int mProgressStatus = 0;
     public Track mCurrentSong;
+    private boolean mIsAlive = true;
 
     //Audio service members
     public AudioService mAudioService;
@@ -117,7 +118,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onResume();
         Intent intent = new Intent(BaseActivity.this, AudioService.class);
         BaseActivity.this.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-
+        mIsAlive = true;
     }
 
     @Override
@@ -143,6 +144,8 @@ public class BaseActivity extends AppCompatActivity {
         mCurrentSongPlayingView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                AccountManager.getInstance(BaseActivity.this).setDisplayCurrentSongView(false);
+
                 //TODO go to currently playing song
                 Intent dashboardIntent = new Intent(BaseActivity.this, MainActivity.class);
                 dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, new Mix(mCurrentSong));
@@ -237,6 +240,11 @@ public class BaseActivity extends AppCompatActivity {
             startActivity(backStackIntent);
             finish();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     public Toolbar getToolBar() {
@@ -335,11 +343,13 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void updateCurrentSongNotificationUI(){
-        mCurrentSongPlayingView.setVisibility(View.VISIBLE);
-        mCurrentSongTitle.setText(mCurrentSong.getTitle());
-        Picasso.with(BaseActivity.this).load(mCurrentSong.getArtworkURL()).into(mAlbumThumbnail);
-        mCurrentSongArtistName.setText(mCurrentSong.getUser().getUsername());
-        startProgressBarThread();
+        if(AccountManager.getInstance(BaseActivity.this).getDisplayCurrentSongView()) {
+            mCurrentSongPlayingView.setVisibility(View.VISIBLE);
+            mCurrentSongTitle.setText(mCurrentSong.getTitle());
+            Picasso.with(BaseActivity.this).load(mCurrentSong.getArtworkURL()).into(mAlbumThumbnail);
+            mCurrentSongArtistName.setText(mCurrentSong.getUser().getUsername());
+            startProgressBarThread();
+        }
     }
 
     public void hideMainFAB(){
@@ -352,10 +362,15 @@ public class BaseActivity extends AppCompatActivity {
         mPlayTrackSeekBar.setMax(trackDuration);
         mPlayTrackSeekBar.setIndeterminate(false);
 
+        if(mBound && mAudioService.getPlayerPosition() != 0){ // if already playing set to current player position before thread runs
+            mProgressStatus = mAudioService.getPlayerPosition();
+            mPlayTrackSeekBar.setProgress(mProgressStatus);
+        }
+
         mUpdateSeekBar = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (mProgressStatus < trackDuration) {
+                while (mProgressStatus < trackDuration  && mIsAlive) {
                     try {
                         Thread.sleep(1000); //Update once per second
                         mProgressStatus = mAudioService.getPlayerPosition();
@@ -376,6 +391,7 @@ public class BaseActivity extends AppCompatActivity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                         Log.i("Progress bar thread", "Exception occured" + e.toString());
+                        mIsAlive = false;
                     }
                 }
             }
