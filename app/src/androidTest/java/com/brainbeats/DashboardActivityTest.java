@@ -1,9 +1,6 @@
 package com.brainbeats;
 import android.app.Instrumentation;
-import android.support.test.espresso.Espresso;
-import android.support.test.espresso.IdlingResource;
 
-import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -11,9 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 /**
@@ -44,7 +39,7 @@ public class DashboardActivityTest extends Instrumentation {
         IdlingPolicies.setMasterPolicyTimeout(mWaitingTime * 2, TimeUnit.MILLISECONDS);
         IdlingPolicies.setIdlingResourceTimeout(mWaitingTime * 2, TimeUnit.MILLISECONDS);
 
-        //Set an idle resource to run while our network data is being called.
+        //Set an idle resource to run while our network com.brainbeats.data is being called.
         IdlingResource idlingResource = new ElapsedTimeIdlingResource(mWaitingTime);
         Espresso.registerIdlingResources(idlingResource);
 
@@ -64,7 +59,7 @@ public class DashboardActivityTest extends Instrumentation {
 
     @Test
     public void testAddTrackToUserLibrary(){
-        //Set an idle resource to run while our network data is being called.
+/*        //Set an idle resource to run while our network com.brainbeats.data is being called.
         IdlingResource idlingResource = new ElapsedTimeIdlingResource(mWaitingTime);
         Espresso.registerIdlingResources(idlingResource);
 
@@ -83,6 +78,6 @@ public class DashboardActivityTest extends Instrumentation {
         onView(withId(R.id.navView)).perform(click());
 
         // Clean up.
-        Espresso.unregisterIdlingResources(idlingResource);
+        Espresso.unregisterIdlingResources(idlingResource);*/
     }
 }

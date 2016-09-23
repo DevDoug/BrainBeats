@@ -15,18 +15,18 @@ import android.view.animation.AnimationUtils;
 
 import com.squareup.picasso.Picasso;
 
-import architecture.AccountManager;
-import architecture.BaseActivity;
-import data.BrainBeatsContract;
-import entity.Track;
-import fragments.DashboardDetailFragment;
-import fragments.DashboardFragment;
-import model.BrainBeatsUser;
-import model.Mix;
-import sync.OfflineSyncManager;
-import utils.Constants;
-import sync.SyncManager;
-import web.WebApiManager;
+import com.brainbeats.architecture.AccountManager;
+import com.brainbeats.architecture.BaseActivity;
+import com.brainbeats.data.BrainBeatsContract;
+import com.brainbeats.entity.Track;
+import com.brainbeats.fragments.DashboardDetailFragment;
+import com.brainbeats.fragments.DashboardFragment;
+import com.brainbeats.model.BrainBeatsUser;
+import com.brainbeats.model.Mix;
+
+import com.brainbeats.utils.Constants;
+import com.brainbeats.sync.SyncManager;
+import com.brainbeats.web.WebApiManager;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, DashboardFragment.OnFragmentInteractionListener, DashboardDetailFragment.OnFragmentInteractionListener {
 
@@ -85,7 +85,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     BrainBeatsUser mixUser = (BrainBeatsUser) intentBundle.get(Constants.KEY_EXTRA_SELECTED_USER);
                     if (sentMix != null) {
                         Track playTrack = new Track(sentMix);
-                        playTrack.setUser(new entity.User(mixUser));
+                        playTrack.setUser(new com.brainbeats.entity.User(mixUser));
                         switchToBeatDetailFragment(playTrack);
                     }
                 }

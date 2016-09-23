@@ -61,12 +61,12 @@
         </activity>
 
         <provider
-            android:name="data.BrainBeatsContentProvider"
+            android:name="com.brainbeats.data.BrainBeatsContentProvider"
             android:authorities="com.brainbeats" />
 
-        <service android:name="service.AudioService" />
+        <service android:name="com.brainbeats.service.AudioService" />
         <service
-            android:name="service.SyncService"
+            android:name="com.brainbeats.service.SyncService"
             android:exported="true"
             android:process=":sync">
             <intent-filter>
@@ -77,7 +77,7 @@
                 android:resource="@xml/brain_beats_sync_adapter_meta_data" />
         </service>
 
-        <service android:name="service.AuthenticatorService">
+        <service android:name="com.brainbeats.service.AuthenticatorService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
@@ -87,7 +87,7 @@
         </service>
 
         <receiver
-            android:name="utils.WidgetProvider"
+            android:name="com.brainbeats.utils.WidgetProvider"
             android:icon="@drawable/ic_brain_drawable"
             android:label="Brain Beat Widget">
             <intent-filter>

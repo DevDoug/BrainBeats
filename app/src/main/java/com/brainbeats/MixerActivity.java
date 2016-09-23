@@ -8,19 +8,18 @@ import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
 import com.squareup.picasso.Picasso;
 
-import architecture.BaseActivity;
-import entity.Track;
-import fragments.MixerDetailFragment;
-import fragments.MixerFragment;
-import model.Mix;
-import utils.BeatLearner;
-import utils.Constants;
+import com.brainbeats.architecture.BaseActivity;
+import com.brainbeats.entity.Track;
+import com.brainbeats.fragments.MixerDetailFragment;
+import com.brainbeats.fragments.MixerFragment;
+import com.brainbeats.model.Mix;
+
+import com.brainbeats.utils.Constants;
 
 public class MixerActivity extends BaseActivity implements View.OnClickListener, MixerFragment.OnFragmentInteractionListener {
 

@@ -7,7 +7,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="architecture.BaseActivity">
+    tools:context="com.brainbeats.architecture.BaseActivity">
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/main_content_coordinator_layout"
@@ -88,7 +88,7 @@
             app:layout_behavior="ui.PlayerNotificationCoordinatorLayoutBehavior"
             android:src="@drawable/ic_filter_list_white" />
 
-<!--        <custom.AudioPlayerCurrentSongView
+<!--        <com.brainbeats.custom.AudioPlayerCurrentSongView
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal|bottom"
