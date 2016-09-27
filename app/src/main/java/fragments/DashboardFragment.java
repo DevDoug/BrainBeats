@@ -231,9 +231,11 @@ public class DashboardFragment extends Fragment implements Constants.ConfirmDial
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.i(getClass().getSimpleName(), "Response = " + error.toString());
+                    loadingMusicDialog.dismiss();
                     if(error instanceof NoConnectionError){ //network failed to connect
-                        loadingMusicDialog.dismiss();
                         Constants.buildActionDialog(getContext(),getString(R.string.connect_to_network_message),getString(R.string.enable_wifi_in_settings_message),getString(R.string.go_to_settings_message),DashboardFragment.this);
+                    } else {
+                        Constants.buildInfoDialog(getContext(),getString(R.string.no_results_found_error_message),getString(R.string.no_search_results));
                     }
                 }
             });
