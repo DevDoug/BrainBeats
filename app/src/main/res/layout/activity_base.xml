@@ -85,7 +85,7 @@
             android:layout_marginRight="16dp"
             android:clickable="true"
             android:elevation="@dimen/fob_elevation"
-            app:layout_behavior="ui.PlayerNotificationCoordinatorLayoutBehavior"
+            app:layout_behavior="com.brainbeats.ui.PlayerNotificationCoordinatorLayoutBehavior"
             android:src="@drawable/ic_filter_list_white" />
 
 <!--        <com.brainbeats.custom.AudioPlayerCurrentSongView
