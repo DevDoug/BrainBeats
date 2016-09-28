@@ -6,18 +6,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.squareup.picasso.Picasso;
 
-import architecture.BaseActivity;
-import entity.Track;
-import fragments.SettingFragment;
-import utils.Constants;
+import com.brainbeats.architecture.BaseActivity;
+import com.brainbeats.entity.Track;
+import com.brainbeats.fragments.SettingFragment;
+import com.brainbeats.utils.Constants;
 
 public class SettingsActivity extends BaseActivity implements SettingFragment.OnFragmentInteractionListener {
 

@@ -38,12 +38,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import architecture.AccountManager;
-import data.BrainBeatsContract;
-import data.BrainBeatsDbHelper;
-import entity.SoundCloudUser;
-import utils.Constants;
-import web.WebApiManager;
+import com.brainbeats.architecture.AccountManager;
+import com.brainbeats.data.BrainBeatsContract;
+import com.brainbeats.data.BrainBeatsDbHelper;
+import com.brainbeats.entity.SoundCloudUser;
+import com.brainbeats.utils.Constants;
+import com.brainbeats.web.WebApiManager;
 
 /**
  * Login screen
@@ -242,7 +242,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     long returnRowId = ContentUris.parseId(returnRow);
                     if (returnRowId != -1) { //New user create with sound cloud if success login.
-                        AccountManager.getInstance(LoginActivity.this).setSyncToSoundCloud(true); // logged in with sound cloud enable sync by default
+                        AccountManager.getInstance(LoginActivity.this).setSyncToSoundCloud(true); // logged in with sound cloud enable com.brainbeats.sync by default
                         finish();
                         Intent dashboardIntent = new Intent(LoginActivity.this, MainActivity.class);
                         AccountManager.getInstance(LoginActivity.this).setUserId(String.valueOf(soundCloudUser.getId()));

@@ -4,7 +4,7 @@
     android:id="@+id/main_content_container"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    tools:context="fragments.DashboardDetailFragment">
+    tools:context="com.brainbeats.fragments.DashboardDetailFragment">
 
     <ScrollView
         android:id="@+id/main_container_scroll"

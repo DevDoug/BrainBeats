@@ -9,16 +9,15 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
 
 import com.squareup.picasso.Picasso;
 
-import architecture.BaseActivity;
-import entity.Track;
-import fragments.SocialFragment;
-import fragments.UserProfileFragment;
-import model.Mix;
-import utils.Constants;
+import com.brainbeats.architecture.BaseActivity;
+import com.brainbeats.entity.Track;
+import com.brainbeats.fragments.SocialFragment;
+import com.brainbeats.fragments.UserProfileFragment;
+
+import com.brainbeats.utils.Constants;
 
 public class SocialActivity extends BaseActivity implements SocialFragment.OnFragmentInteractionListener {
 

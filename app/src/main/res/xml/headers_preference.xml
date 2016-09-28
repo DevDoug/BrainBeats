@@ -3,7 +3,7 @@
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
 
     <header
-        android:fragment="fragments.SettingFragment"
+        android:fragment="com.brainbeats.fragments.SettingFragment"
         android:summary="An example of some preferences."
         android:title="Goto: Preference fragment" />
 

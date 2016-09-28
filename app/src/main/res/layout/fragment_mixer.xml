@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    tools:context="fragments.MixerFragment">
+    tools:context="com.brainbeats.fragments.MixerFragment">
 
     <!--<include
         android:id="@+id/blue_line_seperator"
