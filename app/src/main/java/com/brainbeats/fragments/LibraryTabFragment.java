@@ -160,7 +160,7 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data == null) { //no mix com.brainbeats.data found
+        if (data == null) {
             mMixListView.setVisibility(View.GONE);
             mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
         } else {

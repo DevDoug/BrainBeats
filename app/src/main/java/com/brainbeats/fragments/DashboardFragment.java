@@ -24,6 +24,11 @@ import com.android.volley.VolleyError;
 import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
+import com.brainbeats.adapters.SearchMusicAdapter;
+import com.brainbeats.architecture.AccountManager;
+import com.brainbeats.entity.Track;
+import com.brainbeats.utils.Constants;
+import com.brainbeats.web.WebApiManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -33,12 +38,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.brainbeats.adapters.SearchMusicAdapter;
-import com.brainbeats.architecture.AccountManager;
-import com.brainbeats.entity.Track;
-import com.brainbeats.utils.Constants;
-import com.brainbeats.web.WebApiManager;
-
 public class DashboardFragment extends Fragment implements Constants.ConfirmDialogActionListener {
 
     public static final String TAG = "DashboardFragment";
@@ -46,13 +45,7 @@ public class DashboardFragment extends Fragment implements Constants.ConfirmDial
     private RecyclerView mTrackGrid;
     private SearchMusicAdapter mTrackAdapter;
     private GridLayoutManager mBeatGridLayoutManager;
-/*    private FloatingActionButton mQuickFilterFab;
-    private FloatingActionButton mFilerByPopularFab;
-    private FloatingActionButton mFilterByRecentFab;
-    private Animation fab_open, fab_close, rotate_forward, rotate_backward;*/
     private OnFragmentInteractionListener mListener;
-/*    private boolean mIsFabOpen = false;*/
-    SearchView mSearchView;
     private String mQueryText = "";
     private SearchView.OnQueryTextListener listener;
 
@@ -92,10 +85,10 @@ public class DashboardFragment extends Fragment implements Constants.ConfirmDial
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_dashboard, menu);
         MenuItem searchMenuItem = menu.findItem(R.id.action_search);
-        mSearchView = (SearchView) searchMenuItem.getActionView();
+        SearchView mSearchView = (SearchView) searchMenuItem.getActionView();
         mSearchView.setOnQueryTextListener(listener);
 
-        if(!mQueryText.equalsIgnoreCase("")) {
+        if (!mQueryText.equalsIgnoreCase("")) {
             searchMenuItem.expandActionView();
             ((SearchView) searchMenuItem.getActionView()).setQuery(mQueryText, true);
         }
@@ -135,7 +128,7 @@ public class DashboardFragment extends Fragment implements Constants.ConfirmDial
     @Override
     public void onResume() {
         super.onResume();
-        if(mQueryText.equalsIgnoreCase("")) {
+        if (mQueryText.equalsIgnoreCase("")) {
             getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_INSTRUMENTAL);
         }
     }
@@ -143,13 +136,6 @@ public class DashboardFragment extends Fragment implements Constants.ConfirmDial
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
@@ -178,26 +164,8 @@ public class DashboardFragment extends Fragment implements Constants.ConfirmDial
         void onFragmentInteraction(Uri uri);
     }
 
-/*    public void animateFAB() {
-        if (mIsFabOpen) {
-            mQuickFilterFab.startAnimation(rotate_backward);
-            mFilerByPopularFab.startAnimation(fab_close);
-            mFilterByRecentFab.startAnimation(fab_close);
-            mFilerByPopularFab.setClickable(false);
-            mFilterByRecentFab.setClickable(false);
-            mIsFabOpen = false;
-        } else {
-            mQuickFilterFab.startAnimation(rotate_forward);
-            mFilerByPopularFab.startAnimation(fab_open);
-            mFilterByRecentFab.startAnimation(fab_open);
-            mFilerByPopularFab.setClickable(true);
-            mFilterByRecentFab.setClickable(true);
-            mIsFabOpen = true;
-        }
-    }*/
-
     public void getTracks(String filterTag) {
-        if (Constants.isNetworkAvailable(getContext())){
+        if (Constants.isNetworkAvailable(getContext())) {
             final ProgressDialog loadingMusicDialog = new ProgressDialog(getContext());
             loadingMusicDialog.setCancelable(false);
             loadingMusicDialog.setMessage(getString(R.string.loading_message));
@@ -208,7 +176,8 @@ public class DashboardFragment extends Fragment implements Constants.ConfirmDial
                 public void onArrayResponse(JSONArray array) {
                     loadingMusicDialog.dismiss();
                     Gson gson = new Gson();
-                    Type token = new TypeToken<List<Track>>() {}.getType();
+                    Type token = new TypeToken<List<Track>>() {
+                    }.getType();
                     ArrayList<Track> trackList = gson.fromJson(array.toString(), token);
                     if (trackList != null) {
                         mTrackAdapter = new SearchMusicAdapter(getContext(), trackList);
@@ -223,15 +192,11 @@ public class DashboardFragment extends Fragment implements Constants.ConfirmDial
                 public void onErrorResponse(VolleyError error) {
                     Log.i(getClass().getSimpleName(), "Response = " + error.toString());
                     loadingMusicDialog.dismiss();
-                    if(error instanceof NoConnectionError){ //network failed to connect
-                        Constants.buildActionDialog(getContext(),getString(R.string.connect_to_network_message),getString(R.string.enable_wifi_in_settings_message),getString(R.string.go_to_settings_message),DashboardFragment.this);
-                    } else {
-                        Constants.buildInfoDialog(getContext(),getString(R.string.no_results_found_error_message),getString(R.string.no_search_results));
-                    }
+                    Constants.buildInfoDialog(getContext(), getString(R.string.no_results_found_error_message), getString(R.string.no_search_results));
                 }
             });
         } else {
-            Constants.buildActionDialog(getContext(),getString(R.string.connect_to_network_message),getString(R.string.enable_wifi_in_settings_message),getString(R.string.go_to_settings_message),this);
+            Constants.buildActionDialog(getContext(), getString(R.string.connect_to_network_message), getString(R.string.enable_wifi_in_settings_message), getString(R.string.go_to_settings_message), this);
         }
     }
 }

@@ -49,33 +49,33 @@ public class Constants {
     public static final String KEY_EXTRA_SELECTED_TRACK_ID                  = "TrackId";
 
     //Hash map keys
-    public static final String HASH_KEY_ACCESS_TOKEN                = "access_token";
+    public static final String HASH_KEY_ACCESS_TOKEN                        = "access_token";
 
     //Shared Preferences
-    public static final String KEY_EXTRA_IS_INCOGNITO_PREF          = "IsIncognito";
-    public static final String KEY_EXTRA_IS_SYNCED_TO_SC            = "SyncedToSoundCloud";
-    public static final String KEY_EXTRA_IS_GLOBAL_SYNC_REQUIRED    = "IsGlobalSyncRequired";
-    public static final String KEY_EXTRA_IS_DISPLAY_CURRENT_PLAYING_SONG = "currentPlayingSong";
+    public static final String KEY_EXTRA_IS_INCOGNITO_PREF                  = "IsIncognito";
+    public static final String KEY_EXTRA_IS_SYNCED_TO_SC                    = "SyncedToSoundCloud";
+    public static final String KEY_EXTRA_IS_GLOBAL_SYNC_REQUIRED            = "IsGlobalSyncRequired";
+    public static final String KEY_EXTRA_IS_DISPLAY_CURRENT_PLAYING_SONG    = "currentPlayingSong";
 
     //Sound Cloud
-    public static final String SOUND_CLOUD_CLIENT_ID                = "6af4e9b999eaa63f5d797d466cdc4ccb";
-    public static final String SOUND_CLOUD_CLIENT_SECRET            = "09e8c5b6f91e2ab440b9137008d2d32c";
-    public static final String OAUTH_CALLBACK_SCHEME                = "brainbeats";
-    public static final String OAUTH_CALLBACK_HOST                  = "soundcloud/callback";
+    public static final String SOUND_CLOUD_CLIENT_ID                        = "6af4e9b999eaa63f5d797d466cdc4ccb";
+    public static final String SOUND_CLOUD_CLIENT_SECRET                    = "09e8c5b6f91e2ab440b9137008d2d32c";
+    public static final String OAUTH_CALLBACK_SCHEME                        = "brainbeats";
+    public static final String OAUTH_CALLBACK_HOST                          = "soundcloud/callback";
     public static final String CALLBACK_URL = OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
 
     //Loader Types
-    public static final int SOCIAL_LOADER  = 101;
-    public static final int RELATED_TRACKS_LOADER  = 102;
-    public static final int MIX_TAGS_LOADER  = 103;
-    public static final int MIXES_LOADER = 104;
-    public static final int MIX_ITEMS_LOADER = 105;
+    public static final int SOCIAL_LOADER               = 101;
+    //public static final int RELATED_TRACKS_LOADER     = 102; //TODO - implement in version 2.0 beta version
+    public static final int MIX_TAGS_LOADER             = 103;
+    public static final int MIXES_LOADER                = 104;
+    public static final int MIX_ITEMS_LOADER            = 105;
 
     //Intents and Communication
-    public static final String SONG_COMPLETE_BROADCAST_ACTION = "com.brainbeats.play.next";
-    public static final String INTENT_ACTION_GO_TO_DETAIL_FRAGMENT = "LoadDetailFragment";
-    public static final String INTENT_ACTION_GO_TO_MIX_DETAIL_FRAGMENT = "LoadMixDetailFragment";
-    public static final String INTENT_ACTION_DISPLAY_CURRENT_TRACK = "DisplayCurrentTrack";
+    public static final String SONG_COMPLETE_BROADCAST_ACTION               = "com.brainbeats.play.next";
+    public static final String INTENT_ACTION_GO_TO_DETAIL_FRAGMENT          = "LoadDetailFragment";
+    public static final String INTENT_ACTION_GO_TO_MIX_DETAIL_FRAGMENT      = "LoadMixDetailFragment";
+    public static final String INTENT_ACTION_DISPLAY_CURRENT_TRACK          = "DisplayCurrentTrack";
 
     //Misc
     public static final int GRID_SPAN_COUNT = 3;
@@ -86,11 +86,9 @@ public class Constants {
     public static final String OREINTATION_SHIFT = "LayoutShift";
 
     //Fragment Uris
-    public static final Uri DASHBOARD_DETAIL_URI = Uri.parse("main://dashboard_detail");
-
-    public static final Uri DASHBOARD_DETAIL_PLAY_SONG_URI = Uri.parse("main://dashboard_detail_play_song");
-
-
+    public static final Uri DASHBOARD_DETAIL_URI                                    = Uri.parse("main://dashboard_detail");
+    public static final Uri DASHBOARD_DETAIL_PLAY_SONG_URI                          = Uri.parse("main://dashboard_detail_play_song");
+    public static final Uri DASHBOARD_DETAIL_LOAD_DASHBOARD_FAB_IMAGES              = Uri.parse("main://dashboard_detail_load_fab_images");
 
 
     public enum AudioServiceRepeatType {
