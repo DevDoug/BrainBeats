@@ -31,7 +31,7 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
     private RecyclerView mMixListView;
     private LibraryMixAdapter mLibraryMixAdapter;
     private LibraryPlaylistAdapter mLibraryPlaylistAdapter;
-    private int mDataType;
+    public int mDataType;
     public String mFilter = "";
     private TextView mEmptyDataPlaceholder;
 
@@ -100,15 +100,11 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
         });*/
     }
 
-    public void updateFilterParams(String params) {
-        mFilter = params;
-    }
-
     @Override
     public Loader<Cursor> onCreateLoader(int loaderID, Bundle args) {
         String query;
 
-        if (args!= null)
+        if (args != null)
             query = args.getString(Constants.KEY_EXTRA_LIBRARY_FILTER_TEXT);
         else
             query = "";
@@ -116,43 +112,48 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
         switch (loaderID) {
             case 0:
                 return new CursorLoader(
-                        getActivity(),         // Parent activity context
-                        BrainBeatsContract.MixEntry.CONTENT_URI,  // Table to query
-                        null,                          // Projection to return
+                        getActivity(),                                                      // Parent activity context
+                        BrainBeatsContract.MixEntry.CONTENT_URI,                            // Table to query
+                        null,                                                               // Projection to return
                         BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY +
                                 BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL +
                                 BrainBeatsDbHelper.AND_CLAUSE +
                                 BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE +
-                                BrainBeatsDbHelper.WHERE_CLAUSE_LIKE, // where the mix is in the lib
-                        new String[]{BrainBeatsDbHelper.DB_TRUE_VALUE, query + "%"},                  // No selection arguments
-                        null                   // Default sort order
+                                BrainBeatsDbHelper.WHERE_CLAUSE_LIKE,                       // Where the mix is in the lib
+                        new String[]{BrainBeatsDbHelper.DB_TRUE_VALUE, query + "%"},        // No selection arguments
+                        null                                                                // Default sort order
                 );
             case 1:
                 return new CursorLoader(
-                        getActivity(),         // Parent activity context
-                        BrainBeatsContract.MixPlaylistEntry.CONTENT_URI,  // Table to query
-                        null,                          // Projection to return
+                        getActivity(),                                                      // Parent activity context
+                        BrainBeatsContract.MixPlaylistEntry.CONTENT_URI,                    // Table to query
+                        null,                                                               // Projection to return
                         null,
                         null,
-                        null                   // Default sort order
+                        null                                                                // Default sort order
                 );
             case 2:
                 return new CursorLoader(
-                        getActivity(),         // Parent activity context
-                        BrainBeatsContract.MixEntry.CONTENT_URI,  // Table to query
-                        null,                          // Projection to return
-                        BrainBeatsContract.MixEntry.COLUMN_NAME_IS_FAVORITE + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
-                        new String[]{BrainBeatsDbHelper.DB_TRUE_VALUE},
-                        null                   // Default sort order
+                        getActivity(),                                                      // Parent activity context
+                        BrainBeatsContract.MixEntry.CONTENT_URI,                            // Table to query
+                        null,                                                               // Projection to return
+                        BrainBeatsContract.MixEntry.COLUMN_NAME_IS_FAVORITE +
+                                BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL +
+                                BrainBeatsDbHelper.AND_CLAUSE +
+                                BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE +
+                                BrainBeatsDbHelper.WHERE_CLAUSE_LIKE,
+                        new String[]{BrainBeatsDbHelper.DB_TRUE_VALUE, query + "%"},
+                        null                                                                // Default sort order
                 );
             default:
                 return new CursorLoader(
-                        getActivity(),         // Parent activity context
-                        BrainBeatsContract.MixEntry.CONTENT_URI,  // Table to query
-                        null,                          // Projection to return
-                        BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
-                        new String[]{BrainBeatsDbHelper.DB_TRUE_VALUE},                  // No selection arguments
-                        null                   // Default sort order
+                        getActivity(),                                                      // Parent activity context
+                        BrainBeatsContract.MixEntry.CONTENT_URI,                            // Table to query
+                        null,                                                               // Projection to return
+                        BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY +
+                                BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,                      // Where the mix is in the lib
+                        new String[]{BrainBeatsDbHelper.DB_TRUE_VALUE},                     // No selection arguments
+                        null                                                                // Default sort order
                 );
         }
     }
