@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/theme_primary_color</item>
         <item name="colorAccent">@color/theme_accent_color</item>
         <item name="android:textColorPrimary">@color/theme_primary_text_color</item>
+        <item name="android:textColorSecondary">@color/theme_secondary_text_color</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:windowBackground">@android:color/white</item>
         <item name="android:listViewStyle">@style/ListViewStyle.Light</item>
