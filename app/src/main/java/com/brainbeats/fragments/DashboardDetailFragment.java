@@ -382,6 +382,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                     } catch (InterruptedException e) {
                         Log.i("Progress bar thread", "Exception occured" + e.toString());
                         mIsAlive = false;
+                        mPlayTrackSeekBar.setProgress(0);
                     }
                 }
             }
@@ -454,8 +455,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
             @Override
             public void onObjectResponse(JSONObject object) {
                 Gson gson = new Gson();
-                Type token = new TypeToken<User>() {
-                }.getType();
+                Type token = new TypeToken<User>() {}.getType();
                 User soundCloudUser = gson.fromJson(object.toString(), token);
                 mArtistName.setText(soundCloudUser.getUsername());
                 Picasso.with(getContext()).load(soundCloudUser.getAvatarUrl()).into(mArtistThumbnail);

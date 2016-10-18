@@ -8,27 +8,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-<!--    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floating_action_button_filter_by_recent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/floating_action_button_filter_by_popular"
-        android:layout_alignStart="@+id/floating_action_button_filter_by_popular"
-        android:layout_marginBottom="15dp"
-        android:elevation="@dimen/fob_elevation"
-        android:src="@drawable/ic_access_time_white"
-        android:visibility="invisible" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floating_action_button_filter_by_popular"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/floating_action_button_quick_filter"
-        android:layout_alignStart="@+id/floating_action_button_quick_filter"
-        android:layout_marginBottom="15dp"
-        android:elevation="@dimen/fob_elevation"
-        android:src="@drawable/ic_whatshot_white"
-        android:visibility="invisible" />-->
-
 </RelativeLayout>
 
