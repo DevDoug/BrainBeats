@@ -86,6 +86,6 @@ public class LibraryFragment extends Fragment {
         LibraryTabFragment frag = (LibraryTabFragment) ((ViewPagerAdapter) mViewPager.getAdapter()).getItem(mViewPager.getCurrentItem());
         Bundle bundle = new Bundle();
         bundle.putString(Constants.KEY_EXTRA_LIBRARY_FILTER_TEXT,query);
-        getLoaderManager().restartLoader(Constants.LibraryDataType.Songs.getCode(), bundle, frag);
+        getLoaderManager().restartLoader(frag.mDataType, bundle, frag);
     }
 }

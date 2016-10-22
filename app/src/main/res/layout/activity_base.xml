@@ -85,15 +85,7 @@
             android:layout_marginRight="16dp"
             android:clickable="true"
             android:elevation="@dimen/fob_elevation"
-            app:layout_behavior="ui.PlayerNotificationCoordinatorLayoutBehavior"
             android:src="@drawable/ic_filter_list_white" />
-
-<!--        <com.brainbeats.custom.AudioPlayerCurrentSongView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_gravity="center_horizontal|bottom"
-            android:gravity="center_vertical"
-            />-->
 
         <RelativeLayout
             android:id="@+id/current_track_container"
@@ -102,7 +94,7 @@
             android:background="@drawable/current_track_playing_background"
             android:layout_gravity="center_horizontal|bottom"
             android:gravity="center_vertical"
-            android:elevation="@dimen/fob_elevation"
+            android:elevation="5dp"
             android:visibility="gone">
 
             <ImageView
