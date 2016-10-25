@@ -87,7 +87,6 @@ public class Constants {
 
     //Fragment Uris
     public static final Uri DASHBOARD_DETAIL_URI                                    = Uri.parse("main://dashboard_detail");
-    public static final Uri DASHBOARD_DETAIL_PLAY_SONG_URI                          = Uri.parse("main://dashboard_detail_play_song");
     public static final Uri DASHBOARD_DETAIL_LOAD_DASHBOARD_FAB_IMAGES              = Uri.parse("main://dashboard_detail_load_fab_images");
 
 

@@ -180,6 +180,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+        if(uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_DASHBOARD_FAB_IMAGES) == 0) {
+            if (mIsFabOpen)
+                animateFAB();
+
+            mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_filter_list_white));
+            mExtraActionOneFab.setImageDrawable(getDrawable(R.drawable.ic_whatshot_white));
+            mExtraActionTwoFab.setImageDrawable(getDrawable(R.drawable.ic_access_time_white));
+            mExtraActionThreeFab.setImageDrawable(getDrawable(R.drawable.ic_sort_by_alpha_white));
+        }
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
