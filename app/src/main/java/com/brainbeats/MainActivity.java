@@ -135,24 +135,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             case R.id.action_one_fob:
                 animateFAB();
-                if(mDashboardFragment.isVisible())
-                    ((DashboardFragment)mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR);
-                else if(mDashboardDetailFragment.isVisible())
-                    ((DashboardDetailFragment)mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateMix, null);
-                    break;
+                if (mDashboardFragment.isVisible())
+                    ((DashboardFragment) mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR);
+                else if (mDashboardDetailFragment.isVisible())
+                    ((DashboardDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateMix, null);
+                break;
             case R.id.action_two_fob:
                 animateFAB();
-                if(mDashboardFragment.isVisible())
-                    ((DashboardFragment)mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT);
-                else if(mDashboardDetailFragment.isVisible())
-                    ((DashboardDetailFragment)mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateFavorite, null);
+                if (mDashboardFragment.isVisible())
+                    ((DashboardFragment) mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT);
+                else if (mDashboardDetailFragment.isVisible())
+                    ((DashboardDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateFavorite, null);
                 break;
             case R.id.action_three_fob:
                 animateFAB();
-                if(mDashboardFragment.isVisible())
-                    ((DashboardFragment)mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_A_TO_Z);
-                else if(mDashboardDetailFragment.isVisible())
-                    ((DashboardDetailFragment)mDashboardDetailFragment).updateOfflineSyncManager(null, Constants.SyncDataType.Users);
+                if (mDashboardFragment.isVisible())
+                    ((DashboardFragment) mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_A_TO_Z);
+                else if (mDashboardDetailFragment.isVisible())
+                    ((DashboardDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(null, Constants.SyncDataType.Users);
                 break;
         }
     }
@@ -185,9 +185,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
+            if (intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
                 Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
-                if(mDashboardDetailFragment.isVisible()){ //if they are on the dashboard detail screen update the detail widgets
+                if (mDashboardDetailFragment.isVisible()) { //if they are on the dashboard detail screen update the detail widgets
                     (((DashboardDetailFragment) mDashboardDetailFragment)).updateTrackUI(newTrack);
                 } else { // else update the current playing notification view
                     mCurrentSongTitle.setText(newTrack.getTitle());
