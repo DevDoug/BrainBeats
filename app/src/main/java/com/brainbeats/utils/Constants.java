@@ -78,7 +78,7 @@ public class Constants {
     public static final String INTENT_ACTION_DISPLAY_CURRENT_TRACK          = "DisplayCurrentTrack";
 
     //Misc
-    public static final int GRID_SPAN_COUNT = 3;
+    public static final int GRID_SPAN_COUNT = 2;
     public static final int BEAT_LEVEL_INCREASE_DIFFERENCE = 10;
     public static final int MIX_ITEM_DEFAULT_LEVEL = 50;
     public static final int BEAT_ITEM_DRAWABLES[] = new int[]{R.drawable.ic_alpha, R.drawable.ic_beta, R.drawable.ic_google, R.drawable.ic_theta,};
