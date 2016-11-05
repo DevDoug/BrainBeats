@@ -197,6 +197,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                         Picasso.with(MainActivity.this).load(newTrack.getArtworkURL()).into(mAlbumThumbnail);
 
                     mCurrentSongArtistName.setText(newTrack.getUser().getUsername());
+
                 }
             }
         }
