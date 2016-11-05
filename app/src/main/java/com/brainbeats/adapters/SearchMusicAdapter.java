@@ -57,10 +57,13 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.mTrackTitle.setText(mTracks.get(position).getTitle());
+        Picasso.with(mAdapterContext).load(mTracks.get(position).getArtworkURL()).fit().centerCrop().into(holder.mAlbumArtCover);
 
-        final TextView textView = (TextView) holder.mTrackTitle;
+/*        final TextView textView = (TextView) holder.mTrackTitle;
 
-        if (mTracks.get(position).getArtworkURL() == null || mTracks.get(position).getArtworkURL().isEmpty()) {
+        Picasso.with(mAdapterContext).load(mTracks.get(position).getArtworkURL()).into(holder.mAlbumArtCover);*/
+
+/*        if (mTracks.get(position).getArtworkURL() == null || mTracks.get(position).getArtworkURL().isEmpty()) {
             Picasso.with(mAdapterContext).load(R.drawable.placeholder).into(holder.mAlbumArtCover, new com.squareup.picasso.Callback() {
                 @Override
                 public void onSuccess() {
@@ -82,7 +85,7 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
                 public void onError() {
                 }
             });
-        }
+        }*/
     }
 
     @Override

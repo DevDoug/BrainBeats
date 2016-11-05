@@ -1,6 +1,7 @@
 package com.brainbeats.fragments;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -76,6 +77,8 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     public Thread mUpdateSeekBar;
     private SeekBar mPlayTrackSeekBar;
     public int mProgressStatus = 0;
+
+    ProgressDialog loadingMusicDialog;
 
     //Playing song members.
     public Track mSelectedTrack;
@@ -308,6 +311,11 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
                 downVoteSnack.show();
                 break;
             case R.id.skip_forward_button:
+                loadingMusicDialog = new ProgressDialog(getContext());
+                loadingMusicDialog.setCancelable(false);
+                loadingMusicDialog.setMessage(getString(R.string.loading_message));
+                loadingMusicDialog.show();
+
                 ((MainActivity) getActivity()).mAudioService.loadNextTrack();
                 break;
             case R.id.repeat_button:
@@ -440,6 +448,7 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         mArtistName.setText(track.getUser().getUsername());
         Picasso.with(getContext()).load(track.getUser().getAvatarUrl()).into(mArtistThumbnail);
         mArtistDescription.setText(track.getUser().getDescription());
+        loadingMusicDialog.dismiss();
     }
 
     public void getUserInfo(int userId) {
