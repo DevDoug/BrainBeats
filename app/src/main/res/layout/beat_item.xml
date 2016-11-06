@@ -24,13 +24,15 @@
                 android:contentDescription="@string/album_cover_art_image_description"
                 android:adjustViewBounds="true"
                 android:src="@drawable/placeholder"
+                android:layout_alignParentTop="true"
+                android:layout_above="@+id/card_footer"
                 android:scaleType="centerCrop" />
 
             <LinearLayout
+                android:id="@+id/card_footer"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_below="@+id/album_cover_art"
-                android:background="@color/theme_primary_color"
+                android:background="#03A9F4"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:paddingEnd="5dp"

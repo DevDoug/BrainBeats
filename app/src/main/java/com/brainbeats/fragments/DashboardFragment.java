@@ -56,7 +56,6 @@ public class DashboardFragment extends Fragment implements Constants.ConfirmDial
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((MainActivity) getActivity()).getToolBar();
         setHasOptionsMenu(true);
     }
 
@@ -179,12 +178,14 @@ public class DashboardFragment extends Fragment implements Constants.ConfirmDial
                     Type token = new TypeToken<List<Track>>() {
                     }.getType();
                     ArrayList<Track> trackList = gson.fromJson(array.toString(), token);
-                    if (trackList != null) {
+                    if (trackList.size() != 0) {
                         mTrackAdapter = new SearchMusicAdapter(getContext(), trackList);
                         mBeatGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
                         mTrackGrid.setLayoutManager(mBeatGridLayoutManager);
                         mTrackGrid.setAdapter(mTrackAdapter);
                         mTrackAdapter.notifyDataSetChanged();
+                    } else {
+                        Constants.buildInfoDialog(getContext(), getString(R.string.no_results_found_error_message), getString(R.string.no_search_results));
                     }
                 }
             }, new WebApiManager.OnErrorListener() {
@@ -192,7 +193,6 @@ public class DashboardFragment extends Fragment implements Constants.ConfirmDial
                 public void onErrorResponse(VolleyError error) {
                     Log.i(getClass().getSimpleName(), "Response = " + error.toString());
                     loadingMusicDialog.dismiss();
-                    Constants.buildInfoDialog(getContext(), getString(R.string.no_results_found_error_message), getString(R.string.no_search_results));
                 }
             });
         } else {

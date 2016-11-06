@@ -48,7 +48,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         setContentView(R.layout.activity_base);
 
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
-
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
         mExtraActionOneFab = (FloatingActionButton) findViewById(R.id.action_one_fob);
         mExtraActionTwoFab = (FloatingActionButton) findViewById(R.id.action_two_fob);
@@ -59,19 +58,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         rotate_forward = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate_backward);
 
-        mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
-
-        mDashboardFragment = new DashboardFragment();
-        mDashboardDetailFragment = new DashboardDetailFragment();
-
-        if (savedInstanceState != null) { //If our activity is recreated.
-            Track track = savedInstanceState.getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
-            boolean orientationChange = savedInstanceState.getBoolean(Constants.OREINTATION_SHIFT);
-            if (orientationChange) {
-                switchToBeatDetailFragment(track);
-            }
-        } else {
+        if (savedInstanceState == null) {
             mDashboardFragment = new DashboardFragment();
             mDashboardDetailFragment = new DashboardDetailFragment();
             switchToDashboardFragment();
@@ -80,7 +67,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         Bundle intentBundle = getIntent().getExtras(); //If an intent is passed to main activity.
         if (intentBundle != null) {
             if (intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX) != null) {
-                if(getIntent().getAction().equalsIgnoreCase(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT)) {
+                if (getIntent().getAction().equalsIgnoreCase(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT)) {
                     Mix sentMix = (Mix) intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX);
                     BrainBeatsUser mixUser = (BrainBeatsUser) intentBundle.get(Constants.KEY_EXTRA_SELECTED_USER);
                     if (sentMix != null) {
@@ -97,6 +84,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             startActivity(loginIntent);
             finish();
         }
+
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
 
         mMainActionFab.setOnClickListener(this);
         mExtraActionOneFab.setOnClickListener(this);
@@ -164,7 +154,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public void switchToBeatDetailFragment(Track track) {
         toggleNavDrawerIcon();
         Bundle args = new Bundle();
-        if(mBound && mCurrentSong != null) //if another song is selected reset our player
+        if (mBound && mCurrentSong != null) //if another song is selected reset our player
             resetPlayer();
 
         args.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, track);
@@ -180,6 +170,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+        if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_DASHBOARD_FAB_IMAGES) == 0) {
+            if (mIsFabOpen)
+                animateFAB();
+
+            mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_filter_list_white));
+            mExtraActionOneFab.setImageDrawable(getDrawable(R.drawable.ic_whatshot_white));
+            mExtraActionTwoFab.setImageDrawable(getDrawable(R.drawable.ic_access_time_white));
+            mExtraActionThreeFab.setImageDrawable(getDrawable(R.drawable.ic_sort_by_alpha_white));
+        }
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {

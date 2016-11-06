@@ -23,6 +23,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:logo="@mipmap/ic_brain"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/BrainBeatsTheme">
         <activity
@@ -37,7 +38,7 @@
                 <data android:scheme="brainbeats" />
             </intent-filter>
         </activity>
-        <activity android:name=".LibraryActivity"></activity>
+        <activity android:name=".LibraryActivity" />
         <activity android:name=".MixerActivity" />
         <activity android:name=".SocialActivity" />
         <activity
@@ -50,8 +51,10 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="brainbeats" />
             </intent-filter>
         </activity>
