@@ -38,7 +38,7 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
             mAlbumArtCover = (ImageView) v.findViewById(R.id.album_cover_art);
             mTrackTitle = (TextView) v.findViewById(R.id.album_title);
 
-            mAlbumArtCover.setOnClickListener(new View.OnClickListener() { //Mix selected load detail screen
+            v.setOnClickListener(new View.OnClickListener() { //Mix selected load detail screen
                 @Override
                 public void onClick(View v) {
                     ((MainActivity) mAdapterContext).switchToBeatDetailFragment(mTracks.get(getAdapterPosition()));
@@ -50,42 +50,13 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mAdapterContext).inflate(R.layout.beat_item, parent, false);
-        ViewHolder holder = new ViewHolder(view);
-        return holder;
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.mTrackTitle.setText(mTracks.get(position).getTitle());
         Picasso.with(mAdapterContext).load(mTracks.get(position).getArtworkURL()).fit().centerCrop().into(holder.mAlbumArtCover);
-
-/*        final TextView textView = (TextView) holder.mTrackTitle;
-
-        Picasso.with(mAdapterContext).load(mTracks.get(position).getArtworkURL()).into(holder.mAlbumArtCover);*/
-
-/*        if (mTracks.get(position).getArtworkURL() == null || mTracks.get(position).getArtworkURL().isEmpty()) {
-            Picasso.with(mAdapterContext).load(R.drawable.placeholder).into(holder.mAlbumArtCover, new com.squareup.picasso.Callback() {
-                @Override
-                public void onSuccess() {
-                    textView.setText(mTracks.get(position).getTitle());
-                }
-
-                @Override
-                public void onError() {
-                }
-            });
-        } else {
-            Picasso.with(mAdapterContext).load(mTracks.get(position).getArtworkURL()).into(holder.mAlbumArtCover, new com.squareup.picasso.Callback() {
-                @Override
-                public void onSuccess() {
-                    textView.setText(mTracks.get(position).getTitle());
-                }
-
-                @Override
-                public void onError() {
-                }
-            });
-        }*/
     }
 
     @Override

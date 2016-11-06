@@ -160,8 +160,6 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean("LayoutShiftDetail", true);
-        outState.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
     }
 
     @Override
@@ -448,7 +446,9 @@ public class DashboardDetailFragment extends Fragment implements LoaderManager.L
         mArtistName.setText(track.getUser().getUsername());
         Picasso.with(getContext()).load(track.getUser().getAvatarUrl()).into(mArtistThumbnail);
         mArtistDescription.setText(track.getUser().getDescription());
-        loadingMusicDialog.dismiss();
+
+        if(loadingMusicDialog != null)
+            loadingMusicDialog.dismiss();
     }
 
     public void getUserInfo(int userId) {
