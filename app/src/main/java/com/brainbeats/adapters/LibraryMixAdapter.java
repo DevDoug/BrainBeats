@@ -43,8 +43,8 @@ public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapt
         viewHolder.mPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO open this mix in player
                 AccountManager.getInstance(mAdapterContext).setDisplayCurrentSongView(false);
+                //TODO fix user is null when navigating to this mix after selecting from lib
                 Mix selectedMix = Constants.buildMixFromCursor(mAdapterContext,getCursor(), viewHolder.getAdapterPosition()); // get the selected mix item
 
                 //start intent to send user to play this mix in player
@@ -59,7 +59,6 @@ public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapt
         viewHolder.mMix.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO send to mixer
                 Mix selectedMix = Constants.buildMixFromCursor(mAdapterContext,getCursor(), viewHolder.getAdapterPosition()); // get the selected mix item
 
                 //update local db with change

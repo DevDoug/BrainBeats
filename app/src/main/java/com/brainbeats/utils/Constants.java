@@ -203,12 +203,12 @@ public class Constants {
             mix.setUser(brainBeatsBrainBeatsUser);
         }
 
-        Cursor mixItemsCursor = context.getContentResolver().query( //get this mixes mix items
-                BrainBeatsContract.MixItemsEntry.CONTENT_URI,
-                null,  //return everything
-                BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
-                new String[]{" " + cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.MixEntry._ID))},
-                null);
+//        Cursor mixItemsCursor = context.getContentResolver().query( //get this mixes mix items
+//                BrainBeatsContract.MixItemsEntry.CONTENT_URI,
+//                null,  //return everything
+//                BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEMS_FOREIGN_KEY + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
+//                new String[]{" " + cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.MixEntry._ID))},
+//                null);
 
 /*        if (mixItemsCursor != null) {
             mixItemsCursor.moveToFirst();

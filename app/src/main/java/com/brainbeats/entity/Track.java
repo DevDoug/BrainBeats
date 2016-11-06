@@ -52,7 +52,7 @@ public class Track implements Parcelable {
         this.mStreamURL = mix.getStreamURL();
         this.mUserFavorite = mix.getMixFavorite() == 1;
         this.mDuration = mix.getDuration();
-        //this.mUser = new User(mix.getUser());
+        this.mUser = new User(mix.getUser());
     }
 
     public String getTitle() {
