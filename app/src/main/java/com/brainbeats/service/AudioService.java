@@ -216,6 +216,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void loadNextTrack(){
+
         BeatLearner.getInstance(getApplicationContext()).loadNextRecommendedBeat(mPlayingSong.getID(), this);
     }
 }

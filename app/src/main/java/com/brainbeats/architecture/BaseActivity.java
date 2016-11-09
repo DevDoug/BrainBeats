@@ -1,6 +1,5 @@
 package com.brainbeats.architecture;
 
-import android.Manifest;
 import android.accounts.Account;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -8,14 +7,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -181,9 +178,9 @@ public class BaseActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.action_dashboard:
-                        Intent dashboardIntent = new Intent(getApplicationContext(), MainActivity.class);
-                        createBackStack(dashboardIntent);
+                    case R.id.action_browse:
+                        Intent browseIntent = new Intent(getApplicationContext(), MainActivity.class);
+                        createBackStack(browseIntent);
                         break;
                     case R.id.action_library:
                         Intent libraryIntent = new Intent(getApplicationContext(), LibraryActivity.class);

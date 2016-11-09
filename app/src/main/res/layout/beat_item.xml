@@ -32,7 +32,7 @@
                 android:id="@+id/card_footer"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:background="#40C4FF"
+                android:background="#ee40C4FF"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:paddingEnd="5dp"

@@ -19,10 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.volley.NoConnectionError;
 import com.android.volley.VolleyError;
 import com.brainbeats.LoginActivity;
-import com.brainbeats.MainActivity;
 import com.brainbeats.R;
 import com.brainbeats.adapters.SearchMusicAdapter;
 import com.brainbeats.architecture.AccountManager;
@@ -38,9 +36,9 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DashboardFragment extends Fragment implements Constants.ConfirmDialogActionListener {
+public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDialogActionListener {
 
-    public static final String TAG = "DashboardFragment";
+    public static final String TAG = "BrowseMusicFragment";
 
     private RecyclerView mTrackGrid;
     private SearchMusicAdapter mTrackAdapter;
@@ -49,7 +47,7 @@ public class DashboardFragment extends Fragment implements Constants.ConfirmDial
     private String mQueryText = "";
     private SearchView.OnQueryTextListener listener;
 
-    public DashboardFragment() {
+    public BrowseMusicFragment() {
         // Required empty public constructor
     }
 
@@ -61,7 +59,7 @@ public class DashboardFragment extends Fragment implements Constants.ConfirmDial
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        View v = inflater.inflate(R.layout.fragment_browse, container, false);
         mTrackGrid = (RecyclerView) v.findViewById(R.id.category_grid);
 
         listener = new SearchView.OnQueryTextListener() {
