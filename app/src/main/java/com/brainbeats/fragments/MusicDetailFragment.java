@@ -285,6 +285,14 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                 }
                 break;
             case R.id.arrow_down:
+                loadingMusicDialog = new ProgressDialog(getContext());
+                loadingMusicDialog.setCancelable(false);
+                loadingMusicDialog.setMessage(getString(R.string.loading_message));
+                loadingMusicDialog.show();
+
+                if(mainActivity.mAudioService.mPlayingSong == null)
+                    mainActivity.mAudioService.mPlayingSong = mSelectedTrack;
+
                 BeatLearner.getInstance(getContext()).downVoteTrack(mSelectedTrack.getID()); // downvote this track
                 mainActivity.mAudioService.loadNextTrack();
 
