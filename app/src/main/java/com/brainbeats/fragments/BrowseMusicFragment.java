@@ -183,7 +183,7 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
                         mTrackGrid.setAdapter(mTrackAdapter);
                         mTrackAdapter.notifyDataSetChanged();
                     } else {
-                        Constants.buildInfoDialog(getContext(), getString(R.string.no_results_found_error_message), getString(R.string.no_search_results));
+                        Constants.buildInfoDialog(getContext(), getString(R.string.error_no_results_found_error_message), getString(R.string.no_search_results));
                     }
                 }
             }, new WebApiManager.OnErrorListener() {

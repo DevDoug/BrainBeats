@@ -71,11 +71,11 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     private SeekBar mPlayTrackSeekBar;
     public int mProgressStatus = 0;
 
-    ProgressDialog loadingMusicDialog;
-
     //Playing song members.
     public Track mSelectedTrack;
     private boolean mLooping = false;
+
+    ProgressDialog loadingMusicDialog;
 
     //TODO - implement in version 2.0 beta version
 /*    private MixTagAdapter mMixTagAdapter;

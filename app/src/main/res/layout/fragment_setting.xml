@@ -53,6 +53,28 @@
                 android:layout_centerVertical="true" />
 
         </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="@string/preference_sync_with_sound_cloud_text" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/download_over_wifi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true" />
+
+        </RelativeLayout>
     </LinearLayout>
 
 </FrameLayout>
