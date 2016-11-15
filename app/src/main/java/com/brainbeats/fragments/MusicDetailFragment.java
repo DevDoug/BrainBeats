@@ -33,6 +33,7 @@ import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
 import com.brainbeats.architecture.AccountManager;
+import com.brainbeats.architecture.BaseActivity;
 import com.brainbeats.entity.Track;
 import com.brainbeats.entity.User;
 import com.brainbeats.service.AudioService;
@@ -190,6 +191,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         });
 
         mIsAlive = true;
+        AccountManager.getInstance(getContext()).setDisplayCurrentSongView(false);
         ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.INVISIBLE); // hide our playing sound view
     }
 
