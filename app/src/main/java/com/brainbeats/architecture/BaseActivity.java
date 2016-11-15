@@ -340,7 +340,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void updateCurrentSongNotificationUI(){
-        if(AccountManager.getInstance(BaseActivity.this).getDisplayCurrentSongView()) {
+        if (AccountManager.getInstance(BaseActivity.this).getDisplayCurrentSongView()) {
             mCurrentSongPlayingView.setVisibility(View.VISIBLE);
             mCurrentSongTitle.setText(mCurrentSong.getTitle());
             Picasso.with(BaseActivity.this).load(mCurrentSong.getArtworkURL()).into(mAlbumThumbnail);

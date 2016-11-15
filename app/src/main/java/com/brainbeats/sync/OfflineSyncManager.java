@@ -198,6 +198,7 @@ public class OfflineSyncManager {
             userCursor.moveToFirst();
             userId = userCursor.getLong(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID));
             newMix.setMixUserId(userId);
+            userCursor.close();
         } else { //otherwise add the user this mix belongs to
             Uri result = provider.insert(BrainBeatsContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(new BrainBeatsUser(track.getUser())));
             userId = ContentUris.parseId(result);
@@ -211,6 +212,7 @@ public class OfflineSyncManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     public void addUser(com.brainbeats.entity.User collection, boolean isFollowing, ContentResolver provider) {
