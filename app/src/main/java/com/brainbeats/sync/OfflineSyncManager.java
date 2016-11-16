@@ -160,6 +160,7 @@ public class OfflineSyncManager {
 
                         if (followingArtistCursor.getCount() != 0) {
                             int result = provider.delete(BrainBeatsContract.UserFollowersEntry.CONTENT_URI, BrainBeatsContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, new String[]{String.valueOf(selectedTrack.getUser().getId())});
+                            followingArtistCursor.close();
                             showSnackMessage(coordinatorLayout, R.string.artist_removed_from_following);
                         } else {
                             Uri result = provider.insert(BrainBeatsContract.UserFollowersEntry.CONTENT_URI, Constants.buildUserFollowingRecord(AccountManager.getInstance(mContext).getUserId(), String.valueOf(selectedTrack.getUser().getId())));
