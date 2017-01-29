@@ -142,7 +142,6 @@ public class BaseActivity extends AppCompatActivity {
             public void onClick(View view) {
                 AccountManager.getInstance(BaseActivity.this).setDisplayCurrentSongView(false);
 
-                //TODO go to currently playing song
                 Intent dashboardIntent = new Intent(BaseActivity.this, MainActivity.class);
                 dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, new Mix(mCurrentSong));
                 dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_USER, new BrainBeatsUser(mCurrentSong.getUser()));

@@ -118,6 +118,9 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
                     Picasso.with(LibraryActivity.this).load(newTrack.getArtworkURL()).into(mAlbumThumbnail);
 
                 mCurrentSongArtistName.setText(newTrack.getUser().getUsername());
+
+                //Update the current playing song in base activity to the song from this broadcast
+                mCurrentSong = newTrack;
             }
         }
     };

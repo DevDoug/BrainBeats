@@ -142,10 +142,10 @@
 
     <!-- Settings -->
     <string name="preference_sync_with_sound_cloud_text">Sync with Sound Cloud</string>
-    <string name="preference_download_over_wifi">Download over wifi</string>
+    <string name="preference_download_over_wifi">Download Only Over Wi-Fi</string>
 
     <!-- Login -->
-    <string name="sound_cloud_login_message">Log in to sound cloud</string>
+    <string name="sound_cloud_login_message">Log in to sound cloud.</string>
     <string name="login_to_sound_cloud_title">Log in to sound cloud.</string>
     <string name="login_failed_error_message">Login Failed</string>
     <string name="log_in_using_sound_cloud">Log in using Sound Cloud</string>

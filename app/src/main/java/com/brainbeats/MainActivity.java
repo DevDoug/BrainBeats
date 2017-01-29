@@ -28,6 +28,11 @@ import com.brainbeats.utils.Constants;
 import com.brainbeats.sync.SyncManager;
 import com.brainbeats.web.WebApiManager;
 
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Stack;
+
 public class MainActivity extends BaseActivity implements View.OnClickListener, BrowseMusicFragment.OnFragmentInteractionListener, MusicDetailFragment.OnFragmentInteractionListener {
 
     public Fragment mDashboardFragment;
@@ -52,6 +57,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mExtraActionOneFab = (FloatingActionButton) findViewById(R.id.action_one_fob);
         mExtraActionTwoFab = (FloatingActionButton) findViewById(R.id.action_two_fob);
         mExtraActionThreeFab = (FloatingActionButton) findViewById(R.id.action_three_fob);
+
 
         fab_open = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_close);
@@ -194,9 +200,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                         mAlbumThumbnail.setImageResource(R.drawable.placeholder);
                     else
                         Picasso.with(MainActivity.this).load(newTrack.getArtworkURL()).into(mAlbumThumbnail);
-
                     mCurrentSongArtistName.setText(newTrack.getUser().getUsername());
 
+                    //Update the current playing song in base activity to the song from this broadcast
+                    mCurrentSong = newTrack;
                 }
             }
         }

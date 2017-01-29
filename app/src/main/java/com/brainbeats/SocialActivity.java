@@ -87,6 +87,9 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
                     Picasso.with(SocialActivity.this).load(newTrack.getArtworkURL()).into(mAlbumThumbnail);
 
                 mCurrentSongArtistName.setText(newTrack.getUser().getUsername());
+
+                //Update the current playing song in base activity to the song from this broadcast
+                mCurrentSong = newTrack;
             }
         }
     };

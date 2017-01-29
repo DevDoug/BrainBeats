@@ -77,7 +77,6 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
                     ((MixerDetailFragment) mMixerDetailFragment).mDialog = Constants.buildImageListDialogue(MixerActivity.this, MixerActivity.this.getResources().getString(R.string.add_sound_item_to_current_beat), ((MixerDetailFragment) mMixerDetailFragment));
                     ((MixerDetailFragment) mMixerDetailFragment).mDialog.show();
                 }
-
                 break;
         }
     }
@@ -126,6 +125,9 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
                     Picasso.with(MixerActivity.this).load(newTrack.getArtworkURL()).into(mAlbumThumbnail);
 
                 mCurrentSongArtistName.setText(newTrack.getUser().getUsername());
+
+                //Update the current playing song in base activity to the song from this broadcast
+                mCurrentSong = newTrack;
             }
         }
     };
