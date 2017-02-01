@@ -187,10 +187,10 @@ public class BaseActivity extends AppCompatActivity {
                         libraryIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(libraryIntent);
                         break;
-                    case R.id.action_mixer:
+/*                    case R.id.action_mixer:
                         Intent mixerIntent = new Intent(getApplicationContext(), MixerActivity.class);
                         createBackStack(mixerIntent);
-                        break;
+                        break;*/
                     case R.id.action_social:
                         Intent socialIntent = new Intent(getApplicationContext(), SocialActivity.class);
                         socialIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
