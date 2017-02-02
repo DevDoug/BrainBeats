@@ -192,6 +192,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public void recommendationComplete(Track track) {
         mPlayingSong = track;
+        mIsPaused = false; //unpause to load new track instead of resume old track
         playSong(Uri.parse(track.getStreamURL()));
 
         Intent broadcastIntent = new Intent(); // send broadcast to activity to tell it to update com.brainbeats.ui
@@ -216,7 +217,6 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void loadNextTrack(){
-
         BeatLearner.getInstance(getApplicationContext()).loadNextRecommendedBeat(mPlayingSong.getID(), this);
     }
 }

@@ -190,6 +190,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+
             if (intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
                 Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
                 if (mDashboardDetailFragment.isVisible()) { //if they are on the dashboard detail screen update the detail widgets

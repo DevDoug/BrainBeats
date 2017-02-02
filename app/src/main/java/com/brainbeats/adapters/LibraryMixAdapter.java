@@ -59,8 +59,7 @@ public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapt
             }
         });
 
-        //TODO implement in version 2.0
-/*        viewHolder.mPlay.setOnClickListener(new View.OnClickListener() {
+        viewHolder.mPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AccountManager.getInstance(mAdapterContext).setDisplayCurrentSongView(false);
@@ -74,9 +73,9 @@ public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapt
                 browseMusicIntent.setAction(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT);
                 mAdapterContext.startActivity(browseMusicIntent);
             }
-        });*/
+        });
 
-        viewHolder.mMix.setOnClickListener(new View.OnClickListener() {
+/*        viewHolder.mMix.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Mix selectedMix = Constants.buildMixFromCursor(mAdapterContext,getCursor(), viewHolder.getAdapterPosition()); // get the selected mix item
@@ -94,7 +93,7 @@ public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapt
                 mixerIntent.setAction(Constants.INTENT_ACTION_GO_TO_MIX_DETAIL_FRAGMENT);
                 mAdapterContext.startActivity(mixerIntent);
             }
-        });
+        });*/
     }
 
     @Override
