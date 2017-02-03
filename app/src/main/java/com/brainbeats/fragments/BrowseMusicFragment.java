@@ -113,6 +113,15 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.filter_by_hottest:
+                getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR);
+                break;
+            case R.id.filter_by_most_recent:
+                getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT);
+                break;
+            case R.id.filter_by_alphabet:
+                getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_A_TO_Z);
+                break;
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
                 Intent loginIntent = new Intent(getContext(), LoginActivity.class);

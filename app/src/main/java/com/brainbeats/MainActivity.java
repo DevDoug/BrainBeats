@@ -98,6 +98,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mExtraActionOneFab.setOnClickListener(this);
         mExtraActionTwoFab.setOnClickListener(this);
         mExtraActionThreeFab.setOnClickListener(this);
+
+        toggleFabsVisible(View.INVISIBLE);
     }
 
     @Override
@@ -131,24 +133,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             case R.id.action_one_fob:
                 animateFAB();
-                if (mDashboardFragment.isVisible())
-                    ((BrowseMusicFragment) mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR);
-                else if (mDashboardDetailFragment.isVisible())
-                    ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateMix, null);
+                ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateMix, null);
                 break;
             case R.id.action_two_fob:
                 animateFAB();
-                if (mDashboardFragment.isVisible())
-                    ((BrowseMusicFragment) mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT);
-                else if (mDashboardDetailFragment.isVisible())
-                    ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateFavorite, null);
+                ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateFavorite, null);
                 break;
             case R.id.action_three_fob:
                 animateFAB();
-                if (mDashboardFragment.isVisible())
-                    ((BrowseMusicFragment) mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_A_TO_Z);
-                else if (mDashboardDetailFragment.isVisible())
-                    ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(null, Constants.SyncDataType.Users);
+                ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(null, Constants.SyncDataType.Users);
                 break;
         }
     }
@@ -180,11 +173,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             if (mIsFabOpen)
                 animateFAB();
 
-            mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_filter_list_white));
+/*            mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_filter_list_white));
             mExtraActionOneFab.setImageDrawable(getDrawable(R.drawable.ic_whatshot_white));
             mExtraActionTwoFab.setImageDrawable(getDrawable(R.drawable.ic_access_time_white));
-            mExtraActionThreeFab.setImageDrawable(getDrawable(R.drawable.ic_sort_by_alpha_white));
+            mExtraActionThreeFab.setImageDrawable(getDrawable(R.drawable.ic_sort_by_alpha_white));*/
         }
+    }
+
+    public void toggleFabsVisible(int visible) {
+        mMainActionFab.setVisibility(visible);
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {

@@ -11,6 +11,27 @@
         app:showAsAction="ifRoom|collapseActionView" />
 
     <item
+        android:id="@+id/filter_by_hottest"
+        android:orderInCategory="100"
+        android:title="Filter By Hottest"
+        app:showAsAction="never">
+    </item>
+
+    <item
+        android:id="@+id/filter_by_most_recent"
+        android:orderInCategory="100"
+        android:title="Filter By Most Recent"
+        app:showAsAction="never">
+    </item>
+
+    <item
+        android:id="@+id/filter_by_alphabet"
+        android:orderInCategory="100"
+        android:title="Filter By A - Z"
+        app:showAsAction="never">
+    </item>
+
+    <item
         android:id="@+id/action_logout"
         android:orderInCategory="101"
         android:title="Log Off"

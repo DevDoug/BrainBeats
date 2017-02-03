@@ -117,6 +117,8 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
             ((MainActivity) getActivity()).mCurrentSong = mSelectedTrack;
             ((MainActivity) getActivity()).updateCurrentSongNotificationUI();
         }
+
+        ((MainActivity) getActivity()).toggleFabsVisible(View.INVISIBLE);
     }
 
     @Override
@@ -193,6 +195,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         mIsAlive = true;
         AccountManager.getInstance(getContext()).setDisplayCurrentSongView(false);
         ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.INVISIBLE); // hide our playing sound view
+        ((MainActivity) getActivity()).toggleFabsVisible(View.VISIBLE);
     }
 
     @Override
