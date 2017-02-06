@@ -117,8 +117,6 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
             ((MainActivity) getActivity()).mCurrentSong = mSelectedTrack;
             ((MainActivity) getActivity()).updateCurrentSongNotificationUI();
         }
-
-        ((MainActivity) getActivity()).toggleFabsVisible(View.INVISIBLE);
     }
 
     @Override
@@ -151,8 +149,10 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        int mLastTrackId = 0;
         mUserSelections = getArguments();
         if (mUserSelections != null) {
+            mLastTrackId = mUserSelections.getInt("CurrentSongId");
             mSelectedTrack = (Track) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_TRACK);
             if (mSelectedTrack != null) {
                 mTrackTitle.setText(Constants.generateUIFriendlyString(mSelectedTrack.getTitle()));
@@ -163,6 +163,16 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                     Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
 
                 getUserInfo(mSelectedTrack.getUser().getId());
+            }
+
+            if (mLastTrackId != 0 && mSelectedTrack != null && mLastTrackId == mSelectedTrack.getID()) { // if new song is the same as last song then enable play button if playing and update seek bar
+                MainActivity mainActivity = (MainActivity) getActivity();
+                if (mainActivity.mBound) {
+                    if (mainActivity.mAudioService.getIsPlaying()) {
+                        mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
+                    }
+                    startProgressBarThread();
+                }
             }
         }
 
@@ -195,7 +205,6 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         mIsAlive = true;
         AccountManager.getInstance(getContext()).setDisplayCurrentSongView(false);
         ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.INVISIBLE); // hide our playing sound view
-        ((MainActivity) getActivity()).toggleFabsVisible(View.VISIBLE);
     }
 
     @Override
@@ -220,6 +229,15 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         switch (item.getItemId()) {
             case android.R.id.home:
                 getActivity().onBackPressed();
+                break;
+            case R.id.add_to_library:
+                updateOfflineSyncManager(Constants.SyncDataAction.UpdateMix, null);
+                break;
+            case R.id.add_as_favorite:
+                updateOfflineSyncManager(Constants.SyncDataAction.UpdateFavorite, null);
+                break;
+            case R.id.follow_user:
+                updateOfflineSyncManager(null, Constants.SyncDataType.Users);
                 break;
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
@@ -295,7 +313,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                 loadingMusicDialog.setMessage(getString(R.string.loading_message));
                 loadingMusicDialog.show();
 
-                if(mainActivity.mAudioService.mPlayingSong == null)
+                if (mainActivity.mAudioService.mPlayingSong == null)
                     mainActivity.mAudioService.mPlayingSong = mSelectedTrack;
 
                 BeatLearner.getInstance(getContext()).downVoteTrack(mSelectedTrack.getID()); // downvote this track
@@ -311,7 +329,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                 loadingMusicDialog.setMessage(getString(R.string.loading_message));
                 loadingMusicDialog.show();
 
-                if(mainActivity.mAudioService.mPlayingSong == null)
+                if (mainActivity.mAudioService.mPlayingSong == null)
                     mainActivity.mAudioService.mPlayingSong = mSelectedTrack;
 
                 mainActivity.mAudioService.loadNextTrack();
@@ -447,7 +465,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         Picasso.with(getContext()).load(track.getUser().getAvatarUrl()).into(mArtistThumbnail);
         mArtistDescription.setText(track.getUser().getDescription());
 
-        if(loadingMusicDialog != null)
+        if (loadingMusicDialog != null)
             loadingMusicDialog.dismiss();
     }
 
@@ -456,7 +474,8 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
             @Override
             public void onObjectResponse(JSONObject object) {
                 Gson gson = new Gson();
-                Type token = new TypeToken<User>() {}.getType();
+                Type token = new TypeToken<User>() {
+                }.getType();
                 User soundCloudUser = gson.fromJson(object.toString(), token);
                 mArtistName.setText(soundCloudUser.getUsername());
                 Picasso.with(getContext()).load(soundCloudUser.getAvatarUrl()).into(mArtistThumbnail);

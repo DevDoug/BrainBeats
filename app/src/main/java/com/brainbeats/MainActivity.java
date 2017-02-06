@@ -54,15 +54,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
+
+/*        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
+        mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
         mExtraActionOneFab = (FloatingActionButton) findViewById(R.id.action_one_fob);
         mExtraActionTwoFab = (FloatingActionButton) findViewById(R.id.action_two_fob);
-        mExtraActionThreeFab = (FloatingActionButton) findViewById(R.id.action_three_fob);
+        mExtraActionThreeFab = (FloatingActionButton) findViewById(R.id.action_three_fob);*/
 
-
-        fab_open = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_open);
+/*        fab_open = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_close);
         rotate_forward = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate_forward);
-        rotate_backward = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate_backward);
+        rotate_backward = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate_backward);*/
 
         if (savedInstanceState == null) {
             mDashboardFragment = new BrowseMusicFragment();
@@ -94,13 +96,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
 
-        mMainActionFab.setOnClickListener(this);
+        mMainActionFab.setVisibility(View.INVISIBLE);
+
+/*        mMainActionFab.setOnClickListener(this);
         mExtraActionOneFab.setOnClickListener(this);
         mExtraActionTwoFab.setOnClickListener(this);
-        mExtraActionThreeFab.setOnClickListener(this);
-
-        toggleFabsVisible(View.INVISIBLE);
+        mExtraActionThreeFab.setOnClickListener(this);*/
     }
+
+/*    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        if(((BrowseMusicFragment) mDashboardFragment).isVisible()) {
+            mMainActionFab.setVisibility(View.INVISIBLE);
+        }
+    }*/
 
     @Override
     public void onPause() {
@@ -129,18 +139,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         int id = v.getId();
         switch (id) {
             case R.id.main_action_fob:
-                animateFAB();
+                //animateFAB();
                 break;
             case R.id.action_one_fob:
-                animateFAB();
+                //animateFAB();
                 ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateMix, null);
                 break;
             case R.id.action_two_fob:
-                animateFAB();
+                //animateFAB();
                 ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateFavorite, null);
                 break;
             case R.id.action_three_fob:
-                animateFAB();
+                //animateFAB();
                 ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(null, Constants.SyncDataType.Users);
                 break;
         }
@@ -153,35 +163,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public void switchToBeatDetailFragment(Track track) {
         toggleNavDrawerIcon();
         Bundle args = new Bundle();
-        if (mBound && mCurrentSong != null) //if another song is selected reset our player
-            resetPlayer();
+
+/*        if (mBound && mCurrentSong != null) //if another song is selected reset our player
+            resetPlayer();*/
 
         args.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, track);
+        if (mBound == true && mCurrentSong != null)
+            args.putInt("CurrentSongId",mCurrentSong.getID());
+
         mDashboardDetailFragment.setArguments(args);
-
-        mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_android_white));
-        mExtraActionOneFab.setImageDrawable(getDrawable(R.drawable.ic_library_add_white));
-        mExtraActionTwoFab.setImageDrawable(getDrawable(R.drawable.ic_favorite_white));
-        mExtraActionThreeFab.setImageDrawable(getDrawable(R.drawable.ic_person_add_white));
-
         replaceFragment(mDashboardDetailFragment, mDashboardDetailFragment.getTag());
     }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-        if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_DASHBOARD_FAB_IMAGES) == 0) {
-            if (mIsFabOpen)
+/*        if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_DASHBOARD_FAB_IMAGES) == 0) {
+            if (mIsFabOpen){
                 animateFAB();
-
-/*            mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_filter_list_white));
-            mExtraActionOneFab.setImageDrawable(getDrawable(R.drawable.ic_whatshot_white));
-            mExtraActionTwoFab.setImageDrawable(getDrawable(R.drawable.ic_access_time_white));
-            mExtraActionThreeFab.setImageDrawable(getDrawable(R.drawable.ic_sort_by_alpha_white));*/
-        }
-    }
-
-    public void toggleFabsVisible(int visible) {
-        mMainActionFab.setVisibility(visible);
+            }
+        }*/
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -207,7 +207,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
     };
 
-    public void animateFAB() {
+/*    public void animateFAB() {
         if (mIsFabOpen) {
             mMainActionFab.startAnimation(rotate_backward);
             mExtraActionOneFab.startAnimation(fab_close);
@@ -229,5 +229,5 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
             mIsFabOpen = true;
         }
-    }
+    }*/
 }

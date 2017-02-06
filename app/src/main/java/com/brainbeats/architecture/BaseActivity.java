@@ -30,6 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.brainbeats.InfoActivity;
 import com.brainbeats.LibraryActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.MixerActivity;
@@ -202,6 +203,12 @@ public class BaseActivity extends AppCompatActivity {
                         settingsIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
                         settingsIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(settingsIntent);
+                        break;
+                    case R.id.action_info:
+                        Intent infoIntent = new Intent(getApplicationContext(), InfoActivity.class);
+                        infoIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                        infoIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
+                        createBackStack(infoIntent);
                         break;
                     default:
                         return false;

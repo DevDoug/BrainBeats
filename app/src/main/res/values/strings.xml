@@ -159,5 +159,9 @@
     <string name="downvote_track">Got it we wont play this mix again.</string>
     <string name="upvote_track">Great we will play more mixes like this one in the future.</string>
     <string name="no_search_results">Please try a different search.</string>
+    <string name="title_activity_info">InfoActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
