@@ -136,7 +136,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     public void seekPlayerTo(int pos){ mPlayer.seekTo(pos);}
 
-    public int getPlayerPosition(){
+    public int getPlayerPosition() {
         return mPlayer.getCurrentPosition();
     }
 

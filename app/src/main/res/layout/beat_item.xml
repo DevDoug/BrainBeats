@@ -23,10 +23,10 @@
                 android:layout_height="130dp"
                 android:contentDescription="@string/album_cover_art_image_description"
                 android:adjustViewBounds="true"
+                android:scaleType="fitXY"
                 android:src="@drawable/placeholder"
                 android:layout_alignParentTop="true"
-                android:layout_above="@+id/card_footer"
-                android:scaleType="centerCrop" />
+                android:layout_above="@+id/card_footer" />
 
             <LinearLayout
                 android:id="@+id/card_footer"

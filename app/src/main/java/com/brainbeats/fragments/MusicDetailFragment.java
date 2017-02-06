@@ -160,7 +160,8 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                 if (mSelectedTrack.getArtworkURL() == null)
                     mAlbumCoverArt.setImageResource(R.drawable.placeholder);
                 else
-                    Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
+                    Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).resize(1800, 1800).centerInside().into(mAlbumCoverArt);
+
 
                 getUserInfo(mSelectedTrack.getUser().getId());
             }
@@ -205,6 +206,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         mIsAlive = true;
         AccountManager.getInstance(getContext()).setDisplayCurrentSongView(false);
         ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.INVISIBLE); // hide our playing sound view
+
     }
 
     @Override

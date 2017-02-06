@@ -45,8 +45,9 @@
                     android:layout_height="200dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/fragment_content_item_top_margin"
                     android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:layout_marginTop="@dimen/fragment_content_item_top_margin"
                     android:contentDescription="@string/content_description_image_placeholder"
                     android:src="@drawable/placeholder" />
 
