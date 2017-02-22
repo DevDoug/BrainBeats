@@ -37,6 +37,7 @@ import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import com.brainbeats.SettingsActivity;
 import com.brainbeats.SocialActivity;
+import com.brainbeats.fragments.MusicDetailFragment;
 import com.squareup.picasso.Picasso;
 
 import com.brainbeats.entity.Track;
@@ -323,6 +324,7 @@ public class BaseActivity extends AppCompatActivity {
             mAudioService = binder.getService();
             mBound = true;
             mIsAlive = true;
+
             if(mAudioService.getIsPlaying() || mAudioService.mIsPaused) {
                 if(mAudioService.mPlayingSong != null)
                     mCurrentSong = mAudioService.mPlayingSong;
@@ -330,6 +332,10 @@ public class BaseActivity extends AppCompatActivity {
                     mAudioService.mPlayingSong = mCurrentSong;
 
                 updateCurrentSongNotificationUI();
+                MusicDetailFragment detailFragment = (MusicDetailFragment) getSupportFragmentManager().findFragmentByTag("MusicDetailFragment");
+
+                if(detailFragment != null)
+                    detailFragment.setPlayingState();
             }
         }
 

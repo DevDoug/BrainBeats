@@ -3,6 +3,7 @@ package com.brainbeats.fragments;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -16,24 +17,27 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
+import android.view.ActionProvider;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import com.android.volley.VolleyError;
 import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
 import com.brainbeats.architecture.AccountManager;
-import com.brainbeats.architecture.BaseActivity;
 import com.brainbeats.entity.Track;
 import com.brainbeats.entity.User;
 import com.brainbeats.service.AudioService;
@@ -71,12 +75,16 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public Thread mUpdateSeekBar;
     private SeekBar mPlayTrackSeekBar;
     public int mProgressStatus = 0;
+    public boolean mProgressUpdating = false;
 
     //Playing song members.
     public Track mSelectedTrack;
     private boolean mLooping = false;
 
     ProgressDialog loadingMusicDialog;
+
+    private ActionProvider mShareActionProvider;
+
 
     //TODO - implement in version 2.0 beta version
 /*    private MixTagAdapter mMixTagAdapter;
@@ -114,6 +122,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         if (((MainActivity) getActivity()).mAudioService.getIsPlaying() || ((MainActivity) getActivity()).mAudioService.mIsPaused) {
             AccountManager.getInstance(getContext()).setDisplayCurrentSongView(true);
             ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.VISIBLE);
+            //if(((MainActivity) getActivity()).mCurrentSong != null && ((MainActivity) getActivity()).mCurrentSong == mSelectedTrack)
             ((MainActivity) getActivity()).mCurrentSong = mSelectedTrack;
             ((MainActivity) getActivity()).updateCurrentSongNotificationUI();
         }
@@ -162,18 +171,12 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                 else
                     Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).resize(1800, 1800).centerInside().into(mAlbumCoverArt);
 
-
                 getUserInfo(mSelectedTrack.getUser().getId());
             }
 
+            //TODO not working when user  navigates from notification view since the service is unbound for the new intent,
             if (mLastTrackId != 0 && mSelectedTrack != null && mLastTrackId == mSelectedTrack.getID()) { // if new song is the same as last song then enable play button if playing and update seek bar
-                MainActivity mainActivity = (MainActivity) getActivity();
-                if (mainActivity.mBound) {
-                    if (mainActivity.mAudioService.getIsPlaying()) {
-                        mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
-                    }
-                    startProgressBarThread();
-                }
+                setPlayingState();
             }
         }
 
@@ -184,6 +187,16 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         mMixerTags.setAdapter(mMixTagAdapter);
         getLoaderManager().initLoader(Constants.MIX_TAGS_LOADER, null, this);
         */
+    }
+
+    public void setPlayingState(){
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity.mBound) {
+            if (mainActivity.mAudioService.getIsPlaying()) {
+                mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
+            }
+            startProgressBarThread();
+        }
     }
 
     @Override
@@ -212,18 +225,6 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_dashboard_detail, menu);
-        //TODO - implement in version 2.0 beta version
-        /*
-        // Locate MenuItem with ShareActionProvider
-        MenuItem item = menu.findItem(R.id.menu_share);
-        // Fetch and store ShareActionProvider
-        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
-        Intent shareIntent = new Intent();
-        shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, "Check out this track" + (mSelectedTrack == null ? mSelectedTrack.getTitle() : ""));
-        shareIntent.setType("text/plain");
-        mShareActionProvider.setShareIntent(shareIntent);
-        */
     }
 
     @Override
@@ -241,6 +242,21 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
             case R.id.follow_user:
                 updateOfflineSyncManager(null, Constants.SyncDataType.Users);
                 break;
+            case R.id.menu_item_share:
+
+                String[] friends = {"friend1","friend2"};
+                //give the user a list of people to share this song with
+                Constants.buildListDialogue(getContext(), getString(R.string.share_this_track), friends, new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent broadcastIntent = new Intent(); // send broadcast to activity to tell it to recommend this track
+                        broadcastIntent.setAction(Constants.SONG_RECIEVED_FROM_FRIEND_BROADCAST_ACTION);
+                        broadcastIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK,mSelectedTrack);
+                        getActivity().sendBroadcast(broadcastIntent);
+                    }
+                });
+                break;
+
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
                 Intent loginIntent = new Intent(getContext(), LoginActivity.class);
@@ -401,6 +417,8 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                         Log.i("Progress bar thread", "Exception occured" + e.toString());
                         mIsAlive = false;
                         mPlayTrackSeekBar.setProgress(0);
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();  //TODO find better solution then catching this exception
                     }
                 }
             }
@@ -459,7 +477,6 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         if (((MainActivity) getActivity()).mBound) {
             if (track.getStreamURL() != null) {
                 mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
-                //startProgressBarThread();
             }
         }
 

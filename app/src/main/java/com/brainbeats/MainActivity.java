@@ -81,6 +81,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     if (sentMix != null) {
                         Track playTrack = new Track(sentMix);
                         playTrack.setUser(new com.brainbeats.entity.User(mixUser));
+                        if(mCurrentSong == null)
+                            mCurrentSong = playTrack;
                         switchToBeatDetailFragment(playTrack);
                     }
                 }
@@ -95,6 +97,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
+        mIntentFilter.addAction(Constants.SONG_RECIEVED_FROM_FRIEND_BROADCAST_ACTION);
 
         mMainActionFab.setVisibility(View.INVISIBLE);
 
@@ -168,11 +171,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             resetPlayer();*/
 
         args.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, track);
-        if (mBound == true && mCurrentSong != null)
+        if (mCurrentSong != null)
             args.putInt("CurrentSongId",mCurrentSong.getID());
 
         mDashboardDetailFragment.setArguments(args);
-        replaceFragment(mDashboardDetailFragment, mDashboardDetailFragment.getTag());
+        replaceFragment(mDashboardDetailFragment, "MusicDetailFragment");
     }
 
     @Override
@@ -187,7 +190,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
             if (intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
                 Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
                 if (mDashboardDetailFragment.isVisible()) { //if they are on the dashboard detail screen update the detail widgets
@@ -203,6 +205,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     //Update the current playing song in base activity to the song from this broadcast
                     mCurrentSong = newTrack;
                 }
+            } else if (intent.getAction().equals(Constants.SONG_RECIEVED_FROM_FRIEND_BROADCAST_ACTION)) {
+                Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
             }
         }
     };

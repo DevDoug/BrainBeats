@@ -73,6 +73,10 @@ public class Constants {
 
     //Intents and Communication
     public static final String SONG_COMPLETE_BROADCAST_ACTION               = "com.brainbeats.play.next";
+    public static final String SONG_RECIEVED_FROM_FRIEND_BROADCAST_ACTION              = "com.brainbeats.play.sent.song";
+
+
+
     public static final String INTENT_ACTION_GO_TO_DETAIL_FRAGMENT          = "LoadDetailFragment";
     public static final String INTENT_ACTION_GO_TO_MIX_DETAIL_FRAGMENT      = "LoadMixDetailFragment";
     public static final String INTENT_ACTION_DISPLAY_CURRENT_TRACK          = "DisplayCurrentTrack";
@@ -387,12 +391,12 @@ public class Constants {
         return alert;
     }
 
-    public static AlertDialog buildListDialogue(Context context, String title, int optionsId, AdapterView.OnItemClickListener listener) {
+    public static AlertDialog buildListDialogue(Context context, String title, String[] options, AdapterView.OnItemClickListener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.custom_list_dialog_layout, null);
         ((TextView) dialogView.findViewById(R.id.separator_title)).setText(title);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.dialog_list_item, R.id.dialog_item, context.getResources().getStringArray(optionsId));
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.dialog_list_item, R.id.dialog_item, options);
         ((ListView) dialogView.findViewById(R.id.options_list)).setAdapter(adapter);
         ((ListView) dialogView.findViewById(R.id.options_list)).setOnItemClickListener(listener);
         builder.setView(dialogView);
