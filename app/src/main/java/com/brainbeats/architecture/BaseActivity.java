@@ -76,6 +76,8 @@ public class BaseActivity extends AppCompatActivity {
     public AudioService mAudioService;
     public boolean mBound = false;
 
+    public boolean mLaunchDetailFragment=  false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -323,14 +325,18 @@ public class BaseActivity extends AppCompatActivity {
             mAudioService = binder.getService();
             mBound = true;
             mIsAlive = true;
-            if(mAudioService.getIsPlaying() || mAudioService.mIsPaused) {
+
+/*            if(mAudioService.getIsPlaying() || mAudioService.mIsPaused) {
                 if(mAudioService.mPlayingSong != null)
                     mCurrentSong = mAudioService.mPlayingSong;
                 else if(mCurrentSong != null && mAudioService.mPlayingSong == null)
                     mAudioService.mPlayingSong = mCurrentSong;
-
                 updateCurrentSongNotificationUI();
-            }
+            }*/
+
+
+
+
         }
 
         @Override

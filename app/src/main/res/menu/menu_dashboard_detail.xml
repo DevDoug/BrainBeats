@@ -23,6 +23,13 @@
         app:showAsAction="never">
     </item>
 
+<!--    <item
+        android:id="@+id/share_track"
+        android:orderInCategory="100"
+        android:title="Share this track"
+        app:showAsAction="never">
+    </item>-->
+
     <item
         android:id="@+id/action_logout"
         android:orderInCategory="98"

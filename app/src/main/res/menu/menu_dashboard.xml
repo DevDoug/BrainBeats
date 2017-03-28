@@ -5,10 +5,10 @@
 
     <item
         android:id="@+id/action_search"
-        android:title="@string/search_hint"
-        android:icon="@drawable/ic_magnify"
-        app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="ifRoom|collapseActionView" />
+        android:title="Search"
+        android:icon="@drawable/ic_search_white"
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView" />
 
     <item
         android:id="@+id/filter_by_hottest"
