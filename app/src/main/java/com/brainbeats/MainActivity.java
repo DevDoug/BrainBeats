@@ -11,11 +11,9 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import com.brainbeats.fragments.MusicDetailFragment;
 import com.brainbeats.fragments.BrowseMusicFragment;
-import com.squareup.picasso.Picasso;
 
 import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.architecture.BaseActivity;
@@ -26,12 +24,6 @@ import com.brainbeats.model.Mix;
 
 import com.brainbeats.utils.Constants;
 import com.brainbeats.sync.SyncManager;
-import com.brainbeats.web.WebApiManager;
-
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Stack;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, BrowseMusicFragment.OnFragmentInteractionListener, MusicDetailFragment.OnFragmentInteractionListener {
 
@@ -72,8 +64,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                         playTrack.setUser(new com.brainbeats.entity.User(mixUser));
                         switchToBeatDetailFragment(playTrack);
                     }
-                } else if(getIntent().getAction().equalsIgnoreCase(Constants.INTENT_ACTION_LOAD_FROM_LIBRARY)){
-                    mLaunchDetailFragment = true;
+                } else if(getIntent().getAction().equalsIgnoreCase(Constants.INTENT_ACTION_LOAD_FROM_NEW_INTENT)){
+                    Mix sentMix = (Mix) intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX);
+                    BrainBeatsUser mixUser = (BrainBeatsUser) intentBundle.get(Constants.KEY_EXTRA_SELECTED_USER);
+                    if (sentMix != null) {
+                        Track playTrack = new Track(sentMix);
+                        playTrack.setUser(new com.brainbeats.entity.User(mixUser));
+                        loadSong(playTrack);
+                    }
                 }
             }
         }
@@ -137,7 +135,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     public void switchToBeatDetailFragment(Track track) {
         toggleNavDrawerIcon();
+        mDashboardDetailFragment = MusicDetailFragment.newInstance(track);
         mAudioService.mPlayingSong = track; //set the clicked song to the current playing
+        replaceFragment(mDashboardDetailFragment, mDashboardDetailFragment.getTag());
+    }
+
+    public void loadSong(Track track){
+        mDashboardDetailFragment = MusicDetailFragment.newInstance(track);
         replaceFragment(mDashboardDetailFragment, mDashboardDetailFragment.getTag());
     }
 
@@ -145,31 +149,30 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public void onFragmentInteraction(Uri uri) {
         if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI) == 0) {
             mAudioService.playSong(Uri.parse(mAudioService.mPlayingSong.getStreamURL()));
-        }else if (uri.compareTo(Constants.DASHBOARD_DETAIL_PAUSE_SONG_URI) == 0){
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_PLAY_SONG_URI) == 0) {
+            mAudioService.resumeSong();
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_PAUSE_SONG_URI) == 0) {
             mAudioService.pauseSong();
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_DOWNVOTE_SONG_URI) == 0) {
+            mAudioService.loadNextTrack();
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_SKIP_FORWARD_URI) == 0) {
+            mAudioService.loadNextTrack();
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_SET_SONG_REPEAT_URI) == 0) {
+            mAudioService.setSongLooping(true);
         }
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
             if (intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
                 Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
-                if (mDashboardDetailFragment.isVisible()) { //if they are on the dashboard detail screen update the detail widgets
+                if (mDashboardDetailFragment.isVisible()) {                                                     //if they are on the dashboard detail screen update the detail widgets
                     (((MusicDetailFragment) mDashboardDetailFragment)).updateTrackUI(newTrack);
-                } else { // else update the current playing notification view
-                    mCurrentSongTitle.setText(newTrack.getTitle());
-                    if (newTrack.getArtworkURL() == null)
-                        mAlbumThumbnail.setImageResource(R.drawable.placeholder);
-                    else
-                        Picasso.with(MainActivity.this).load(newTrack.getArtworkURL()).into(mAlbumThumbnail);
-                    mCurrentSongArtistName.setText(newTrack.getUser().getUsername());
-
-                    //Update the current playing song in base activity to the song from this broadcast
-                    mCurrentSong = newTrack;
+                } else {
+                    updateCurrentSongNotificationUI(newTrack);
                 }
-            } else if(intent.getAction().equals(Constants.SONG_LOADING_BROADCAST_ACTION)) {
+            } else if (intent.getAction().equals(Constants.SONG_LOADING_BROADCAST_ACTION)) {
                 if (mDashboardDetailFragment.isVisible()) {
                     ((MusicDetailFragment) mDashboardDetailFragment).showLoadingMusicDialog();
                 }

@@ -77,7 +77,7 @@ public class Constants {
 
     public static final String INTENT_ACTION_GO_TO_DETAIL_FRAGMENT          = "LoadDetailFragment";
 
-    public static final String INTENT_ACTION_LOAD_FROM_LIBRARY           = "LoadFromLibrary";
+    public static final String INTENT_ACTION_LOAD_FROM_NEW_INTENT           = "LoadFromNewIntent";
 
     public static final String INTENT_ACTION_GO_TO_MIX_DETAIL_FRAGMENT      = "LoadMixDetailFragment";
     public static final String INTENT_ACTION_DISPLAY_CURRENT_TRACK          = "DisplayCurrentTrack";
@@ -93,9 +93,13 @@ public class Constants {
     //Fragment Uris
     public static final Uri DASHBOARD_DETAIL_URI                                    = Uri.parse("main://dashboard_detail");
     public static final Uri DASHBOARD_DETAIL_LOAD_DASHBOARD_FAB_IMAGES              = Uri.parse("main://dashboard_detail_load_fab_images");
-    public static final Uri DASHBOARD_DETAIL_LOAD_SONG_URI                          = Uri.parse("main://dashboard_detail_load_song");
-    public static final Uri DASHBOARD_DETAIL_PAUSE_SONG_URI                          = Uri.parse("main://dashboard_detail_pause_song");
 
+    public static final Uri DASHBOARD_DETAIL_LOAD_SONG_URI                          = Uri.parse("main://dashboard_detail_load_song");
+    public static final Uri DASHBOARD_DETAIL_PLAY_SONG_URI                          = Uri.parse("main://dashboard_detail_play_song");
+    public static final Uri DASHBOARD_DETAIL_PAUSE_SONG_URI                         = Uri.parse("main://dashboard_detail_pause_song");
+    public static final Uri DASHBOARD_DETAIL_DOWNVOTE_SONG_URI                      = Uri.parse("main://dashboard_detail_downvote_song");
+    public static final Uri DASHBOARD_DETAIL_SKIP_FORWARD_URI                       = Uri.parse("main://dashboard_detail_skip_forward");
+    public static final Uri DASHBOARD_DETAIL_SET_SONG_REPEAT_URI                    = Uri.parse("main://dashboard_detail_repeat_song");
 
 
 

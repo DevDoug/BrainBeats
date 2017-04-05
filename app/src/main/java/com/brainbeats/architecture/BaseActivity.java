@@ -325,18 +325,6 @@ public class BaseActivity extends AppCompatActivity {
             mAudioService = binder.getService();
             mBound = true;
             mIsAlive = true;
-
-/*            if(mAudioService.getIsPlaying() || mAudioService.mIsPaused) {
-                if(mAudioService.mPlayingSong != null)
-                    mCurrentSong = mAudioService.mPlayingSong;
-                else if(mCurrentSong != null && mAudioService.mPlayingSong == null)
-                    mAudioService.mPlayingSong = mCurrentSong;
-                updateCurrentSongNotificationUI();
-            }*/
-
-
-
-
         }
 
         @Override
@@ -345,14 +333,12 @@ public class BaseActivity extends AppCompatActivity {
         }
     };
 
-    public void resetPlayer(){
-        mAudioService.stopSong();
-        if(mUpdateSeekBar != null)
-            mUpdateSeekBar.interrupt();
-    }
-
-    public void updateCurrentSongNotificationUI(){
+    public void updateCurrentSongNotificationUI(Track track) {
         if (AccountManager.getInstance(BaseActivity.this).getDisplayCurrentSongView()) {
+            if(track != null) {
+                mCurrentSong = track;
+            }
+
             mCurrentSongPlayingView.setVisibility(View.VISIBLE);
             mCurrentSongTitle.setText(mCurrentSong.getTitle());
             Picasso.with(BaseActivity.this).load(mCurrentSong.getArtworkURL()).into(mAlbumThumbnail);

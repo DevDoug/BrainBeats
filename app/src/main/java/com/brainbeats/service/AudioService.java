@@ -12,8 +12,10 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
@@ -79,7 +81,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
             //player is ready update ui
             Intent broadcastIntent = new Intent(); // send broadcast to activity to tell it to update com.brainbeats.ui
             broadcastIntent.setAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
-            broadcastIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK,mPlayingSong);
+            broadcastIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mPlayingSong);
             sendBroadcast(broadcastIntent);
         } catch (SecurityException ex) {
             ex.printStackTrace();
@@ -102,13 +104,6 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-
-        Intent broadcastIntent = new Intent(); // send broadcast to activity to tell it to update com.brainbeats.ui
-/*        broadcastIntent.setAction(Constants.SONG_COMPLETE_MMEDIA_PLAYER_RECIEVED_ERROR);
-        broadcastIntent.putExtra("errorType", what);
-        sendBroadcast(broadcastIntent);*/
-
-
         return false;
     }
 
@@ -125,22 +120,23 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void playSong(Uri songPath) {
-        if (mIsPaused) {
-            mPlayer.start();
-        } else {
-            try {
-                mPlayer.reset();
-                mPlayer.setDataSource(getApplicationContext(), songPath.buildUpon().appendQueryParameter(WebApiManager.SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID).build());
-                mPlayer.prepareAsync();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+        try {
+            mPlayer.reset();
+            mPlayer.setDataSource(getApplicationContext(), songPath.buildUpon().appendQueryParameter(WebApiManager.SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID).build());
+            mPlayer.prepareAsync();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
     public void pauseSong() {
         mPlayer.pause();
         mIsPaused = true;
+    }
+
+    public void resumeSong(){
+        mPlayer.start();
+        mIsPaused = false;
     }
 
     public void setSongLooping(boolean isLooping) {
@@ -206,11 +202,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
             // Pause playback
             pauseSong();
         } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-            // Resume playback
         } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-            //am.unregisterMediaButtonEventReceiver(RemoteControlReceiver);
-            //am.abandonAudioFocus(afChangeListener);
-            // Stop playback
         }
     }
 
@@ -239,9 +231,5 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     public void loadNextTrack(){
         BeatLearner.getInstance(getApplicationContext()).loadNextRecommendedBeat(mPlayingSong.getID(), this);
-    }
-
-    public void sendHideLoadingDialogBroadcast(){
-
     }
 }

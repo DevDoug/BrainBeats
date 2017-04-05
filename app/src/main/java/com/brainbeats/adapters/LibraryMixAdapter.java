@@ -1,10 +1,8 @@
 package com.brainbeats.adapters;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,11 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.brainbeats.LibraryActivity;
 import com.brainbeats.MainActivity;
-import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 
 import com.brainbeats.architecture.AccountManager;
@@ -24,7 +19,6 @@ import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.model.Mix;
 import com.brainbeats.utils.Constants;
-import com.brainbeats.sync.OfflineSyncManager;
 
 /**
  * Created by douglas on 5/20/2016.
@@ -70,7 +64,7 @@ public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapt
                 Intent browseMusicIntent = new Intent(mAdapterContext, MainActivity.class);
                 browseMusicIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, selectedMix);
                 browseMusicIntent.putExtra(Constants.KEY_EXTRA_SELECTED_USER, selectedMix.getUser());
-                browseMusicIntent.setAction(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT);
+                browseMusicIntent.setAction(Constants.INTENT_ACTION_LOAD_FROM_NEW_INTENT);
                 mAdapterContext.startActivity(browseMusicIntent);
             }
         });
