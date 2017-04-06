@@ -83,6 +83,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
             broadcastIntent.setAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
             broadcastIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mPlayingSong);
             sendBroadcast(broadcastIntent);
+
         } catch (SecurityException ex) {
             ex.printStackTrace();
         }

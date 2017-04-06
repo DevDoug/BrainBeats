@@ -140,9 +140,11 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public void onStart() {
         super.onStart();
 
-        if (!((MainActivity) getActivity()).mAudioService.mIsPaused && !((MainActivity) getActivity()).mAudioService.getIsPlaying()) {
-            showLoadingMusicDialog(); // start loading song ui
-            mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI);
+        if (((MainActivity) getActivity()).mBound) {
+            if (!((MainActivity) getActivity()).mAudioService.mIsPaused && !((MainActivity) getActivity()).mAudioService.getIsPlaying()) {
+                showLoadingMusicDialog(); // start loading song ui
+                mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI);
+            }
         }
     }
 
@@ -410,13 +412,22 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     }
 
     public void playSong() {
-        if (!((MainActivity) getActivity()).mAudioService.mIsPaused && !((MainActivity) getActivity()).mAudioService.getIsPlaying()) {
-            showLoadingMusicDialog(); // start loading song ui
+        MainActivity main = ((MainActivity) getActivity());
+
+        if (main.mAudioService.mPlayingSong != null
+                && main.mAudioService.mPlayingSong.getID() != mSelectedTrack.getID()
+                && main.mAudioService.getIsPlaying()) {//Song is playing load new song
+
+            showLoadingMusicDialog();
+            mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_NEW_SONG_URI);
+
+        } else if (!main.mAudioService.mIsPaused && !main.mAudioService.getIsPlaying()) {                    //no song playing load song
+            showLoadingMusicDialog();
             mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI);
-        } else if (((MainActivity) getActivity()).mAudioService.getIsPlaying()) {
+        } else if (main.mAudioService.getIsPlaying()) {                                                     //Song is playing so pause song
             mPlaySongButton.setImageResource(R.drawable.ic_play_circle);
             mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_PAUSE_SONG_URI);
-        } else {
+        } else {                                                                                            //Song is paused so resume
             mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
             mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_PLAY_SONG_URI);
         }

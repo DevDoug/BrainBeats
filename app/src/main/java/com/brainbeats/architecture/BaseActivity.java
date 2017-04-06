@@ -325,6 +325,8 @@ public class BaseActivity extends AppCompatActivity {
             mAudioService = binder.getService();
             mBound = true;
             mIsAlive = true;
+
+
         }
 
         @Override

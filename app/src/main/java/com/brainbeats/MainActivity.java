@@ -56,17 +56,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         Bundle intentBundle = getIntent().getExtras(); //If an intent is passed to main activity.
         if (intentBundle != null) {
             if (intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX) != null) {
+                Mix sentMix = (Mix) intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX);
+                BrainBeatsUser mixUser = (BrainBeatsUser) intentBundle.get(Constants.KEY_EXTRA_SELECTED_USER);
+
                 if (getIntent().getAction().equalsIgnoreCase(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT)) {
-                    Mix sentMix = (Mix) intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX);
-                    BrainBeatsUser mixUser = (BrainBeatsUser) intentBundle.get(Constants.KEY_EXTRA_SELECTED_USER);
                     if (sentMix != null) {
                         Track playTrack = new Track(sentMix);
                         playTrack.setUser(new com.brainbeats.entity.User(mixUser));
                         switchToBeatDetailFragment(playTrack);
                     }
                 } else if(getIntent().getAction().equalsIgnoreCase(Constants.INTENT_ACTION_LOAD_FROM_NEW_INTENT)){
-                    Mix sentMix = (Mix) intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX);
-                    BrainBeatsUser mixUser = (BrainBeatsUser) intentBundle.get(Constants.KEY_EXTRA_SELECTED_USER);
                     if (sentMix != null) {
                         Track playTrack = new Track(sentMix);
                         playTrack.setUser(new com.brainbeats.entity.User(mixUser));
@@ -103,6 +102,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             SyncManager.mIsGlobalSyncRequired = false;
         }
         registerReceiver(mReceiver, mIntentFilter);
+
     }
 
     @Override
@@ -136,11 +136,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public void switchToBeatDetailFragment(Track track) {
         toggleNavDrawerIcon();
         mDashboardDetailFragment = MusicDetailFragment.newInstance(track);
-        mAudioService.mPlayingSong = track; //set the clicked song to the current playing
+        mCurrentSong = track; //set the clicked song to the current playing
         replaceFragment(mDashboardDetailFragment, mDashboardDetailFragment.getTag());
     }
 
-    public void loadSong(Track track){
+    public void loadSong(Track track) {
+        mCurrentSong = track;
         mDashboardDetailFragment = MusicDetailFragment.newInstance(track);
         replaceFragment(mDashboardDetailFragment, mDashboardDetailFragment.getTag());
     }
@@ -148,6 +149,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onFragmentInteraction(Uri uri) {
         if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI) == 0) {
+            if (mAudioService.mPlayingSong == null)
+                mAudioService.mPlayingSong = mCurrentSong;
+
+            mAudioService.playSong(Uri.parse(mAudioService.mPlayingSong.getStreamURL()));
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_NEW_SONG_URI) == 0) {
+            mAudioService.mPlayingSong = mCurrentSong;
             mAudioService.playSong(Uri.parse(mAudioService.mPlayingSong.getStreamURL()));
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_PLAY_SONG_URI) == 0) {
             mAudioService.resumeSong();

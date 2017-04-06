@@ -95,6 +95,7 @@ public class Constants {
     public static final Uri DASHBOARD_DETAIL_LOAD_DASHBOARD_FAB_IMAGES              = Uri.parse("main://dashboard_detail_load_fab_images");
 
     public static final Uri DASHBOARD_DETAIL_LOAD_SONG_URI                          = Uri.parse("main://dashboard_detail_load_song");
+    public static final Uri DASHBOARD_DETAIL_LOAD_NEW_SONG_URI                      = Uri.parse("main://dashboard_detail_load_new_song");
     public static final Uri DASHBOARD_DETAIL_PLAY_SONG_URI                          = Uri.parse("main://dashboard_detail_play_song");
     public static final Uri DASHBOARD_DETAIL_PAUSE_SONG_URI                         = Uri.parse("main://dashboard_detail_pause_song");
     public static final Uri DASHBOARD_DETAIL_DOWNVOTE_SONG_URI                      = Uri.parse("main://dashboard_detail_downvote_song");
