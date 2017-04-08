@@ -76,8 +76,6 @@ public class BaseActivity extends AppCompatActivity {
     public AudioService mAudioService;
     public boolean mBound = false;
 
-    public boolean mLaunchDetailFragment=  false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +116,11 @@ public class BaseActivity extends AppCompatActivity {
         super.onResume();
         Intent intent = new Intent(BaseActivity.this, AudioService.class);
         BaseActivity.this.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
+        if (AccountManager.getInstance(BaseActivity.this).getDisplayCurrentSongView())
+            mCurrentSongPlayingView.setVisibility(View.VISIBLE);
+        else
+            mCurrentSongPlayingView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -137,7 +140,6 @@ public class BaseActivity extends AppCompatActivity {
         mCurrentSongArtistName = (TextView) findViewById(R.id.playing_mix_artist);
         mAlbumThumbnail = (ImageView) findViewById(R.id.album_thumbnail);
         mPlayTrackSeekBar = (SeekBar) findViewById(R.id.playing_mix_seek_bar);
-
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
 
         mCurrentSongPlayingView.setOnClickListener(new View.OnClickListener() {
@@ -325,8 +327,6 @@ public class BaseActivity extends AppCompatActivity {
             mAudioService = binder.getService();
             mBound = true;
             mIsAlive = true;
-
-
         }
 
         @Override
@@ -341,7 +341,6 @@ public class BaseActivity extends AppCompatActivity {
                 mCurrentSong = track;
             }
 
-            mCurrentSongPlayingView.setVisibility(View.VISIBLE);
             mCurrentSongTitle.setText(mCurrentSong.getTitle());
             Picasso.with(BaseActivity.this).load(mCurrentSong.getArtworkURL()).into(mAlbumThumbnail);
             mCurrentSongArtistName.setText(mCurrentSong.getUser().getUsername());

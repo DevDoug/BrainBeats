@@ -151,7 +151,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI) == 0) {
             if (mAudioService.mPlayingSong == null)
                 mAudioService.mPlayingSong = mCurrentSong;
-
             mAudioService.playSong(Uri.parse(mAudioService.mPlayingSong.getStreamURL()));
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_NEW_SONG_URI) == 0) {
             mAudioService.mPlayingSong = mCurrentSong;

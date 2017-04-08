@@ -26,7 +26,7 @@
     <dimen name="fragment_content_item_top_margin">20dp</dimen>
 
     <!-- Divider dimens -->
-    <dimen name="blue_horizontal_divider_height">60dp</dimen>
+    <dimen name="blue_horizontal_divider_height">50dp</dimen>
     <dimen name="blue_horizontal_divider_title_text_size">21sp</dimen>
 
     <!-- Floating action button dimens -->

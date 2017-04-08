@@ -165,7 +165,11 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
             mUpdateSeekBar.interrupt(); // stop updating the progress bar
 
         if (((MainActivity) getActivity()).mAudioService.getIsPlaying() || ((MainActivity) getActivity()).mAudioService.mIsPaused) {
-            ((MainActivity) getActivity()).updateCurrentSongNotificationUI(mSelectedTrack);
+            AccountManager.getInstance(getContext()).setDisplayCurrentSongView(true);
+            ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.VISIBLE);
+
+            if (((MainActivity) getActivity()).mAudioService.mPlayingSong != null && ((MainActivity) getActivity()).mAudioService.mPlayingSong.getID() == mSelectedTrack.getID()) //Update only if we played a new song
+                ((MainActivity) getActivity()).updateCurrentSongNotificationUI(mSelectedTrack);
         }
     }
 
@@ -416,11 +420,10 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
 
         if (main.mAudioService.mPlayingSong != null
                 && main.mAudioService.mPlayingSong.getID() != mSelectedTrack.getID()
-                && main.mAudioService.getIsPlaying()) {//Song is playing load new song
+                && main.mAudioService.getIsPlaying()) {                                                     //Song is playing load new song
 
             showLoadingMusicDialog();
             mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_NEW_SONG_URI);
-
         } else if (!main.mAudioService.mIsPaused && !main.mAudioService.getIsPlaying()) {                    //no song playing load song
             showLoadingMusicDialog();
             mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI);
