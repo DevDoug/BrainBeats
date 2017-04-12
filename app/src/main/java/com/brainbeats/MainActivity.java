@@ -58,19 +58,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             if (intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX) != null) {
                 Mix sentMix = (Mix) intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX);
                 BrainBeatsUser mixUser = (BrainBeatsUser) intentBundle.get(Constants.KEY_EXTRA_SELECTED_USER);
+                Track playTrack = new Track(sentMix);
+                playTrack.setUser(new com.brainbeats.entity.User(mixUser));
 
                 if (getIntent().getAction().equalsIgnoreCase(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT)) {
-                    if (sentMix != null) {
-                        Track playTrack = new Track(sentMix);
-                        playTrack.setUser(new com.brainbeats.entity.User(mixUser));
-                        switchToBeatDetailFragment(playTrack);
-                    }
+                    switchToBeatDetailFragment(playTrack);
                 } else if(getIntent().getAction().equalsIgnoreCase(Constants.INTENT_ACTION_LOAD_FROM_NEW_INTENT)){
-                    if (sentMix != null) {
-                        Track playTrack = new Track(sentMix);
-                        playTrack.setUser(new com.brainbeats.entity.User(mixUser));
-                        loadSong(playTrack);
-                    }
+                    loadSong(playTrack);
                 }
             }
         }
@@ -102,7 +96,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             SyncManager.mIsGlobalSyncRequired = false;
         }
         registerReceiver(mReceiver, mIntentFilter);
-
     }
 
     @Override
@@ -135,8 +128,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     public void switchToBeatDetailFragment(Track track) {
         toggleNavDrawerIcon();
+        mCurrentSong = track;
         mDashboardDetailFragment = MusicDetailFragment.newInstance(track);
-        mCurrentSong = track; //set the clicked song to the current playing
         replaceFragment(mDashboardDetailFragment, mDashboardDetailFragment.getTag());
     }
 
@@ -151,7 +144,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI) == 0) {
             if (mAudioService.mPlayingSong == null)
                 mAudioService.mPlayingSong = mCurrentSong;
+
             mAudioService.playSong(Uri.parse(mAudioService.mPlayingSong.getStreamURL()));
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_FIRST_SONG_URI) == 0) {
+            if (mAudioService != null && !mAudioService.getIsPlaying() && !mAudioService.mIsPaused) {
+                ((MusicDetailFragment) mDashboardDetailFragment).showLoadingMusicDialog();
+                mAudioService.mPlayingSong = mCurrentSong;
+                mAudioService.playSong(Uri.parse(mAudioService.mPlayingSong.getStreamURL()));
+            }
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_NEW_SONG_URI) == 0) {
             mAudioService.mPlayingSong = mCurrentSong;
             mAudioService.playSong(Uri.parse(mAudioService.mPlayingSong.getStreamURL()));

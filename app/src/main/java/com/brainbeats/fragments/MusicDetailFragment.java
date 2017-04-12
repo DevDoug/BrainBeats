@@ -61,6 +61,7 @@ import java.lang.reflect.Type;
 import javax.sql.CommonDataSource;
 
 import static android.app.Activity.RESULT_OK;
+import static com.brainbeats.utils.Constants.DASHBOARD_DETAIL_LOAD_FIRST_SONG_URI;
 
 public class MusicDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
@@ -88,7 +89,6 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
 
     //Playing song members.
     public Track mSelectedTrack;
-    private boolean mLooping = false;
     ProgressDialog loadingMusicDialog;
 
     //TODO - implement in version 2.0 beta version
@@ -128,24 +128,18 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         super.onViewCreated(view, savedInstanceState);
 
         if (mSelectedTrack != null) {
-                mTrackTitle.setText(Constants.generateUIFriendlyString(mSelectedTrack.getTitle()));
-                if (mSelectedTrack.getArtworkURL() == null)
-                    mAlbumCoverArt.setImageResource(R.drawable.placeholder);
-                else
-                    Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).resize(1800, 1800).centerInside().into(mAlbumCoverArt);
+            mTrackTitle.setText(Constants.generateUIFriendlyString(mSelectedTrack.getTitle()));
+            if (mSelectedTrack.getArtworkURL() == null)
+                mAlbumCoverArt.setImageResource(R.drawable.placeholder);
+            else
+                Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).resize(1800, 1800).centerInside().into(mAlbumCoverArt);
         }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-        if (((MainActivity) getActivity()).mBound) {
-            if (!((MainActivity) getActivity()).mAudioService.mIsPaused && !((MainActivity) getActivity()).mAudioService.getIsPlaying()) {
-                showLoadingMusicDialog(); // start loading song ui
-                mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI);
-            }
-        }
+        mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_FIRST_SONG_URI);
     }
 
     @Override
