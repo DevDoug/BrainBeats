@@ -47,6 +47,7 @@ public class Constants {
     public static final String KEY_EXTRA_SYNC_TYPE                          = "SyncType";
     public static final String KEY_EXTRA_SYNC_ACTION                        = "SyncAction";
     public static final String KEY_EXTRA_SELECTED_TRACK_ID                  = "TrackId";
+    public static final String KEY_EXTRA_IS_CURRENT_SONG_VIEW_VISIBLE       = "IsCurrentSongPlayingVisible";
 
     //Hash map keys
     public static final String HASH_KEY_ACCESS_TOKEN                        = "access_token";
@@ -102,6 +103,7 @@ public class Constants {
     public static final Uri DASHBOARD_DETAIL_DOWNVOTE_SONG_URI                      = Uri.parse("main://dashboard_detail_downvote_song");
     public static final Uri DASHBOARD_DETAIL_SKIP_FORWARD_URI                       = Uri.parse("main://dashboard_detail_skip_forward");
     public static final Uri DASHBOARD_DETAIL_SET_SONG_REPEAT_URI                    = Uri.parse("main://dashboard_detail_repeat_song");
+    public static final Uri DASHBOARD_DETAIL_UPDATE_CURRENT_SONG_VIEW                  = Uri.parse("main://dashboard_detail_update_current_song_view");
 
 
 

@@ -71,6 +71,7 @@ public class BaseActivity extends AppCompatActivity {
     int mProgressStatus = 0;
     public Track mCurrentSong;
     private boolean mIsAlive = false;
+    public boolean mShouldShowCurrentSongView = false;
 
     //Audio com.brainbeats.service members
     public AudioService mAudioService;
@@ -86,6 +87,7 @@ public class BaseActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+        outState.putBoolean(Constants.KEY_EXTRA_IS_CURRENT_SONG_VIEW_VISIBLE, mShouldShowCurrentSongView);
     }
 
     @Override
@@ -93,6 +95,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) { //If our activity is recreated.
             mCurrentSong = savedInstanceState.getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+            mShouldShowCurrentSongView = savedInstanceState.getBoolean(Constants.KEY_EXTRA_IS_CURRENT_SONG_VIEW_VISIBLE);
         }
     }
 
@@ -117,10 +120,20 @@ public class BaseActivity extends AppCompatActivity {
         Intent intent = new Intent(BaseActivity.this, AudioService.class);
         BaseActivity.this.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
-        if (AccountManager.getInstance(BaseActivity.this).getDisplayCurrentSongView())
+        if (mShouldShowCurrentSongView)
             mCurrentSongPlayingView.setVisibility(View.VISIBLE);
         else
             mCurrentSongPlayingView.setVisibility(View.INVISIBLE);
+    }
+
+    public void showCurrentSongView(){
+        mShouldShowCurrentSongView = true;
+        mCurrentSongPlayingView.setVisibility(View.VISIBLE);
+    }
+
+    public void hideCurrentSongView(){
+        mShouldShowCurrentSongView = false;
+        mCurrentSongPlayingView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -189,6 +202,7 @@ public class BaseActivity extends AppCompatActivity {
                     case R.id.action_library:
                         Intent libraryIntent = new Intent(getApplicationContext(), LibraryActivity.class);
                         libraryIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                        libraryIntent.putExtra(Constants.KEY_EXTRA_IS_CURRENT_SONG_VIEW_VISIBLE, mShouldShowCurrentSongView);
                         libraryIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(libraryIntent);
                         break;

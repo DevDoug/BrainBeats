@@ -158,13 +158,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         if (mUpdateSeekBar != null)
             mUpdateSeekBar.interrupt(); // stop updating the progress bar
 
-        if (((MainActivity) getActivity()).mAudioService.getIsPlaying() || ((MainActivity) getActivity()).mAudioService.mIsPaused) {
-            AccountManager.getInstance(getContext()).setDisplayCurrentSongView(true);
-            ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.VISIBLE);
-
-            if (((MainActivity) getActivity()).mAudioService.mPlayingSong != null && ((MainActivity) getActivity()).mAudioService.mPlayingSong.getID() == mSelectedTrack.getID()) //Update only if we played a new song
-                ((MainActivity) getActivity()).updateCurrentSongNotificationUI(mSelectedTrack);
-        }
+        mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_UPDATE_CURRENT_SONG_VIEW);
     }
 
     @Override

@@ -131,6 +131,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mCurrentSong = track;
         mDashboardDetailFragment = MusicDetailFragment.newInstance(track);
         replaceFragment(mDashboardDetailFragment, mDashboardDetailFragment.getTag());
+        hideCurrentSongView();
     }
 
     public void loadSong(Track track) {
@@ -165,6 +166,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             mAudioService.loadNextTrack();
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_SET_SONG_REPEAT_URI) == 0) {
             mAudioService.setSongLooping(true);
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_UPDATE_CURRENT_SONG_VIEW) == 0) {
+            if (mAudioService.getIsPlaying() || mAudioService.mIsPaused) {
+                showCurrentSongView();
+
+/*                if (mAudioService.mPlayingSong != null && mAudioService.mPlayingSong.getID() == mSelectedTrack.getID()) //Update only if we played a new song
+                    ((MainActivity) getActivity()).updateCurrentSongNotificationUI(mSelectedTrack);*/
+            }
         }
     }
 

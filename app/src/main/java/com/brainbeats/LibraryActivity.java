@@ -36,8 +36,16 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
         setContentView(R.layout.activity_library);
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
 
+        Bundle intentBundle = getIntent().getExtras(); //If an intent is passed to main activity.
+        if (intentBundle != null) {
+            if (intentBundle.get(Constants.KEY_EXTRA_IS_CURRENT_SONG_VIEW_VISIBLE) != null && intentBundle.getBoolean(Constants.KEY_EXTRA_IS_CURRENT_SONG_VIEW_VISIBLE))
+                mShouldShowCurrentSongView = true;
+        }
+
         mLibraryFragment = new LibraryFragment();
         switchToLibraryFragment();
+
+
 
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
