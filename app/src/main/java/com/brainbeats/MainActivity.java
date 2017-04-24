@@ -11,11 +11,9 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import com.brainbeats.fragments.MusicDetailFragment;
 import com.brainbeats.fragments.BrowseMusicFragment;
-import com.squareup.picasso.Picasso;
 
 import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.architecture.BaseActivity;
@@ -26,12 +24,6 @@ import com.brainbeats.model.Mix;
 
 import com.brainbeats.utils.Constants;
 import com.brainbeats.sync.SyncManager;
-import com.brainbeats.web.WebApiManager;
-
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Stack;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, BrowseMusicFragment.OnFragmentInteractionListener, MusicDetailFragment.OnFragmentInteractionListener {
 
@@ -55,17 +47,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
 
-/*        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
-        mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
-        mExtraActionOneFab = (FloatingActionButton) findViewById(R.id.action_one_fob);
-        mExtraActionTwoFab = (FloatingActionButton) findViewById(R.id.action_two_fob);
-        mExtraActionThreeFab = (FloatingActionButton) findViewById(R.id.action_three_fob);*/
-
-/*        fab_open = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_open);
-        fab_close = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_close);
-        rotate_forward = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate_forward);
-        rotate_backward = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate_backward);*/
-
         if (savedInstanceState == null) {
             mDashboardFragment = new BrowseMusicFragment();
             mDashboardDetailFragment = new MusicDetailFragment();
@@ -75,9 +56,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         Bundle intentBundle = getIntent().getExtras(); //If an intent is passed to main activity.
         if (intentBundle != null) {
             if (intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX) != null) {
+                Mix sentMix = (Mix) intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX);
+                BrainBeatsUser mixUser = (BrainBeatsUser) intentBundle.get(Constants.KEY_EXTRA_SELECTED_USER);
+
                 if (getIntent().getAction().equalsIgnoreCase(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT)) {
-                    Mix sentMix = (Mix) intentBundle.get(Constants.KEY_EXTRA_SELECTED_MIX);
-                    BrainBeatsUser mixUser = (BrainBeatsUser) intentBundle.get(Constants.KEY_EXTRA_SELECTED_USER);
                     if (sentMix != null) {
                         Track playTrack = new Track(sentMix);
                         playTrack.setUser(new com.brainbeats.entity.User(mixUser));
@@ -97,23 +79,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
-        mIntentFilter.addAction(Constants.SONG_RECIEVED_FROM_FRIEND_BROADCAST_ACTION);
+        mIntentFilter.addAction(Constants.SONG_LOADING_BROADCAST_ACTION);
+
 
         mMainActionFab.setVisibility(View.INVISIBLE);
-
-/*        mMainActionFab.setOnClickListener(this);
-        mExtraActionOneFab.setOnClickListener(this);
-        mExtraActionTwoFab.setOnClickListener(this);
-        mExtraActionThreeFab.setOnClickListener(this);*/
     }
-
-/*    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        if(((BrowseMusicFragment) mDashboardFragment).isVisible()) {
-            mMainActionFab.setVisibility(View.INVISIBLE);
-        }
-    }*/
 
     @Override
     public void onPause() {
@@ -129,6 +99,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             SyncManager.mIsGlobalSyncRequired = false;
         }
         registerReceiver(mReceiver, mIntentFilter);
+
     }
 
     @Override
@@ -142,18 +113,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         int id = v.getId();
         switch (id) {
             case R.id.main_action_fob:
-                //animateFAB();
                 break;
             case R.id.action_one_fob:
-                //animateFAB();
                 ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateMix, null);
                 break;
             case R.id.action_two_fob:
-                //animateFAB();
                 ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateFavorite, null);
                 break;
             case R.id.action_three_fob:
-                //animateFAB();
                 ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(null, Constants.SyncDataType.Users);
                 break;
         }
@@ -165,26 +132,40 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     public void switchToBeatDetailFragment(Track track) {
         toggleNavDrawerIcon();
-        Bundle args = new Bundle();
-
-/*        if (mBound && mCurrentSong != null) //if another song is selected reset our player
-            resetPlayer();*/
-
-        args.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, track);
-        if (mCurrentSong != null)
-            args.putInt("CurrentSongId",mCurrentSong.getID());
-
-        mDashboardDetailFragment.setArguments(args);
-        replaceFragment(mDashboardDetailFragment, "MusicDetailFragment");
+        mDashboardDetailFragment = MusicDetailFragment.newInstance(track);
+        mCurrentSong = track; //set the clicked song to the current playing
+        replaceFragment(mDashboardDetailFragment, mDashboardDetailFragment.getTag());
     }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-/*        if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_DASHBOARD_FAB_IMAGES) == 0) {
-            if (mIsFabOpen){
-                animateFAB();
+        if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI) == 0) {
+            if (mAudioService.mPlayingSong == null)
+                mAudioService.mPlayingSong = mCurrentSong;
+            mAudioService.playSong(Uri.parse(mAudioService.mPlayingSong.getStreamURL()));
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_NEW_SONG_URI) == 0) {
+            mAudioService.mPlayingSong = mCurrentSong;
+            mAudioService.playSong(Uri.parse(mAudioService.mPlayingSong.getStreamURL()));
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_PLAY_SONG_URI) == 0) {
+            mAudioService.resumeSong();
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_PAUSE_SONG_URI) == 0) {
+            mAudioService.pauseSong();
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_DOWNVOTE_SONG_URI) == 0) {
+            mAudioService.loadNextTrack();
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_SKIP_FORWARD_URI) == 0) {
+            mAudioService.loadNextTrack();
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_SET_SONG_REPEAT_URI) == 0) {
+            mAudioService.setSongLooping(true);
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_UPDATE_CURRENT_PLAYING_SONG_VIEW) == 0) {
+            if (mAudioService.getIsPlaying() || mAudioService.mIsPaused) {
+                mDisplayCurrentSongView = true;
+                mCurrentSongPlayingView.setVisibility(View.VISIBLE);
+
+                if ((mAudioService.mPlayingSong != null && mAudioService.mPlayingSong.getID() == ((MusicDetailFragment) mDashboardDetailFragment).mSelectedTrack.getID()))
+                    updateCurrentSongNotificationUI(((MusicDetailFragment) mDashboardDetailFragment).mSelectedTrack);
             }
-        }*/
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_UPDATE_PROGRESS_BAR_THREAD) == 0) {
+        }
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -192,46 +173,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
                 Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
-                if (mDashboardDetailFragment.isVisible()) { //if they are on the dashboard detail screen update the detail widgets
+                if (mDashboardDetailFragment.isVisible()) {                                                     //if they are on the dashboard detail screen update the detail widgets
                     (((MusicDetailFragment) mDashboardDetailFragment)).updateTrackUI(newTrack);
-                } else { // else update the current playing notification view
-                    mCurrentSongTitle.setText(newTrack.getTitle());
-                    if (newTrack.getArtworkURL() == null)
-                        mAlbumThumbnail.setImageResource(R.drawable.placeholder);
-                    else
-                        Picasso.with(MainActivity.this).load(newTrack.getArtworkURL()).into(mAlbumThumbnail);
-                    mCurrentSongArtistName.setText(newTrack.getUser().getUsername());
-
-                    //Update the current playing song in base activity to the song from this broadcast
+                } else {
                     mCurrentSong = newTrack;
+                    updateCurrentSongNotificationUI(newTrack);
+                }
+            } else if (intent.getAction().equals(Constants.SONG_LOADING_BROADCAST_ACTION)) {
+                if (mDashboardDetailFragment.isVisible()) {
+                    ((MusicDetailFragment) mDashboardDetailFragment).showLoadingMusicDialog();
                 }
             } else if (intent.getAction().equals(Constants.SONG_RECIEVED_FROM_FRIEND_BROADCAST_ACTION)) {
                 Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
             }
         }
     };
-
-/*    public void animateFAB() {
-        if (mIsFabOpen) {
-            mMainActionFab.startAnimation(rotate_backward);
-            mExtraActionOneFab.startAnimation(fab_close);
-            mExtraActionTwoFab.startAnimation(fab_close);
-            mExtraActionOneFab.setClickable(false);
-            mExtraActionTwoFab.setClickable(false);
-            mExtraActionThreeFab.startAnimation(fab_close);
-            mExtraActionThreeFab.setClickable(false);
-
-            mIsFabOpen = false;
-        } else {
-            mMainActionFab.startAnimation(rotate_forward);
-            mExtraActionOneFab.startAnimation(fab_open);
-            mExtraActionTwoFab.startAnimation(fab_open);
-            mExtraActionOneFab.setClickable(true);
-            mExtraActionTwoFab.setClickable(true);
-            mExtraActionThreeFab.startAnimation(fab_open);
-            mExtraActionThreeFab.setClickable(true);
-
-            mIsFabOpen = true;
-        }
-    }*/
 }

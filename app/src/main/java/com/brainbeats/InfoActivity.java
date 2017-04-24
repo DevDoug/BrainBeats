@@ -32,6 +32,7 @@ public class InfoActivity extends BaseActivity implements InfoFragment.OnFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
         mInfoFragment = new InfoFragment();
+
         switchToInfoFragment();
 
         mIntentFilter = new IntentFilter();

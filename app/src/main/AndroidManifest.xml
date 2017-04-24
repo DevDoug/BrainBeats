@@ -39,11 +39,11 @@
                 <action android:name="playtrack" />
                 <data android:scheme="brainbeats" />
             </intent-filter>
-            <intent-filter>
+          <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="audio/*" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity android:name=".LibraryActivity" />
         <activity android:name=".MixerActivity" />

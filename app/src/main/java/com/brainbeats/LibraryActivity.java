@@ -35,8 +35,8 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_library);
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
-
         mLibraryFragment = new LibraryFragment();
+
         switchToLibraryFragment();
 
         mIntentFilter = new IntentFilter();

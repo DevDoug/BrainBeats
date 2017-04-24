@@ -71,7 +71,8 @@ public class BaseActivity extends AppCompatActivity {
     private SeekBar mPlayTrackSeekBar;
     int mProgressStatus = 0;
     public Track mCurrentSong;
-    private boolean mIsAlive = false;
+    private volatile boolean mIsAlive = false;
+    public static boolean mDisplayCurrentSongView = false;
 
     //Audio com.brainbeats.service members
     public AudioService mAudioService;
@@ -92,9 +93,12 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        if (savedInstanceState != null) { //If our activity is recreated.
+/*        if (savedInstanceState != null) { //If our activity is recreated.
             mCurrentSong = savedInstanceState.getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
-        }
+
+            if(mDisplayCurrentSongView) //restore current playing
+                updateCurrentSongNotificationUI(mCurrentSong);
+        }*/
     }
 
     @Override
@@ -117,6 +121,11 @@ public class BaseActivity extends AppCompatActivity {
         super.onResume();
         Intent intent = new Intent(BaseActivity.this, AudioService.class);
         BaseActivity.this.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
+        if (mDisplayCurrentSongView)
+            mCurrentSongPlayingView.setVisibility(View.VISIBLE);
+        else
+            mCurrentSongPlayingView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -130,20 +139,36 @@ public class BaseActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
         setUpNavDrawer();
 
-        //Current song com.brainbeats.ui components
+        //Current song com.brainbeats.ui  components
         mCurrentSongPlayingView = (RelativeLayout) findViewById(R.id.current_track_container);
         mCurrentSongTitle = (TextView) findViewById(R.id.playing_mix_title);
         mCurrentSongArtistName = (TextView) findViewById(R.id.playing_mix_artist);
         mAlbumThumbnail = (ImageView) findViewById(R.id.album_thumbnail);
         mPlayTrackSeekBar = (SeekBar) findViewById(R.id.playing_mix_seek_bar);
-
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
+
+        if (savedInstanceState != null) { //If our activity is recreated.
+            mCurrentSong = savedInstanceState.getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+
+            if(mAudioService != null && mAudioService.getIsPlaying() || mAudioService.mIsPaused)
+                mAudioService.mPlayingSong = mCurrentSong;
+
+            if(mDisplayCurrentSongView) //restore current playing
+                updateCurrentSongNotificationUI(mCurrentSong);
+        }
+
+        Bundle intentBundle = getIntent().getExtras(); //If an intent is passed to main activity.
+        if (intentBundle != null) {
+            if (intentBundle.get(Constants.KEY_EXTRA_SELECTED_TRACK) != null) {
+                Track sentTrack = (Track) intentBundle.get(Constants.KEY_EXTRA_SELECTED_TRACK);
+                mCurrentSong = sentTrack;
+                updateCurrentSongNotificationUI(sentTrack);
+            }
+        }
 
         mCurrentSongPlayingView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AccountManager.getInstance(BaseActivity.this).setDisplayCurrentSongView(false);
-
                 Intent dashboardIntent = new Intent(BaseActivity.this, MainActivity.class);
                 dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, new Mix(mCurrentSong));
                 dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_USER, new BrainBeatsUser(mCurrentSong.getUser()));
@@ -181,6 +206,8 @@ public class BaseActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.action_browse:
                         Intent browseIntent = new Intent(getApplicationContext(), MainActivity.class);
+                        browseIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                        browseIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(browseIntent);
                         break;
                     case R.id.action_library:
@@ -324,19 +351,6 @@ public class BaseActivity extends AppCompatActivity {
             mAudioService = binder.getService();
             mBound = true;
             mIsAlive = true;
-
-            if(mAudioService.getIsPlaying() || mAudioService.mIsPaused) {
-                if(mAudioService.mPlayingSong != null)
-                    mCurrentSong = mAudioService.mPlayingSong;
-                else if(mCurrentSong != null && mAudioService.mPlayingSong == null)
-                    mAudioService.mPlayingSong = mCurrentSong;
-
-                updateCurrentSongNotificationUI();
-                MusicDetailFragment detailFragment = (MusicDetailFragment) getSupportFragmentManager().findFragmentByTag("MusicDetailFragment");
-
-                if(detailFragment != null)
-                    detailFragment.setPlayingState();
-            }
         }
 
         @Override
@@ -345,18 +359,11 @@ public class BaseActivity extends AppCompatActivity {
         }
     };
 
-    public void resetPlayer(){
-        mAudioService.stopSong();
-        if(mUpdateSeekBar != null)
-            mUpdateSeekBar.interrupt();
-    }
-
-    public void updateCurrentSongNotificationUI(){
-        if (AccountManager.getInstance(BaseActivity.this).getDisplayCurrentSongView()) {
-            mCurrentSongPlayingView.setVisibility(View.VISIBLE);
-            mCurrentSongTitle.setText(mCurrentSong.getTitle());
-            Picasso.with(BaseActivity.this).load(mCurrentSong.getArtworkURL()).into(mAlbumThumbnail);
-            mCurrentSongArtistName.setText(mCurrentSong.getUser().getUsername());
+    public void updateCurrentSongNotificationUI(Track track) {
+        if (mDisplayCurrentSongView) {
+            mCurrentSongTitle.setText(track.getTitle());
+            Picasso.with(BaseActivity.this).load(track.getArtworkURL()).into(mAlbumThumbnail);
+            mCurrentSongArtistName.setText(track.getUser().getUsername());
             startProgressBarThread();
         }
     }
@@ -370,6 +377,7 @@ public class BaseActivity extends AppCompatActivity {
         int trackDuration = mCurrentSong.getDuration();
         mPlayTrackSeekBar.setMax(trackDuration);
         mPlayTrackSeekBar.setIndeterminate(false);
+        mIsAlive = true;
 
         if(mBound && mAudioService.getPlayerPosition() != 0){ // if already playing set to current player position before thread runs
             mProgressStatus = mAudioService.getPlayerPosition();

@@ -127,8 +127,7 @@ public class AccountManager  {
 
     public boolean getDisplayCurrentSongView() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        boolean isDisplayFadeInPlayingNotification = sharedPreferences.getBoolean(Constants.KEY_EXTRA_IS_DISPLAY_CURRENT_PLAYING_SONG, false);
-        return isDisplayFadeInPlayingNotification;
+        return sharedPreferences.getBoolean(Constants.KEY_EXTRA_IS_DISPLAY_CURRENT_PLAYING_SONG, false);
     }
 
     public void setDisplayCurrentSongView(boolean isDisplayFadeInPlayingNotification) {

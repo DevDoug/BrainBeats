@@ -15,10 +15,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
@@ -37,7 +38,11 @@ import com.android.volley.VolleyError;
 import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
+import com.brainbeats.adapters.MixTagAdapter;
 import com.brainbeats.architecture.AccountManager;
+import com.brainbeats.architecture.BaseActivity;
+import com.brainbeats.data.BrainBeatsContract;
+import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.entity.Track;
 import com.brainbeats.entity.User;
 import com.brainbeats.service.AudioService;
@@ -48,14 +53,22 @@ import com.brainbeats.web.WebApiManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
+import android.provider.ContactsContract;
+
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
+
+import javax.sql.CommonDataSource;
+
+import static android.app.Activity.RESULT_OK;
 
 public class MusicDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
     public static final String TAG = "MusicDetailFragment";
+    private static final int RESULT_PICK_CONTACT = 1;
 
     private TextView mTrackTitle;
     private TextView mArtistDescription;
@@ -69,7 +82,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     private ImageView mArtistThumbnail;
 
     public Bundle mUserSelections;
-    private volatile boolean mIsAlive = true;
+    public volatile boolean mIsAlive = true;
 
     // Playing track members.
     public Thread mUpdateSeekBar;
@@ -80,15 +93,14 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     //Playing song members.
     public Track mSelectedTrack;
     private boolean mLooping = false;
-
     ProgressDialog loadingMusicDialog;
 
     private ActionProvider mShareActionProvider;
 
 
     //TODO - implement in version 2.0 beta version
-/*    private MixTagAdapter mMixTagAdapter;
-    private RecyclerView mMixerTags;*/
+    private MixTagAdapter mMixTagAdapter;
+    private RecyclerView mMixerTags;
 
     //Interfaces.
     private OnFragmentInteractionListener mListener;
@@ -97,10 +109,50 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         // Required empty public constructor
     }
 
+    public static MusicDetailFragment newInstance(Track track) {
+        MusicDetailFragment musicFrag = new MusicDetailFragment();
+
+        Bundle args = new Bundle();
+        args.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, track);
+        musicFrag.setArguments(args);
+
+        return musicFrag;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        mUserSelections = getArguments();
+        if (mUserSelections != null) {
+            mSelectedTrack = (Track) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_TRACK);
+        }
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (mSelectedTrack != null) {
+                mTrackTitle.setText(Constants.generateUIFriendlyString(mSelectedTrack.getTitle()));
+                if (mSelectedTrack.getArtworkURL() == null)
+                    mAlbumCoverArt.setImageResource(R.drawable.placeholder);
+                else
+                    Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).resize(1800, 1800).centerInside().into(mAlbumCoverArt);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (((MainActivity) getActivity()).mBound) {
+            if (!((MainActivity) getActivity()).mAudioService.mIsPaused && !((MainActivity) getActivity()).mAudioService.getIsPlaying()) {
+                showLoadingMusicDialog(); // start loading song ui
+                mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI);
+            }
+        }
     }
 
     @Override
@@ -117,15 +169,13 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public void onPause() {
         super.onPause();
         if (mUpdateSeekBar != null)
-            mUpdateSeekBar.interrupt(); // stop updating a the progress bar
+            mUpdateSeekBar.interrupt(); // stop updating the progress bar
+    }
 
-        if (((MainActivity) getActivity()).mAudioService.getIsPlaying() || ((MainActivity) getActivity()).mAudioService.mIsPaused) {
-            AccountManager.getInstance(getContext()).setDisplayCurrentSongView(true);
-            ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.VISIBLE);
-            //if(((MainActivity) getActivity()).mCurrentSong != null && ((MainActivity) getActivity()).mCurrentSong == mSelectedTrack)
-            ((MainActivity) getActivity()).mCurrentSong = mSelectedTrack;
-            ((MainActivity) getActivity()).updateCurrentSongNotificationUI();
-        }
+    @Override
+    public void onStop() {
+        super.onStop();
+        mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_UPDATE_CURRENT_PLAYING_SONG_VIEW);
     }
 
     @Override
@@ -155,51 +205,6 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        int mLastTrackId = 0;
-        mUserSelections = getArguments();
-        if (mUserSelections != null) {
-            mLastTrackId = mUserSelections.getInt("CurrentSongId");
-            mSelectedTrack = (Track) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_TRACK);
-            if (mSelectedTrack != null) {
-                mTrackTitle.setText(Constants.generateUIFriendlyString(mSelectedTrack.getTitle()));
-
-                if (mSelectedTrack.getArtworkURL() == null)
-                    mAlbumCoverArt.setImageResource(R.drawable.placeholder);
-                else
-                    Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).resize(1800, 1800).centerInside().into(mAlbumCoverArt);
-
-                getUserInfo(mSelectedTrack.getUser().getId());
-            }
-
-            //TODO not working when user  navigates from notification view since the service is unbound for the new intent,
-            if (mLastTrackId != 0 && mSelectedTrack != null && mLastTrackId == mSelectedTrack.getID()) { // if new song is the same as last song then enable play button if playing and update seek bar
-                setPlayingState();
-            }
-        }
-
-        //TODO - implement in version 2.0 beta version
-        /*
-        GridLayoutManager mTagGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
-        mMixerTags.setLayoutManager(mTagGridLayoutManager);
-        mMixerTags.setAdapter(mMixTagAdapter);
-        getLoaderManager().initLoader(Constants.MIX_TAGS_LOADER, null, this);
-        */
-    }
-
-    public void setPlayingState(){
-        MainActivity mainActivity = (MainActivity) getActivity();
-        if (mainActivity.mBound) {
-            if (mainActivity.mAudioService.getIsPlaying()) {
-                mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
-            }
-            startProgressBarThread();
-        }
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
 
@@ -216,10 +221,10 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
             }
         });
 
-        mIsAlive = true;
         AccountManager.getInstance(getContext()).setDisplayCurrentSongView(false);
         ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.INVISIBLE); // hide our playing sound view
 
+        mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_UPDATE_PROGRESS_BAR_THREAD);
     }
 
     @Override
@@ -289,112 +294,40 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Mixes.getCode());
         settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
 
-        MainActivity mainActivity = (MainActivity) getActivity();
-
         switch (v.getId()) {
             case R.id.play_song_button:
-                //Start our audio com.brainbeats.service
-
-                if (!mainActivity.isAudioServiceRunning(AudioService.class)) {
-                    Intent audioService = new Intent(getContext(), AudioService.class);
-                    audioService.setAction(AudioService.MAIN_ACTION);
-                    audioService.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
-                    getContext().startService(audioService);
-
-                    mainActivity.mAudioService.setRunInForeground();
-                    AccountManager.getInstance(getContext()).setDisplayCurrentSongView(true);
-                }
-
-                if (mainActivity.mBound) {
-                    if (mainActivity.mAudioService.requestAudioFocus(getContext())) { //make sure are audio focus request returns true before playback
-                        if (mainActivity.mAudioService.getIsPlaying() && mainActivity.mAudioService.mPlayingSong.getID() == mSelectedTrack.getID()) { //if the current song is the one being played pause else start new song
-                            mainActivity.mAudioService.pauseSong();
-                            mPlaySongButton.setImageResource(R.drawable.ic_play_circle);
-                        } else {
-                            mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
-                            if (mSelectedTrack.getStreamURL() != null) {
-                                mainActivity.mAudioService.mPlayingSong = mSelectedTrack;
-                                mainActivity.mAudioService.playSong(Uri.parse(mSelectedTrack.getStreamURL()));
-                            }
-                            startProgressBarThread();
-
-                            if (mLooping) {
-                                mainActivity.mAudioService.setSongLooping(true);
-                            }
-                        }
-                    }
-                }
+                playSong();
                 break;
             case R.id.arrow_down:
-                loadingMusicDialog = new ProgressDialog(getContext());
-                loadingMusicDialog.setCancelable(false);
-                loadingMusicDialog.setMessage(getString(R.string.loading_message));
-                loadingMusicDialog.show();
-
-                if (mainActivity.mAudioService.mPlayingSong == null)
-                    mainActivity.mAudioService.mPlayingSong = mSelectedTrack;
-
-                BeatLearner.getInstance(getContext()).downVoteTrack(mSelectedTrack.getID()); // downvote this track
-                mainActivity.mAudioService.loadNextTrack();
-
-                Snackbar downVoteSnack;
-                downVoteSnack = Snackbar.make(mainActivity.mCoordinatorLayout, getString(R.string.downvote_track), Snackbar.LENGTH_LONG);
-                downVoteSnack.show();
+                downvoteSong();
                 break;
             case R.id.skip_forward_button:
-                loadingMusicDialog = new ProgressDialog(getContext());
-                loadingMusicDialog.setCancelable(false);
-                loadingMusicDialog.setMessage(getString(R.string.loading_message));
-                loadingMusicDialog.show();
-
-                if (mainActivity.mAudioService.mPlayingSong == null)
-                    mainActivity.mAudioService.mPlayingSong = mSelectedTrack;
-
-                mainActivity.mAudioService.loadNextTrack();
+                skipForward();
                 break;
             case R.id.repeat_button:
-                if (mainActivity.mBound) {
-                    if (mainActivity.mAudioService.getIsPlaying()) {
-                        if (!mainActivity.mAudioService.getIsLooping()) {
-                            mainActivity.mAudioService.setSongLooping(true);
-                            mLoopSongButton.setImageResource(R.drawable.ic_repeat);
-                        } else {
-                            mainActivity.mAudioService.setSongLooping(false);
-                            mLoopSongButton.setImageResource(R.drawable.ic_repeat_off);
-                        }
-                    } else {
-                        if (!mLooping) {
-                            mLoopSongButton.setImageResource(R.drawable.ic_repeat);
-                            mLooping = true;
-                        } else {
-                            mLoopSongButton.setImageResource(R.drawable.ic_repeat_off);
-                            mLooping = false;
-                        }
-                    }
-                }
+                turnOnRepeat();
                 break;
             case R.id.arrow_up:
-                BeatLearner.getInstance(getContext()).upVoteTrack(mSelectedTrack.getID()); // upvote this track
-
-                Snackbar upvoteSnack;
-                upvoteSnack = Snackbar.make(mainActivity.mCoordinatorLayout, getString(R.string.upvote_track), Snackbar.LENGTH_LONG);
-                upvoteSnack.show();
+                upvoteSong();
                 break;
             default:
                 break;
         }
     }
 
-    public void startProgressBarThread() {
+    public void startProgressBarThread(int position) {
         int trackDuration = mSelectedTrack.getDuration();
+        mPlayTrackSeekBar.setProgress(position);
         mPlayTrackSeekBar.setMax(trackDuration);
         mPlayTrackSeekBar.setIndeterminate(false);
+        mIsAlive = true;
+
         mUpdateSeekBar = new Thread(new Runnable() {
             @Override
             public void run() {
                 while ((mProgressStatus < trackDuration) && mIsAlive) {
                     try {
-                        Thread.sleep(1000); //Update once per second
+                        Thread.sleep(500); //Update once per second
                         mProgressStatus = ((MainActivity) getActivity()).mAudioService.getPlayerPosition();
                         mPlayTrackSeekBar.setProgress(mProgressStatus);
                         mPlayTrackSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -417,8 +350,8 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                         Log.i("Progress bar thread", "Exception occured" + e.toString());
                         mIsAlive = false;
                         mPlayTrackSeekBar.setProgress(0);
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();  //TODO find better solution then catching this exception
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                 }
             }
@@ -430,7 +363,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
             //TODO - implement in version 2.0 beta version
-/*            case Constants.MIX_TAGS_LOADER:
+            case Constants.MIX_TAGS_LOADER:
                 return new CursorLoader(
                         getActivity(),                                          // Parent activity context
                         BrainBeatsContract.MixTagEntry.CONTENT_URI,             // Table to query
@@ -439,7 +372,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                                 BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,          // Where the mix is in the li,
                         new String[]{String.valueOf(mSelectedTrack.getID())},   // No selection arguments
                         BrainBeatsDbHelper.DB_SORT_TYPE_LIMIT_FIVE              // Default sort order
-                );*/
+                );
             default:
                 return null;
         }
@@ -448,19 +381,15 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         //TODO - implement in version 2.0 beta version
-        /*
         mMixTagAdapter = new MixTagAdapter(getContext(), data);
         mMixerTags.setAdapter(mMixTagAdapter);
-        */
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         //TODO - implement in version 2.0 beta version
-        /*
         if (mMixTagAdapter != null)
-        mMixTagAdapter.swapCursor(null);
-        */
+            mMixTagAdapter.swapCursor(null);
     }
 
     public interface OnFragmentInteractionListener {
@@ -470,13 +399,16 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public void updateTrackUI(Track track) {
         mSelectedTrack = track;
         mTrackTitle.setText(track.getTitle());
+
         if (track.getArtworkURL() == null)
             mAlbumCoverArt.setImageResource(R.drawable.placeholder);
         else
             Picasso.with(getContext()).load(track.getArtworkURL()).into(mAlbumCoverArt);
+
         if (((MainActivity) getActivity()).mBound) {
             if (track.getStreamURL() != null) {
                 mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
+                startProgressBarThread(0);
             }
         }
 
@@ -488,29 +420,8 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
             loadingMusicDialog.dismiss();
     }
 
-    public void getUserInfo(int userId) {
-        WebApiManager.getSoundCloudUser(getContext(), String.valueOf(userId), new WebApiManager.OnObjectResponseListener() {
-            @Override
-            public void onObjectResponse(JSONObject object) {
-                Gson gson = new Gson();
-                Type token = new TypeToken<User>() {
-                }.getType();
-                User soundCloudUser = gson.fromJson(object.toString(), token);
-                mArtistName.setText(soundCloudUser.getUsername());
-                Picasso.with(getContext()).load(soundCloudUser.getAvatarUrl()).into(mArtistThumbnail);
-                mArtistDescription.setText(soundCloudUser.getDescription());
-            }
-        }, new WebApiManager.OnErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-    }
-
     public void updateOfflineSyncManager(Constants.SyncDataAction syncAction, Constants.SyncDataType syncDataType) {
         Bundle settingsBundle = new Bundle();
-
         if (syncAction != null)
             settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, syncAction.getCode());
         if (syncDataType != null)
@@ -518,5 +429,58 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
 
         settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
         OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
+    }
+
+    public void showLoadingMusicDialog(){
+        loadingMusicDialog = new ProgressDialog(getContext());
+        loadingMusicDialog.setCancelable(false);
+        loadingMusicDialog.setMessage(getString(R.string.loading_message));
+        loadingMusicDialog.show();
+    }
+
+    public void playSong() {
+        MainActivity main = ((MainActivity) getActivity());
+
+        if (main.mAudioService.mPlayingSong != null
+                && main.mAudioService.mPlayingSong.getID() != mSelectedTrack.getID()
+                && main.mAudioService.getIsPlaying()) {                                                     //Song is playing load new song
+
+            showLoadingMusicDialog();
+            mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_NEW_SONG_URI);
+        } else if (!main.mAudioService.mIsPaused && !main.mAudioService.getIsPlaying()) {                    //no song playing load song
+            showLoadingMusicDialog();
+            mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI);
+        } else if (main.mAudioService.getIsPlaying()) {                                                     //Song is playing so pause song
+            mPlaySongButton.setImageResource(R.drawable.ic_play_circle);
+            mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_PAUSE_SONG_URI);
+        } else {                                                                                            //Song is paused so resume
+            mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
+            mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_PLAY_SONG_URI);
+        }
+    }
+
+    public void downvoteSong() {
+        showLoadingMusicDialog();
+        BeatLearner.getInstance(getContext()).downVoteTrack(mSelectedTrack.getID());
+        mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_DOWNVOTE_SONG_URI);
+        Snackbar downVoteSnack;
+        downVoteSnack = Snackbar.make(((MainActivity) getActivity()).mCoordinatorLayout, getString(R.string.downvote_track), Snackbar.LENGTH_LONG);
+        downVoteSnack.show();
+    }
+
+    public void upvoteSong(){
+        BeatLearner.getInstance(getContext()).upVoteTrack(mSelectedTrack.getID());
+        Snackbar upvoteSnack;
+        upvoteSnack = Snackbar.make(((MainActivity) getActivity()).mCoordinatorLayout, getString(R.string.upvote_track), Snackbar.LENGTH_LONG);
+        upvoteSnack.show();
+    }
+
+    public void skipForward(){
+        showLoadingMusicDialog();
+        mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_SKIP_FORWARD_URI);
+    }
+
+    public void turnOnRepeat() {
+        mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_SET_SONG_REPEAT_URI);
     }
 }

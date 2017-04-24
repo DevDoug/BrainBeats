@@ -12,8 +12,10 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
@@ -22,6 +24,9 @@ import com.brainbeats.entity.Track;
 import com.brainbeats.utils.BeatLearner;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.web.WebApiManager;
+
+import java.io.IOError;
+import java.io.IOException;
 
 /*Audio com.brainbeats.service should handle playing all music, should be a bound com.brainbeats.service and a started com.brainbeats.service which will allow us to bind to com.brainbeats.ui and keep the music in the background when not on the detail activity*/
 public class AudioService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, AudioManager.OnAudioFocusChangeListener, BeatLearner.RecommendationCompleteListener {
@@ -70,7 +75,18 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        mPlayer.start();
+        try {
+            mPlayer.start();
+
+            //player is ready update ui
+            Intent broadcastIntent = new Intent(); // send broadcast to activity to tell it to update com.brainbeats.ui
+            broadcastIntent.setAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
+            broadcastIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mPlayingSong);
+            sendBroadcast(broadcastIntent);
+
+        } catch (SecurityException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -78,6 +94,11 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         if (mp.isLooping()) {
             mp.seekTo(0);
         } else {
+            //tell ui to show loading spinner
+            Intent broadcastIntent = new Intent();
+            broadcastIntent.setAction(Constants.SONG_LOADING_BROADCAST_ACTION);
+            sendBroadcast(broadcastIntent);
+
             loadNextTrack(); //load next track on com.brainbeats.service side
         }
     }
@@ -100,22 +121,23 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void playSong(Uri songPath) {
-        if (mIsPaused) {
-            mPlayer.start();
-        } else {
-            try {
-                mPlayer.reset();
-                mPlayer.setDataSource(getApplicationContext(), songPath.buildUpon().appendQueryParameter(WebApiManager.SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID).build());
-                mPlayer.prepareAsync();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+        try {
+            mPlayer.reset();
+            mPlayer.setDataSource(getApplicationContext(), songPath.buildUpon().appendQueryParameter(WebApiManager.SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID).build());
+            mPlayer.prepareAsync();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
     public void pauseSong() {
         mPlayer.pause();
         mIsPaused = true;
+    }
+
+    public void resumeSong(){
+        mPlayer.start();
+        mIsPaused = false;
     }
 
     public void setSongLooping(boolean isLooping) {
@@ -181,11 +203,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
             // Pause playback
             pauseSong();
         } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-            // Resume playback
         } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-            //am.unregisterMediaButtonEventReceiver(RemoteControlReceiver);
-            //am.abandonAudioFocus(afChangeListener);
-            // Stop playback
         }
     }
 
@@ -193,12 +211,8 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     public void recommendationComplete(Track track) {
         mPlayingSong = track;
         mIsPaused = false; //unpause to load new track instead of resume old track
-        playSong(Uri.parse(track.getStreamURL()));
 
-        Intent broadcastIntent = new Intent(); // send broadcast to activity to tell it to update com.brainbeats.ui
-        broadcastIntent.setAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
-        broadcastIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK,track);
-        sendBroadcast(broadcastIntent);
+        playSong(Uri.parse(track.getStreamURL()));
     }
 
     public class AudioBinder extends Binder {
