@@ -64,7 +64,7 @@ public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapt
                 Intent browseMusicIntent = new Intent(mAdapterContext, MainActivity.class);
                 browseMusicIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, selectedMix);
                 browseMusicIntent.putExtra(Constants.KEY_EXTRA_SELECTED_USER, selectedMix.getUser());
-                browseMusicIntent.setAction(Constants.INTENT_ACTION_LOAD_FROM_NEW_INTENT);
+                browseMusicIntent.setAction(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT);
                 mAdapterContext.startActivity(browseMusicIntent);
             }
         });

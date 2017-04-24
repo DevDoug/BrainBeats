@@ -65,12 +65,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                         playTrack.setUser(new com.brainbeats.entity.User(mixUser));
                         switchToBeatDetailFragment(playTrack);
                     }
-                } else if(getIntent().getAction().equalsIgnoreCase(Constants.INTENT_ACTION_LOAD_FROM_NEW_INTENT)){
-                    if (sentMix != null) {
-                        Track playTrack = new Track(sentMix);
-                        playTrack.setUser(new com.brainbeats.entity.User(mixUser));
-                        loadSong(playTrack);
-                    }
                 }
             }
         }
@@ -140,12 +134,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         replaceFragment(mDashboardDetailFragment, mDashboardDetailFragment.getTag());
     }
 
-    public void loadSong(Track track) {
-        mCurrentSong = track;
-        mDashboardDetailFragment = MusicDetailFragment.newInstance(track);
-        replaceFragment(mDashboardDetailFragment, mDashboardDetailFragment.getTag());
-    }
-
     @Override
     public void onFragmentInteraction(Uri uri) {
         if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI) == 0) {
@@ -165,6 +153,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             mAudioService.loadNextTrack();
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_SET_SONG_REPEAT_URI) == 0) {
             mAudioService.setSongLooping(true);
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_UPDATE_CURRENT_PLAYING_SONG_VIEW) == 0) {
+            if (mAudioService.getIsPlaying() || mAudioService.mIsPaused) {
+                mDisplayCurrentSongView = true;
+                mCurrentSongPlayingView.setVisibility(View.VISIBLE);
+
+                if ((mAudioService.mPlayingSong != null && mAudioService.mPlayingSong.getID() == ((MusicDetailFragment) mDashboardDetailFragment).mSelectedTrack.getID()))
+                    updateCurrentSongNotificationUI(((MusicDetailFragment) mDashboardDetailFragment).mSelectedTrack);
+            }
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_UPDATE_PROGRESS_BAR_THREAD) == 0) {
+/*                if (mAudioService.mPlayingSong != null && mAudioService.getIsPlaying() || mAudioService.mIsPaused)
+                    ((MusicDetailFragment) mDashboardDetailFragment).startProgressBarThread(mAudioService.getPlayerPosition());*/
         }
     }
 
@@ -176,6 +175,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 if (mDashboardDetailFragment.isVisible()) {                                                     //if they are on the dashboard detail screen update the detail widgets
                     (((MusicDetailFragment) mDashboardDetailFragment)).updateTrackUI(newTrack);
                 } else {
+                    mCurrentSong = newTrack;
                     updateCurrentSongNotificationUI(newTrack);
                 }
             } else if (intent.getAction().equals(Constants.SONG_LOADING_BROADCAST_ACTION)) {

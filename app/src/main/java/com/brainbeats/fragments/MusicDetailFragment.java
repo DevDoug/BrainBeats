@@ -79,7 +79,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     private ImageView mArtistThumbnail;
 
     public Bundle mUserSelections;
-    private volatile boolean mIsAlive = true;
+    public volatile boolean mIsAlive = true;
 
     // Playing track members.
     public Thread mUpdateSeekBar;
@@ -164,13 +164,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         if (mUpdateSeekBar != null)
             mUpdateSeekBar.interrupt(); // stop updating the progress bar
 
-        if (((MainActivity) getActivity()).mAudioService.getIsPlaying() || ((MainActivity) getActivity()).mAudioService.mIsPaused) {
-            AccountManager.getInstance(getContext()).setDisplayCurrentSongView(true);
-            ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.VISIBLE);
-
-            if (((MainActivity) getActivity()).mAudioService.mPlayingSong != null && ((MainActivity) getActivity()).mAudioService.mPlayingSong.getID() == mSelectedTrack.getID()) //Update only if we played a new song
-                ((MainActivity) getActivity()).updateCurrentSongNotificationUI(mSelectedTrack);
-        }
+        mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_UPDATE_CURRENT_PLAYING_SONG_VIEW);
     }
 
     @Override
@@ -218,6 +212,8 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
 
         AccountManager.getInstance(getContext()).setDisplayCurrentSongView(false);
         ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.INVISIBLE); // hide our playing sound view
+
+        mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_UPDATE_PROGRESS_BAR_THREAD);
     }
 
     @Override
@@ -293,36 +289,37 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         }
     }
 
-    public void startProgressBarThread() {
+    public void startProgressBarThread(int position) {
         int trackDuration = mSelectedTrack.getDuration();
+        mPlayTrackSeekBar.setProgress(position);
         mPlayTrackSeekBar.setMax(trackDuration);
         mPlayTrackSeekBar.setIndeterminate(false);
+        mIsAlive = true;
+
         mUpdateSeekBar = new Thread(new Runnable() {
             @Override
             public void run() {
                 while ((mProgressStatus < trackDuration) && mIsAlive) {
                     try {
-                        Thread.sleep(1000); //Update once per second
-                        if (((MainActivity) getActivity()).mAudioService.getIsPlaying()) {
-                            mProgressStatus = ((MainActivity) getActivity()).mAudioService.getPlayerPosition();
-                            mPlayTrackSeekBar.setProgress(mProgressStatus);
-                            mPlayTrackSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                                @Override
-                                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                                    if (fromUser) {
-                                        ((MainActivity) getActivity()).mAudioService.seekPlayerTo(progress);
-                                    }
+                        Thread.sleep(500); //Update once per second
+                        mProgressStatus = ((MainActivity) getActivity()).mAudioService.getPlayerPosition();
+                        mPlayTrackSeekBar.setProgress(mProgressStatus);
+                        mPlayTrackSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                            @Override
+                            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                                if (fromUser) {
+                                    ((MainActivity) getActivity()).mAudioService.seekPlayerTo(progress);
                                 }
+                            }
 
-                                @Override
-                                public void onStartTrackingTouch(SeekBar seekBar) {
-                                }
+                            @Override
+                            public void onStartTrackingTouch(SeekBar seekBar) {
+                            }
 
-                                @Override
-                                public void onStopTrackingTouch(SeekBar seekBar) {
-                                }
-                            });
-                        }
+                            @Override
+                            public void onStopTrackingTouch(SeekBar seekBar) {
+                            }
+                        });
                     } catch (InterruptedException e) {
                         Log.i("Progress bar thread", "Exception occured" + e.toString());
                         mIsAlive = false;
@@ -385,7 +382,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         if (((MainActivity) getActivity()).mBound) {
             if (track.getStreamURL() != null) {
                 mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
-                startProgressBarThread();
+                startProgressBarThread(0);
             }
         }
 
@@ -457,7 +454,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_SKIP_FORWARD_URI);
     }
 
-    public void turnOnRepeat(){
+    public void turnOnRepeat() {
         mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_SET_SONG_REPEAT_URI);
     }
 }

@@ -101,6 +101,9 @@ public class Constants {
     public static final Uri DASHBOARD_DETAIL_DOWNVOTE_SONG_URI                      = Uri.parse("main://dashboard_detail_downvote_song");
     public static final Uri DASHBOARD_DETAIL_SKIP_FORWARD_URI                       = Uri.parse("main://dashboard_detail_skip_forward");
     public static final Uri DASHBOARD_DETAIL_SET_SONG_REPEAT_URI                    = Uri.parse("main://dashboard_detail_repeat_song");
+    public static final Uri DASHBOARD_DETAIL_UPDATE_CURRENT_PLAYING_SONG_VIEW       = Uri.parse("main://dashboard_detail_update_current_playing_view");
+    public static final Uri DASHBOARD_DETAIL_UPDATE_PROGRESS_BAR_THREAD             = Uri.parse("main://dashboard_detail_update_progress_bar_thread");
+
 
 
 
