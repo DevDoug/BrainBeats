@@ -138,13 +138,23 @@ public class BaseActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
         setUpNavDrawer();
 
-        //Current song com.brainbeats.ui components
+        //Current song com.brainbeats.ui  components
         mCurrentSongPlayingView = (RelativeLayout) findViewById(R.id.current_track_container);
         mCurrentSongTitle = (TextView) findViewById(R.id.playing_mix_title);
         mCurrentSongArtistName = (TextView) findViewById(R.id.playing_mix_artist);
         mAlbumThumbnail = (ImageView) findViewById(R.id.album_thumbnail);
         mPlayTrackSeekBar = (SeekBar) findViewById(R.id.playing_mix_seek_bar);
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
+
+        if (savedInstanceState != null) { //If our activity is recreated.
+            mCurrentSong = savedInstanceState.getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+
+            if(mAudioService != null && mAudioService.getIsPlaying() || mAudioService.mIsPaused)
+                mAudioService.mPlayingSong = mCurrentSong;
+
+            if(mDisplayCurrentSongView) //restore current playing
+                updateCurrentSongNotificationUI(mCurrentSong);
+        }
 
         Bundle intentBundle = getIntent().getExtras(); //If an intent is passed to main activity.
         if (intentBundle != null) {

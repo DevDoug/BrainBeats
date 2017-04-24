@@ -163,7 +163,11 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         super.onPause();
         if (mUpdateSeekBar != null)
             mUpdateSeekBar.interrupt(); // stop updating the progress bar
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
         mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_UPDATE_CURRENT_PLAYING_SONG_VIEW);
     }
 

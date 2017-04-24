@@ -162,8 +162,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     updateCurrentSongNotificationUI(((MusicDetailFragment) mDashboardDetailFragment).mSelectedTrack);
             }
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_UPDATE_PROGRESS_BAR_THREAD) == 0) {
-/*                if (mAudioService.mPlayingSong != null && mAudioService.getIsPlaying() || mAudioService.mIsPaused)
-                    ((MusicDetailFragment) mDashboardDetailFragment).startProgressBarThread(mAudioService.getPlayerPosition());*/
         }
     }
 
