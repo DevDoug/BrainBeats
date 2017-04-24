@@ -3,6 +3,7 @@ package com.brainbeats.fragments;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -20,17 +21,19 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
+import android.view.ActionProvider;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import com.android.volley.VolleyError;
 import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
@@ -85,11 +88,15 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public Thread mUpdateSeekBar;
     private SeekBar mPlayTrackSeekBar;
     public int mProgressStatus = 0;
+    public boolean mProgressUpdating = false;
 
     //Playing song members.
     public Track mSelectedTrack;
     private boolean mLooping = false;
     ProgressDialog loadingMusicDialog;
+
+    private ActionProvider mShareActionProvider;
+
 
     //TODO - implement in version 2.0 beta version
     private MixTagAdapter mMixTagAdapter;
@@ -240,6 +247,21 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
             case R.id.follow_user:
                 updateOfflineSyncManager(null, Constants.SyncDataType.Users);
                 break;
+            case R.id.menu_item_share:
+
+                String[] friends = {"friend1","friend2"};
+                //give the user a list of people to share this song with
+                Constants.buildListDialogue(getContext(), getString(R.string.share_this_track), friends, new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent broadcastIntent = new Intent(); // send broadcast to activity to tell it to recommend this track
+                        broadcastIntent.setAction(Constants.SONG_RECIEVED_FROM_FRIEND_BROADCAST_ACTION);
+                        broadcastIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK,mSelectedTrack);
+                        getActivity().sendBroadcast(broadcastIntent);
+                    }
+                });
+                break;
+
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
                 Intent loginIntent = new Intent(getContext(), LoginActivity.class);

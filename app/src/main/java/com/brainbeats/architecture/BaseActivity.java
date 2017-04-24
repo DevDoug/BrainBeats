@@ -37,6 +37,7 @@ import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import com.brainbeats.SettingsActivity;
 import com.brainbeats.SocialActivity;
+import com.brainbeats.fragments.MusicDetailFragment;
 import com.squareup.picasso.Picasso;
 
 import com.brainbeats.entity.Track;

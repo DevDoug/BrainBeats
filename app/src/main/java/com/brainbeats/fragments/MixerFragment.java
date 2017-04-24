@@ -102,7 +102,7 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
                 break;
             case 1:
                 mAddOptionsDialog.dismiss();
-                mAddOptionsDialog = Constants.buildListDialogue(getContext(), getString(R.string.create_beat_from_title), R.array.new_from_existing_beat_options, new AdapterView.OnItemClickListener() {
+  /*              mAddOptionsDialog = Constants.buildListDialogue(getContext(), getString(R.string.create_beat_from_title), R.array.new_from_existing_beat_options, new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         switch (position) {
@@ -118,7 +118,7 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
                                 break;
                         }
                     }
-                });
+                });*/
                 break;
         }
     }

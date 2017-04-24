@@ -63,6 +63,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     if (sentMix != null) {
                         Track playTrack = new Track(sentMix);
                         playTrack.setUser(new com.brainbeats.entity.User(mixUser));
+                        if(mCurrentSong == null)
+                            mCurrentSong = playTrack;
                         switchToBeatDetailFragment(playTrack);
                     }
                 }
@@ -78,6 +80,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
         mIntentFilter.addAction(Constants.SONG_LOADING_BROADCAST_ACTION);
+
 
         mMainActionFab.setVisibility(View.INVISIBLE);
     }
@@ -180,6 +183,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 if (mDashboardDetailFragment.isVisible()) {
                     ((MusicDetailFragment) mDashboardDetailFragment).showLoadingMusicDialog();
                 }
+            } else if (intent.getAction().equals(Constants.SONG_RECIEVED_FROM_FRIEND_BROADCAST_ACTION)) {
+                Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
             }
         }
     };

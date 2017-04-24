@@ -48,6 +48,7 @@ public class Mix implements Parcelable {
         mBeatAlbumCoverArtSource = track.getArtworkURL();
         mMixSoundCloudId = track.getID();
         mStreamURL = track.getStreamURL();
+        mDuration = track.getDuration();
     }
 
     public long getMixId() {
