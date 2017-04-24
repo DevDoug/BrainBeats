@@ -183,9 +183,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 if (mDashboardDetailFragment.isVisible()) {
                     ((MusicDetailFragment) mDashboardDetailFragment).showLoadingMusicDialog();
                 }
-            } else if (intent.getAction().equals(Constants.SONG_RECIEVED_FROM_FRIEND_BROADCAST_ACTION)) {
+            } /*else if (intent.getAction().equals(Constants.SONG_RECIEVED_FROM_FRIEND_BROADCAST_ACTION)) {
                 Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
-            }
+            }*/
         }
     };
 }

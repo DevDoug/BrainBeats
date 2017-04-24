@@ -249,7 +249,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                 break;
             case R.id.menu_item_share:
 
-                String[] friends = {"friend1","friend2"};
+/*                String[] friends = {"friend1","friend2"};
                 //give the user a list of people to share this song with
                 Constants.buildListDialogue(getContext(), getString(R.string.share_this_track), friends, new AdapterView.OnItemClickListener() {
                     @Override
@@ -260,7 +260,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                         getActivity().sendBroadcast(broadcastIntent);
                     }
                 });
-                break;
+                break;*/
 
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
