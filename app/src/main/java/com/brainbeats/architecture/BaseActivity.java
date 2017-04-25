@@ -70,7 +70,7 @@ public class BaseActivity extends AppCompatActivity {
     public Thread mUpdateSeekBar;
     private SeekBar mPlayTrackSeekBar;
     int mProgressStatus = 0;
-    public Track mCurrentSong;
+    public static Track mCurrentSong;
     private volatile boolean mIsAlive = false;
     public static boolean mDisplayCurrentSongView = false;
 
@@ -88,17 +88,6 @@ public class BaseActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-/*        if (savedInstanceState != null) { //If our activity is recreated.
-            mCurrentSong = savedInstanceState.getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
-
-            if(mDisplayCurrentSongView) //restore current playing
-                updateCurrentSongNotificationUI(mCurrentSong);
-        }*/
     }
 
     @Override
