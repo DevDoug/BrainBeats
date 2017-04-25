@@ -63,8 +63,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     if (sentMix != null) {
                         Track playTrack = new Track(sentMix);
                         playTrack.setUser(new com.brainbeats.entity.User(mixUser));
-                        if(mCurrentSong == null)
-                            mCurrentSong = playTrack;
                         switchToBeatDetailFragment(playTrack);
                     }
                 }
@@ -80,7 +78,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
         mIntentFilter.addAction(Constants.SONG_LOADING_BROADCAST_ACTION);
-
 
         mMainActionFab.setVisibility(View.INVISIBLE);
     }
@@ -99,7 +96,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             SyncManager.mIsGlobalSyncRequired = false;
         }
         registerReceiver(mReceiver, mIntentFilter);
-
     }
 
     @Override
@@ -165,6 +161,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     updateCurrentSongNotificationUI(((MusicDetailFragment) mDashboardDetailFragment).mSelectedTrack);
             }
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_UPDATE_PROGRESS_BAR_THREAD) == 0) {
+            if (mAudioService != null)
+                if (mAudioService.getIsPlaying() || mAudioService.mIsPaused)
+                    ((MusicDetailFragment) mDashboardDetailFragment).startProgressBarThread(mAudioService.getPlayerPosition());
         }
     }
 

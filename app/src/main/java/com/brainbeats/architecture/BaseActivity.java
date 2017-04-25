@@ -119,8 +119,12 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Intent intent = new Intent(BaseActivity.this, AudioService.class);
-        BaseActivity.this.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        if (mAudioService == null) { //Start audio service
+            Intent intent = new Intent(BaseActivity.this, AudioService.class);
+            BaseActivity.this.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        } else {
+            restorePlayingSong();
+        }
 
         if (mDisplayCurrentSongView)
             mCurrentSongPlayingView.setVisibility(View.VISIBLE);
@@ -129,10 +133,21 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
     }
 
+
+    public void restorePlayingSong(){
+        if(mAudioService != null )
+            if(mAudioService.getIsPlaying() || mAudioService.mIsPaused)
+                mAudioService.mPlayingSong = mCurrentSong;
+    }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -146,16 +161,6 @@ public class BaseActivity extends AppCompatActivity {
         mAlbumThumbnail = (ImageView) findViewById(R.id.album_thumbnail);
         mPlayTrackSeekBar = (SeekBar) findViewById(R.id.playing_mix_seek_bar);
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
-
-        if (savedInstanceState != null) { //If our activity is recreated.
-            mCurrentSong = savedInstanceState.getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
-
-            if(mAudioService != null && mAudioService.getIsPlaying() || mAudioService.mIsPaused)
-                mAudioService.mPlayingSong = mCurrentSong;
-
-            if(mDisplayCurrentSongView) //restore current playing
-                updateCurrentSongNotificationUI(mCurrentSong);
-        }
 
         Bundle intentBundle = getIntent().getExtras(); //If an intent is passed to main activity.
         if (intentBundle != null) {
@@ -270,11 +275,6 @@ public class BaseActivity extends AppCompatActivity {
             startActivity(backStackIntent);
             finish();
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 
     public Toolbar getToolBar() {

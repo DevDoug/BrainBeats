@@ -203,6 +203,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
             // Pause playback
             pauseSong();
         } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+
         } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
         }
     }
