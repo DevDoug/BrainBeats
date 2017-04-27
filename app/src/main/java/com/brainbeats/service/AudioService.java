@@ -11,6 +11,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.PowerManager;
@@ -28,10 +29,14 @@ import com.brainbeats.web.WebApiManager;
 import java.io.IOError;
 import java.io.IOException;
 
+import static com.brainbeats.utils.Constants.KEY_EXTRA_SELECTED_TRACK;
+
 /*Audio com.brainbeats.service should handle playing all music, should be a bound com.brainbeats.service and a started com.brainbeats.service which will allow us to bind to com.brainbeats.ui and keep the music in the background when not on the detail activity*/
 public class AudioService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, AudioManager.OnAudioFocusChangeListener, BeatLearner.RecommendationCompleteListener {
 
     public static MediaPlayer mPlayer;
+    public static Track mPlayingSong;
+    public static boolean mIsPaused = false;
 
     public static int FOREGROUND_SERVICE = 101;
     public static String MAIN_ACTION = "com.brainbeats.foregroundservice.action.main";
@@ -42,14 +47,12 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     public static String STOPFOREGROUND_ACTION = "com.brainbeats.foregroundservice.action.stopforeground";
 
     private IBinder mBinder = new AudioBinder();
-    public boolean mIsPaused = false;
-    public Track mPlayingSong;
 
     public AudioService() {}
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(intent.getAction().equals(MAIN_ACTION)){
+        if (intent.getAction().equals(MAIN_ACTION)) {
             mPlayingSong = intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
         } else if (intent.getAction().equals(PLAY_ACTION)) {
             //TODO play/pause song
@@ -70,6 +73,14 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public IBinder onBind(Intent intent) {
+        Bundle intentBundle = intent.getExtras(); //If an intent is passed to main activity.
+
+        if (intentBundle != null) {
+            if (intentBundle.get(KEY_EXTRA_SELECTED_TRACK) != null) {
+                mPlayingSong = (Track) intentBundle.get(KEY_EXTRA_SELECTED_TRACK);
+            }
+        }
+
         return mBinder;
     }
 
@@ -140,6 +151,14 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         mIsPaused = false;
     }
 
+    public void setPlayingSong(Track track) {
+        mPlayingSong = track;
+    }
+
+    public Track getPlayingSong(){
+        return mPlayingSong;
+    }
+
     public void setSongLooping(boolean isLooping) {
         mPlayer.setLooping(isLooping);
     }
@@ -151,6 +170,8 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     public boolean getIsPlaying(){
         return mPlayer.isPlaying();
     }
+
+    public boolean getIsPaused(){return mIsPaused;}
 
     public boolean getIsLooping(){
         return mPlayer.isLooping();
@@ -200,8 +221,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public void onAudioFocusChange(int focusChange) {
         if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
-            // Pause playback
-            pauseSong();
+            pauseSong();             // Pause playback
         } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
 
         } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {

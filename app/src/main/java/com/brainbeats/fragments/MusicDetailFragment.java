@@ -147,12 +147,12 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public void onStart() {
         super.onStart();
 
-        if (((MainActivity) getActivity()).mBound) {
+/*        if (((MainActivity) getActivity()).mBound) {
             if (!((MainActivity) getActivity()).mAudioService.mIsPaused && !((MainActivity) getActivity()).mAudioService.getIsPlaying()) {
                 showLoadingMusicDialog(); // start loading song ui
                 mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI);
             }
-        }
+        }*/
     }
 
     @Override
@@ -175,7 +175,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onStop() {
         super.onStop();
-        mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_UPDATE_CURRENT_PLAYING_SONG_VIEW);
+        mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_UPDATE_CURRENT_PLAYING_SONG_VIEW, mSelectedTrack);
     }
 
     @Override
@@ -221,9 +221,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
             }
         });
 
-        AccountManager.getInstance(getContext()).setDisplayCurrentSongView(false);
         ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.INVISIBLE); // hide our playing sound view
-
         mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_UPDATE_PROGRESS_BAR_THREAD);
     }
 
@@ -394,6 +392,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(Uri uri, Track track);
     }
 
     public void updateTrackUI(Track track) {
@@ -441,16 +440,10 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public void playSong() {
         MainActivity main = ((MainActivity) getActivity());
 
-        if (main.mAudioService.mPlayingSong != null
-                && main.mAudioService.mPlayingSong.getID() != mSelectedTrack.getID()
-                && main.mAudioService.getIsPlaying()) {                                                     //Song is playing load new song
-
+        if (!main.mAudioService.getIsPlaying() && !main.mAudioService.getIsPaused()) {
             showLoadingMusicDialog();
-            mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_NEW_SONG_URI);
-        } else if (!main.mAudioService.mIsPaused && !main.mAudioService.getIsPlaying()) {                    //no song playing load song
-            showLoadingMusicDialog();
-            mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI);
-        } else if (main.mAudioService.getIsPlaying()) {                                                     //Song is playing so pause song
+            mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI, mSelectedTrack);
+        } else if (main.mAudioService.getIsPlaying()) {                                                        //Song is playing so pause song
             mPlaySongButton.setImageResource(R.drawable.ic_play_circle);
             mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_PAUSE_SONG_URI);
         } else {                                                                                            //Song is paused so resume
