@@ -440,7 +440,8 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public void playSong() {
         MainActivity main = ((MainActivity) getActivity());
 
-        if (!main.mAudioService.getIsPlaying() && !main.mAudioService.getIsPaused()) {
+        if (!main.mAudioService.getIsPlaying() && !main.mAudioService.getIsPaused()
+                || !(main.mAudioService.getPlayingSong().getID() == mSelectedTrack.getID())) { //if music not playing or not the current playing song
             showLoadingMusicDialog();
             mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI, mSelectedTrack);
         } else if (main.mAudioService.getIsPlaying()) {                                                        //Song is playing so pause song
