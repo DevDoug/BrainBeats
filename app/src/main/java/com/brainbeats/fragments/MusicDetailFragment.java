@@ -83,6 +83,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
 
     public Bundle mUserSelections;
     public volatile boolean mIsAlive = true;
+    public boolean isCurrentSong = false;
 
     // Playing track members.
     public Thread mUpdateSeekBar;
@@ -133,7 +134,6 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         if (mSelectedTrack != null) {
                 mTrackTitle.setText(Constants.generateUIFriendlyString(mSelectedTrack.getTitle()));
                 if (mSelectedTrack.getArtworkURL() == null)
@@ -146,13 +146,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onStart() {
         super.onStart();
-
-/*        if (((MainActivity) getActivity()).mBound) {
-            if (!((MainActivity) getActivity()).mAudioService.mIsPaused && !((MainActivity) getActivity()).mAudioService.getIsPlaying()) {
-                showLoadingMusicDialog(); // start loading song ui
-                mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI);
-            }
-        }*/
+        mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_CHECK_IF_CURRENT_SONG);
     }
 
     @Override
@@ -222,7 +216,9 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         });
 
         ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.INVISIBLE); // hide our playing sound view
-        mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_UPDATE_PROGRESS_BAR_THREAD);
+
+        if (isCurrentSong)
+            mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_UPDATE_PROGRESS_BAR_THREAD);
     }
 
     @Override
@@ -325,7 +321,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
             public void run() {
                 while ((mProgressStatus < trackDuration) && mIsAlive) {
                     try {
-                        Thread.sleep(500); //Update once per second
+                        Thread.sleep(1000); //Update once per second
                         mProgressStatus = ((MainActivity) getActivity()).mAudioService.getPlayerPosition();
                         mPlayTrackSeekBar.setProgress(mProgressStatus);
                         mPlayTrackSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

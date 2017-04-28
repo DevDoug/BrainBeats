@@ -149,6 +149,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             if(mAudioService != null)
                 if (mAudioService.getIsPlaying() || mAudioService.getIsPaused())
                     ((MusicDetailFragment) mDashboardDetailFragment).startProgressBarThread(mAudioService.getPlayerPosition());
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_CHECK_IF_CURRENT_SONG) == 0) {
+            if (mAudioService != null)
+                if (mAudioService.getIsPlaying() || mAudioService.getIsPaused())
+                    ((MusicDetailFragment) mDashboardDetailFragment).isCurrentSong = (mAudioService.getPlayingSong().getID() == ((MusicDetailFragment) mDashboardDetailFragment).mSelectedTrack.getID());
         }
     }
 
@@ -181,7 +185,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     updateCurrentSongNotificationUI(newTrack);
                 }
             } else if (intent.getAction().equals(Constants.SONG_LOADING_BROADCAST_ACTION)) {
-
                 if (mDashboardDetailFragment.isVisible()) {
                     ((MusicDetailFragment) mDashboardDetailFragment).showLoadingMusicDialog();
                 }
