@@ -30,11 +30,11 @@
         app:showAsAction="never">
     </item>-->
 
-    <item
+<!--    <item
         android:id="@+id/menu_item_share"
         app:showAsAction="ifRoom"
         android:title="Share"
-        app:actionProviderClass="android.widget.ActionProvider" />
+        app:actionProviderClass="android.widget.ActionProvider" />-->
 
     <item
         android:id="@+id/action_logout"

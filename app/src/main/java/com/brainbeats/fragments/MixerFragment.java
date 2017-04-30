@@ -93,11 +93,7 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (position) {
             case 0:
-                Mix defaultMix = Constants.buildNewDefaultMixRecord(getContext());
-                defaultMix.setIsInMixer(1);
-                defaultMix.setIsInLibrary(1);
-                Uri returnRow = getActivity().getContentResolver().insert(BrainBeatsContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(defaultMix));
-                long returnRowId = ContentUris.parseId(returnRow);
+
                 mAddOptionsDialog.dismiss();
                 break;
             case 1:

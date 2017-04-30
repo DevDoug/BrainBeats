@@ -241,7 +241,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
             case R.id.follow_user:
                 updateOfflineSyncManager(null, Constants.SyncDataType.Users);
                 break;
-            case R.id.menu_item_share:
+            /*case R.id.menu_item_share:*/
 
 /*                String[] friends = {"friend1","friend2"};
                 //give the user a list of people to share this song with

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
+import com.brainbeats.fragments.NewMixFragment;
 import com.squareup.picasso.Picasso;
 
 import com.brainbeats.architecture.BaseActivity;
@@ -24,12 +25,11 @@ import com.brainbeats.utils.Constants;
 public class MixerActivity extends BaseActivity implements View.OnClickListener, MixerFragment.OnFragmentInteractionListener {
 
     Fragment mMixerFragment;
+    Fragment mNewMixFragment;
     Fragment mMixerDetailFragment;
     Bundle mUserSelections;
     public FloatingActionButton mMainActionFab;
-
     private IntentFilter mIntentFilter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +39,7 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
 
         mMixerFragment = new MixerFragment();
+        mNewMixFragment = new NewMixFragment();
         mMixerDetailFragment = new MixerDetailFragment();
         switchToMixerFragment();
 
@@ -66,18 +67,17 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
         replaceFragment(mMixerFragment, mMixerFragment.getTag());
     }
 
+    public void switchToNewMusicFragment() {
+        replaceFragment(mNewMixFragment, mNewMixFragment.getTag());
+    }
+
     @Override
     public void onClick(View v) {
         int id = v.getId();
         switch (id) {
             case R.id.main_action_fob:
- /*               if(mMixerFragment.isVisible())
-                    ((MixerFragment) mMixerFragment).mAddOptionsDialog = Constants.buildListDialogue(MixerActivity.this, getString(R.string.new_beat_title), R.array.new_beat_options, ((MixerFragment) mMixerFragment));
-                else if(mMixerDetailFragment.isVisible()) {
-                    ((MixerDetailFragment) mMixerDetailFragment).mDialog = Constants.buildImageListDialogue(MixerActivity.this, MixerActivity.this.getResources().getString(R.string.add_sound_item_to_current_beat), ((MixerDetailFragment) mMixerDetailFragment));
-                    ((MixerDetailFragment) mMixerDetailFragment).mDialog.show();
-                }
-                break;*/
+                switchToNewMusicFragment();
+                break;
         }
     }
 
