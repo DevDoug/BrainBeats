@@ -93,7 +93,6 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (position) {
             case 0:
-
                 mAddOptionsDialog.dismiss();
                 break;
             case 1:
@@ -140,7 +139,7 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data == null) { //no mix com.brainbeats.data found
+        if (data.getCount() == 0) { //no mix com.brainbeats.data found
             mMixerItems.setVisibility(View.GONE);
             mEmptyText.setVisibility(View.VISIBLE);
         } else {

@@ -92,6 +92,9 @@ public class Constants {
     public static final String OREINTATION_SHIFT = "LayoutShift";
 
     //Fragment Uris
+    public static final Uri LOAD_SONG_URI                                           = Uri.parse("base://dashboard_detail_load_song");
+
+
     public static final Uri DASHBOARD_DETAIL_URI                                    = Uri.parse("main://dashboard_detail");
     public static final Uri DASHBOARD_DETAIL_LOAD_DASHBOARD_FAB_IMAGES              = Uri.parse("main://dashboard_detail_load_fab_images");
 
@@ -106,7 +109,9 @@ public class Constants {
     public static final Uri DASHBOARD_DETAIL_UPDATE_PROGRESS_BAR_THREAD             = Uri.parse("main://dashboard_detail_update_progress_bar_thread");
     public static final Uri DASHBOARD_DETAIL_CHECK_IF_CURRENT_SONG                  = Uri.parse("main://dashboard_detail_check_if_current_song");
 
-
+    public static final Uri MIX_SHOW_FAB                                            = Uri.parse("mixer://mix_show_fab");
+    public static final Uri NEW_MIX_HIDE_FAB                                        = Uri.parse("mixer://new_mix_hide_fab");
+    public static final Uri NEW_MIX_LOAD_CONFIRM_FRAG                               = Uri.parse("mixer://new_mix_load_confirm_frag");
 
 
 

@@ -216,7 +216,6 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         });
 
         ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.INVISIBLE); // hide our playing sound view
-
         if (isCurrentSong)
             mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_UPDATE_PROGRESS_BAR_THREAD);
     }

@@ -2,90 +2,104 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.brainbeats.fragments.NewMixFragment">
+    tools:context="com.brainbeats.fragments.CreateMixFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="fill_parent">
 
-        <EditText
-            android:id="@+id/track_title"
+        <TextView
+            android:id="@+id/instruction_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="25dp"
+            android:layout_marginBottom="139dp"
             android:background="@android:color/transparent"
             android:ellipsize="end"
             android:gravity="center"
-            android:hint="New Mix Title"
             android:paddingEnd="45dp"
             android:paddingStart="45dp"
             android:singleLine="true"
+            android:text="Start Recording"
             android:textColor="@color/theme_secondary_text_color"
-            android:textSize="@dimen/album_detail_title_text_size" />
-
-        <RelativeLayout
-            android:id="@+id/beat_detail_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/track_title">
-
-            <ImageView
-                android:id="@+id/album_cover_art"
-                android:layout_width="300dp"
-                android:layout_height="200dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/fragment_content_item_top_margin"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                android:src="@drawable/placeholder" />
-
-            <SeekBar
-                android:id="@+id/play_song_seek_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/album_cover_art"
-                android:layout_alignStart="@+id/album_cover_art"
-                android:layout_below="@+id/album_cover_art"
-                android:layout_marginLeft="@dimen/seek_bar_margin_left"
-                android:layout_marginRight="@dimen/seek_bar_margin_left"
-                android:layout_marginTop="10dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_below="@+id/play_song_seek_bar"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/play_recording_button"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:contentDescription="@string/content_description_play_button"
-                    android:src="@drawable/ic_play_circle" />
-
-            </LinearLayout>
-
-        </RelativeLayout>
+            android:textSize="@dimen/album_detail_title_text_size"
+            android:layout_alignBottom="@+id/start_stop_recording"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true" />
 
         <ImageView
             android:id="@+id/start_stop_recording"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_centerInParent="true"
             android:contentDescription="@string/content_description_play_button"
-            android:src="@drawable/ic_mic"
-            android:layout_below="@+id/beat_detail_header"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="69dp" />
+            android:src="@drawable/ic_mic" />
 
+
+        <SeekBar
+            android:id="@+id/play_recording_seek_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="@dimen/seek_bar_margin_left"
+            android:layout_marginRight="@dimen/seek_bar_margin_left"
+            android:layout_marginTop="30dp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/button_panel"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/play_recording_seek_bar"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/restart"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:contentDescription="@string/content_description_shuffle_button"
+                android:src="@drawable/restart" />
+
+<!--            <ImageView
+                android:id="@+id/arrow_down"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:contentDescription="@string/content_description_play_prev_button"
+                android:src="@drawable/ic_arrow_downward_black" />-->
+
+            <ImageView
+                android:id="@+id/play_song_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:contentDescription="@string/content_description_play_button"
+                android:src="@drawable/ic_play_circle" />
+
+<!--            <ImageView
+                android:id="@+id/skip_forward_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:contentDescription="@string/content_description_play_next_button"
+                android:src="@drawable/ic_skip_next" />-->
+
+            <ImageView
+                android:id="@+id/save_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:contentDescription="@string/content_description_play_next_button"
+                android:src="@drawable/save" />
+
+        </LinearLayout>
     </RelativeLayout>
-
 </FrameLayout>

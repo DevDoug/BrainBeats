@@ -75,7 +75,7 @@
     <string name="unknown_volley_error">Unknown error.</string>
 
     <string name="mixes">Mixes</string>
-    <string name="no_mixes_found_text">No mixes found</string>
+    <string name="no_mixes_found_text">You don\'t have any mixes yet</string>
     <string name="default_mix_title">New Mix</string>
     <string name="suggested_tracks">Suggested Tracks</string>
 

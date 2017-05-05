@@ -37,6 +37,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     public static MediaPlayer mPlayer;
     public static Track mPlayingSong;
     public static boolean mIsPaused = false;
+    public boolean mIsRecordingTest = false;
 
     public static int FOREGROUND_SERVICE = 101;
     public static String MAIN_ACTION = "com.brainbeats.foregroundservice.action.main";
@@ -106,11 +107,15 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
             mp.seekTo(0);
         } else {
             //tell ui to show loading spinner
-            Intent broadcastIntent = new Intent();
-            broadcastIntent.setAction(Constants.SONG_LOADING_BROADCAST_ACTION);
-            sendBroadcast(broadcastIntent);
+            if(!mIsRecordingTest) {
+                Intent broadcastIntent = new Intent();
+                broadcastIntent.setAction(Constants.SONG_LOADING_BROADCAST_ACTION);
+                sendBroadcast(broadcastIntent);
 
-            loadNextTrack(); //load next track on com.brainbeats.service side
+                loadNextTrack(); //load next track on com.brainbeats.service side
+            } else {
+                mIsRecordingTest = false;
+            }
         }
     }
 

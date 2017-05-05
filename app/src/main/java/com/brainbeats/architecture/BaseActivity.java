@@ -354,6 +354,11 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    public void showMainFAB(){
+        mMainActionFab.setVisibility(View.VISIBLE);
+        mMainActionFab.setClickable(true);
+    }
+
     public void hideMainFAB(){
         mMainActionFab.setVisibility(View.INVISIBLE);
         mMainActionFab.setClickable(false);
