@@ -3,7 +3,6 @@ package com.brainbeats.fragments;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -18,10 +17,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.Log;
 import android.view.ActionProvider;
 import android.view.LayoutInflater;
@@ -30,40 +27,22 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import com.android.volley.VolleyError;
+
 import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
 import com.brainbeats.adapters.MixTagAdapter;
 import com.brainbeats.architecture.AccountManager;
-import com.brainbeats.architecture.BaseActivity;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.entity.Track;
-import com.brainbeats.entity.User;
-import com.brainbeats.service.AudioService;
 import com.brainbeats.sync.OfflineSyncManager;
 import com.brainbeats.utils.BeatLearner;
 import com.brainbeats.utils.Constants;
-import com.brainbeats.web.WebApiManager;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
-import android.provider.ContactsContract;
-
-
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.lang.reflect.Type;
-
-import javax.sql.CommonDataSource;
-
-import static android.app.Activity.RESULT_OK;
 
 public class MusicDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
@@ -177,7 +156,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         View v = inflater.inflate(R.layout.fragment_music_detail, container, false);
         //mMixerTags = (RecyclerView) v.findViewById(R.id.mix_tag_grid);    //TODO - implement in version 2.0 beta version
 
-        mTrackTitle = (TextView) v.findViewById(R.id.track_title);
+        mTrackTitle = (TextView) v.findViewById(R.id.mix_title);
         mArtistDescription = (TextView) v.findViewById(R.id.artist_description);
         mAlbumCoverArt = (ImageView) v.findViewById(R.id.album_cover_art);
         mPlaySongButton = (ImageView) v.findViewById(R.id.play_song_button);

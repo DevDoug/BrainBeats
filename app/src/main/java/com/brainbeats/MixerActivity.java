@@ -1,6 +1,7 @@
 package com.brainbeats;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
+import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.fragments.ConfirmCreateMixFragment;
 import com.brainbeats.fragments.CreateMixFragment;
 
@@ -23,7 +25,7 @@ import com.brainbeats.utils.Constants;
 
 import java.io.File;
 
-public class MixerActivity extends BaseActivity implements View.OnClickListener, MixerFragment.OnFragmentInteractionListener, CreateMixFragment.OnFragmentInteractionListener {
+public class MixerActivity extends BaseActivity implements View.OnClickListener, MixerFragment.OnFragmentInteractionListener, CreateMixFragment.OnFragmentInteractionListener, ConfirmCreateMixFragment.OnFragmentInteractionListener {
 
     Fragment mMixerFragment;
     Fragment mNewMixFragment;
@@ -33,6 +35,7 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
     Bundle mUserSelections;
     public FloatingActionButton mMainActionFab;
     private IntentFilter mIntentFilter;
+    public Mix mNewMix;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +77,7 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
 
     public void switchToNewMixFragment() {
         toggleNavDrawerIcon();
+        mNewMix = new Mix();
         replaceFragment(mNewMixFragment, mNewMixFragment.getTag());
     }
 
@@ -98,19 +102,32 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
             hideMainFAB();
         } else if (uri.compareTo(Constants.MIX_SHOW_FAB) == 0) {
             showMainFAB();
+        } else if(uri.compareTo(Constants.MIX_SHOW_MIX_LIST) == 0){
+            Intent mixerIntent = new Intent(getApplicationContext(), MixerActivity.class);
+            createBackStack(mixerIntent);
         }
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri, String source ) {
+    public void onFragmentInteraction(Uri uri, String source) {
         if (uri.compareTo(Constants.LOAD_SONG_URI) == 0) {
             mAudioService.mIsRecordingTest = true;
-           mAudioService.playSong(Uri.fromFile(new File(source)));
-        } else if(uri.compareTo(Constants.NEW_MIX_LOAD_CONFIRM_FRAG) == 0) {
+            mAudioService.playSong(Uri.fromFile(new File(source)));
+        } else if (uri.compareTo(Constants.NEW_MIX_LOAD_CONFIRM_FRAG) == 0) {
+            mNewMix.setStreamURL(source);
             switchToConfirmCreateMixFragment();
         }
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri, String title, String imageUrl) {
+        if (uri.compareTo(Constants.MIX_ADD_NEW) == 0) {
+            mNewMix.setMixTitle(title);
+            mNewMix.setIsInMixer(1);
+            Uri returnRow = getContentResolver().insert(BrainBeatsContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(mNewMix));
+            long returnRowId = ContentUris.parseId(returnRow);
+        }
+    }
 
     public void loadMixerDetailFragment(Mix mix) {
         if (mDrawerToggle != null)

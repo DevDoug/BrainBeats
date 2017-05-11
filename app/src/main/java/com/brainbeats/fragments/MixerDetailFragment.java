@@ -62,7 +62,7 @@ public class MixerDetailFragment extends Fragment implements LoaderManager.Loade
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mixer_detail, container, false);
         mMixerItemList = (RecyclerView) v.findViewById(R.id.beat_mix_item_list);
-        mMixTitle = (EditText) v.findViewById(R.id.track_title);
+        mMixTitle = (EditText) v.findViewById(R.id.mix_title);
         mPlayMixButton = (ImageView) v.findViewById(R.id.play_song_button);
         ((TextView) v.findViewById(R.id.separator_title)).setText(R.string.beat_levels);
         //mAddNewBeatButton = (FloatingActionButton) v.findViewById(R.id.mixer_fob);

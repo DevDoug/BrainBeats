@@ -83,8 +83,8 @@ public class BrainBeatsContract {
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_PLAYLIST;
 
         public static final String TABLE_NAME                           =  "playlists";
-        public static final String COLUMN_NAME_PLAYLIST_TITLE           = "playlisttitle";
-        public static final String COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID   = "soundcloudplaylistid";
+        public static final String COLUMN_NAME_PLAYLIST_TITLE           =  "playlisttitle";
+        public static final String COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID   =  "soundcloudplaylistid";
 
 
         public static Uri buildPlaylistUriWithId(long id) {

@@ -5,10 +5,58 @@
     tools:context="com.brainbeats.fragments.ConfirmCreateMixFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Confirm Create Mix"
-        android:layout_gravity="center"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent">
+
+        <EditText
+            android:id="@+id/mix_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="25dp"
+            android:background="@android:color/transparent"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:paddingEnd="45dp"
+            android:paddingStart="45dp"
+            android:hint="Enter Mix Title"
+            android:singleLine="true"
+            android:textColor="@color/theme_secondary_text_color"
+            android:textSize="@dimen/album_detail_title_text_size" />
+
+        <RelativeLayout
+            android:id="@+id/beat_detail_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/mix_title">
+
+            <ImageView
+                android:id="@+id/album_cover_art"
+                android:layout_width="300dp"
+                android:layout_height="200dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/placeholder"
+                android:layout_marginTop="@dimen/fragment_content_item_top_margin"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter" />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/confirm_save_mix_button"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="67dp"
+            android:background="@drawable/login_button_background"
+            android:text="Confirm"
+            android:textColor="@color/theme_primary_text_color"
+            android:textStyle="bold"
+            android:layout_below="@+id/beat_detail_header"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
+
 
 </FrameLayout>

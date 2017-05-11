@@ -112,6 +112,9 @@ public class Constants {
     public static final Uri MIX_SHOW_FAB                                            = Uri.parse("mixer://mix_show_fab");
     public static final Uri NEW_MIX_HIDE_FAB                                        = Uri.parse("mixer://new_mix_hide_fab");
     public static final Uri NEW_MIX_LOAD_CONFIRM_FRAG                               = Uri.parse("mixer://new_mix_load_confirm_frag");
+    public static final Uri MIX_SHOW_MIX_LIST                                       = Uri.parse("mixer://mix_show_mix_list");
+    public static final Uri MIX_ADD_NEW                                        = Uri.parse("mixer://mix_add_new");
+
 
 
 
@@ -379,11 +382,10 @@ public class Constants {
                 defaultMix.setMixUserId(userCursor.getInt(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
                 userCursor.close();
             }
+
         } else {
             defaultMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(context).getUserId())); //BrainBeatsUser is logged in to sound cloud
         }
-
-
 
         return defaultMix;
     }

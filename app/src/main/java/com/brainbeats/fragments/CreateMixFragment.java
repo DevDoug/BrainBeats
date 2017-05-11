@@ -2,7 +2,10 @@ package com.brainbeats.fragments;
 
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
@@ -21,9 +24,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -79,7 +84,7 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         super.onCreate(icicle);
         // Record to the external cache directory for visibility
         mFileName = getActivity().getExternalCacheDir().getAbsolutePath();
-        mFileName += "/audiorecordtest.3gp";
+        mFileName += "/" + getString(R.string.temperary_file_name) + ".3gp";
         ActivityCompat.requestPermissions(getActivity(), permissions, REQUEST_RECORD_AUDIO_PERMISSION);
     }
 
@@ -114,19 +119,20 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onClick(View view) {
                 mListener.onFragmentInteraction(Constants.MIX_SHOW_FAB);
+                mIsRecording = false;
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 ((MixerActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
             }
         });
     }
-
+  
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.start_stop_recording:
                 onRecord(!mIsRecording);
                 break;
-            case R.id.play_song_button:
+/*            case R.id.play_song_button:
                 mListener.onFragmentInteraction(Constants.LOAD_SONG_URI, mFileName);
                 break;
             case R.id.save_button:
@@ -134,7 +140,7 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.restart:
                 showRecordingView();
-                break;
+                break;*/
         }
     }
 
@@ -199,6 +205,8 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         mIsRecording = false;
         mRecordButton.setImageResource(R.drawable.ic_mic);
         showPlaybackRecordingView();
+
+
     }
 
     @Override
@@ -223,9 +231,30 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
     }
 
     public void showPlaybackRecordingView(){
-        mInstructionText.setText("");
-        mRecordButton.setVisibility(View.INVISIBLE);
-        mPlayRecordingSeekBar.setVisibility(View.VISIBLE);
-        mRecordingOptions.setVisibility(View.VISIBLE);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), android.R.style.Theme_Material_Light_Dialog_Alert);
+        View dialogView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.audio_playback_dialog, null);
+        builder.setView(dialogView);
+        ((ImageView) dialogView.findViewById(R.id.play_song_button)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onFragmentInteraction(Constants.LOAD_SONG_URI, mFileName);
+            }
+        });
+
+        builder.setPositiveButton("Sounds Good", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mListener.onFragmentInteraction(Constants.NEW_MIX_LOAD_CONFIRM_FRAG, mFileName);
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("Rerecord", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }
