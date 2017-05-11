@@ -13,6 +13,8 @@ import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 
 import com.brainbeats.data.BrainBeatsContract;
+import com.brainbeats.data.BrainBeatsDbHelper;
+import com.brainbeats.model.Mix;
 import com.brainbeats.utils.Constants;
 
 /**
@@ -37,6 +39,21 @@ public class MixerAdapter extends RecyclerViewCursorAdapter<MixerAdapter.ViewHol
             @Override
             public void onClick(View view) {
                 //((MixerActivity) mAdapterContext).loadMixerDetailFragment(Constants.buildMixFromCursor(mAdapterContext, getCursor(), viewHolder.getAdapterPosition()));
+            }
+        });
+
+        viewHolder.mContainer.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                //load delete dialog
+                Constants.buildActionDialog(mAdapterContext, "Delete Mix", "Do you want to delete this mix from your mixer", "confirm", new Constants.ConfirmDialogActionListener() {
+                    @Override
+                    public void PerformDialogAction() {
+                        Mix selectedMix = Constants.buildMixFromCursor(mAdapterContext,getCursor(), viewHolder.getAdapterPosition()); // get the selected mix item
+                        mAdapterContext.getContentResolver().delete(BrainBeatsContract.MixEntry.CONTENT_URI, "_Id" + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, new String[]{String.valueOf(selectedMix.getMixId())});
+                    }
+                });
+                return false;
             }
         });
     }
