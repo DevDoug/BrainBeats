@@ -62,7 +62,6 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
     private SeekBar mPlayRecordingSeekBar;
     private LinearLayout mRecordingOptions;
 
-
     private MediaRecorder mRecorder = null;
     private boolean mIsRecording = false;
 
@@ -99,7 +98,6 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         mPlayRecordingSeekBar = (SeekBar) v.findViewById(R.id.play_recording_seek_bar);
         mRecordingOptions = (LinearLayout) v.findViewById(R.id.button_panel);
 
-        mListener.onFragmentInteraction(Constants.NEW_MIX_HIDE_FAB);
         mRecordButton.setOnClickListener(this);
         mPlayRecordingButton.setOnClickListener(this);
         mSaveSong.setOnClickListener(this);
@@ -124,8 +122,10 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
                 ((MixerActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
             }
         });
+
+        mListener.onFragmentInteraction(Constants.NEW_MIX_HIDE_FAB);
     }
-  
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -205,8 +205,6 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         mIsRecording = false;
         mRecordButton.setImageResource(R.drawable.ic_mic);
         showPlaybackRecordingView();
-
-
     }
 
     @Override

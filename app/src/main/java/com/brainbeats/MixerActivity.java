@@ -44,12 +44,13 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
 
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
 
-        mMixerFragment = new MixerFragment();
-        mNewMixFragment = new CreateMixFragment();
-        mConfirmNewMixFragment = new ConfirmCreateMixFragment();
-        mMixerDetailFragment = new MixerDetailFragment();
-
-        switchToMixerFragment();
+        if (savedInstanceState == null) {
+            mMixerFragment = new MixerFragment();
+            mNewMixFragment = new CreateMixFragment();
+            mConfirmNewMixFragment = new ConfirmCreateMixFragment();
+            mMixerDetailFragment = new MixerDetailFragment();
+            switchToMixerFragment();
+        }
 
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
