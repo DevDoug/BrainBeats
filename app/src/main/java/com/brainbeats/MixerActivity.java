@@ -61,7 +61,7 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
         Intent intent = getIntent();
         if (intent.getExtras() != null) {
             String intentAction = intent.getAction();
-            if(intentAction.equalsIgnoreCase(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT)){
+            if (intentAction.equalsIgnoreCase(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT)) {
                 Mix mix = (Mix) intent.getExtras().get(Constants.KEY_EXTRA_SELECTED_MIX);
                 loadMixerDetailFragment(mix);
             }
@@ -81,7 +81,7 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
         replaceFragment(mNewMixFragment, mNewMixFragment.getTag());
     }
 
-    public void switchToConfirmCreateMixFragment(){
+    public void switchToConfirmCreateMixFragment() {
         toggleNavDrawerIcon();
         replaceFragment(mConfirmNewMixFragment, mConfirmNewMixFragment.getTag());
     }
@@ -102,7 +102,7 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
             hideMainFAB();
         } else if (uri.compareTo(Constants.MIX_SHOW_FAB) == 0) {
             showMainFAB();
-        } else if(uri.compareTo(Constants.MIX_SHOW_MIX_LIST) == 0){
+        } else if (uri.compareTo(Constants.MIX_SHOW_MIX_LIST) == 0) {
             Intent mixerIntent = new Intent(getApplicationContext(), MixerActivity.class);
             createBackStack(mixerIntent);
         }
@@ -124,6 +124,7 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
         if (uri.compareTo(Constants.MIX_ADD_NEW) == 0) {
             mNewMix.setMixTitle(title);
             mNewMix.setIsInMixer(1);
+            mNewMix.setIsInLibrary(1);
             Uri returnRow = getContentResolver().insert(BrainBeatsContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(mNewMix));
             long returnRowId = ContentUris.parseId(returnRow);
         }
