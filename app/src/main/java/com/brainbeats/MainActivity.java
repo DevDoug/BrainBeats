@@ -135,14 +135,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-        if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI) == 0) {
-            if (mAudioService.mPlayingSong == null)
-                mAudioService.mPlayingSong = mCurrentSong;
-            mAudioService.playSong(Uri.parse(mAudioService.mPlayingSong.getStreamURL()));
-        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_NEW_SONG_URI) == 0) {
-            mAudioService.mPlayingSong = mCurrentSong;
-            mAudioService.playSong(Uri.parse(mAudioService.mPlayingSong.getStreamURL()));
-        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_PLAY_SONG_URI) == 0) {
+        if (uri.compareTo(Constants.DASHBOARD_DETAIL_PLAY_SONG_URI) == 0) {
             mAudioService.resumeSong();
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_PAUSE_SONG_URI) == 0) {
             mAudioService.pauseSong();
@@ -152,18 +145,30 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             mAudioService.loadNextTrack();
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_SET_SONG_REPEAT_URI) == 0) {
             mAudioService.setSongLooping(true);
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_UPDATE_PROGRESS_BAR_THREAD) == 0) {
+            if(mAudioService != null)
+                if (mAudioService.getIsPlaying() || mAudioService.getIsPaused())
+                    ((MusicDetailFragment) mDashboardDetailFragment).startProgressBarThread(mAudioService.getPlayerPosition());
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_CHECK_IF_CURRENT_SONG) == 0) {
+            if (mAudioService != null)
+                if (mAudioService.getIsPlaying() || mAudioService.getIsPaused())
+                    ((MusicDetailFragment) mDashboardDetailFragment).isCurrentSong = (mAudioService.getPlayingSong().getID() == ((MusicDetailFragment) mDashboardDetailFragment).mSelectedTrack.getID());
+        }
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri, Track track) {
+        if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI) == 0) {
+            mAudioService.setPlayingSong(track);
+            mAudioService.playSong(Uri.parse(track.getStreamURL()));
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_UPDATE_CURRENT_PLAYING_SONG_VIEW) == 0) {
-            if (mAudioService.getIsPlaying() || mAudioService.mIsPaused) {
+            if (mAudioService.getIsPlaying() || mAudioService.getIsPaused()) {
                 mDisplayCurrentSongView = true;
                 mCurrentSongPlayingView.setVisibility(View.VISIBLE);
 
-                if ((mAudioService.mPlayingSong != null && mAudioService.mPlayingSong.getID() == ((MusicDetailFragment) mDashboardDetailFragment).mSelectedTrack.getID()))
-                    updateCurrentSongNotificationUI(((MusicDetailFragment) mDashboardDetailFragment).mSelectedTrack);
+                if (mAudioService.getPlayingSong().getID() == track.getID())
+                    updateCurrentSongNotificationUI(track);
             }
-        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_UPDATE_PROGRESS_BAR_THREAD) == 0) {
-            if (mAudioService != null)
-                if (mAudioService.getIsPlaying() || mAudioService.mIsPaused)
-                    ((MusicDetailFragment) mDashboardDetailFragment).startProgressBarThread(mAudioService.getPlayerPosition());
         }
     }
 
@@ -171,8 +176,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
+
                 Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
-                if (mDashboardDetailFragment.isVisible()) {                                                     //if they are on the dashboard detail screen update the detail widgets
+                if (mDashboardDetailFragment.isVisible()) {                                                             //if they are on the dashboard detail screen update the detail widgets
                     (((MusicDetailFragment) mDashboardDetailFragment)).updateTrackUI(newTrack);
                 } else {
                     mCurrentSong = newTrack;

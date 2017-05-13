@@ -46,6 +46,8 @@ import com.brainbeats.model.Mix;
 import com.brainbeats.service.AudioService;
 import com.brainbeats.utils.Constants;
 
+import static com.brainbeats.utils.Constants.KEY_EXTRA_SELECTED_TRACK;
+
 /**
  * Created by Douglas on 4/21/2016.
  */
@@ -53,6 +55,9 @@ public class BaseActivity extends AppCompatActivity {
 
     public static final String ACCOUNT_TYPE = "com.example.android.datasync";
     public static final String ACCOUNT = "dummyaccount";
+
+    public Track mCurrentSong;
+    public static boolean mDisplayCurrentSongView = false;
 
     public DrawerLayout mNavigationDrawer;
     public Toolbar mToolBar;
@@ -70,9 +75,8 @@ public class BaseActivity extends AppCompatActivity {
     public Thread mUpdateSeekBar;
     private SeekBar mPlayTrackSeekBar;
     int mProgressStatus = 0;
-    public static Track mCurrentSong;
     private volatile boolean mIsAlive = false;
-    public static boolean mDisplayCurrentSongView = false;
+
 
     //Audio com.brainbeats.service members
     public AudioService mAudioService;
@@ -82,22 +86,23 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAccount = CreateSyncAccount(this);
-    }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+        // Bind to the com.brainbeats.service
+        Bundle intentBundle = getIntent().getExtras(); //If an intent is passed to main activity.
+        if (intentBundle != null) {
+            if (intentBundle.get(KEY_EXTRA_SELECTED_TRACK) != null) {
+                mCurrentSong = (Track) intentBundle.get(KEY_EXTRA_SELECTED_TRACK);
+            }
+        }
+
+        Intent intent = new Intent(BaseActivity.this, AudioService.class);
+        intent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+        BaseActivity.this.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
         // Unbind from the com.brainbeats.service
         if (mBound) {
             BaseActivity.this.unbindService(mConnection);
@@ -106,15 +111,24 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        if (mAudioService == null) { //Start audio service
-            Intent intent = new Intent(BaseActivity.this, AudioService.class);
-            BaseActivity.this.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        } else {
-            restorePlayingSong();
-        }
-
         if (mDisplayCurrentSongView)
             mCurrentSongPlayingView.setVisibility(View.VISIBLE);
         else
@@ -124,18 +138,6 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-
-    public void restorePlayingSong(){
-        if(mAudioService != null )
-            if(mAudioService.getIsPlaying() || mAudioService.mIsPaused)
-                mAudioService.mPlayingSong = mCurrentSong;
     }
 
     @Override
@@ -151,14 +153,7 @@ public class BaseActivity extends AppCompatActivity {
         mPlayTrackSeekBar = (SeekBar) findViewById(R.id.playing_mix_seek_bar);
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
 
-        Bundle intentBundle = getIntent().getExtras(); //If an intent is passed to main activity.
-        if (intentBundle != null) {
-            if (intentBundle.get(Constants.KEY_EXTRA_SELECTED_TRACK) != null) {
-                Track sentTrack = (Track) intentBundle.get(Constants.KEY_EXTRA_SELECTED_TRACK);
-                mCurrentSong = sentTrack;
-                updateCurrentSongNotificationUI(sentTrack);
-            }
-        }
+        updateCurrentSongNotificationUI(mCurrentSong);
 
         mCurrentSongPlayingView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,35 +195,37 @@ public class BaseActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.action_browse:
                         Intent browseIntent = new Intent(getApplicationContext(), MainActivity.class);
-                        browseIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                        browseIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
                         browseIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(browseIntent);
                         break;
                     case R.id.action_library:
                         Intent libraryIntent = new Intent(getApplicationContext(), LibraryActivity.class);
-                        libraryIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                        libraryIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
                         libraryIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(libraryIntent);
                         break;
-/*                    case R.id.action_mixer:
+                    case R.id.action_mixer:
                         Intent mixerIntent = new Intent(getApplicationContext(), MixerActivity.class);
+                        mixerIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                        mixerIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(mixerIntent);
-                        break;*/
+                        break;
                     case R.id.action_social:
                         Intent socialIntent = new Intent(getApplicationContext(), SocialActivity.class);
-                        socialIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                        socialIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
                         socialIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(socialIntent);
                         break;
                     case R.id.action_settings:
                         Intent settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
-                        settingsIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                        settingsIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
                         settingsIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(settingsIntent);
                         break;
                     case R.id.action_info:
                         Intent infoIntent = new Intent(getApplicationContext(), InfoActivity.class);
-                        infoIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                        infoIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
                         infoIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(infoIntent);
                         break;
@@ -355,6 +352,11 @@ public class BaseActivity extends AppCompatActivity {
             mCurrentSongArtistName.setText(track.getUser().getUsername());
             startProgressBarThread();
         }
+    }
+
+    public void showMainFAB(){
+        mMainActionFab.setVisibility(View.VISIBLE);
+        mMainActionFab.setClickable(true);
     }
 
     public void hideMainFAB(){

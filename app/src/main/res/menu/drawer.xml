@@ -9,10 +9,10 @@
             android:id="@+id/action_library"
             android:icon="@drawable/ic_library_music"
             android:title="@string/nav_item_label_library" />
-  <!--      <item
+        <item
             android:id="@+id/action_mixer"
             android:icon="@drawable/ic_album"
-            android:title="@string/nav_item_label_mixer" />-->
+            android:title="@string/nav_item_label_mixer" />
         <item
             android:id="@+id/action_social"
             android:icon="@drawable/ic_navview_social"
