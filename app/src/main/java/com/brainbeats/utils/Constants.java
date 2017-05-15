@@ -257,6 +257,27 @@ public class Constants {
         return mix;
     }
 
+/*    public static BrainBeatsUser getCurrentUser(Context context){
+        Cursor userCursor = context.getContentResolver().query( //get this mixes user
+                BrainBeatsContract.UserEntry.CONTENT_URI,
+                null,  //return everything
+                BrainBeatsContract.UserEntry._ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
+                new String[]{String.valueOf(AccountManager.getInstance(context).getUserId())},
+                null);
+
+        BrainBeatsUser brainBeatsUser = new BrainBeatsUser();
+
+        if (userCursor != null && userCursor.getCount() != 0) {
+            userCursor.moveToFirst();
+            brainBeatsUser.setUserId(userCursor.getLong(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
+            brainBeatsUser.setUserName(userCursor.getString(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));
+            brainBeatsUser.setSoundCloudUserId(userCursor.getInt(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID)));
+            userCursor.close();
+        }
+
+        return brainBeatsUser;
+    }*/
+
     public static BrainBeatsUser buildUserFromCursor(Context context, Cursor cursor) {
         cursor.moveToFirst();
 

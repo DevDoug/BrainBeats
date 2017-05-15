@@ -11,10 +11,12 @@
         android:visibility="visible"/>
 
     <TextView
-        android:id="@+id/no_data_placeholder"
+        android:id="@+id/empty_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/no_songs_placeholder" />
+        android:text="@string/no_songs_placeholder"
+        android:textSize="26sp"
+        android:visibility="gone" />
 
 </FrameLayout>

@@ -228,7 +228,7 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         mRecordingOptions.setVisibility(View.INVISIBLE);
     }
 
-    public void showPlaybackRecordingView(){
+    public void showPlaybackRecordingView() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), android.R.style.Theme_Material_Light_Dialog_Alert);
         View dialogView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.audio_playback_dialog, null);
         builder.setView(dialogView);

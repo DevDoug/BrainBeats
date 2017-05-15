@@ -34,7 +34,6 @@
             android:contentDescription="@string/content_description_play_button"
             android:src="@drawable/ic_mic" />
 
-
         <SeekBar
             android:id="@+id/play_recording_seek_bar"
             android:layout_width="match_parent"

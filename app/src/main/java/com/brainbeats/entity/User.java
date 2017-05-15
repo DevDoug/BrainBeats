@@ -35,11 +35,14 @@ public class User implements Parcelable {
 
     public User(){}
 
-    public User(BrainBeatsUser modelBrainBeatsUser){
-        id = (int) modelBrainBeatsUser.getSoundCloudUserId();
+    public User(BrainBeatsUser modelBrainBeatsUser) {
+        if (modelBrainBeatsUser.getSoundCloudUserId() != 0)
+            id = (int) modelBrainBeatsUser.getSoundCloudUserId();
+        else
+            id = (int) modelBrainBeatsUser.getUserId();
+
         username = modelBrainBeatsUser.getUserName();
         avatarUrl = modelBrainBeatsUser.getUserProfileImage();
-
     }
 
     public int getId() {

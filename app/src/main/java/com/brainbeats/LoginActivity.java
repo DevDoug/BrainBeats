@@ -330,6 +330,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final Context mContext;
+        private long mUserId;
         private final String mEmail;
         private final String mPassword;
 
@@ -371,6 +372,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             long returnRowId = ContentUris.parseId(returnRow);
 
             if (returnRowId != -1) {
+                mUserId = returnRowId;
                 return true;
             } else {
                 Toast.makeText(mContext, "Account Creation Failed", Toast.LENGTH_LONG).show();
@@ -384,7 +386,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             if (success) {
                 finish();
                 Intent dashboardIntent = new Intent(mContext, MainActivity.class);
-                AccountManager.getInstance(mContext).setUserId(mEmail);
+                AccountManager.getInstance(mContext).setUserId(String.valueOf(mUserId));
                 startActivity(dashboardIntent);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

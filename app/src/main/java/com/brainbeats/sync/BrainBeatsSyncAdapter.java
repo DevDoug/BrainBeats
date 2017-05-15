@@ -79,7 +79,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
    */
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-        Log.i("In com.brainbeats.sync", "in com.brainbeats.sync");
+        /*Log.i("In com.brainbeats.sync", "in com.brainbeats.sync");
 
         int selectedTrackId = extras.getInt(Constants.KEY_EXTRA_SELECTED_TRACK_ID);
         int SYNC_TYPE = extras.getInt(Constants.KEY_EXTRA_SYNC_TYPE);
@@ -200,7 +200,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                 }
                 break;
             case 1: //com.brainbeats.sync mix related     //TODO - implement in version 2.0 beta version
-                /*WebApiManager.getRelatedTracks(getContext(), String.valueOf(selectedTrackId), new WebApiManager.OnObjectResponseListener() {
+                *//*WebApiManager.getRelatedTracks(getContext(), String.valueOf(selectedTrackId), new WebApiManager.OnObjectResponseListener() {
                     @Override
                     public void onObjectResponse(JSONObject object) {
                         Log.i(getClass().getSimpleName(), "Response = " + object.toString());
@@ -241,7 +241,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                     public void onErrorResponse(VolleyError error) {
                         Log.i(getClass().getSimpleName(), "Response = " + error.toString());
                     }
-                });*/
+                });*//*
                 break;
             case 2: //com.brainbeats.sync mix playlist
                 WebApiManager.getUserPlaylists(getContext(), AccountManager.getInstance(getContext()).getUserId(), new WebApiManager.OnArrayResponseListener() {
@@ -332,7 +332,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                 // break;
             default:
                 break;
-        }
+        }*/
     }
 
     public void addMix(Track track, boolean inLibrary, boolean isFavorite, boolean inMixer, ContentProviderClient provider) {

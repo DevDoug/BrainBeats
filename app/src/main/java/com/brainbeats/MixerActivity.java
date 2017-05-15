@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
+import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.fragments.ConfirmCreateMixFragment;
 import com.brainbeats.fragments.CreateMixFragment;
@@ -126,6 +127,7 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
             mNewMix.setMixTitle(title);
             mNewMix.setIsInMixer(1);
             mNewMix.setIsInLibrary(1);
+            mNewMix.setMixUserId(Long.parseLong(AccountManager.getInstance(this).getUserId()));
             Uri returnRow = getContentResolver().insert(BrainBeatsContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(mNewMix));
             long returnRowId = ContentUris.parseId(returnRow);
         }
