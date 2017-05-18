@@ -3,9 +3,11 @@ package com.brainbeats.architecture;
 import android.accounts.Account;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -78,6 +80,9 @@ public class BaseActivity extends AppCompatActivity {
     private volatile boolean mIsAlive = false;
 
 
+    private IntentFilter mIntentFilter;
+
+
     //Audio com.brainbeats.service members
     public AudioService mAudioService;
     public boolean mBound = false;
@@ -98,6 +103,9 @@ public class BaseActivity extends AppCompatActivity {
         Intent intent = new Intent(BaseActivity.this, AudioService.class);
         intent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
         BaseActivity.this.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
     }
 
     @Override
@@ -133,11 +141,14 @@ public class BaseActivity extends AppCompatActivity {
             mCurrentSongPlayingView.setVisibility(View.VISIBLE);
         else
             mCurrentSongPlayingView.setVisibility(View.INVISIBLE);
+
+        registerReceiver(mReceiver, mIntentFilter);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        unregisterReceiver(mReceiver);
     }
 
     @Override
@@ -405,4 +416,20 @@ public class BaseActivity extends AppCompatActivity {
         });
         mUpdateSeekBar.start();
     }
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
+                Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+                mCurrentSongTitle.setText(newTrack.getTitle());
+                if (newTrack.getArtworkURL() == null)
+                    mAlbumThumbnail.setImageResource(R.drawable.placeholder);
+                else
+                    Picasso.with(BaseActivity.this).load(newTrack.getArtworkURL()).into(mAlbumThumbnail);
+                mCurrentSongArtistName.setText(newTrack.getUser().getUsername());
+                mCurrentSong = newTrack;
+            }
+        }
+    };
 }

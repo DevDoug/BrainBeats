@@ -25,7 +25,6 @@ import com.squareup.picasso.Picasso;
 public class InfoActivity extends BaseActivity implements InfoFragment.OnFragmentInteractionListener {
 
     public Fragment mInfoFragment;
-    private IntentFilter mIntentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +33,6 @@ public class InfoActivity extends BaseActivity implements InfoFragment.OnFragmen
         mInfoFragment = new InfoFragment();
 
         switchToInfoFragment();
-
-        mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
     }
 
     @Override
@@ -69,35 +65,4 @@ public class InfoActivity extends BaseActivity implements InfoFragment.OnFragmen
         getMenuInflater().inflate(R.menu.menu_global, menu);
         return true;
     }
-
-    @Override
-    public void onPause() {
-        unregisterReceiver(mReceiver);
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        registerReceiver(mReceiver, mIntentFilter);
-    }
-
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
-                Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
-                mCurrentSongTitle.setText(newTrack.getTitle());
-                if (newTrack.getArtworkURL() == null)
-                    mAlbumThumbnail.setImageResource(R.drawable.placeholder);
-                else
-                    Picasso.with(InfoActivity.this).load(newTrack.getArtworkURL()).into(mAlbumThumbnail);
-
-                mCurrentSongArtistName.setText(newTrack.getUser().getUsername());
-
-                //Update the current playing song in base activity to the song from this broadcast
-                mCurrentSong = newTrack;
-            }
-        }
-    };
 }

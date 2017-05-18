@@ -121,6 +121,9 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(Constants.SONG_ERROR_BROADCAST_ACTION);
+        sendBroadcast(broadcastIntent);
         return false;
     }
 

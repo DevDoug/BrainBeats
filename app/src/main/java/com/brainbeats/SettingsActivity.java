@@ -20,7 +20,6 @@ import com.brainbeats.utils.Constants;
 public class SettingsActivity extends BaseActivity implements SettingFragment.OnFragmentInteractionListener {
 
     public Fragment mSettingsFragment;
-    private IntentFilter mIntentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +27,6 @@ public class SettingsActivity extends BaseActivity implements SettingFragment.On
         setContentView(R.layout.activity_base);
         mSettingsFragment = new SettingFragment();
         switchToSettingsFragment();
-
-        mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
     }
 
     @Override
@@ -63,35 +59,4 @@ public class SettingsActivity extends BaseActivity implements SettingFragment.On
         getMenuInflater().inflate(R.menu.menu_global, menu);
         return true;
     }
-
-    @Override
-    public void onPause() {
-        unregisterReceiver(mReceiver);
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        registerReceiver(mReceiver, mIntentFilter);
-    }
-
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
-                Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
-                mCurrentSongTitle.setText(newTrack.getTitle());
-                if (newTrack.getArtworkURL() == null)
-                    mAlbumThumbnail.setImageResource(R.drawable.placeholder);
-                else
-                    Picasso.with(SettingsActivity.this).load(newTrack.getArtworkURL()).into(mAlbumThumbnail);
-
-                mCurrentSongArtistName.setText(newTrack.getUser().getUsername());
-
-                //Update the current playing song in base activity to the song from this broadcast
-                mCurrentSong = newTrack;
-            }
-        }
-    };
 }

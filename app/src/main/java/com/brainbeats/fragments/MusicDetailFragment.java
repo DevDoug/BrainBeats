@@ -73,7 +73,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     //Playing song members.
     public Track mSelectedTrack;
     private boolean mLooping = false;
-    ProgressDialog loadingMusicDialog;
+    public ProgressDialog loadingMusicDialog;
 
     private ActionProvider mShareActionProvider;
 
@@ -415,7 +415,6 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         MainActivity main = ((MainActivity) getActivity());
 
         if (!main.mAudioService.getIsPlaying() && !main.mAudioService.getIsPaused() || !(main.mAudioService.getPlayingSong().getID() == mSelectedTrack.getID())) { //if music not playing or not the current playing song
-
             showLoadingMusicDialog();
             mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI, mSelectedTrack);
         } else if (main.mAudioService.getIsPlaying()) {                                                        //Song is playing so pause song

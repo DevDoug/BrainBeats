@@ -74,6 +74,7 @@ public class Constants {
     //Intents and Communication
     public static final String SONG_COMPLETE_BROADCAST_ACTION               = "com.brainbeats.play.next";
     public static final String SONG_LOADING_BROADCAST_ACTION                = "com.brainbeats.loading.next";
+    public static final String SONG_ERROR_BROADCAST_ACTION                  = "com.brainbeats.song.error";
 
 
     public static final String INTENT_ACTION_GO_TO_DETAIL_FRAGMENT          = "LoadDetailFragment";
