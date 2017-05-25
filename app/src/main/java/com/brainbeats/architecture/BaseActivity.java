@@ -3,9 +3,11 @@ package com.brainbeats.architecture;
 import android.accounts.Account;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -77,6 +79,7 @@ public class BaseActivity extends AppCompatActivity {
     int mProgressStatus = 0;
     private volatile boolean mIsAlive = false;
 
+    private IntentFilter mIntentFilter;
 
     //Audio com.brainbeats.service members
     public AudioService mAudioService;
@@ -97,7 +100,11 @@ public class BaseActivity extends AppCompatActivity {
 
         Intent intent = new Intent(BaseActivity.this, AudioService.class);
         intent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+        startService(intent);
         BaseActivity.this.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
     }
 
     @Override
@@ -111,33 +118,44 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putParcelable(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
     public void onStart() {
         super.onStart();
+
+/*        if (AccountManager.getInstance(this).getRestorePlayingFromService()) {
+            if(mAudioService != null)
+                mCurrentSong = mAudioService.getPlayingSong();
+        }*/
     }
 
     @Override
     public void onStop() {
         super.onStop();
+
+       // AccountManager.getInstance(this).setRestorePlayingFromService(true);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
         if (mDisplayCurrentSongView)
-            mCurrentSongPlayingView.setVisibility(View.VISIBLE);
+            showCurrentSongView();
         else
-            mCurrentSongPlayingView.setVisibility(View.INVISIBLE);
+            hideCurrentSongView();
+
+        registerReceiver(mReceiver, mIntentFilter);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        unregisterReceiver(mReceiver);
     }
 
     @Override
@@ -145,7 +163,6 @@ public class BaseActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
         setUpNavDrawer();
 
-        //Current song com.brainbeats.ui  components
         mCurrentSongPlayingView = (RelativeLayout) findViewById(R.id.current_track_container);
         mCurrentSongTitle = (TextView) findViewById(R.id.playing_mix_title);
         mCurrentSongArtistName = (TextView) findViewById(R.id.playing_mix_artist);
@@ -153,9 +170,17 @@ public class BaseActivity extends AppCompatActivity {
         mPlayTrackSeekBar = (SeekBar) findViewById(R.id.playing_mix_seek_bar);
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
 
-        updateCurrentSongNotificationUI(mCurrentSong);
+/*        Bundle intentBundle = getIntent().getExtras(); //If an intent is passed to main activity.
+        if (intentBundle != null) {
+            if (intentBundle.get(KEY_EXTRA_SELECTED_TRACK) != null) {
+                mCurrentSong = (Track) intentBundle.get(KEY_EXTRA_SELECTED_TRACK);
+            }
+        }*/
 
-        mCurrentSongPlayingView.setOnClickListener(new View.OnClickListener() {
+        if(mCurrentSong != null)
+            updateCurrentSongNotificationUI(mCurrentSong);
+
+/*        mCurrentSongPlayingView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent dashboardIntent = new Intent(BaseActivity.this, MainActivity.class);
@@ -164,7 +189,7 @@ public class BaseActivity extends AppCompatActivity {
                 dashboardIntent.setAction(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT);
                 startActivity(dashboardIntent);
             }
-        });
+        });*/
     }
 
     @Override
@@ -211,7 +236,7 @@ public class BaseActivity extends AppCompatActivity {
                         mixerIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(mixerIntent);
                         break;
-                    case R.id.action_social:
+/*                    case R.id.action_social:
                         Intent socialIntent = new Intent(getApplicationContext(), SocialActivity.class);
                         socialIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
                         socialIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
@@ -222,7 +247,7 @@ public class BaseActivity extends AppCompatActivity {
                         settingsIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
                         settingsIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(settingsIntent);
-                        break;
+                        break;*/
                     case R.id.action_info:
                         Intent infoIntent = new Intent(getApplicationContext(), InfoActivity.class);
                         infoIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
@@ -349,8 +374,11 @@ public class BaseActivity extends AppCompatActivity {
         if (mDisplayCurrentSongView) {
             mCurrentSongTitle.setText(track.getTitle());
             Picasso.with(BaseActivity.this).load(track.getArtworkURL()).into(mAlbumThumbnail);
-            mCurrentSongArtistName.setText(track.getUser().getUsername());
-            startProgressBarThread();
+
+            if(track.getUser() != null)
+                mCurrentSongArtistName.setText(track.getUser().getUsername());
+
+            //startProgressBarThread();
         }
     }
 
@@ -362,6 +390,16 @@ public class BaseActivity extends AppCompatActivity {
     public void hideMainFAB(){
         mMainActionFab.setVisibility(View.INVISIBLE);
         mMainActionFab.setClickable(false);
+    }
+
+    public void showCurrentSongView(){
+        mDisplayCurrentSongView = true;
+        mCurrentSongPlayingView.setVisibility(View.VISIBLE);
+    }
+
+    public void hideCurrentSongView(){
+        mDisplayCurrentSongView = false;
+        mCurrentSongPlayingView.setVisibility(View.INVISIBLE);
     }
 
     public void startProgressBarThread() {
@@ -399,10 +437,37 @@ public class BaseActivity extends AppCompatActivity {
                     } catch (InterruptedException e) {
                         mIsAlive = false;
                         Log.i("Progress bar thread", "Exception occured" + e.toString());
+                    } catch (Exception ex) {
+                        Log.i("Progress bar thread", "Exception occured" + ex.toString());
                     }
                 }
             }
         });
         mUpdateSeekBar.start();
     }
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
+                Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+                if (newTrack != null) {
+                    mCurrentSongTitle.setText(newTrack.getTitle());
+
+                    if (newTrack.getArtworkURL() == null)
+                        mAlbumThumbnail.setImageResource(R.drawable.placeholder);
+                    else
+                        Picasso.with(BaseActivity.this).load(newTrack.getArtworkURL()).into(mAlbumThumbnail);
+
+                    if(newTrack.getUser() != null)
+                        mCurrentSongArtistName.setText(newTrack.getUser().getUsername());
+
+                    mCurrentSong = newTrack;
+                }
+
+                showCurrentSongView();
+                //startProgressBarThread();
+            }
+        }
+    };
 }

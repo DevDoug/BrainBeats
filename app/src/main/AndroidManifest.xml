@@ -69,7 +69,7 @@
             android:name=".data.BrainBeatsContentProvider"
             android:authorities="com.brainbeats" />
 
-        <service android:name=".service.AudioService" />
+        <service android:name=".service.AudioService" android:exported="false" />
         <service
             android:name=".service.SyncService"
             android:exported="true"

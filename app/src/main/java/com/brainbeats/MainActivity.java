@@ -176,21 +176,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
-
                 Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
                 if (mDashboardDetailFragment.isVisible()) {                                                             //if they are on the dashboard detail screen update the detail widgets
                     (((MusicDetailFragment) mDashboardDetailFragment)).updateTrackUI(newTrack);
-                } else {
-                    mCurrentSong = newTrack;
-                    updateCurrentSongNotificationUI(newTrack);
+                    hideCurrentSongView();
                 }
             } else if (intent.getAction().equals(Constants.SONG_LOADING_BROADCAST_ACTION)) {
                 if (mDashboardDetailFragment.isVisible()) {
                     ((MusicDetailFragment) mDashboardDetailFragment).showLoadingMusicDialog();
                 }
-            } /*else if (intent.getAction().equals(Constants.SONG_RECIEVED_FROM_FRIEND_BROADCAST_ACTION)) {
-                Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
-            }*/
+            } else if (intent.getAction().equals(Constants.SONG_ERROR_BROADCAST_ACTION)) {
+                if (mDashboardDetailFragment.isVisible()) {
+                    ((MusicDetailFragment) mDashboardDetailFragment).loadingMusicDialog.dismiss();
+                }
+            }
         }
     };
 }

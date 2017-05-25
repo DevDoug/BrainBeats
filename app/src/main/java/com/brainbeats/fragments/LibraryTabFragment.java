@@ -63,7 +63,7 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_library_tab, container, false);
         mMixListView = (RecyclerView) v.findViewById(R.id.library_content_list);
-        mEmptyDataPlaceholder = (TextView) v.findViewById(R.id.no_data_placeholder);
+        mEmptyDataPlaceholder = (TextView) v.findViewById(R.id.empty_text);
         return v;
     }
 
@@ -140,7 +140,14 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data == null) {
+        if (data.getCount() == 0) {
+            if(mDataType == 0)
+                mEmptyDataPlaceholder.setText("Add a song to your library.");
+            else if(mDataType == 1)
+                mEmptyDataPlaceholder.setText("Add a new playlist.");
+            else if(mDataType == 2)
+                mEmptyDataPlaceholder.setText("Favorite a song.");
+
             mMixListView.setVisibility(View.GONE);
             mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
         } else {

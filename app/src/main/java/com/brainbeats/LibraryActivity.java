@@ -28,7 +28,6 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
     SearchView.OnQueryTextListener listener;
     SearchView mSearchView;
     public CoordinatorLayout mCoordinatorLayout;
-    private IntentFilter mIntentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +37,6 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
         mLibraryFragment = new LibraryFragment();
 
         switchToLibraryFragment();
-
-        mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
 
         listener = new SearchView.OnQueryTextListener() {
             @Override
@@ -55,18 +51,6 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
                 return false;
             }
         };
-    }
-
-    @Override
-    public void onPause() {
-        unregisterReceiver(mReceiver);
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        registerReceiver(mReceiver, mIntentFilter);
     }
 
     @Override
@@ -105,23 +89,4 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
     @Override
     public void onFragmentInteraction(Uri uri) {
     }
-
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
-                Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
-                mCurrentSongTitle.setText(newTrack.getTitle());
-                if (newTrack.getArtworkURL() == null)
-                    mAlbumThumbnail.setImageResource(R.drawable.placeholder);
-                else
-                    Picasso.with(LibraryActivity.this).load(newTrack.getArtworkURL()).into(mAlbumThumbnail);
-
-                mCurrentSongArtistName.setText(newTrack.getUser().getUsername());
-
-                //Update the current playing song in base activity to the song from this broadcast
-                mCurrentSong = newTrack;
-            }
-        }
-    };
 }

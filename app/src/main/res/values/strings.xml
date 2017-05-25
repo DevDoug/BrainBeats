@@ -153,7 +153,7 @@
 
     <string name="please_sign_in_to_sound_cloud_dialog">Please sign in to sound cloud before using this feature.</string>
     <string name="search_hint">Search</string>
-    <string name="no_songs_placeholder">No songs yet.</string>
+    <string name="no_songs_placeholder">Add a new song to your libray.</string>
     <string name="no_current_songs_message">No songs found.</string>
     <string name="issue_creating_account_error_message">There was an issue creating this account.</string>
     <string name="downvote_track">Got it we wont play this mix again.</string>
@@ -165,5 +165,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="share_this_track">Share this track</string>
     <string name="temperary_file_name">temp</string>
+    <string name="start_recording_text">Start Recording</string>
 
 </resources>

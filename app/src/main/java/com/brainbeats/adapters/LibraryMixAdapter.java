@@ -3,6 +3,7 @@ package com.brainbeats.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,12 +12,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.brainbeats.LibraryActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
 
 import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
+import com.brainbeats.entity.Track;
+import com.brainbeats.fragments.LibraryFragment;
+import com.brainbeats.fragments.LibraryTabFragment;
 import com.brainbeats.model.Mix;
 import com.brainbeats.utils.Constants;
 
@@ -56,16 +61,20 @@ public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapt
         viewHolder.mPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AccountManager.getInstance(mAdapterContext).setDisplayCurrentSongView(false);
                 //TODO fix user is null when navigating to this mix after selecting from lib
-                Mix selectedMix = Constants.buildMixFromCursor(mAdapterContext,getCursor(), viewHolder.getAdapterPosition()); // get the selected mix item
+                Mix selectedMix = Constants.buildMixFromCursor(mAdapterContext, getCursor(), viewHolder.getAdapterPosition()); // get the selected mix item
+                Track playTrack = new Track(selectedMix);
 
-                //start intent to send user to play this mix in player
+                ((LibraryActivity) mAdapterContext).mCurrentSong = playTrack;
+                ((LibraryActivity) mAdapterContext).mAudioService.setPlayingSong(playTrack);
+                ((LibraryActivity) mAdapterContext).mAudioService.playSong(Uri.parse(selectedMix.getStreamURL()));
+
+/*                //start intent to send user to play this mix in player
                 Intent browseMusicIntent = new Intent(mAdapterContext, MainActivity.class);
                 browseMusicIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, selectedMix);
                 browseMusicIntent.putExtra(Constants.KEY_EXTRA_SELECTED_USER, selectedMix.getUser());
                 browseMusicIntent.setAction(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT);
-                mAdapterContext.startActivity(browseMusicIntent);
+                mAdapterContext.startActivity(browseMusicIntent);*/
             }
         });
 

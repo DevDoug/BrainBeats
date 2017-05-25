@@ -58,7 +58,8 @@ public class WebApiManager {
     public static final String SOUND_CLOUD_QUERY_FILTER_INSTRUMENTAL            =  "instrumental";
     public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR           =  "popular";
     public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT            =  "recent";
-    public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_A_TO_Z         =  "popular";
+    public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_A_TO_Z            =  "popular";
+    public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_LIMIT_FIFTY       = "50";
     public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_LIMIT_ONE_HUNDRED = "100";
     public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_LIMIT_TWO_HUNDRED = "200";
     public static final String SOUND_CLOUD_QUERY_FILTER_PARAM_LINKED_ENABLED = "1";
@@ -109,7 +110,7 @@ public class WebApiManager {
         HashMap<String, String> mParams = new HashMap<>();
         mParams.put(SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
         mParams.put(SOUND_CLOUD_QUERY_FILTER_TAGS, filterTags);
-        mParams.put(SOUND_CLOUD_QUERY_FILTER_LIMIT, SOUND_CLOUD_QUERY_FILTER_PARAM_LIMIT_TWO_HUNDRED);
+        mParams.put(SOUND_CLOUD_QUERY_FILTER_LIMIT, SOUND_CLOUD_QUERY_FILTER_PARAM_LIMIT_FIFTY);
         //mParams.put(SOUND_CLOUD_QUERY_FILTER_LINKED_PARTITIONING,"1");
 
         if (queryFilter != null && !queryFilter.equalsIgnoreCase(""))

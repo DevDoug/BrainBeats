@@ -56,6 +56,9 @@ public class Constants {
     public static final String KEY_EXTRA_IS_SYNCED_TO_SC                    = "SyncedToSoundCloud";
     public static final String KEY_EXTRA_IS_GLOBAL_SYNC_REQUIRED            = "IsGlobalSyncRequired";
     public static final String KEY_EXTRA_IS_DISPLAY_CURRENT_PLAYING_SONG    = "currentPlayingSong";
+    public static final String RESTORE_PLAYING_SONG                         = "restorePlayingSong";
+
+
 
     //Sound Cloud
     public static final String SOUND_CLOUD_CLIENT_ID                        = "6af4e9b999eaa63f5d797d466cdc4ccb";
@@ -74,6 +77,7 @@ public class Constants {
     //Intents and Communication
     public static final String SONG_COMPLETE_BROADCAST_ACTION               = "com.brainbeats.play.next";
     public static final String SONG_LOADING_BROADCAST_ACTION                = "com.brainbeats.loading.next";
+    public static final String SONG_ERROR_BROADCAST_ACTION                  = "com.brainbeats.song.error";
 
 
     public static final String INTENT_ACTION_GO_TO_DETAIL_FRAGMENT          = "LoadDetailFragment";
@@ -93,15 +97,17 @@ public class Constants {
 
     //Fragment Uris
     public static final Uri LOAD_SONG_URI                                           = Uri.parse("base://dashboard_detail_load_song");
-
-
     public static final Uri DASHBOARD_DETAIL_URI                                    = Uri.parse("main://dashboard_detail");
     public static final Uri DASHBOARD_DETAIL_LOAD_DASHBOARD_FAB_IMAGES              = Uri.parse("main://dashboard_detail_load_fab_images");
 
     public static final Uri DASHBOARD_DETAIL_LOAD_SONG_URI                          = Uri.parse("main://dashboard_detail_load_song");
     public static final Uri DASHBOARD_DETAIL_LOAD_NEW_SONG_URI                      = Uri.parse("main://dashboard_detail_load_new_song");
+
     public static final Uri DASHBOARD_DETAIL_PLAY_SONG_URI                          = Uri.parse("main://dashboard_detail_play_song");
     public static final Uri DASHBOARD_DETAIL_PAUSE_SONG_URI                         = Uri.parse("main://dashboard_detail_pause_song");
+    public static final Uri STOP_SONG_URI                                           = Uri.parse("audio://stop_song");
+
+
     public static final Uri DASHBOARD_DETAIL_DOWNVOTE_SONG_URI                      = Uri.parse("main://dashboard_detail_downvote_song");
     public static final Uri DASHBOARD_DETAIL_SKIP_FORWARD_URI                       = Uri.parse("main://dashboard_detail_skip_forward");
     public static final Uri DASHBOARD_DETAIL_SET_SONG_REPEAT_URI                    = Uri.parse("main://dashboard_detail_repeat_song");
@@ -256,6 +262,27 @@ public class Constants {
 
         return mix;
     }
+
+/*    public static BrainBeatsUser getCurrentUser(Context context){
+        Cursor userCursor = context.getContentResolver().query( //get this mixes user
+                BrainBeatsContract.UserEntry.CONTENT_URI,
+                null,  //return everything
+                BrainBeatsContract.UserEntry._ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
+                new String[]{String.valueOf(AccountManager.getInstance(context).getUserId())},
+                null);
+
+        BrainBeatsUser brainBeatsUser = new BrainBeatsUser();
+
+        if (userCursor != null && userCursor.getCount() != 0) {
+            userCursor.moveToFirst();
+            brainBeatsUser.setUserId(userCursor.getLong(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
+            brainBeatsUser.setUserName(userCursor.getString(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));
+            brainBeatsUser.setSoundCloudUserId(userCursor.getInt(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID)));
+            userCursor.close();
+        }
+
+        return brainBeatsUser;
+    }*/
 
     public static BrainBeatsUser buildUserFromCursor(Context context, Cursor cursor) {
         cursor.moveToFirst();
