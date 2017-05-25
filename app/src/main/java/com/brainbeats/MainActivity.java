@@ -179,9 +179,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
                 if (mDashboardDetailFragment.isVisible()) {                                                             //if they are on the dashboard detail screen update the detail widgets
                     (((MusicDetailFragment) mDashboardDetailFragment)).updateTrackUI(newTrack);
-                } else {
-                    mCurrentSong = newTrack;
-                    updateCurrentSongNotificationUI(newTrack);
+                    hideCurrentSongView();
                 }
             } else if (intent.getAction().equals(Constants.SONG_LOADING_BROADCAST_ACTION)) {
                 if (mDashboardDetailFragment.isVisible()) {

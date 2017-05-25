@@ -172,7 +172,7 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
 
     public void getTracks(String filterTag) {
         if (Constants.isNetworkAvailable(getContext())) {
-            final ProgressDialog loadingMusicDialog = new ProgressDialog(getContext());
+            ProgressDialog loadingMusicDialog = new ProgressDialog(getActivity());
             loadingMusicDialog.setCancelable(false);
             loadingMusicDialog.setMessage(getString(R.string.loading_message));
             loadingMusicDialog.show();

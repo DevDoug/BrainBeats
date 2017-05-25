@@ -8,6 +8,8 @@ import com.brainbeats.BuildConfig;
 
 import com.brainbeats.utils.Constants;
 
+import static com.brainbeats.utils.Constants.RESTORE_PLAYING_SONG;
+
 /**
  * Created by douglas on 6/5/2016.
  * Singleton account manager
@@ -20,6 +22,7 @@ public class AccountManager  {
     public static final String PACKAGE_NAME                 = BuildConfig.APPLICATION_ID;   //"com.brainbeats";
     private static final String SOUND_CLOUD_AUTH_TOKEN      = PACKAGE_NAME + ".SOUND_CLOUD_AUTH_TOKEN";
     private static final String BRAIN_BEATS_USER_ID         = PACKAGE_NAME + ".BRAIN_BEATS_USER_ID";
+
 
     private AccountManager(Context context) {
         this.mContext = context;
@@ -79,6 +82,19 @@ public class AccountManager  {
         SharedPreferences appPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = appPreferences.edit();
         editor.remove(BRAIN_BEATS_USER_ID);
+        editor.commit();
+    }
+
+    public boolean getRestorePlayingFromService() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        boolean restore = sharedPreferences.getBoolean(RESTORE_PLAYING_SONG, false);
+        return restore;
+    }
+
+    public void setRestorePlayingFromService(boolean restore) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(RESTORE_PLAYING_SONG, restore);
         editor.commit();
     }
 

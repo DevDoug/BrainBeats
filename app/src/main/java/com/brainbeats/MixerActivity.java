@@ -75,6 +75,12 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
 
     public void switchToNewMixFragment() {
         toggleNavDrawerIcon();
+
+        if(mAudioService.getIsPlaying() || mAudioService.getIsPaused()) {
+            mAudioService.stopSong();
+            hideCurrentSongView();
+        }
+
         mNewMix = new Mix();
         replaceFragment(mNewMixFragment, mNewMixFragment.getTag());
     }
@@ -103,6 +109,8 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
         } else if (uri.compareTo(Constants.MIX_SHOW_MIX_LIST) == 0) {
             Intent mixerIntent = new Intent(getApplicationContext(), MixerActivity.class);
             createBackStack(mixerIntent);
+        } else if (uri.compareTo(Constants.STOP_SONG_URI) == 0){
+            mAudioService.stopSong();
         }
     }
 
@@ -126,6 +134,11 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
             mNewMix.setMixUserId(Long.parseLong(AccountManager.getInstance(this).getUserId()));
             Uri returnRow = getContentResolver().insert(BrainBeatsContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(mNewMix));
             long returnRowId = ContentUris.parseId(returnRow);
+            if(returnRowId != -1){ //file clean-up
+                String fileName = getExternalCacheDir().getAbsolutePath() + "/" + getString(R.string.temperary_file_name) + ".3gp"; // clean up our temp file
+                File file = new File(fileName);
+                boolean deleted = file.delete();
+            }
         }
     }
 

@@ -127,9 +127,20 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+
+        if(mIsRecording)
+            stopRecording();
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.start_stop_recording:
+                if(mIsRecording)
+                    showPlaybackRecordingView();
+
                 onRecord(!mIsRecording);
                 break;
 /*            case R.id.play_song_button:
@@ -199,12 +210,15 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
     }
 
     private void stopRecording() {
-        mRecorder.stop();
-        mRecorder.release();
-        mRecorder = null;
-        mIsRecording = false;
-        mRecordButton.setImageResource(R.drawable.ic_mic);
-        showPlaybackRecordingView();
+        try {
+            mRecorder.stop();
+            mRecorder.release();
+            mRecorder = null;
+            mIsRecording = false;
+            mRecordButton.setImageResource(R.drawable.ic_mic);
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -222,7 +236,7 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
     }
 
     public void showRecordingView(){
-        mInstructionText.setText("Start Recording");
+        mInstructionText.setText(R.string.start_recording_text);
         mRecordButton.setVisibility(View.VISIBLE);
         mPlayRecordingSeekBar.setVisibility(View.INVISIBLE);
         mRecordingOptions.setVisibility(View.INVISIBLE);
@@ -249,6 +263,7 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         builder.setNegativeButton("Rerecord", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                mListener.onFragmentInteraction(Constants.STOP_SONG_URI);
                 dialog.dismiss();
             }
         });

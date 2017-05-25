@@ -1,5 +1,6 @@
 package com.brainbeats.service;
 
+import android.app.IntentService;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -15,8 +16,10 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.PowerManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
@@ -32,7 +35,7 @@ import java.io.IOException;
 import static com.brainbeats.utils.Constants.KEY_EXTRA_SELECTED_TRACK;
 
 /*Audio com.brainbeats.service should handle playing all music, should be a bound com.brainbeats.service and a started com.brainbeats.service which will allow us to bind to com.brainbeats.ui and keep the music in the background when not on the detail activity*/
-public class AudioService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, AudioManager.OnAudioFocusChangeListener, BeatLearner.RecommendationCompleteListener {
+public class AudioService extends IntentService implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, AudioManager.OnAudioFocusChangeListener, BeatLearner.RecommendationCompleteListener {
 
     public static MediaPlayer mPlayer;
     public static Track mPlayingSong;
@@ -49,11 +52,14 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     private IBinder mBinder = new AudioBinder();
 
-    public AudioService() {}
+    public AudioService() {
+        super("Audio Service");
+    }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent.getAction().equals(MAIN_ACTION)) {
+    protected void onHandleIntent(@Nullable Intent intent) {
+
+/*        if (intent.getAction().equals(MAIN_ACTION)) {
             mPlayingSong = intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
         } else if (intent.getAction().equals(PLAY_ACTION)) {
             //TODO play/pause song
@@ -62,8 +68,12 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         } else if (intent.getAction().equals(DOWNVOTE_ACTION)) {
             //TODO downvote this track
             loadNextTrack();
-        }
-        return START_STICKY;
+        }*/
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return super.onStartCommand(intent,flags,startId);
     }
 
     @Override

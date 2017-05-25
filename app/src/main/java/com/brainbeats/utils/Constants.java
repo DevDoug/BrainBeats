@@ -56,6 +56,9 @@ public class Constants {
     public static final String KEY_EXTRA_IS_SYNCED_TO_SC                    = "SyncedToSoundCloud";
     public static final String KEY_EXTRA_IS_GLOBAL_SYNC_REQUIRED            = "IsGlobalSyncRequired";
     public static final String KEY_EXTRA_IS_DISPLAY_CURRENT_PLAYING_SONG    = "currentPlayingSong";
+    public static final String RESTORE_PLAYING_SONG                         = "restorePlayingSong";
+
+
 
     //Sound Cloud
     public static final String SOUND_CLOUD_CLIENT_ID                        = "6af4e9b999eaa63f5d797d466cdc4ccb";
@@ -94,15 +97,17 @@ public class Constants {
 
     //Fragment Uris
     public static final Uri LOAD_SONG_URI                                           = Uri.parse("base://dashboard_detail_load_song");
-
-
     public static final Uri DASHBOARD_DETAIL_URI                                    = Uri.parse("main://dashboard_detail");
     public static final Uri DASHBOARD_DETAIL_LOAD_DASHBOARD_FAB_IMAGES              = Uri.parse("main://dashboard_detail_load_fab_images");
 
     public static final Uri DASHBOARD_DETAIL_LOAD_SONG_URI                          = Uri.parse("main://dashboard_detail_load_song");
     public static final Uri DASHBOARD_DETAIL_LOAD_NEW_SONG_URI                      = Uri.parse("main://dashboard_detail_load_new_song");
+
     public static final Uri DASHBOARD_DETAIL_PLAY_SONG_URI                          = Uri.parse("main://dashboard_detail_play_song");
     public static final Uri DASHBOARD_DETAIL_PAUSE_SONG_URI                         = Uri.parse("main://dashboard_detail_pause_song");
+    public static final Uri STOP_SONG_URI                                           = Uri.parse("audio://stop_song");
+
+
     public static final Uri DASHBOARD_DETAIL_DOWNVOTE_SONG_URI                      = Uri.parse("main://dashboard_detail_downvote_song");
     public static final Uri DASHBOARD_DETAIL_SKIP_FORWARD_URI                       = Uri.parse("main://dashboard_detail_skip_forward");
     public static final Uri DASHBOARD_DETAIL_SET_SONG_REPEAT_URI                    = Uri.parse("main://dashboard_detail_repeat_song");
