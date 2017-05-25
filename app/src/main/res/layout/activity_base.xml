@@ -132,13 +132,13 @@
                 android:layout_toEndOf="@+id/album_thumbnail"
                 android:layout_below="@id/playing_mix_title"/>
 
-<!--            <android.support.v7.widget.AppCompatSeekBar
+            <android.support.v7.widget.AppCompatSeekBar
                 android:id="@+id/playing_mix_seek_bar"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/playing_mix_title" />-->
+                android:layout_toEndOf="@+id/playing_mix_title" />
 
 <!--            <ImageView
                 android:id="@+id/play_song_button"

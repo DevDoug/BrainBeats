@@ -188,6 +188,15 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (((MainActivity) getActivity()).mIsFabOpen)
+                    ((MainActivity) getActivity()).animateFAB();
+
+                ((MainActivity) getActivity()).mMainActionFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_filter_list_white));
+                ((MainActivity) getActivity()).mExtraActionOneFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_whatshot_white));
+                ((MainActivity) getActivity()).mExtraActionTwoFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_access_time_white));
+                ((MainActivity) getActivity()).mExtraActionThreeFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_sort_by_alpha_white));
+
                 mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_DASHBOARD_FAB_IMAGES);
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 ((MainActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
@@ -210,7 +219,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
             case android.R.id.home:
                 getActivity().onBackPressed();
                 break;
-            case R.id.add_to_library:
+      /*      case R.id.add_to_library:
                 updateOfflineSyncManager(Constants.SyncDataAction.UpdateMix, null);
                 break;
             case R.id.add_as_favorite:
@@ -218,7 +227,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                 break;
             case R.id.follow_user:
                 updateOfflineSyncManager(null, Constants.SyncDataType.Users);
-                break;
+                break;*/
             /*case R.id.menu_item_share:*/
 
 /*                String[] friends = {"friend1","friend2"};

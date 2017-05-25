@@ -378,7 +378,7 @@ public class BaseActivity extends AppCompatActivity {
             if(track.getUser() != null)
                 mCurrentSongArtistName.setText(track.getUser().getUsername());
 
-            //startProgressBarThread();
+            startProgressBarThread();
         }
     }
 
@@ -466,7 +466,7 @@ public class BaseActivity extends AppCompatActivity {
                 }
 
                 showCurrentSongView();
-                //startProgressBarThread();
+                startProgressBarThread();
             }
         }
     };

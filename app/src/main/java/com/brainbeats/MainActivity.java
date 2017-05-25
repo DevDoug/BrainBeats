@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.brainbeats.fragments.MusicDetailFragment;
 import com.brainbeats.fragments.BrowseMusicFragment;
@@ -24,6 +25,7 @@ import com.brainbeats.model.Mix;
 
 import com.brainbeats.utils.Constants;
 import com.brainbeats.sync.SyncManager;
+import com.brainbeats.web.WebApiManager;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, BrowseMusicFragment.OnFragmentInteractionListener, MusicDetailFragment.OnFragmentInteractionListener {
 
@@ -46,6 +48,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
+        mExtraActionOneFab = (FloatingActionButton) findViewById(R.id.action_one_fob);
+        mExtraActionTwoFab = (FloatingActionButton) findViewById(R.id.action_two_fob);
+        mExtraActionThreeFab = (FloatingActionButton) findViewById(R.id.action_three_fob);
+
+        fab_open = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate_backward);
+
 
         if (savedInstanceState == null) {
             mDashboardFragment = new BrowseMusicFragment();
@@ -79,7 +90,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
         mIntentFilter.addAction(Constants.SONG_LOADING_BROADCAST_ACTION);
 
-        mMainActionFab.setVisibility(View.INVISIBLE);
+        mMainActionFab.setOnClickListener(this);
+        mExtraActionOneFab.setOnClickListener(this);
+        mExtraActionTwoFab.setOnClickListener(this);
+        mExtraActionThreeFab.setOnClickListener(this);
     }
 
     @Override
@@ -109,15 +123,28 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         int id = v.getId();
         switch (id) {
             case R.id.main_action_fob:
+                animateFAB();
                 break;
             case R.id.action_one_fob:
-                ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateMix, null);
+                animateFAB();
+                if (mDashboardFragment.isVisible())
+                    ((BrowseMusicFragment) mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR);
+                else if (mDashboardDetailFragment.isVisible())
+                    ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateMix, null);
                 break;
             case R.id.action_two_fob:
-                ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateFavorite, null);
+                animateFAB();
+                if (mDashboardFragment.isVisible())
+                    ((BrowseMusicFragment) mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT);
+                else if (mDashboardDetailFragment.isVisible())
+                    ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateFavorite, null);
                 break;
             case R.id.action_three_fob:
-                ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(null, Constants.SyncDataType.Users);
+                animateFAB();
+                if (mDashboardFragment.isVisible())
+                    ((BrowseMusicFragment) mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_A_TO_Z);
+                else if (mDashboardDetailFragment.isVisible())
+                    ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(null, Constants.SyncDataType.Users);
                 break;
         }
     }
@@ -130,7 +157,37 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         toggleNavDrawerIcon();
         mDashboardDetailFragment = MusicDetailFragment.newInstance(track);
         mCurrentSong = track; //set the clicked song to the current playing
+
+        mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_android_white));
+        mExtraActionOneFab.setImageDrawable(getDrawable(R.drawable.ic_library_add_white));
+        mExtraActionTwoFab.setImageDrawable(getDrawable(R.drawable.ic_favorite_white));
+        mExtraActionThreeFab.setImageDrawable(getDrawable(R.drawable.ic_person_add_white));
+
         replaceFragment(mDashboardDetailFragment, mDashboardDetailFragment.getTag());
+    }
+
+    public void animateFAB() {
+        if (mIsFabOpen) {
+            mMainActionFab.startAnimation(rotate_backward);
+            mExtraActionOneFab.startAnimation(fab_close);
+            mExtraActionTwoFab.startAnimation(fab_close);
+            mExtraActionOneFab.setClickable(false);
+            mExtraActionTwoFab.setClickable(false);
+            mExtraActionThreeFab.startAnimation(fab_close);
+            mExtraActionThreeFab.setClickable(false);
+
+            mIsFabOpen = false;
+        } else {
+            mMainActionFab.startAnimation(rotate_forward);
+            mExtraActionOneFab.startAnimation(fab_open);
+            mExtraActionTwoFab.startAnimation(fab_open);
+            mExtraActionOneFab.setClickable(true);
+            mExtraActionTwoFab.setClickable(true);
+            mExtraActionThreeFab.startAnimation(fab_open);
+            mExtraActionThreeFab.setClickable(true);
+
+            mIsFabOpen = true;
+        }
     }
 
     @Override
