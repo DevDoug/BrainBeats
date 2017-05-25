@@ -236,7 +236,7 @@ public class BaseActivity extends AppCompatActivity {
                         mixerIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(mixerIntent);
                         break;
-                    case R.id.action_social:
+/*                    case R.id.action_social:
                         Intent socialIntent = new Intent(getApplicationContext(), SocialActivity.class);
                         socialIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
                         socialIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
@@ -247,7 +247,7 @@ public class BaseActivity extends AppCompatActivity {
                         settingsIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
                         settingsIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                         createBackStack(settingsIntent);
-                        break;
+                        break;*/
                     case R.id.action_info:
                         Intent infoIntent = new Intent(getApplicationContext(), InfoActivity.class);
                         infoIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
@@ -378,7 +378,7 @@ public class BaseActivity extends AppCompatActivity {
             if(track.getUser() != null)
                 mCurrentSongArtistName.setText(track.getUser().getUsername());
 
-            startProgressBarThread();
+            //startProgressBarThread();
         }
     }
 
@@ -466,7 +466,7 @@ public class BaseActivity extends AppCompatActivity {
                 }
 
                 showCurrentSongView();
-                startProgressBarThread();
+                //startProgressBarThread();
             }
         }
     };
