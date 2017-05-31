@@ -441,15 +441,15 @@ public class Constants {
         return alert;
     }
 
-    public static AlertDialog buildListDialogue(Context context, String title, String[] options, AdapterView.OnItemClickListener listener) {
+    public static AlertDialog buildListDialogue(Context context, String title, String[] options, DialogInterface.OnClickListener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.custom_list_dialog_layout, null);
         ((TextView) dialogView.findViewById(R.id.separator_title)).setText(title);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.dialog_list_item, R.id.dialog_item, options);
-        ((ListView) dialogView.findViewById(R.id.options_list)).setAdapter(adapter);
-        ((ListView) dialogView.findViewById(R.id.options_list)).setOnItemClickListener(listener);
+        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.dialog_list_item, R.id.dialog_item, options);
+        //((ListView) dialogView.findViewById(R.id.options_list)).setAdapter(adapter);
         builder.setView(dialogView);
+        builder.setItems(options, listener);
         AlertDialog alert = builder.create();
         alert.show();
         return alert;

@@ -44,6 +44,17 @@
         </FrameLayout>
 
         <android.support.design.widget.FloatingActionButton
+            android:id="@+id/action_four_fob"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_anchor="@+id/action_three_fob"
+            app:layout_anchorGravity="top|end"
+            android:layout_gravity="top"
+            android:elevation="@dimen/fob_elevation"
+            android:src="@drawable/ic_sort_by_alpha_white"
+            android:visibility="invisible" />
+
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/action_three_fob"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

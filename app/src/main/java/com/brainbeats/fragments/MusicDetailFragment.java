@@ -196,6 +196,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                 ((MainActivity) getActivity()).mExtraActionOneFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_whatshot_white));
                 ((MainActivity) getActivity()).mExtraActionTwoFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_access_time_white));
                 ((MainActivity) getActivity()).mExtraActionThreeFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_sort_by_alpha_white));
+                //((MainActivity) getActivity()).mExtraActionFourFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_sort_by_alpha_white));
 
                 mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_DASHBOARD_FAB_IMAGES);
                 FragmentManager fm = getActivity().getSupportFragmentManager();
