@@ -52,7 +52,7 @@ public class SyncManager {
         ContentResolver.requestSync(mAccount, BrainBeatsContract.CONTENT_AUTHORITY, settingsBundle); // Sync favorites
 
         settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Playlists.getCode());
-        ContentResolver.requestSync(mAccount, BrainBeatsContract.CONTENT_AUTHORITY, settingsBundle); //Sync Playlists
+        ContentResolver.requestSync(mAccount, BrainBeatsContract.CONTENT_AUTHORITY, settingsBundle); //Sync Playlist
 
         ContentResolver.addPeriodicSync(mAccount, authority, Bundle.EMPTY, SYNC_INTERVAL); // sets our com.brainbeats.sync adapter to go after a period of time.
     }

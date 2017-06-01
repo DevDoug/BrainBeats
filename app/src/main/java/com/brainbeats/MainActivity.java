@@ -21,6 +21,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -180,7 +181,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     public void showAddToPlaylist(){
         ArrayList<String> playlistNames = new ArrayList<String>();
-        playlistNames.add("New Playlist");
+        playlistNames.add("Create New Playlist");
 
         Cursor userPlaylistsCursor = getContentResolver().query(
                 BrainBeatsContract.MixPlaylistEntry.CONTENT_URI,
@@ -213,7 +214,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(position == 0)
-                    createNewPlaylist();
+                    showEnterPlaylistDialog();
                 else
                     addToExistingPlaylist();
             }
@@ -223,9 +224,32 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         alert.show();
     }
 
-    public void createNewPlaylist() {
+    public void showEnterPlaylistDialog(){
+        alert.dismiss();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
+        LayoutInflater inflater = ((Activity) this).getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.create_playlist_dialog, null);
+        ((TextView) dialogView.findViewById(R.id.separator_title)).setText("");
+        EditText editText = ((EditText) dialogView.findViewById(R.id.playlist_title));
+
+        builder.setView(dialogView);
+        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String playlistTitle = editText.getText().toString();
+                createNewPlaylist(playlistTitle);
+                dialog.dismiss();
+            }
+        });
+        alert = builder.create();
+        alert.show();
+
+    }
+
+    public void createNewPlaylist(String title) {
         Playlist playList = new Playlist();
-        playList.setPlaylistTitle("Sample");
+        playList.setPlaylistTitle(title);
         playList.setSoundCloudId(0);
         Uri returnRow = getContentResolver().insert(BrainBeatsContract.MixPlaylistEntry.CONTENT_URI, Constants.buildPlaylistRecord(playList));
         long returnRowId = ContentUris.parseId(returnRow);
@@ -296,10 +320,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             mAudioService.resumeSong();
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_PAUSE_SONG_URI) == 0) {
             mAudioService.pauseSong();
-        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_DOWNVOTE_SONG_URI) == 0) {
-            mAudioService.loadNextTrack();
-        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_SKIP_FORWARD_URI) == 0) {
-            mAudioService.loadNextTrack();
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_SET_SONG_REPEAT_URI) == 0) {
             mAudioService.setSongLooping(true);
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_UPDATE_PROGRESS_BAR_THREAD) == 0) {
@@ -326,6 +346,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 if (mAudioService.getPlayingSong().getID() == track.getID())
                     updateCurrentSongNotificationUI(track);
             }
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_SKIP_FORWARD_URI) == 0) {
+            if (mAudioService.getPlayingSong() == null)
+                mAudioService.setPlayingSong(track);
+
+            mAudioService.loadNextTrack();
+        } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_DOWNVOTE_SONG_URI) == 0) {
+            if (mAudioService.getPlayingSong() == null)
+                mAudioService.setPlayingSong(track);
+
+            mAudioService.loadNextTrack();
         }
     }
 

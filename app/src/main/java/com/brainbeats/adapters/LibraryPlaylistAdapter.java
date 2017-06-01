@@ -15,6 +15,7 @@ import com.brainbeats.R;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.model.Mix;
+import com.brainbeats.model.Playlist;
 import com.brainbeats.utils.Constants;
 
 /**
@@ -42,7 +43,8 @@ public class LibraryPlaylistAdapter extends RecyclerViewCursorAdapter<LibraryPla
                 Constants.buildActionDialog(mAdapterContext, "Delete Playlist", "Do you want to delete this playlist from your library", "confirm", new Constants.ConfirmDialogActionListener() {
                     @Override
                     public void PerformDialogAction() {
-
+                        Playlist selectedPlaylist = Constants.buildPlaylistFromCursor(mAdapterContext, getCursor(), viewHolder.getAdapterPosition()); // get the selected mix item
+                        mAdapterContext.getContentResolver().delete(BrainBeatsContract.MixPlaylistEntry.CONTENT_URI, "_Id" + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, new String[]{String.valueOf(selectedPlaylist.getPlaylistId())});
                     }
                 });
                 return false;

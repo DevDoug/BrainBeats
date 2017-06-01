@@ -257,6 +257,10 @@ public class BrainBeatsContentProvider extends ContentProvider {
                 rowsDeleted = db.delete(
                         BrainBeatsContract.UserFollowersEntry.TABLE_NAME, selection, selectionArgs);
                 break;
+            case MIX_PLAYLIST:
+                rowsDeleted = db.delete(
+                        BrainBeatsContract.MixPlaylistEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
