@@ -106,7 +106,7 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
             case 1:
                 return new CursorLoader(
                         getActivity(),                                                      // Parent activity context
-                        BrainBeatsContract.MixPlaylistEntry.CONTENT_URI,                    // Table to query
+                        BrainBeatsContract.PlaylistEntry.CONTENT_URI,                    // Table to query
                         null,                                                               // Projection to return
                         null,
                         null,

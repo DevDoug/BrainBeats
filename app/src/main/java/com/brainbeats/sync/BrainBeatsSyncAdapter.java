@@ -17,18 +17,14 @@ import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 
 import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.entity.Track;
-import com.brainbeats.entity.UserCollection;
-import com.brainbeats.entity.UserCollectionEntry;
 import com.brainbeats.entity.UserPlaylistsResponse;
 import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.model.Mix;
@@ -256,9 +252,9 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                             for (UserPlaylistsResponse playlistsResponse : userPlaylists) {
                                 try {
                                     Cursor playlistCursor = provider.query( //find if this mix exists
-                                            BrainBeatsContract.MixPlaylistEntry.CONTENT_URI, //Get users
+                                            BrainBeatsContract.PlaylistEntry.CONTENT_URI, //Get users
                                             null,  //return everything
-                                            BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
+                                            BrainBeatsContract.PlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
                                             new String[]{String.valueOf(playlistsResponse.getId())},
                                             null
                                     );
@@ -395,7 +391,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         playlist.setSoundCloudId(playlistsResponse.getId());
 
         try {
-            Uri result = provider.insert(BrainBeatsContract.MixPlaylistEntry.CONTENT_URI, Constants.buildPlaylistRecord(playlist));
+            Uri result = provider.insert(BrainBeatsContract.PlaylistEntry.CONTENT_URI, Constants.buildPlaylistRecord(playlist));
         } catch (RemoteException e) {
             e.printStackTrace();
         }

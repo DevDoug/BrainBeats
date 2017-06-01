@@ -11,10 +11,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.brainbeats.R;
@@ -28,6 +25,7 @@ import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.entity.Track;
 import com.brainbeats.model.Mix;
 import com.brainbeats.model.MixItem;
+import com.brainbeats.model.MixPlaylist;
 import com.brainbeats.model.Playlist;
 import com.brainbeats.model.BrainBeatsUser;
 
@@ -299,8 +297,8 @@ public class Constants {
         cursor.moveToPosition(position);
 
         Playlist brainBeatsPlaylist = new Playlist();
-        brainBeatsPlaylist.setPlaylistId(cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.MixPlaylistEntry._ID)));
-        brainBeatsPlaylist.setPlaylistTitle(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE)));
+        brainBeatsPlaylist.setPlaylistId(cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.PlaylistEntry._ID)));
+        brainBeatsPlaylist.setPlaylistTitle(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.PlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE)));
 
         return brainBeatsPlaylist;
     }
@@ -343,8 +341,15 @@ public class Constants {
 
     public static ContentValues buildPlaylistRecord(Playlist playlist) {
         ContentValues values = new ContentValues();
-        values.put(BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE, playlist.getPlaylistTitle());
-        values.put(BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID, playlist.getSoundCloudId());
+        values.put(BrainBeatsContract.PlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE, playlist.getPlaylistTitle());
+        values.put(BrainBeatsContract.PlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID, playlist.getSoundCloudId());
+        return values;
+    }
+
+    public static ContentValues buildMixPlaylistRecord(MixPlaylist mixPlaylist) {
+        ContentValues values = new ContentValues();
+        values.put(BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_MIX_ID, mixPlaylist.getMixId());
+        values.put(BrainBeatsContract.PlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID, mixPlaylist.getPlaylistId());
         return values;
     }
 

@@ -2,6 +2,7 @@ package com.brainbeats.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,13 +11,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.brainbeats.LibraryActivity;
 import com.brainbeats.R;
 
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
+import com.brainbeats.entity.Track;
 import com.brainbeats.model.Mix;
 import com.brainbeats.model.Playlist;
 import com.brainbeats.utils.Constants;
+
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 /**
  * Created by douglas on 7/28/2016.
@@ -32,7 +38,7 @@ public class LibraryPlaylistAdapter extends RecyclerViewCursorAdapter<LibraryPla
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
-        String title = cursor.getString(cursor.getColumnIndexOrThrow(BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE));
+        String title = cursor.getString(cursor.getColumnIndexOrThrow(BrainBeatsContract.PlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE));
         if(title != null)
             viewHolder.mTitleText.setText(title);
 
@@ -44,12 +50,41 @@ public class LibraryPlaylistAdapter extends RecyclerViewCursorAdapter<LibraryPla
                     @Override
                     public void PerformDialogAction() {
                         Playlist selectedPlaylist = Constants.buildPlaylistFromCursor(mAdapterContext, getCursor(), viewHolder.getAdapterPosition()); // get the selected mix item
-                        mAdapterContext.getContentResolver().delete(BrainBeatsContract.MixPlaylistEntry.CONTENT_URI, "_Id" + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, new String[]{String.valueOf(selectedPlaylist.getPlaylistId())});
+                        mAdapterContext.getContentResolver().delete(BrainBeatsContract.PlaylistEntry.CONTENT_URI, "_Id" + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, new String[]{String.valueOf(selectedPlaylist.getPlaylistId())});
                     }
                 });
                 return false;
             }
         });
+
+        viewHolder.mPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO fix user is null when navigating to this mix after selecting from lib
+                Playlist selectedPlaylist = Constants.buildPlaylistFromCursor(mAdapterContext, getCursor(), viewHolder.getAdapterPosition()); // get the selected mix item
+                getAllTracksInPlaylist(selectedPlaylist.getPlaylistId());
+            }
+        });
+    }
+
+    public void getAllTracksInPlaylist(long playListId) {
+        Cursor mixPlaylistCursor = mAdapterContext.getContentResolver().query(
+                BrainBeatsContract.MixEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null
+        );
+
+        Queue<Track> playListQue = new PriorityQueue<>();
+        for (int i = 0; i < mixPlaylistCursor.getCount(); i++) {
+            Mix tempMix = Constants.buildMixFromCursor(mAdapterContext, mixPlaylistCursor, i);
+            Track playListTrack = new Track(tempMix);
+            playListQue.add(playListTrack);
+        }
+        mixPlaylistCursor.close();
+
+        ((LibraryActivity) mAdapterContext).mAudioService.setPlaylist(playListQue);
     }
 
     @Override

@@ -22,7 +22,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -36,15 +35,13 @@ import com.brainbeats.entity.Track;
 import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.model.Mix;
 
+import com.brainbeats.model.MixPlaylist;
 import com.brainbeats.model.Playlist;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.sync.SyncManager;
 import com.brainbeats.web.WebApiManager;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-
-import static java.security.AccessController.getContext;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, BrowseMusicFragment.OnFragmentInteractionListener, MusicDetailFragment.OnFragmentInteractionListener {
 
@@ -184,7 +181,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         playlistNames.add("Create New Playlist");
 
         Cursor userPlaylistsCursor = getContentResolver().query(
-                BrainBeatsContract.MixPlaylistEntry.CONTENT_URI,
+                BrainBeatsContract.PlaylistEntry.CONTENT_URI,
                 null,
                 null,
                 null,
@@ -194,7 +191,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (userPlaylistsCursor != null) {
             userPlaylistsCursor.moveToFirst();
             for (int i = 0; i < userPlaylistsCursor.getCount(); i++) {
-                playlistNames.add(userPlaylistsCursor.getString(userPlaylistsCursor.getColumnIndex(BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE)));
+                playlistNames.add(userPlaylistsCursor.getString(userPlaylistsCursor.getColumnIndex(BrainBeatsContract.PlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE)));
                 userPlaylistsCursor.moveToNext();
             }
 
@@ -214,7 +211,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(position == 0)
-                    showEnterPlaylistDialog();
+                    showEnterPlaylistTitleDialog();
                 else
                     addToExistingPlaylist();
             }
@@ -224,7 +221,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         alert.show();
     }
 
-    public void showEnterPlaylistDialog(){
+    public void showEnterPlaylistTitleDialog(){
         alert.dismiss();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
@@ -248,19 +245,40 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     public void createNewPlaylist(String title) {
-        Playlist playList = new Playlist();
-        playList.setPlaylistTitle(title);
-        playList.setSoundCloudId(0);
-        Uri returnRow = getContentResolver().insert(BrainBeatsContract.MixPlaylistEntry.CONTENT_URI, Constants.buildPlaylistRecord(playList));
-        long returnRowId = ContentUris.parseId(returnRow);
-        alert.dismiss();
+        if(!title.isEmpty()) { //require title
+            Cursor returnRecord = getContentResolver().query(BrainBeatsContract.PlaylistEntry.CONTENT_URI, null, "playlisttitle = ?", new String[]{title}, null);
+            if (returnRecord != null) {
+                if (returnRecord.getCount() == 0) { //only add a new playlist if it does not already exist
 
-        Snackbar newPlayListAddedSnack;
-        newPlayListAddedSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.new_playlist_added), Snackbar.LENGTH_LONG);
-        newPlayListAddedSnack.show();
+                    Playlist playList = new Playlist();
+                    playList.setPlaylistTitle(title);
+                    playList.setSoundCloudId(0);
+                    Uri returnRow = getContentResolver().insert(BrainBeatsContract.PlaylistEntry.CONTENT_URI, Constants.buildPlaylistRecord(playList));
+                    long returnRowId = ContentUris.parseId(returnRow);
+                    alert.dismiss();
+
+                    Snackbar newPlayListAddedSnack;
+                    newPlayListAddedSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.new_playlist_added), Snackbar.LENGTH_LONG);
+                    newPlayListAddedSnack.show();
+                } else {
+                    Constants.buildInfoDialog(this, "Playlist already exists", "There is already a playlist with that name");
+                }
+                returnRecord.close();
+            }
+        } else {
+            Constants.buildInfoDialog(this, "", "Please enter a title");
+        }
     }
 
     public void addToExistingPlaylist() {
+        alert.dismiss();
+
+        MixPlaylist mixPlaylist = new MixPlaylist();
+        mixPlaylist.mMixId = 1;
+        mixPlaylist.mPlaylistId = 1;
+
+        Uri returnRow = getContentResolver().insert(BrainBeatsContract.PlaylistEntry.CONTENT_URI, Constants.buildMixPlaylistRecord(mixPlaylist));
+        long returnRowId = ContentUris.parseId(returnRow);
         alert.dismiss();
 
         Snackbar songAddedToExistingPlaylistSnack;

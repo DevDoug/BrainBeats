@@ -21,7 +21,8 @@ public class BrainBeatsContract {
     public static final String PATH_USER                = "user";
     public static final String PATH_USER_FOLLOWERS      = "userfollowers";
     public static final String PATH_MIX_RELATED         = "mixrelated";
-    public static final String PATH_MIX_PLAYLIST        = "playlist";
+    public static final String PATH_PLAYLIST            = "playlist";
+    public static final String PATH_MIX_PLAYLIST        = "mixplaylist";
     public static final String PATH_MIX_TAG             = "tag";
     public static final String PATH_RAW_QUERY           = "rawquery";
 
@@ -77,10 +78,10 @@ public class BrainBeatsContract {
         }
     }
 
-    public static final class MixPlaylistEntry implements BaseColumns{
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_MIX_PLAYLIST).build();
-        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_PLAYLIST;
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_PLAYLIST;
+    public static final class PlaylistEntry implements BaseColumns{
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_PLAYLIST).build();
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PLAYLIST;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PLAYLIST;
 
         public static final String TABLE_NAME                           =  "playlists";
         public static final String COLUMN_NAME_PLAYLIST_TITLE           =  "playlisttitle";
@@ -91,6 +92,22 @@ public class BrainBeatsContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
+
+    public static final class MixPlaylistEntry implements BaseColumns{
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_MIX_PLAYLIST).build();
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_PLAYLIST;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MIX_PLAYLIST;
+
+        public static final String TABLE_NAME                           =  "mixplaylist";
+        public static final String COLUMN_NAME_PLAYLIST_ID              =  "playlistid";
+        public static final String COLUMN_NAME_MIX_ID                   = "mixid";
+
+
+        public static Uri buildMixPlaylistUriWithId(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
 
     public static final class UserEntry implements BaseColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_USER).build();

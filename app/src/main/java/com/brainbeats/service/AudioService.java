@@ -18,6 +18,7 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import com.brainbeats.web.WebApiManager;
 
 import java.io.IOError;
 import java.io.IOException;
+import java.util.Queue;
 
 import static com.brainbeats.utils.Constants.KEY_EXTRA_SELECTED_TRACK;
 
@@ -41,6 +43,7 @@ public class AudioService extends IntentService implements MediaPlayer.OnPrepare
     public static Track mPlayingSong;
     public static boolean mIsPaused = false;
     public boolean mIsRecordingTest = false;
+    public Queue<Track> mPlaylistSongs;
 
     public static int FOREGROUND_SERVICE = 101;
     public static String MAIN_ACTION = "com.brainbeats.foregroundservice.action.main";
@@ -175,6 +178,10 @@ public class AudioService extends IntentService implements MediaPlayer.OnPrepare
 
     public Track getPlayingSong(){
         return mPlayingSong;
+    }
+
+    public void setPlaylist(Queue<Track> playlist){
+        this.mPlaylistSongs = playlist;
     }
 
     public void setSongLooping(boolean isLooping) {

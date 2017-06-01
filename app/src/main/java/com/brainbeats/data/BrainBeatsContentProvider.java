@@ -22,11 +22,12 @@ public class BrainBeatsContentProvider extends ContentProvider {
     static final int MIX                = 100;
     static final int MIXITEM            = 200;
     static final int MIX_RELATED        = 300;
-    static final int MIX_PLAYLIST       = 400;
-    static final int USER               = 500;
-    static final int USER_FOLLOWERS     = 600;
-    static final int RAW_QUERY          = 700;
-    static final int MIX_TAG            = 800;
+    static final int PLAYLIST           = 400;
+    static final int MIX_PLAYLIST       = 500;
+    static final int USER               = 600;
+    static final int USER_FOLLOWERS     = 700;
+    static final int RAW_QUERY          = 800;
+    static final int MIX_TAG            = 900;
 
 
     static {
@@ -41,6 +42,7 @@ public class BrainBeatsContentProvider extends ContentProvider {
         matcher.addURI(authority, BrainBeatsContract.PATH_MIX, MIX);
         matcher.addURI(authority, BrainBeatsContract.PATH_MIX_ITEM, MIXITEM);
         matcher.addURI(authority, BrainBeatsContract.PATH_MIX_RELATED, MIX_RELATED);
+        matcher.addURI(authority, BrainBeatsContract.PATH_PLAYLIST, PLAYLIST);
         matcher.addURI(authority, BrainBeatsContract.PATH_MIX_PLAYLIST, MIX_PLAYLIST);
         matcher.addURI(authority, BrainBeatsContract.PATH_USER, USER);
         matcher.addURI(authority, BrainBeatsContract.PATH_USER_FOLLOWERS, USER_FOLLOWERS);
@@ -84,6 +86,17 @@ public class BrainBeatsContentProvider extends ContentProvider {
             case MIX_RELATED:
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         BrainBeatsContract.MixRelatedEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            case PLAYLIST:
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        BrainBeatsContract.PlaylistEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -158,6 +171,8 @@ public class BrainBeatsContentProvider extends ContentProvider {
                 return BrainBeatsContract.MixItemsEntry.CONTENT_TYPE;
             case MIX_RELATED:
                 return BrainBeatsContract.MixRelatedEntry.CONTENT_TYPE;
+            case PLAYLIST:
+                return BrainBeatsContract.PlaylistEntry.CONTENT_TYPE;
             case MIX_PLAYLIST:
                 return BrainBeatsContract.MixPlaylistEntry.CONTENT_TYPE;
             case USER:
@@ -198,10 +213,17 @@ public class BrainBeatsContentProvider extends ContentProvider {
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
+            case PLAYLIST:
+                long _idPlaylist = db.insert(BrainBeatsContract.PlaylistEntry.TABLE_NAME, null, values);
+                if (_idPlaylist > 0)
+                    returnUri = BrainBeatsContract.PlaylistEntry.buildPlaylistUriWithId(_idPlaylist);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
             case MIX_PLAYLIST:
                 long _idMixPlaylist = db.insert(BrainBeatsContract.MixPlaylistEntry.TABLE_NAME, null, values);
                 if (_idMixPlaylist > 0)
-                    returnUri = BrainBeatsContract.MixRelatedEntry.buildRelatedMixesUriWithId(_idMixPlaylist);
+                    returnUri = BrainBeatsContract.MixPlaylistEntry.buildMixPlaylistUriWithId(_idMixPlaylist);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
@@ -256,6 +278,10 @@ public class BrainBeatsContentProvider extends ContentProvider {
             case USER_FOLLOWERS:
                 rowsDeleted = db.delete(
                         BrainBeatsContract.UserFollowersEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case PLAYLIST:
+                rowsDeleted = db.delete(
+                        BrainBeatsContract.PlaylistEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             case MIX_PLAYLIST:
                 rowsDeleted = db.delete(
