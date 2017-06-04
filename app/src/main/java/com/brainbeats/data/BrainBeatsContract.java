@@ -100,7 +100,7 @@ public class BrainBeatsContract {
 
         public static final String TABLE_NAME                           =  "mixplaylist";
         public static final String COLUMN_NAME_PLAYLIST_ID              =  "playlistid";
-        public static final String COLUMN_NAME_MIX_ID                   = "mixid";
+        public static final String COLUMN_NAME_MIX_ID                   =  "mixid";
 
 
         public static Uri buildMixPlaylistUriWithId(long id) {

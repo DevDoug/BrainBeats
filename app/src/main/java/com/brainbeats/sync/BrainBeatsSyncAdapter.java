@@ -397,7 +397,8 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    public void getUserInfo(int userId, ContentProviderClient provider){
+/*    public void getUserInfo(int userId, ContentProviderClient provider){
+
         WebApiManager.getSoundCloudUser(getContext(), String.valueOf(userId), new WebApiManager.OnObjectResponseListener() {
             @Override
             public void onObjectResponse(JSONObject object) {
@@ -412,7 +413,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
 
             }
         });
-    }
+    }*/
 
     public void addUser(com.brainbeats.entity.User soundCloudUser, boolean isFollowing, ContentProviderClient provider) {
         BrainBeatsUser brainBeatsUser = new BrainBeatsUser();
@@ -432,7 +433,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    public void favoriteTrackOnSoundCloud(int trackId, ContentProviderClient provider) {
+/*    public void favoriteTrackOnSoundCloud(int trackId, ContentProviderClient provider) {
         WebApiManager.putUserFavorite(getContext(), com.brainbeats.architecture.AccountManager.getInstance(getContext()).getUserId(), String.valueOf(trackId), new WebApiManager.OnObjectResponseListener() {
             @Override
             public void onObjectResponse(JSONObject object) {
@@ -450,7 +451,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
                 }
             }
         });
-    }
+    }*/
 
     //TODO - implement in version 2.0 beta version
 /*    public void updateRelateMixes(ArrayList<Collection> mCollections, ContentProviderClient provider){

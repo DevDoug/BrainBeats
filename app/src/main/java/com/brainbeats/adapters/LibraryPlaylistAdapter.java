@@ -68,23 +68,43 @@ public class LibraryPlaylistAdapter extends RecyclerViewCursorAdapter<LibraryPla
     }
 
     public void getAllTracksInPlaylist(long playListId) {
-        Cursor mixPlaylistCursor = mAdapterContext.getContentResolver().query(
+
+        String selectQuery = "SELECT  * FROM " + BrainBeatsContract.MixEntry.TABLE_NAME + " M, "
+                + BrainBeatsContract.PlaylistEntry.TABLE_NAME + " P, " + BrainBeatsContract.MixPlaylistEntry.TABLE_NAME  + " MP WHERE M."
+                + BrainBeatsContract.MixEntry._ID + " = " + "MP." + BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_MIX_ID
+                + " AND P." + BrainBeatsContract.PlaylistEntry._ID + " = " + "MP." + BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_ID
+                + " AND P." + BrainBeatsContract.PlaylistEntry._ID + " = " + playListId;
+
+
+        Cursor mixPlaylistCursor = mAdapterContext.getContentResolver().query(BrainBeatsContract.CONTENT_URI_RAW_QUERY, null, selectQuery, null, null);
+
+/*        Cursor mixPlaylistCursor = mAdapterContext.getContentResolver().query(
                 BrainBeatsContract.MixEntry.CONTENT_URI,
                 null,
                 null,
                 null,
                 null
-        );
+        );*/
 
         Queue<Track> playListQue = new PriorityQueue<>();
         for (int i = 0; i < mixPlaylistCursor.getCount(); i++) {
             Mix tempMix = Constants.buildMixFromCursor(mAdapterContext, mixPlaylistCursor, i);
             Track playListTrack = new Track(tempMix);
-            playListQue.add(playListTrack);
+
+            try {
+                playListQue.add(playListTrack);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
         mixPlaylistCursor.close();
 
+        ((LibraryActivity) mAdapterContext).mAudioService.mIsPlayingPlaylist = true;
+        ((LibraryActivity) mAdapterContext).mAudioService.setPlayingSong(playListQue.peek());
         ((LibraryActivity) mAdapterContext).mAudioService.setPlaylist(playListQue);
+        ((LibraryActivity) mAdapterContext).mAudioService.playSong(Uri.parse(playListQue.peek().getStreamURL()));
+        ((LibraryActivity) mAdapterContext).mAudioService.mPlaylistSongs.remove();
+
     }
 
     @Override

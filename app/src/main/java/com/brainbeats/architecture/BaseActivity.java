@@ -23,11 +23,13 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -65,7 +67,7 @@ public class BaseActivity extends AppCompatActivity {
     public Toolbar mToolBar;
     public ActionBarDrawerToggle mDrawerToggle;
 
-    public RelativeLayout mCurrentSongPlayingView;
+    public LinearLayout mCurrentSongPlayingView;
     public TextView mCurrentSongTitle;
     public TextView mCurrentSongArtistName;
     public ImageView mAlbumThumbnail;
@@ -105,6 +107,7 @@ public class BaseActivity extends AppCompatActivity {
 
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
+        mIntentFilter.addAction(Constants.PLAYLIST_COMPLETE_BROADCAST_ACTION);
     }
 
     @Override
@@ -163,12 +166,15 @@ public class BaseActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
         setUpNavDrawer();
 
-        mCurrentSongPlayingView = (RelativeLayout) findViewById(R.id.current_track_container);
+        mCurrentSongPlayingView = (LinearLayout) findViewById(R.id.current_track_container);
         mCurrentSongTitle = (TextView) findViewById(R.id.playing_mix_title);
         mCurrentSongArtistName = (TextView) findViewById(R.id.playing_mix_artist);
         mAlbumThumbnail = (ImageView) findViewById(R.id.album_thumbnail);
         mPlayTrackSeekBar = (SeekBar) findViewById(R.id.playing_mix_seek_bar);
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
+
+        if(mCurrentSong != null)
+            updateCurrentSongNotificationUI(mCurrentSong);
 
 /*        Bundle intentBundle = getIntent().getExtras(); //If an intent is passed to main activity.
         if (intentBundle != null) {
@@ -176,9 +182,6 @@ public class BaseActivity extends AppCompatActivity {
                 mCurrentSong = (Track) intentBundle.get(KEY_EXTRA_SELECTED_TRACK);
             }
         }*/
-
-        if(mCurrentSong != null)
-            updateCurrentSongNotificationUI(mCurrentSong);
 
 /*        mCurrentSongPlayingView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -467,6 +470,8 @@ public class BaseActivity extends AppCompatActivity {
 
                 showCurrentSongView();
                 startProgressBarThread();
+            } else if (intent.getAction().equals(Constants.PLAYLIST_COMPLETE_BROADCAST_ACTION)) {
+                hideCurrentSongView();
             }
         }
     };
