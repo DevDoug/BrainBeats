@@ -75,16 +75,7 @@ public class LibraryPlaylistAdapter extends RecyclerViewCursorAdapter<LibraryPla
                 + " AND P." + BrainBeatsContract.PlaylistEntry._ID + " = " + "MP." + BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_ID
                 + " AND P." + BrainBeatsContract.PlaylistEntry._ID + " = " + playListId;
 
-
         Cursor mixPlaylistCursor = mAdapterContext.getContentResolver().query(BrainBeatsContract.CONTENT_URI_RAW_QUERY, null, selectQuery, null, null);
-
-/*        Cursor mixPlaylistCursor = mAdapterContext.getContentResolver().query(
-                BrainBeatsContract.MixEntry.CONTENT_URI,
-                null,
-                null,
-                null,
-                null
-        );*/
 
         Queue<Track> playListQue = new PriorityQueue<>();
         for (int i = 0; i < mixPlaylistCursor.getCount(); i++) {
@@ -99,12 +90,15 @@ public class LibraryPlaylistAdapter extends RecyclerViewCursorAdapter<LibraryPla
         }
         mixPlaylistCursor.close();
 
-        ((LibraryActivity) mAdapterContext).mAudioService.mIsPlayingPlaylist = true;
-        ((LibraryActivity) mAdapterContext).mAudioService.setPlayingSong(playListQue.peek());
-        ((LibraryActivity) mAdapterContext).mAudioService.setPlaylist(playListQue);
-        ((LibraryActivity) mAdapterContext).mAudioService.playSong(Uri.parse(playListQue.peek().getStreamURL()));
-        ((LibraryActivity) mAdapterContext).mAudioService.mPlaylistSongs.remove();
-
+        if(playListQue.size() > 0) {
+            ((LibraryActivity) mAdapterContext).mAudioService.mIsPlayingPlaylist = true;
+            ((LibraryActivity) mAdapterContext).mAudioService.setPlayingSong(playListQue.peek());
+            ((LibraryActivity) mAdapterContext).mAudioService.setPlaylist(playListQue);
+            ((LibraryActivity) mAdapterContext).mAudioService.playSong(Uri.parse(playListQue.peek().getStreamURL()));
+            ((LibraryActivity) mAdapterContext).mAudioService.mPlaylistSongs.remove();
+        } else {
+            Constants.buildInfoDialog(mAdapterContext, "Empty Playlist", "Add a song to this playlist.");
+        }
     }
 
     @Override
