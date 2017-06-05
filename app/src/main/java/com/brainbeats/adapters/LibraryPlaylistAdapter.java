@@ -50,7 +50,19 @@ public class LibraryPlaylistAdapter extends RecyclerViewCursorAdapter<LibraryPla
                     @Override
                     public void PerformDialogAction() {
                         Playlist selectedPlaylist = Constants.buildPlaylistFromCursor(mAdapterContext, getCursor(), viewHolder.getAdapterPosition()); // get the selected mix item
-                        mAdapterContext.getContentResolver().delete(BrainBeatsContract.PlaylistEntry.CONTENT_URI, "_Id" + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, new String[]{String.valueOf(selectedPlaylist.getPlaylistId())});
+                        String playlistId = String.valueOf(selectedPlaylist.getPlaylistId());
+                        mAdapterContext.getContentResolver().delete(BrainBeatsContract.PlaylistEntry.CONTENT_URI, "_Id" + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, new String[]{playlistId});
+
+                        //delete all mix playlist records associated to not leave orphaned records
+                        Cursor mixPlaylistCursor = mAdapterContext.getContentResolver().query(BrainBeatsContract.MixPlaylistEntry.CONTENT_URI, null, "playlistid = ?", new String[]{playlistId}, null);
+                        if(mixPlaylistCursor != null) {
+                            if(mixPlaylistCursor.getCount() != 0) {
+                                mixPlaylistCursor.moveToFirst();
+                                long mixPlaylistId = mixPlaylistCursor.getLong(mixPlaylistCursor.getColumnIndex(BrainBeatsContract.MixPlaylistEntry._ID));
+                                mAdapterContext.getContentResolver().delete(BrainBeatsContract.MixPlaylistEntry.CONTENT_URI, "_Id" + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, new String[]{String.valueOf(mixPlaylistId)});
+                            }
+                            mixPlaylistCursor.close();
+                        }
                     }
                 });
                 return false;
