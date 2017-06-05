@@ -18,6 +18,7 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import com.brainbeats.web.WebApiManager;
 
 import java.io.IOError;
 import java.io.IOException;
+import java.util.Queue;
 
 import static com.brainbeats.utils.Constants.KEY_EXTRA_SELECTED_TRACK;
 
@@ -41,6 +43,8 @@ public class AudioService extends IntentService implements MediaPlayer.OnPrepare
     public static Track mPlayingSong;
     public static boolean mIsPaused = false;
     public boolean mIsRecordingTest = false;
+    public boolean mIsPlayingPlaylist = false;
+    public Queue<Track> mPlaylistSongs;
 
     public static int FOREGROUND_SERVICE = 101;
     public static String MAIN_ACTION = "com.brainbeats.foregroundservice.action.main";
@@ -101,11 +105,12 @@ public class AudioService extends IntentService implements MediaPlayer.OnPrepare
             mPlayer.start();
 
             //player is ready update ui
-            Intent broadcastIntent = new Intent(); // send broadcast to activity to tell it to update com.brainbeats.ui
-            broadcastIntent.setAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
-            broadcastIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mPlayingSong);
-            sendBroadcast(broadcastIntent);
-
+            if(!mIsRecordingTest) {
+                Intent broadcastIntent = new Intent(); // send broadcast to activity to tell it to update com.brainbeats.ui
+                broadcastIntent.setAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
+                broadcastIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mPlayingSong);
+                sendBroadcast(broadcastIntent);
+            }
         } catch (SecurityException ex) {
             ex.printStackTrace();
         }
@@ -117,12 +122,23 @@ public class AudioService extends IntentService implements MediaPlayer.OnPrepare
             mp.seekTo(0);
         } else {
             //tell ui to show loading spinner
-            if(!mIsRecordingTest) {
+            if (!mIsRecordingTest) {
                 Intent broadcastIntent = new Intent();
                 broadcastIntent.setAction(Constants.SONG_LOADING_BROADCAST_ACTION);
                 sendBroadcast(broadcastIntent);
 
-                loadNextTrack(); //load next track on com.brainbeats.service side
+                if (mIsPlayingPlaylist) {
+                    if (mPlaylistSongs.size() > 0) {
+                        mPlayingSong = mPlaylistSongs.peek();
+                        playSong(Uri.parse(mPlaylistSongs.peek().getStreamURL()));
+                        mPlaylistSongs.remove();
+                    } else {
+                        mIsPlayingPlaylist = false;
+                        sendPlaylistCompleteBroadcast();
+                    }
+                } else {
+                    loadNextTrack(); //load next track on com.brainbeats.service side
+                }
             } else {
                 mIsRecordingTest = false;
             }
@@ -175,6 +191,10 @@ public class AudioService extends IntentService implements MediaPlayer.OnPrepare
 
     public Track getPlayingSong(){
         return mPlayingSong;
+    }
+
+    public void setPlaylist(Queue<Track> playlist){
+        this.mPlaylistSongs = playlist;
     }
 
     public void setSongLooping(boolean isLooping) {
@@ -241,8 +261,9 @@ public class AudioService extends IntentService implements MediaPlayer.OnPrepare
         if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
             pauseSong();             // Pause playback
         } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-
+            resumeSong();
         } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+            pauseSong();
         }
     }
 
@@ -270,6 +291,16 @@ public class AudioService extends IntentService implements MediaPlayer.OnPrepare
     }
 
     public void loadNextTrack(){
-        BeatLearner.getInstance(getApplicationContext()).loadNextRecommendedBeat(mPlayingSong.getID(), this);
+        try {
+            BeatLearner.getInstance(getApplicationContext()).loadNextRecommendedBeat(mPlayingSong.getID(), this);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void sendPlaylistCompleteBroadcast(){
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(Constants.PLAYLIST_COMPLETE_BROADCAST_ACTION);
+        sendBroadcast(broadcastIntent);
     }
 }

@@ -160,7 +160,8 @@
     <string name="upvote_track">Great we will play more mixes like this one in the future.</string>
     <string name="no_search_results">Please try a different search.</string>
     <string name="title_activity_info">InfoActivity</string>
-
+    <string name="new_playlist_added">Your new playlist has been added.</string>
+    <string name="song_added_to_existing_playlist">Song added to existing playlist.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="share_this_track">Share this track</string>

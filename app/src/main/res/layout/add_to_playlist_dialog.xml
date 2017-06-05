@@ -10,10 +10,4 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/blue_horizontal_divider_height" />
 
-    <ListView
-        android:id="@+id/option_list_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:descendantFocusability="beforeDescendants" />
-
 </LinearLayout>

@@ -10,10 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/blue_horizontal_divider_height" />
 
-    <ListView
-        android:id="@+id/option_list_view"
+    <EditText
+        android:id="@+id/playlist_title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:descendantFocusability="beforeDescendants" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/theme_secondary_text_color"
+        android:layout_margin="15dp"/>
 
 </LinearLayout>

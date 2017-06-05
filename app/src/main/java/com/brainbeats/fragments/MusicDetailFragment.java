@@ -196,6 +196,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                 ((MainActivity) getActivity()).mExtraActionOneFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_whatshot_white));
                 ((MainActivity) getActivity()).mExtraActionTwoFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_access_time_white));
                 ((MainActivity) getActivity()).mExtraActionThreeFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_sort_by_alpha_white));
+                //((MainActivity) getActivity()).mExtraActionFourFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_sort_by_alpha_white));
 
                 mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_DASHBOARD_FAB_IMAGES);
                 FragmentManager fm = getActivity().getSupportFragmentManager();
@@ -438,7 +439,8 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public void downvoteSong() {
         showLoadingMusicDialog();
         BeatLearner.getInstance(getContext()).downVoteTrack(mSelectedTrack.getID());
-        mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_DOWNVOTE_SONG_URI);
+        mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_DOWNVOTE_SONG_URI, mSelectedTrack);
+
         Snackbar downVoteSnack;
         downVoteSnack = Snackbar.make(((MainActivity) getActivity()).mCoordinatorLayout, getString(R.string.downvote_track), Snackbar.LENGTH_LONG);
         downVoteSnack.show();
@@ -446,6 +448,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
 
     public void upvoteSong(){
         BeatLearner.getInstance(getContext()).upVoteTrack(mSelectedTrack.getID());
+
         Snackbar upvoteSnack;
         upvoteSnack = Snackbar.make(((MainActivity) getActivity()).mCoordinatorLayout, getString(R.string.upvote_track), Snackbar.LENGTH_LONG);
         upvoteSnack.show();
@@ -453,7 +456,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
 
     public void skipForward(){
         showLoadingMusicDialog();
-        mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_SKIP_FORWARD_URI);
+        mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_SKIP_FORWARD_URI, mSelectedTrack);
     }
 
     public void turnOnRepeat() {

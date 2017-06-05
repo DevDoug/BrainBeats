@@ -11,10 +11,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.brainbeats.R;
@@ -28,6 +25,7 @@ import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.entity.Track;
 import com.brainbeats.model.Mix;
 import com.brainbeats.model.MixItem;
+import com.brainbeats.model.MixPlaylist;
 import com.brainbeats.model.Playlist;
 import com.brainbeats.model.BrainBeatsUser;
 
@@ -78,6 +76,8 @@ public class Constants {
     public static final String SONG_COMPLETE_BROADCAST_ACTION               = "com.brainbeats.play.next";
     public static final String SONG_LOADING_BROADCAST_ACTION                = "com.brainbeats.loading.next";
     public static final String SONG_ERROR_BROADCAST_ACTION                  = "com.brainbeats.song.error";
+    public static final String PLAYLIST_COMPLETE_BROADCAST_ACTION           = "com.brainbeats.playlist.complete";
+
 
 
     public static final String INTENT_ACTION_GO_TO_DETAIL_FRAGMENT          = "LoadDetailFragment";
@@ -295,6 +295,16 @@ public class Constants {
         return brainBeatsUser;
     }
 
+    public static Playlist buildPlaylistFromCursor(Context context, Cursor cursor, int position) {
+        cursor.moveToPosition(position);
+
+        Playlist brainBeatsPlaylist = new Playlist();
+        brainBeatsPlaylist.setPlaylistId(cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.PlaylistEntry._ID)));
+        brainBeatsPlaylist.setPlaylistTitle(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.PlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE)));
+
+        return brainBeatsPlaylist;
+    }
+
     public static ContentValues buildMixRecord(Mix mix) {
         ContentValues values = new ContentValues();
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE, mix.getMixTitle());
@@ -333,8 +343,15 @@ public class Constants {
 
     public static ContentValues buildPlaylistRecord(Playlist playlist) {
         ContentValues values = new ContentValues();
-        values.put(BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE, playlist.getPlaylistTitle());
-        values.put(BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID, playlist.getSoundCloudId());
+        values.put(BrainBeatsContract.PlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE, playlist.getPlaylistTitle());
+        values.put(BrainBeatsContract.PlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID, playlist.getSoundCloudId());
+        return values;
+    }
+
+    public static ContentValues buildMixPlaylistRecord(MixPlaylist mixPlaylist) {
+        ContentValues values = new ContentValues();
+        values.put(BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_MIX_ID, mixPlaylist.getMixId());
+        values.put(BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_ID, mixPlaylist.getPlaylistId());
         return values;
     }
 
@@ -441,15 +458,15 @@ public class Constants {
         return alert;
     }
 
-    public static AlertDialog buildListDialogue(Context context, String title, String[] options, AdapterView.OnItemClickListener listener) {
+    public static AlertDialog buildListDialogue(Context context, String title, String[] options, DialogInterface.OnClickListener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.custom_list_dialog_layout, null);
         ((TextView) dialogView.findViewById(R.id.separator_title)).setText(title);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.dialog_list_item, R.id.dialog_item, options);
-        ((ListView) dialogView.findViewById(R.id.options_list)).setAdapter(adapter);
-        ((ListView) dialogView.findViewById(R.id.options_list)).setOnItemClickListener(listener);
+        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.dialog_list_item, R.id.dialog_item, options);
+        //((ListView) dialogView.findViewById(R.id.options_list)).setAdapter(adapter);
         builder.setView(dialogView);
+        builder.setItems(options, listener);
         AlertDialog alert = builder.create();
         alert.show();
         return alert;

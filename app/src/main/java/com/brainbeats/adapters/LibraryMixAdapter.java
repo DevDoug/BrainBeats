@@ -68,13 +68,6 @@ public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapt
                 ((LibraryActivity) mAdapterContext).mCurrentSong = playTrack;
                 ((LibraryActivity) mAdapterContext).mAudioService.setPlayingSong(playTrack);
                 ((LibraryActivity) mAdapterContext).mAudioService.playSong(Uri.parse(selectedMix.getStreamURL()));
-
-/*                //start intent to send user to play this mix in player
-                Intent browseMusicIntent = new Intent(mAdapterContext, MainActivity.class);
-                browseMusicIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, selectedMix);
-                browseMusicIntent.putExtra(Constants.KEY_EXTRA_SELECTED_USER, selectedMix.getUser());
-                browseMusicIntent.setAction(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT);
-                mAdapterContext.startActivity(browseMusicIntent);*/
             }
         });
 

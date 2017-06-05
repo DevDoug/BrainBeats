@@ -25,17 +25,17 @@ public class BrainBeatsDbHelper extends SQLiteOpenHelper {
     public static final String CREATE_TABLE_TERMINATION                     = ");";
 
     //Query params
-    public static final String WHERE_CLAUSE_LIKE                    = " LIKE ?";
-    public static final String WHERE_CLAUSE_EQUAL                   = " = ? ";
-    public static final String AND_CLAUSE                           = "AND ";
-    public static final String OR_CLAUSE                           = "OR ";
+    public static final String WHERE_CLAUSE_LIKE                            = " LIKE ?";
+    public static final String WHERE_CLAUSE_EQUAL                           = " = ? ";
+    public static final String AND_CLAUSE                                   = "AND ";
+    public static final String OR_CLAUSE                                    = "OR ";
 
     //Db lookup fields
-    public static final String DB_TRUE_VALUE                        = "1";
+    public static final String DB_TRUE_VALUE                                = "1";
 
     //Sort Types
-    public static final String DB_SORT_TYPE_DESC                    = " DESC";
-    public static final String DB_SORT_TYPE_LIMIT_FIVE              = " ROWID LIMIT 5";
+    public static final String DB_SORT_TYPE_DESC                            = " DESC";
+    public static final String DB_SORT_TYPE_LIMIT_FIVE                      = " ROWID LIMIT 5";
 
 
 
@@ -83,10 +83,16 @@ public class BrainBeatsDbHelper extends SQLiteOpenHelper {
                         BrainBeatsContract.MixRelatedEntry.COLUMN_NAME_TAG_CLOUD_ID + COLUMN_TYPE_INT_NULL +
                         CREATE_TABLE_TERMINATION;
 
-        final String CREATE_TABLE_PLAYLIST = CREATE_TABLE + BrainBeatsContract.MixPlaylistEntry.TABLE_NAME + " (" +
+        final String CREATE_TABLE_PLAYLIST = CREATE_TABLE + BrainBeatsContract.PlaylistEntry.TABLE_NAME + " (" +
+                        BrainBeatsContract.PlaylistEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
+                        BrainBeatsContract.PlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
+                        BrainBeatsContract.PlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID + COLUMN_TYPE_INT_NULL +
+                        CREATE_TABLE_TERMINATION;
+
+        final String CREATE_TABLE_MIX_PLAYLIST = CREATE_TABLE + BrainBeatsContract.MixPlaylistEntry.TABLE_NAME + " (" +
                         BrainBeatsContract.MixPlaylistEntry._ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
-                        BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE + COLUMN_TYPE_TEXT_NULL + COMMA_SEPERATOR +
-                        BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID + COLUMN_TYPE_INT_NULL +
+                        BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_PLAYLIST_ID + COLUMN_TYPE_INT_NOT_NULL + COMMA_SEPERATOR +
+                        BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_MIX_ID + COLUMN_TYPE_INT_NOT_NULL +
                         CREATE_TABLE_TERMINATION;
 
         final String CREATE_TABLE_USER = CREATE_TABLE + BrainBeatsContract.UserEntry.TABLE_NAME + " (" +
@@ -114,6 +120,7 @@ public class BrainBeatsDbHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_MIX_ITEMS);
         db.execSQL(CREATE_TABLE_RELATED_MIX);
         db.execSQL(CREATE_TABLE_PLAYLIST);
+        db.execSQL(CREATE_TABLE_MIX_PLAYLIST);
         db.execSQL(CREATE_TABLE_USER);
         db.execSQL(CREATE_TABLE_USER_FOLLOWERS);
         db.execSQL(CREATE_TABLE_MIX_TAG);
@@ -124,6 +131,7 @@ public class BrainBeatsDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + BrainBeatsContract.MixEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + BrainBeatsContract.MixItemsEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + BrainBeatsContract.MixRelatedEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + BrainBeatsContract.PlaylistEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + BrainBeatsContract.MixPlaylistEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + BrainBeatsContract.UserEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + BrainBeatsContract.UserFollowersEntry.TABLE_NAME);

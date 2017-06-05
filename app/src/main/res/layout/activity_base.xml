@@ -44,6 +44,17 @@
         </FrameLayout>
 
         <android.support.design.widget.FloatingActionButton
+            android:id="@+id/action_four_fob"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_anchor="@+id/action_three_fob"
+            app:layout_anchorGravity="top|end"
+            android:layout_gravity="top"
+            android:elevation="@dimen/fob_elevation"
+            android:src="@drawable/ic_sort_by_alpha_white"
+            android:visibility="invisible" />
+
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/action_three_fob"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -87,15 +98,16 @@
             android:elevation="@dimen/fob_elevation"
             android:src="@drawable/ic_filter_list_white" />
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/current_track_container"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@drawable/current_track_playing_background"
+            android:orientation="horizontal"
             android:layout_gravity="center_horizontal|bottom"
-            android:gravity="center_vertical"
+            android:background="@drawable/current_track_playing_background"
             android:elevation="5dp"
-            android:visibility="gone">
+            android:gravity="center_vertical"
+            android:visibility="visible">
 
             <ImageView
                 android:id="@+id/album_thumbnail"
@@ -104,43 +116,45 @@
                 android:layout_marginLeft="10dp"
                 android:src="@drawable/placeholder" />
 
-            <TextView
-                android:id="@+id/playing_mix_title"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#212121"
-                android:textSize="14sp"
-                android:maxLength="15"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:text="Lorem ispsum"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
                 android:layout_marginLeft="10dp"
-                android:layout_toEndOf="@+id/album_thumbnail"
-                android:layout_alignTop="@id/album_thumbnail"/>
+                android:gravity="center">
 
-            <TextView
-                android:id="@+id/playing_mix_artist"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#424242"
-                android:textSize="12sp"
-                android:maxLength="15"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:text="Lorem ispsum"
-                android:layout_marginLeft="10dp"
-                android:layout_toEndOf="@+id/album_thumbnail"
-                android:layout_below="@id/playing_mix_title"/>
+                <TextView
+                    android:id="@+id/playing_mix_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLength="15"
+                    android:singleLine="true"
+                    android:text="Lorem ispsum"
+                    android:textColor="#212121"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/playing_mix_artist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLength="15"
+                    android:singleLine="true"
+                    android:text="Lorem ispsum"
+                    android:textColor="#424242"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
 
             <android.support.v7.widget.AppCompatSeekBar
                 android:id="@+id/playing_mix_seek_bar"
-                android:layout_width="120dp"
+                android:layout_width="140dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/playing_mix_title" />
+                android:layout_marginLeft="10dp"
+                />
 
-<!--            <ImageView
+            <!--            <ImageView
                 android:id="@+id/play_song_button"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
@@ -163,7 +177,7 @@
                 android:src="@drawable/ic_skip_next" />-->
 
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </android.support.design.widget.CoordinatorLayout>
 

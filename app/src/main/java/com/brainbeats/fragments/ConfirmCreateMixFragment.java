@@ -24,6 +24,8 @@ import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.model.Mix;
 import com.brainbeats.utils.Constants;
 
+import java.io.File;
+
 /**
  * A simple {@link Fragment} subclass.
  */
