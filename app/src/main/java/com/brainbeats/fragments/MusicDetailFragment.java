@@ -63,6 +63,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public Bundle mUserSelections;
     public volatile boolean mIsAlive = true;
     public boolean isCurrentSong = false;
+    public boolean isRepeating = false;
 
     // Playing track members.
     public Thread mUpdateSeekBar;
@@ -460,6 +461,13 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     }
 
     public void turnOnRepeat() {
+        isRepeating = !isRepeating;
+
+        if(isRepeating)
+            mLoopSongButton.setImageResource(R.drawable.ic_repeat);
+        else
+            mLoopSongButton.setImageResource(R.drawable.ic_repeat_off);
+
         mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_SET_SONG_REPEAT_URI);
     }
 }
