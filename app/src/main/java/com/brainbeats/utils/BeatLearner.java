@@ -45,6 +45,7 @@ public class BeatLearner {
 
     //TODO:Implement machine learning recommendation
     public void loadNextRecommendedBeat(int selectedTrackId, RecommendationCompleteListener listener) {
+
         //for now do something very basic and just return a random related mix.
         WebApiManager.getRelatedTracks(mContext, String.valueOf(selectedTrackId), new WebApiManager.OnObjectResponseListener() {
             @Override

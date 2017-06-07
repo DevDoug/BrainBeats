@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -25,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.fragments.MusicDetailFragment;
 import com.brainbeats.fragments.BrowseMusicFragment;
 
@@ -108,12 +111,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
         mIntentFilter.addAction(Constants.SONG_LOADING_BROADCAST_ACTION);
+        mIntentFilter.addAction(Constants.SONG_ERROR_BROADCAST_ACTION);
 
         mMainActionFab.setOnClickListener(this);
         mExtraActionOneFab.setOnClickListener(this);
         mExtraActionTwoFab.setOnClickListener(this);
         mExtraActionThreeFab.setOnClickListener(this);
         //mExtraActionFourFab.setOnClickListener(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mIsFabOpen)
+            animateFAB();
+
+        mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_filter_list_white));
+        mExtraActionOneFab.setImageDrawable(getDrawable(R.drawable.ic_whatshot_white));
+        mExtraActionTwoFab.setImageDrawable(getDrawable(R.drawable.ic_access_time_white));
+        mExtraActionThreeFab.setImageDrawable(getDrawable(R.drawable.ic_sort_by_alpha_white));
+
+        FragmentManager fm = getSupportFragmentManager();
+        navigateUpOrBack(this, fm);
     }
 
     @Override
@@ -335,7 +353,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mExtraActionThreeFab.setImageDrawable(getDrawable(R.drawable.ic_playlist_add_white));
         //mExtraActionFourFab.setImageDrawable(getDrawable(R.drawable.ic_playlist_add_white));
 
-        replaceFragment(mDashboardDetailFragment, mDashboardDetailFragment.getTag());
+        replaceFragment(mDashboardDetailFragment, "DashboardDetailFrag");
     }
 
     public void animateFAB() {
@@ -388,6 +406,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onFragmentInteraction(Uri uri, Track track) {
         if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI) == 0) {
+            mAudioService.requestAudioFocus(this);
             mAudioService.setPlayingSong(track);
             mAudioService.playSong(Uri.parse(track.getStreamURL()));
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_UPDATE_CURRENT_PLAYING_SONG_VIEW) == 0) {
@@ -406,6 +425,28 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_DOWNVOTE_SONG_URI) == 0) {
             if (mAudioService.getPlayingSong() == null)
                 mAudioService.setPlayingSong(track);
+
+            long mixId = 0;
+            Cursor mixCursor = getContentResolver().query(BrainBeatsContract.MixEntry.CONTENT_URI, null, "mixtitle = ?", new String[]{track.getTitle()}, null);
+            if (mixCursor != null) {
+                if (mixCursor.getCount() != 0) {
+                    mixCursor.moveToFirst();
+                    Mix updateMix = Constants.buildMixFromCursor(this, mixCursor, 0);
+                    updateMix.setIsDownvoted(1);
+
+                    getContentResolver().update(
+                            BrainBeatsContract.MixEntry.CONTENT_URI,
+                            Constants.buildMixRecord(updateMix),
+                            "_Id = ?",
+                            new String[]{String.valueOf(updateMix.getMixId())});
+
+                    mixCursor.close();
+                } else {
+                    ContentValues values = Constants.buildMixRecord(Constants.buildMixRecordFromTrack(track));
+                    values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_DOWNVOTE, 1);
+                    Uri returnRecord = getContentResolver().insert(BrainBeatsContract.MixEntry.CONTENT_URI, values);
+                }
+            }
 
             mAudioService.loadNextTrack();
         }

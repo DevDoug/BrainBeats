@@ -38,12 +38,14 @@ public class Mix implements Parcelable {
 
     private int mDuration;
 
+    private int mIsDownvoted;
+
     private BrainBeatsUser mBrainBeatsUser;
 
     public Mix() {
     }
 
-    public Mix(Track track){
+    public Mix(Track track) {
         mMixTitle = track.getTitle();
         mBeatAlbumCoverArtSource = track.getArtworkURL();
         mMixSoundCloudId = track.getID();
@@ -161,6 +163,14 @@ public class Mix implements Parcelable {
 
     public void setMixItemsUserId(long mixItemsUserId) {
         this.mMixItemsId = mixItemsUserId;
+    }
+
+    public int getIsDownvoted() {
+        return mIsDownvoted;
+    }
+
+    public void setIsDownvoted(int isDownvoted) {
+        this.mIsDownvoted = isDownvoted;
     }
 
     @Override

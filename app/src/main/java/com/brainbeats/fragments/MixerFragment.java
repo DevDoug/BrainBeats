@@ -73,6 +73,13 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mListener.onFragmentInteraction(Constants.MIX_SHOW_FAB);
+
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {

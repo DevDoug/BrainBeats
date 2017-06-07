@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.View;
 
@@ -83,6 +84,12 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
 
         mNewMix = new Mix();
         replaceFragment(mNewMixFragment, mNewMixFragment.getTag());
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+        navigateUpOrBack(this, fm);
     }
 
     public void switchToConfirmCreateMixFragment() {

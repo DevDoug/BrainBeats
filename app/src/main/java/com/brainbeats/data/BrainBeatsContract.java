@@ -46,6 +46,7 @@ public class BrainBeatsContract {
         public static final String COLUMN_NAME_STREAM_URL               = "mixStreamUrl";
         public static final String COLUMN_NAME_DURATION                 = "mixDuration";
         public static final String COLUMN_NAME_IS_UPVOTE                = "isUpvoted";
+        public static final String COLUMN_NAME_IS_DOWNVOTE              = "isDownvoted";
 
         public static Uri buildMixUriWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
