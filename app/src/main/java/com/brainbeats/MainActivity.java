@@ -112,6 +112,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
         mIntentFilter.addAction(Constants.SONG_LOADING_BROADCAST_ACTION);
         mIntentFilter.addAction(Constants.SONG_ERROR_BROADCAST_ACTION);
+        //mIntentFilter.addAction(Constants.RESTORE_FROM_SERVICE_BROADCAST_ACTION);
+
 
         mMainActionFab.setOnClickListener(this);
         mExtraActionOneFab.setOnClickListener(this);
@@ -148,6 +150,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             SyncManager.mIsGlobalSyncRequired = false;
         }
         registerReceiver(mReceiver, mIntentFilter);
+
+        if(mAudioService != null)
+            if(mAudioService.getIsPlaying()) {
+                if (mDashboardDetailFragment.isVisible()) {                                                             //if they are on the dashboard detail screen update the detail widgets
+                    (((MusicDetailFragment) mDashboardDetailFragment)).updateTrackUI(mAudioService.getPlayingSong());
+                }
+            }
+
     }
 
     @Override
@@ -194,7 +204,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
-    public void showAddToPlaylist(){
+    public void showAddToPlaylist() {
         ArrayList<String> playlistNames = new ArrayList<String>();
         playlistNames.add("Create New Playlist");
 
@@ -223,12 +233,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         LayoutInflater inflater = ((Activity) this).getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.custom_list_dialog_layout, null);
         ((TextView) dialogView.findViewById(R.id.separator_title)).setText("");
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.dialog_list_item, R.id.dialog_item,mOptions);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.dialog_list_item, R.id.dialog_item, mOptions);
         ((ListView) dialogView.findViewById(R.id.option_list_view)).setAdapter(adapter);
         ((ListView) dialogView.findViewById(R.id.option_list_view)).setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(position == 0)
+                if (position == 0)
                     showEnterPlaylistTitleDialog();
                 else {
                     TextView titleView = (TextView) view.findViewById(R.id.dialog_item);
@@ -242,7 +252,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         alert.show();
     }
 
-    public void showEnterPlaylistTitleDialog(){
+    public void showEnterPlaylistTitleDialog() {
         alert.dismiss();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
@@ -266,7 +276,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     public void createNewPlaylist(String title) {
-        if(!title.isEmpty()) { //require title
+        if (!title.isEmpty()) { //require title
             Cursor returnRecord = getContentResolver().query(BrainBeatsContract.PlaylistEntry.CONTENT_URI, null, "playlisttitle = ?", new String[]{title}, null);
             if (returnRecord != null) {
                 if (returnRecord.getCount() == 0) { //only add a new playlist if it does not already exist
@@ -393,7 +403,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_SET_SONG_REPEAT_URI) == 0) {
             mAudioService.setSongLooping(true);
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_UPDATE_PROGRESS_BAR_THREAD) == 0) {
-            if(mAudioService != null)
+            if (mAudioService != null)
                 if (mAudioService.getIsPlaying() || mAudioService.getIsPaused())
                     ((MusicDetailFragment) mDashboardDetailFragment).startProgressBarThread(mAudioService.getPlayerPosition());
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_CHECK_IF_CURRENT_SONG) == 0) {
@@ -471,6 +481,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 }
             } else if (intent.getAction().equals(Constants.PLAYLIST_COMPLETE_BROADCAST_ACTION)) {
                 hideCurrentSongView();
+            } else if (intent.getAction().equals(Constants.RESTORE_FROM_SERVICE_BROADCAST_ACTION)) {
+                Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+                if (mDashboardDetailFragment.isVisible()) {                                                             //if they are on the dashboard detail screen update the detail widgets
+                    (((MusicDetailFragment) mDashboardDetailFragment)).updateTrackUI(newTrack);
+                }
             }
         }
     };

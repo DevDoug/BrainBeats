@@ -129,23 +129,23 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-
-/*        if (AccountManager.getInstance(this).getRestorePlayingFromService()) {
-            if(mAudioService != null)
-                mCurrentSong = mAudioService.getPlayingSong();
-        }*/
     }
 
     @Override
     public void onStop() {
         super.onStop();
-
-       // AccountManager.getInstance(this).setRestorePlayingFromService(true);
+        //AccountManager.getInstance(this).setRestorePlayingFromService(true);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        if(mAudioService != null)
+            if(mAudioService.getIsPlaying()) {
+                mCurrentSong = mAudioService.getPlayingSong();
+                updateCurrentSongNotificationUI(mAudioService.getPlayingSong());
+            }
 
         if (mDisplayCurrentSongView)
             showCurrentSongView();

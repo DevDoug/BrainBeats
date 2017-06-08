@@ -12,6 +12,7 @@ import android.media.Image;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -24,6 +25,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -67,6 +69,8 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
 
     private Button mPlayButton = null;
     private MediaPlayer mPlayer = null;
+
+    private PowerManager.WakeLock recordingWakeLock;
 
 
     public interface OnFragmentInteractionListener {
@@ -132,6 +136,8 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
 
         if(mIsRecording)
             stopRecording();
+
+        mListener.onFragmentInteraction(Constants.STOP_SONG_URI);
     }
 
     @Override
@@ -191,6 +197,8 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
     }
 
     private void startRecording() {
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -216,6 +224,7 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
             mRecorder = null;
             mIsRecording = false;
             mRecordButton.setImageResource(R.drawable.ic_mic);
+            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } catch (RuntimeException ex) {
             ex.printStackTrace();
         }
