@@ -333,7 +333,7 @@ public class BaseActivity extends AppCompatActivity {
                 mDrawerToggle.syncState();
             }
         } else {
-            currentActivity.onBackPressed();
+            currentActivity.finish();
         }
     }
 

@@ -25,12 +25,15 @@ import com.brainbeats.R;
 import com.brainbeats.adapters.SearchMusicAdapter;
 import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.entity.Track;
+import com.brainbeats.entity.TrackCollection;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.web.WebApiManager;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -177,20 +180,24 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
             loadingMusicDialog.setMessage(getString(R.string.loading_message));
             loadingMusicDialog.show();
 
-            WebApiManager.getTracks(getContext(), mQueryText, filterTag, new WebApiManager.OnArrayResponseListener() {
+            WebApiManager.getTracks(getContext(), mQueryText, filterTag, new WebApiManager.OnObjectResponseListener() {
                 @Override
-                public void onArrayResponse(JSONArray array) {
+                public void onObjectResponse(JSONObject object) {
                     loadingMusicDialog.dismiss();
                     Gson gson = new Gson();
-                    Type token = new TypeToken<List<Track>>() {
-                    }.getType();
-                    ArrayList<Track> trackList = gson.fromJson(array.toString(), token);
+                    Type token = new TypeToken<TrackCollection>() {}.getType();
+                    TrackCollection tracks = gson.fromJson(object.toString(), token);
+                    ArrayList<Track> trackList = tracks.getTracks();
                     if (trackList.size() != 0) {
                         mTrackAdapter = new SearchMusicAdapter(getContext(), trackList);
                         mBeatGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
+
                         mTrackGrid.setLayoutManager(mBeatGridLayoutManager);
                         mTrackGrid.setAdapter(mTrackAdapter);
                         mTrackAdapter.notifyDataSetChanged();
+
+                        mTrackGrid.addOnScrollListener(recyclerViewOnScrollListener);
+
                     } else {
                         Constants.buildInfoDialog(getContext(), getString(R.string.error_no_results_found_error_message), getString(R.string.no_search_results));
                     }
@@ -206,4 +213,29 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
             Constants.buildActionDialog(getContext(), getString(R.string.connect_to_network_message), getString(R.string.enable_wifi_in_settings_message), getString(R.string.go_to_settings_message), this);
         }
     }
+
+    private RecyclerView.OnScrollListener recyclerViewOnScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            int visibleItemCount = mBeatGridLayoutManager.getChildCount();
+            int totalItemCount = mBeatGridLayoutManager.getItemCount();
+            int firstVisibleItemPosition = mBeatGridLayoutManager.findFirstVisibleItemPosition();
+
+/*            if (!isLoading && !isLastPage) {
+                if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                        && firstVisibleItemPosition >= 0
+                        && totalItemCount >= PAGE_SIZE) {
+                    loadMoreItems();
+                }
+            }*/
+        }
+    };
+
+
 }
