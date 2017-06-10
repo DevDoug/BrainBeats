@@ -50,6 +50,10 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
     private String mQueryText = "";
     private SearchView.OnQueryTextListener listener;
 
+    private String mNextTracksHref;
+    private boolean mIsLoading;
+    private boolean mIsLastPage;
+
     public BrowseMusicFragment() {
         // Required empty public constructor
     }
@@ -116,15 +120,6 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-/*            case R.id.filter_by_hottest:
-                getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR);
-                break;
-            case R.id.filter_by_most_recent:
-                getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT);
-                break;
-            case R.id.filter_by_alphabet:
-                getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_A_TO_Z);
-                break;*/
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
                 Intent loginIntent = new Intent(getContext(), LoginActivity.class);
@@ -187,6 +182,7 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
                     Gson gson = new Gson();
                     Type token = new TypeToken<TrackCollection>() {}.getType();
                     TrackCollection tracks = gson.fromJson(object.toString(), token);
+                    mNextTracksHref = tracks.getNextHref();
                     ArrayList<Track> trackList = tracks.getTracks();
                     if (trackList.size() != 0) {
                         mTrackAdapter = new SearchMusicAdapter(getContext(), trackList);
@@ -214,6 +210,28 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
         }
     }
 
+    public void loadMoreItems() {
+        WebApiManager.getNextTrackListByHref(getActivity(), mNextTracksHref, mQueryText, "", new WebApiManager.OnObjectResponseListener() {
+            @Override
+            public void onObjectResponse(JSONObject object) {
+                Gson gson = new Gson();
+                Type token = new TypeToken<TrackCollection>() {}.getType();
+                TrackCollection tracks = gson.fromJson(object.toString(), token);
+                mNextTracksHref = tracks.getNextHref();
+                ArrayList<Track> trackList = tracks.getTracks();
+                if(trackList.size() != 0) {
+                    mTrackAdapter.mTracks.addAll(trackList);
+                    mTrackAdapter.notifyDataSetChanged();
+                }
+            }
+        }, new WebApiManager.OnErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+    }
+
     private RecyclerView.OnScrollListener recyclerViewOnScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -227,13 +245,13 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
             int totalItemCount = mBeatGridLayoutManager.getItemCount();
             int firstVisibleItemPosition = mBeatGridLayoutManager.findFirstVisibleItemPosition();
 
-/*            if (!isLoading && !isLastPage) {
+            if (!mIsLoading && !mIsLastPage) {
                 if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                         && firstVisibleItemPosition >= 0
-                        && totalItemCount >= PAGE_SIZE) {
+                        && totalItemCount >= 50) {
                     loadMoreItems();
                 }
-            }*/
+            }
         }
     };
 

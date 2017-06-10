@@ -125,6 +125,25 @@ public class WebApiManager {
         }
     }
 
+    public static void getNextTrackListByHref(Context context, String href,  String queryFilter, String filterTags, final OnObjectResponseListener responseListener, final OnErrorListener errorListener) {
+        HashMap<String, String> mParams = new HashMap<>();
+        mParams.put(SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
+        //mParams.put(SOUND_CLOUD_QUERY_FILTER_TAGS, filterTags);
+        mParams.put(SOUND_CLOUD_QUERY_FILTER_LIMIT, SOUND_CLOUD_QUERY_FILTER_PARAM_LIMIT_FIFTY);
+        mParams.put(SOUND_CLOUD_QUERY_FILTER_LINKED_PARTITIONING, "1");
+
+        if (queryFilter != null && !queryFilter.equalsIgnoreCase(""))
+            mParams.put(SOUND_CLOUD_QUERY_FILTER_QUERY, queryFilter);
+
+        String url = href;
+        try {
+            JSONObject jsonRequest = new JSONObject();
+            sendObjectRequest(context, Request.Method.GET, url, mParams, jsonRequest, responseListener, errorListener);
+        } catch (Exception ex) {
+            errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
+        }
+    }
+
     public static void getRelatedTracks(Context context, String urlPart, final OnObjectResponseListener responseListener, final OnErrorListener errorListener) {
         HashMap<String, String> mParams = new HashMap<>();
         mParams.put(SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);

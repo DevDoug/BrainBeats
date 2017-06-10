@@ -22,7 +22,7 @@ import com.brainbeats.entity.Track;
 public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.ViewHolder> {
 
     Context mAdapterContext;
-    List<Track> mTracks;
+    public List<Track> mTracks;
 
     public SearchMusicAdapter(Context context, List<Track> data) {
         mAdapterContext = context;
@@ -56,7 +56,7 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.mTrackTitle.setText(mTracks.get(position).getTitle());
-        Picasso.with(mAdapterContext).load(mTracks.get(position).getArtworkURL()).resize(1800, 1800).centerInside().into(holder.mAlbumArtCover);
+        Picasso.with(mAdapterContext).load(mTracks.get(position).getArtworkURL()).into(holder.mAlbumArtCover);
     }
 
     @Override
