@@ -119,7 +119,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                 if (mSelectedTrack.getArtworkURL() == null)
                     mAlbumCoverArt.setImageResource(R.drawable.placeholder);
                 else
-                    Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).resize(1800, 1800).centerInside().into(mAlbumCoverArt);
+                    Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
         }
     }
 

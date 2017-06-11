@@ -89,6 +89,34 @@
         <item name="sleep">Sleep</item>
     </string-array>
 
+    <string-array name="genres">
+        <item name="Prompt">Select a music genre</item>
+        <item name="Dubstep">Dubstep</item>
+        <item name="Electronic">Electronic</item>
+        <item name="Ambient">Ambient</item>
+        <item name="Classical">Classical</item>
+        <item name="Country">Country</item>
+        <item name="Dance_EDM">Dance &amp; EDM</item>
+        <item name="Deep_House">Deep House</item>
+        <item name="Disco">Disco</item>
+        <item name="Drum_Bass">Drum &amp; Bass</item>
+        <item name="Dubstep">Dubstep</item>
+        <item name="Electronic">Electronic</item>
+        <item name="Hiphop_Rap">Hip-hop &amp; Rap</item>
+        <item name="House">House</item>
+        <item name="Indie">Indie</item>
+        <item name="Jazz_Blues">Jazz &amp; Blues</item>
+        <item name="Latin">Latin</item>
+        <item name="Metal">Metal</item>
+        <item name="Piano">Piano</item>
+        <item name="Pop">Pop</item>
+        <item name="Rock">Rock</item>
+        <item name="Techno">Techno</item>
+        <item name="Trance">Trance</item>
+        <item name="Trap">Trap</item>
+        <item name="Triphop">Triphop</item>
+    </string-array>
+
     <string name="loading_message">Loading</string>
     <string name="song_added_to_favorites_snack_message">Song added to Favorites.</string>
     <string name="song_added_to_library_snack_message">Song added to Library.</string>

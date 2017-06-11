@@ -6,10 +6,10 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.util.Log;
 
-import java.util.ArrayList;
-
 import com.brainbeats.entity.Track;
 import com.brainbeats.model.MixItem;
+
+import java.util.ArrayList;
 
 /**
  * Created by douglas on 6/15/2016.
@@ -17,13 +17,11 @@ import com.brainbeats.model.MixItem;
 public class MixManager {
 
     private static MixManager mInstance;
-    private static Context mContext;
 
     public static final int DURATION = 150;
     public static final int SAMPLE_RATE = 8000;
 
     public MixManager(Context context) {
-        this.mContext = context;
     }
 
     public static synchronized MixManager getInstance(Context context) {

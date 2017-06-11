@@ -15,15 +15,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.brainbeats.R;
-
-import java.util.ArrayList;
-
 import com.brainbeats.adapters.LibraryMixAdapter;
 import com.brainbeats.adapters.LibraryPlaylistAdapter;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.entity.Track;
 import com.brainbeats.utils.Constants;
+
+import java.util.ArrayList;
 
 public class LibraryTabFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 

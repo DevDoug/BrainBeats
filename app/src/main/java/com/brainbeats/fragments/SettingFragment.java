@@ -12,7 +12,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import com.brainbeats.R;
-
 import com.brainbeats.architecture.AccountManager;
 
 public class SettingFragment extends Fragment {

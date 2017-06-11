@@ -4,6 +4,10 @@ import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.VolleyError;
+import com.brainbeats.entity.Collection;
+import com.brainbeats.entity.RelatedTracksResponse;
+import com.brainbeats.entity.Track;
+import com.brainbeats.web.WebApiManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -12,11 +16,6 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Random;
-
-import com.brainbeats.entity.Collection;
-import com.brainbeats.entity.RelatedTracksResponse;
-import com.brainbeats.entity.Track;
-import com.brainbeats.web.WebApiManager;
 
 /**
  * Created by douglas on 5/23/2016.

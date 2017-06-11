@@ -1,6 +1,5 @@
 package com.brainbeats.fragments;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -28,9 +27,7 @@ import com.brainbeats.R;
 import com.brainbeats.adapters.SocialAdapter;
 import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.data.BrainBeatsContract;
-import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.utils.Constants;
-import com.brainbeats.web.WebApiManager;
 
 public class SocialFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 

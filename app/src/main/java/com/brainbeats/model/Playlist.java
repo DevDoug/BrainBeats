@@ -1,7 +1,5 @@
 package com.brainbeats.model;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  * Created by douglas on 7/28/2016.
  */

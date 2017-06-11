@@ -1,9 +1,7 @@
 package com.brainbeats.fragments;
 
 import android.app.AlertDialog;
-import android.content.ContentUris;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,15 +17,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.brainbeats.LibraryActivity;
 import com.brainbeats.R;
 import com.brainbeats.adapters.MixerAdapter;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
-import com.brainbeats.model.Mix;
-
 import com.brainbeats.utils.Constants;
 
 

@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.brainbeats.R;
-
 import com.brainbeats.data.BrainBeatsContract;
 
 /**

@@ -28,6 +28,17 @@
                 android:layout_alignParentTop="true"
                 android:layout_above="@+id/card_footer" />
 
+<!--            <TextView
+                android:id="@+id/no_cover_art"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No Cover Art"
+                android:gravity="center"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:visibility="invisible"
+                android:textSize="25sp"/>-->
+
             <LinearLayout
                 android:id="@+id/card_footer"
                 android:layout_width="match_parent"

@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:padding="20dp">
+
     <Button
         android:id="@+id/sound_cloud_tag"
         android:layout_width="80dp"
@@ -15,4 +16,5 @@
         android:elevation="1dp"
         android:singleLine="true"
         android:background="@drawable/mix_tag_background" />
+
 </LinearLayout>

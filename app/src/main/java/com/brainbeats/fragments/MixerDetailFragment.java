@@ -25,12 +25,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.brainbeats.adapters.ImageAdapter;
 import com.brainbeats.adapters.MixItemAdapter;
 import com.brainbeats.data.BrainBeatsContract;
@@ -39,6 +36,9 @@ import com.brainbeats.model.Mix;
 import com.brainbeats.model.MixItem;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.utils.MixManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MixerDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, ImageAdapter.DialogImageSelectedListener {
 

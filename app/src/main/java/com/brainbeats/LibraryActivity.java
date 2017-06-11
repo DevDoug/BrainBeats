@@ -1,25 +1,16 @@
 package com.brainbeats;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.squareup.picasso.Picasso;
-
 import com.brainbeats.architecture.BaseActivity;
-import com.brainbeats.entity.Track;
 import com.brainbeats.fragments.LibraryFragment;
-
-import com.brainbeats.utils.Constants;
 
 public class LibraryActivity extends BaseActivity implements LibraryFragment.OnFragmentInteractionListener {
 

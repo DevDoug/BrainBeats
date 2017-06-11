@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.brainbeats.LibraryActivity;
 import com.brainbeats.R;
-
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.entity.Track;
