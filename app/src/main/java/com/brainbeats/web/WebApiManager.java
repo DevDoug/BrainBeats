@@ -10,14 +10,14 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.brainbeats.R;
+import com.brainbeats.architecture.AccountManager;
+import com.brainbeats.utils.Constants;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.brainbeats.architecture.AccountManager;
-import com.brainbeats.utils.Constants;
 
 /**
  * Created by douglas on 5/24/2016.
@@ -50,6 +50,7 @@ public class WebApiManager {
 
     //Sound Cloud track search params
     public static final String SOUND_CLOUD_QUERY_FILTER_QUERY = "q";
+    public static final String SOUND_CLOUD_QUERY_FILTER_GENRE = "genres";
     public static final String SOUND_CLOUD_QUERY_FILTER_TAGS = "tags";
     public static final String SOUND_CLOUD_QUERY_FILTER_LIMIT = "limit";
     public static final String SOUND_CLOUD_QUERY_FILTER_LINKED_PARTITIONING = "linked_partitioning";
@@ -106,15 +107,18 @@ public class WebApiManager {
 
     }
 
-    public static void getTracks(Context context, String queryFilter, String filterTags, final OnObjectResponseListener responseListener, final OnErrorListener errorListener) {
+    public static void getTracks(Context context, String query,String genre, String filterTags, final OnObjectResponseListener responseListener, final OnErrorListener errorListener) {
         HashMap<String, String> mParams = new HashMap<>();
         mParams.put(SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);
-        //mParams.put(SOUND_CLOUD_QUERY_FILTER_TAGS, filterTags);
         mParams.put(SOUND_CLOUD_QUERY_FILTER_LIMIT, SOUND_CLOUD_QUERY_FILTER_PARAM_LIMIT_FIFTY);
         mParams.put(SOUND_CLOUD_QUERY_FILTER_LINKED_PARTITIONING, "1");
 
-        if (queryFilter != null && !queryFilter.equalsIgnoreCase(""))
-            mParams.put(SOUND_CLOUD_QUERY_FILTER_QUERY, queryFilter);
+        if (query != null && !query.equalsIgnoreCase(""))
+            mParams.put(SOUND_CLOUD_QUERY_FILTER_QUERY, query);
+        if(genre != null && !genre.equalsIgnoreCase("") && !genre.equalsIgnoreCase("Select a music genre"))
+            mParams.put(SOUND_CLOUD_QUERY_FILTER_GENRE, genre);
+        if(filterTags != null && !filterTags.equalsIgnoreCase(""))
+            mParams.put(SOUND_CLOUD_QUERY_FILTER_TAGS, filterTags);
 
         String url = API_ROOT_URL + API_TRACKS_URL;
         try {

@@ -11,7 +11,6 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 
 import com.brainbeats.R;
-
 import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;

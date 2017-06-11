@@ -4,9 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import com.brainbeats.utils.Constants;
 import com.google.gson.annotations.SerializedName;
 
 import com.brainbeats.model.Mix;
+
+import java.util.Comparator;
 
 /**
  * Created by douglas on 5/24/2016.
@@ -181,6 +184,6 @@ public class Track implements Parcelable, Comparable<Track> {
 
     @Override
     public int compareTo(@NonNull Track o) {
-        return 0;
+        return mTitle.compareTo(o.getTitle());
     }
 }

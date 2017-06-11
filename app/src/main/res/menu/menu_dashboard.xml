@@ -10,26 +10,12 @@
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="android.support.v7.widget.SearchView" />
 
-<!--    <item
-        android:id="@+id/filter_by_hottest"
+    <item
+        android:id="@+id/advanced_search"
         android:orderInCategory="100"
-        android:title="Filter By Hottest"
+        android:title="Advanced Search"
         app:showAsAction="never">
     </item>
-
-    <item
-        android:id="@+id/filter_by_most_recent"
-        android:orderInCategory="100"
-        android:title="Filter By Most Recent"
-        app:showAsAction="never">
-    </item>
-
-    <item
-        android:id="@+id/filter_by_alphabet"
-        android:orderInCategory="100"
-        android:title="Filter By A - Z"
-        app:showAsAction="never">
-    </item>-->
 
     <item
         android:id="@+id/action_logout"

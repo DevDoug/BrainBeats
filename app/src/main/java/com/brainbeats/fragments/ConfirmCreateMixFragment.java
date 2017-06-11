@@ -1,9 +1,12 @@
 package com.brainbeats.fragments;
 
 
-import android.content.ContentUris;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,23 +19,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import com.brainbeats.data.BrainBeatsContract;
-import com.brainbeats.model.Mix;
 import com.brainbeats.utils.Constants;
+import com.squareup.picasso.Picasso;
 
-import java.io.File;
+import java.io.InputStream;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ConfirmCreateMixFragment extends Fragment implements View.OnClickListener  {
 
+    public int PICK_IMAGE = 1;
+
     public TextView mMixTitle;
     public Button mSaveMixButton;
+    public ImageView mAlbumCoverImage;
+    public Bitmap albumImage;
     private OnFragmentInteractionListener mListener;
 
     public interface OnFragmentInteractionListener {
@@ -50,7 +58,9 @@ public class ConfirmCreateMixFragment extends Fragment implements View.OnClickLi
         View v = inflater.inflate(R.layout.fragment_confirm_create_mix, container, false);
         mSaveMixButton = (Button) v.findViewById(R.id.confirm_save_mix_button);
         mMixTitle = (TextView) v.findViewById(R.id.mix_title);
+        mAlbumCoverImage = (ImageView) v.findViewById(R.id.album_cover_art);
 
+        mAlbumCoverImage.setOnClickListener(this);
         mSaveMixButton.setOnClickListener(this);
         return v;
     }
@@ -92,6 +102,12 @@ public class ConfirmCreateMixFragment extends Fragment implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.album_cover_art:
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+                break;
             case R.id.confirm_save_mix_button:
                 String title = String.valueOf(mMixTitle.getText());
                 if(!title.isEmpty()) { //require title
@@ -111,6 +127,24 @@ public class ConfirmCreateMixFragment extends Fragment implements View.OnClickLi
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK) {
+                if (data == null) {
+                    Constants.buildInfoDialog(getContext(), "", "There was an issue uploading that image");
+                    return;
+                }
+                InputStream inputStream = getContext().getContentResolver().openInputStream(data.getData());
+                albumImage = BitmapFactory.decodeStream(inputStream);
+                mAlbumCoverImage.setImageBitmap(albumImage);
+            }
+        } catch(Exception ex) {
+            ex.printStackTrace();
         }
     }
 }

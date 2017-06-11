@@ -1,23 +1,15 @@
 package com.brainbeats;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.view.Menu;
 
-import com.squareup.picasso.Picasso;
-
 import com.brainbeats.architecture.BaseActivity;
-import com.brainbeats.entity.Track;
 import com.brainbeats.fragments.SocialFragment;
 import com.brainbeats.fragments.UserProfileFragment;
-
-import com.brainbeats.utils.Constants;
 
 public class SocialActivity extends BaseActivity implements SocialFragment.OnFragmentInteractionListener {
 

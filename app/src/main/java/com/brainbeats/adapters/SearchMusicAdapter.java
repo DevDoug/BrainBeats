@@ -32,11 +32,13 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView mAlbumArtCover;
         TextView mTrackTitle;
+        TextView mNoCoverArt;
 
         public ViewHolder(View v) {
             super(v);
             mAlbumArtCover = (ImageView) v.findViewById(R.id.album_cover_art);
             mTrackTitle = (TextView) v.findViewById(R.id.album_title);
+            //mNoCoverArt = (TextView) v.findViewById(R.id.no_cover_art);
 
             v.setOnClickListener(new View.OnClickListener() { //Mix selected load detail screen
                 @Override
@@ -56,7 +58,13 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.mTrackTitle.setText(mTracks.get(position).getTitle());
-        Picasso.with(mAdapterContext).load(mTracks.get(position).getArtworkURL()).into(holder.mAlbumArtCover);
+        if (mTracks.get(position).getArtworkURL() != null)
+            Picasso.with(mAdapterContext).load(mTracks.get(position).getArtworkURL()).into(holder.mAlbumArtCover);
+        else {
+/*            holder.mAlbumArtCover.setImageResource(R.drawable.dark_logo_transparent_background);
+            holder.mAlbumArtCover.setAlpha(45);
+            holder.mNoCoverArt.setVisibility(View.VISIBLE);*/
+        }
     }
 
     @Override

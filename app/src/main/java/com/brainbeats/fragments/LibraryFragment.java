@@ -12,9 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.brainbeats.R;
-
 import com.brainbeats.adapters.ViewPagerAdapter;
-
 import com.brainbeats.utils.Constants;
 
 public class LibraryFragment extends Fragment {

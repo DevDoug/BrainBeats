@@ -3,7 +3,6 @@ package com.brainbeats.service;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,24 +13,17 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.media.session.MediaSessionCompat;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
-
 import com.brainbeats.entity.Track;
 import com.brainbeats.utils.BeatLearner;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.web.WebApiManager;
 
-import java.io.IOError;
-import java.io.IOException;
 import java.util.Queue;
 
 import static com.brainbeats.utils.Constants.KEY_EXTRA_SELECTED_TRACK;

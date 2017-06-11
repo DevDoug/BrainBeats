@@ -1,7 +1,6 @@
 package com.brainbeats.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
@@ -13,15 +12,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.brainbeats.LibraryActivity;
-import com.brainbeats.MainActivity;
 import com.brainbeats.R;
-
-import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.entity.Track;
-import com.brainbeats.fragments.LibraryFragment;
-import com.brainbeats.fragments.LibraryTabFragment;
 import com.brainbeats.model.Mix;
 import com.brainbeats.utils.Constants;
 

@@ -9,9 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
-
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.model.Mix;

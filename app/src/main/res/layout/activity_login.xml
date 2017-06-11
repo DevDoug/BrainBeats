@@ -11,16 +11,18 @@
     <RelativeLayout
         android:id="@+id/login_header_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
 
         <ImageView
             android:id="@+id/app_image"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="3000dp"
+            android:layout_height="120dp"
             android:contentDescription="@string/content_description_image_placeholder"
-            android:src="@drawable/placeholder" />
+            android:src="@drawable/logo_white_background" />
 
-        <TextView
+<!--        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_title"
@@ -29,7 +31,7 @@
             android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/app_image"
             android:layout_marginStart="30dp"
-            android:layout_marginLeft="30dp" />
+            android:layout_marginLeft="30dp" />-->
 
     </RelativeLayout>
 
@@ -40,7 +42,8 @@
         android:orientation="vertical"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
-        android:layout_centerVertical="true">
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true">
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"

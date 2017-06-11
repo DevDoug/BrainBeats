@@ -1,18 +1,18 @@
 package com.brainbeats;
 
+import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -28,6 +28,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.brainbeats.architecture.AccountManager;
+import com.brainbeats.data.BrainBeatsContract;
+import com.brainbeats.data.BrainBeatsDbHelper;
+import com.brainbeats.entity.SoundCloudUser;
+import com.brainbeats.utils.Constants;
+import com.brainbeats.web.WebApiManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -37,13 +43,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import com.brainbeats.architecture.AccountManager;
-import com.brainbeats.data.BrainBeatsContract;
-import com.brainbeats.data.BrainBeatsDbHelper;
-import com.brainbeats.entity.SoundCloudUser;
-import com.brainbeats.utils.Constants;
-import com.brainbeats.web.WebApiManager;
 
 /**
  * Login screen

@@ -15,19 +15,19 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.brainbeats.R;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import com.brainbeats.adapters.ImageAdapter;
 import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.entity.Track;
+import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.model.Mix;
 import com.brainbeats.model.MixItem;
 import com.brainbeats.model.MixPlaylist;
 import com.brainbeats.model.Playlist;
-import com.brainbeats.model.BrainBeatsUser;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Douglas on 4/20/2016.

@@ -1,7 +1,9 @@
 package com.brainbeats.fragments;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,12 +14,20 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.brainbeats.LoginActivity;
@@ -29,15 +39,13 @@ import com.brainbeats.entity.TrackCollection;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.web.WebApiManager;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
 public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDialogActionListener {
 
@@ -49,10 +57,12 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
     private OnFragmentInteractionListener mListener;
     private String mQueryText = "";
     private SearchView.OnQueryTextListener listener;
+    AlertDialog alert;
 
     private String mNextTracksHref;
     private boolean mIsLoading;
     private boolean mIsLastPage;
+    private String mAdvancedSearchTagsList = "";
 
     public BrowseMusicFragment() {
         // Required empty public constructor
@@ -73,7 +83,7 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
             @Override
             public boolean onQueryTextSubmit(String query) {
                 mQueryText = query;
-                getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_INSTRUMENTAL);
+                getTracks(query,"","","");
                 return true;
             }
 
@@ -102,7 +112,7 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 mQueryText = "";
-                getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_INSTRUMENTAL);
+                getTracks("","","","");
                 return true;  // Return true to collapse action view
             }
 
@@ -120,6 +130,9 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.advanced_search:
+                showAdvancedSearchDialog();
+                break;
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
                 Intent loginIntent = new Intent(getContext(), LoginActivity.class);
@@ -133,8 +146,75 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
     public void onResume() {
         super.onResume();
         if (mQueryText.equalsIgnoreCase("")) {
-            getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_INSTRUMENTAL);
+            getTracks("","","","");
         }
+    }
+
+    public void showAdvancedSearchDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Material_Light_Dialog_Alert);
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.advanced_filter_dialog, null);
+        ((TextView) dialogView.findViewById(R.id.separator_title)).setText("");
+
+        EditText songTitle = (EditText) dialogView.findViewById(R.id.query_text);
+        final EditText songTags = (EditText) dialogView.findViewById(R.id.tag_text);
+        Spinner genreSpinner = (Spinner) dialogView.findViewById(R.id.genres_spinner);
+        LinearLayout tagContainer = (LinearLayout) dialogView.findViewById(R.id.tag_container);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.genres, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        genreSpinner.setAdapter(adapter);
+        genreSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.theme_secondary_text_color));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        genreSpinner.setSelection(0);
+
+        songTags.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    View tag = inflater.inflate(R.layout.tag_item, null);
+                    Button b = (Button) tag.findViewById(R.id.sound_cloud_tag);
+                    mAdvancedSearchTagsList = mAdvancedSearchTagsList.concat("#" + songTags.getText().toString() + " ");
+                    b.setText(songTags.getText().toString());
+/*                    b.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            tagContainer.removeView(v);
+                        }
+                    });*/
+                    tagContainer.addView(tag);
+                    songTags.setText("");
+                    return true;
+                }
+                return false;
+            }
+        });
+        builder.setView(dialogView);
+        builder.setPositiveButton("Go", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //perform advanced search
+                getTracks(songTitle.getText().toString(),genreSpinner.getSelectedItem().toString(),mAdvancedSearchTagsList,"");
+                mAdvancedSearchTagsList = "";
+            }
+        });
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                mAdvancedSearchTagsList = "";
+            }
+        });
+        alert = builder.create();
+        alert.show();
     }
 
     @Override
@@ -168,14 +248,14 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
         void onFragmentInteraction(Uri uri);
     }
 
-    public void getTracks(String filterTag) {
+    public void getTracks(String query, String genre, String tagList, String sortOrder) {
         if (Constants.isNetworkAvailable(getContext())) {
             ProgressDialog loadingMusicDialog = new ProgressDialog(getActivity());
             loadingMusicDialog.setCancelable(false);
             loadingMusicDialog.setMessage(getString(R.string.loading_message));
             loadingMusicDialog.show();
 
-            WebApiManager.getTracks(getContext(), mQueryText, filterTag, new WebApiManager.OnObjectResponseListener() {
+            WebApiManager.getTracks(getContext(), query, genre, tagList, new WebApiManager.OnObjectResponseListener() {
                 @Override
                 public void onObjectResponse(JSONObject object) {
                     loadingMusicDialog.dismiss();
@@ -187,6 +267,9 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
                     if (trackList.size() != 0) {
                         mTrackAdapter = new SearchMusicAdapter(getContext(), trackList);
                         mBeatGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
+
+                        if(sortOrder.equalsIgnoreCase("Alphabet"))
+                            Collections.sort(trackList);
 
                         mTrackGrid.setLayoutManager(mBeatGridLayoutManager);
                         mTrackGrid.setAdapter(mTrackAdapter);
@@ -211,6 +294,7 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
     }
 
     public void loadMoreItems() {
+        mIsLoading = true;
         WebApiManager.getNextTrackListByHref(getActivity(), mNextTracksHref, mQueryText, "", new WebApiManager.OnObjectResponseListener() {
             @Override
             public void onObjectResponse(JSONObject object) {
@@ -222,6 +306,7 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
                 if(trackList.size() != 0) {
                     mTrackAdapter.mTracks.addAll(trackList);
                     mTrackAdapter.notifyDataSetChanged();
+                    mIsLoading = false;
                 }
             }
         }, new WebApiManager.OnErrorListener() {
@@ -254,6 +339,4 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
             }
         }
     };
-
-
 }

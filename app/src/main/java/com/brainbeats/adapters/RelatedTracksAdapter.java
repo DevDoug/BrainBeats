@@ -9,7 +9,6 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 import com.brainbeats.R;
-
 import com.brainbeats.data.BrainBeatsContract;
 
 /**

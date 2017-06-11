@@ -1,28 +1,23 @@
 package com.brainbeats;
 
-import android.content.BroadcastReceiver;
 import android.content.ContentUris;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.View;
 
 import com.brainbeats.architecture.AccountManager;
+import com.brainbeats.architecture.BaseActivity;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.fragments.ConfirmCreateMixFragment;
 import com.brainbeats.fragments.CreateMixFragment;
-
-import com.brainbeats.architecture.BaseActivity;
 import com.brainbeats.fragments.MixerDetailFragment;
 import com.brainbeats.fragments.MixerFragment;
 import com.brainbeats.model.Mix;
-
 import com.brainbeats.utils.Constants;
 
 import java.io.File;

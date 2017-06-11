@@ -13,14 +13,6 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.android.volley.VolleyError;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
-
 import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
@@ -30,7 +22,6 @@ import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.model.Mix;
 import com.brainbeats.model.Playlist;
 import com.brainbeats.utils.Constants;
-import com.brainbeats.web.WebApiManager;
 
 /**
  * Created by douglas on 7/21/2016.

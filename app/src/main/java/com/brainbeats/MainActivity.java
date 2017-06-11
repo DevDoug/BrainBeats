@@ -11,11 +11,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,22 +27,18 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.brainbeats.data.BrainBeatsDbHelper;
-import com.brainbeats.fragments.MusicDetailFragment;
-import com.brainbeats.fragments.BrowseMusicFragment;
-
 import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.architecture.BaseActivity;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.entity.Track;
+import com.brainbeats.fragments.BrowseMusicFragment;
+import com.brainbeats.fragments.MusicDetailFragment;
 import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.model.Mix;
-
 import com.brainbeats.model.MixPlaylist;
 import com.brainbeats.model.Playlist;
-import com.brainbeats.sync.OfflineSyncManager;
-import com.brainbeats.utils.Constants;
 import com.brainbeats.sync.SyncManager;
+import com.brainbeats.utils.Constants;
 import com.brainbeats.web.WebApiManager;
 
 import java.util.ArrayList;
@@ -176,21 +172,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             case R.id.action_one_fob:
                 animateFAB();
                 if (mDashboardFragment.isVisible())
-                    ((BrowseMusicFragment) mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR);
+                    ((BrowseMusicFragment) mDashboardFragment).getTracks("","",WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR,"");
                 else if (mDashboardDetailFragment.isVisible())
                     ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateMix, null);
                 break;
             case R.id.action_two_fob:
                 animateFAB();
                 if (mDashboardFragment.isVisible())
-                    ((BrowseMusicFragment) mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT);
+                    ((BrowseMusicFragment) mDashboardFragment).getTracks("","",WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT,"Recent");
                 else if (mDashboardDetailFragment.isVisible())
                     ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateFavorite, null);
                 break;
             case R.id.action_three_fob:
                 animateFAB();
                 if (mDashboardFragment.isVisible())
-                    ((BrowseMusicFragment) mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_A_TO_Z);
+                    ((BrowseMusicFragment) mDashboardFragment).getTracks("","",WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_A_TO_Z, "Alphabet");
                 else if (mDashboardDetailFragment.isVisible())
                     showAddToPlaylist();
                 break;

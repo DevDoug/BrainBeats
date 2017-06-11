@@ -11,9 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.brainbeats.R;
-import com.squareup.picasso.Picasso;
-
 import com.brainbeats.data.BrainBeatsContract;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by douglas on 5/13/2016.
