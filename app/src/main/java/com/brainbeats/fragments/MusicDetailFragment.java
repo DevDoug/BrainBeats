@@ -117,7 +117,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         if (mSelectedTrack != null) {
                 mTrackTitle.setText(Constants.generateUIFriendlyString(mSelectedTrack.getTitle()));
                 if (mSelectedTrack.getArtworkURL() == null)
-                    mAlbumCoverArt.setImageResource(R.drawable.placeholder);
+                    mAlbumCoverArt.setImageResource(R.drawable.no_cover);
                 else
                     Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
         }
@@ -385,7 +385,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         mTrackTitle.setText(track.getTitle());
 
         if (track.getArtworkURL() == null)
-            mAlbumCoverArt.setImageResource(R.drawable.placeholder);
+            mAlbumCoverArt.setImageResource(R.drawable.no_cover);
         else
             Picasso.with(getContext()).load(track.getArtworkURL()).into(mAlbumCoverArt);
 

@@ -353,7 +353,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mDashboardDetailFragment = MusicDetailFragment.newInstance(track);
         mCurrentSong = track; //set the clicked song to the current playing
 
-        mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_android_white));
+        mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_more_vert_white));
         mExtraActionOneFab.setImageDrawable(getDrawable(R.drawable.ic_library_add_white));
         mExtraActionTwoFab.setImageDrawable(getDrawable(R.drawable.ic_favorite_white));
         mExtraActionThreeFab.setImageDrawable(getDrawable(R.drawable.ic_playlist_add_white));

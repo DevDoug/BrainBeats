@@ -458,7 +458,7 @@ public class BaseActivity extends AppCompatActivity {
                     mCurrentSongTitle.setText(newTrack.getTitle());
 
                     if (newTrack.getArtworkURL() == null)
-                        mAlbumThumbnail.setImageResource(R.drawable.placeholder);
+                        mAlbumThumbnail.setImageResource(R.drawable.no_cover);
                     else
                         Picasso.with(BaseActivity.this).load(newTrack.getArtworkURL()).into(mAlbumThumbnail);
 

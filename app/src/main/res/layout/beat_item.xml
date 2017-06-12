@@ -24,7 +24,7 @@
                 android:contentDescription="@string/album_cover_art_image_description"
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
-                android:src="@drawable/placeholder"
+                android:src="@drawable/no_cover"
                 android:layout_alignParentTop="true"
                 android:layout_above="@+id/card_footer" />
 

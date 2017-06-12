@@ -9,10 +9,6 @@
         android:id="@+id/profile_cover_image"
         android:layout_width="match_parent"
         android:layout_height="@dimen/nav_drawer_height"
-        android:layout_gravity="top"
-        android:contentDescription="@string/navview_header_default_image_content_description"
-        android:scaleType="centerCrop"
-        android:src="@drawable/placeholder"
-        android:tintMode="screen" />
+        android:background="#000000"/>
 
 </FrameLayout>

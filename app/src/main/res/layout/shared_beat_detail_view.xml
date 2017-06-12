@@ -13,7 +13,7 @@
         android:layout_marginTop="@dimen/fragment_content_item_top_margin"
         android:adjustViewBounds="true"
         android:contentDescription="@string/content_description_image_placeholder"
-        android:src="@drawable/placeholder" />
+        android:src="@drawable/no_cover" />
 
     <SeekBar
         android:id="@+id/play_song_seek_bar"
