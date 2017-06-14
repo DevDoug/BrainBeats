@@ -1,11 +1,7 @@
 # BrainBeats
 
-Brain Beats is an application designed to create, organize and
-present a library of binaural beats focused around increasing
-productivity, helping to relax and help alleviate common
-ailments and health issues. The application will allow users to
-not only have easy access to categories binaural beats but they
-will be allowed to change the levels of sound waves to adjust
-the effect of the beat. This will allow users to tweak popular
-beats to have a better effect and share their creations with
-friends.
+Brain Beats puts you right in the music by allowing you to record your very own tracks. 
+
+Search through are huge collection of tracks to find that right sound. Automatically plays songs based on your likes and preferences.Add some tags and search a music genre to get more specific.Store your tracks in your library so you are never without your music. Add playlists to keep the grove going.
+
+Enjoy your music ad free and uninterrupted.
