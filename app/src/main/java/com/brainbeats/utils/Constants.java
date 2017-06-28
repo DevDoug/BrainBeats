@@ -109,6 +109,9 @@ public class Constants {
     public static final Uri STOP_SONG_URI                                           = Uri.parse("audio://stop_song");
 
 
+    public static final Uri LOGOUT_URI                                         = Uri.parse("main://logout");
+
+
     public static final Uri DASHBOARD_DETAIL_DOWNVOTE_SONG_URI                      = Uri.parse("main://dashboard_detail_downvote_song");
     public static final Uri DASHBOARD_DETAIL_SKIP_FORWARD_URI                       = Uri.parse("main://dashboard_detail_skip_forward");
     public static final Uri DASHBOARD_DETAIL_SET_SONG_REPEAT_URI                    = Uri.parse("main://dashboard_detail_repeat_song");

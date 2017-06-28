@@ -134,9 +134,7 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
                 showAdvancedSearchDialog();
                 break;
             case R.id.action_logout:
-                AccountManager.getInstance(getContext()).forceLogout(getContext());
-                Intent loginIntent = new Intent(getContext(), LoginActivity.class);
-                startActivity(loginIntent);
+                mListener.onFragmentInteraction(Constants.LOGOUT_URI);
                 break;
         }
         return false;

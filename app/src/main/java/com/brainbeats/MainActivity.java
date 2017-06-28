@@ -40,10 +40,17 @@ import com.brainbeats.model.Playlist;
 import com.brainbeats.sync.SyncManager;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.web.WebApiManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, BrowseMusicFragment.OnFragmentInteractionListener, MusicDetailFragment.OnFragmentInteractionListener {
+
+
+    //Data
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseUser mFirebaseUser;
 
     public Fragment mDashboardFragment;
     public Fragment mDashboardDetailFragment;
@@ -98,10 +105,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
         }
 
-        if (!AccountManager.getInstance(this).isLoggedIn()) { //if the user has not created an account load login activity
+/*        if (!AccountManager.getInstance(this).isLoggedIn()) { //if the user has not created an account load login activity
             Intent loginIntent = new Intent(this, LoginActivity.class);
             startActivity(loginIntent);
             finish();
+        }*/
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        if (mFirebaseUser == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
         }
 
         mIntentFilter = new IntentFilter();
@@ -406,6 +421,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             if (mAudioService != null)
                 if (mAudioService.getIsPlaying() || mAudioService.getIsPaused())
                     ((MusicDetailFragment) mDashboardDetailFragment).isCurrentSong = (mAudioService.getPlayingSong().getID() == ((MusicDetailFragment) mDashboardDetailFragment).mSelectedTrack.getID());
+        } else if(uri.compareTo(Constants.LOGOUT_URI) == 0) {
+            mFirebaseAuth.signOut();
+            startActivity(new Intent(this, LoginActivity.class));
         }
     }
 

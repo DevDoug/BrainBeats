@@ -32,8 +32,17 @@ import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.entity.SoundCloudUser;
+import com.brainbeats.entity.User;
+import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.web.WebApiManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -49,6 +58,12 @@ import java.util.List;
  * Should allow the user to login with both sound cloud and with Brain Beats
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>, Constants.ConfirmDialogActionListener, View.OnClickListener {
+
+    public static String TAG = "LoginActivity";
+
+    //Data
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseUser mFirebaseUser;
 
     private UserLoginTask mAuthTask = null;
 
@@ -93,30 +108,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() >= Constants.PASSWORD_MINIMUM_LENGTH) {
-                    Cursor userCursor = getContentResolver().query(
-                            BrainBeatsContract.UserEntry.CONTENT_URI, //Get users
-                            null,  //return everything
-                            BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, //where the username is  equal
-                            new String[]{mEmailView.getText().toString()},
-                            null
-                    );
 
-                    String message = getString(R.string.register_text);
-                    if (userCursor != null && userCursor.getCount() >= 1) {
-                        userCursor.moveToFirst();
-                        while (!userCursor.isAfterLast()) {
-                            String userName = userCursor.getString(userCursor.getColumnIndexOrThrow(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME));
-                            if (userName.equals(mEmailView.getText().toString())) { //user exists
-                                message = getString(R.string.login_text);
-                                break;
-                            } else
-                                message = getString(R.string.register_text);
 
-                            userCursor.moveToNext();
-                        }
-                        userCursor.close();
-                    }
-                    signInButton.setText(message);
+
                 }
             }
             @Override
