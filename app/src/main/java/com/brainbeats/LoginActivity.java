@@ -42,6 +42,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -79,6 +80,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        mFirebaseAuth = FirebaseAuth.getInstance();
+
         //UI components.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email_text_input);
         mLoginButton = (Button) findViewById(R.id.email_sign_in_button);
@@ -108,9 +111,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() >= Constants.PASSWORD_MINIMUM_LENGTH) {
+                    Query query = FirebaseDatabase.getInstance()
+                            .getReference()
+                            .child("users")
+                            .orderByChild("username")
+                            .equalTo(mEmailView.getText().toString());
 
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.getChildrenCount() > 0)
+                                signInButton.setText(getString(R.string.login_text));
+                            else
+                                signInButton.setText(getString(R.string.register_text));
+                        }
 
-
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    });
                 }
             }
             @Override
