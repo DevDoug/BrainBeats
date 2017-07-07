@@ -93,7 +93,7 @@ public class Constants {
     public static final int BEAT_LEVEL_INCREASE_DIFFERENCE = 10;
     public static final int MIX_ITEM_DEFAULT_LEVEL = 50;
     public static final int BEAT_ITEM_DRAWABLES[] = new int[]{R.drawable.ic_alpha, R.drawable.ic_beta, R.drawable.ic_google, R.drawable.ic_theta,};
-    public static final int PASSWORD_MINIMUM_LENGTH = 3;
+    public static final int USERNAME_MINIMUM_LENGTH = 3;
     public static final String OREINTATION_SHIFT = "LayoutShift";
 
     //Fragment Uris
