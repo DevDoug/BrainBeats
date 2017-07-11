@@ -93,8 +93,10 @@ public class Constants {
     public static final int BEAT_LEVEL_INCREASE_DIFFERENCE = 10;
     public static final int MIX_ITEM_DEFAULT_LEVEL = 50;
     public static final int BEAT_ITEM_DRAWABLES[] = new int[]{R.drawable.ic_alpha, R.drawable.ic_beta, R.drawable.ic_google, R.drawable.ic_theta,};
+
     public static final int USERNAME_MINIMUM_LENGTH = 3;
-    public static final String OREINTATION_SHIFT = "LayoutShift";
+    public static final int PASSWORD_MINIMUM_LENGTH = 6;
+
 
     //Fragment Uris
     public static final Uri LOAD_SONG_URI                                           = Uri.parse("base://dashboard_detail_load_song");
@@ -109,6 +111,7 @@ public class Constants {
     public static final Uri STOP_SONG_URI                                           = Uri.parse("audio://stop_song");
 
 
+    public static final Uri GO_TO_REGISTER_NEW_USER_URI                                         = Uri.parse("main://new_user");
     public static final Uri LOGOUT_URI                                         = Uri.parse("main://logout");
 
 

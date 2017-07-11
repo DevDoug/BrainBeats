@@ -22,7 +22,10 @@ import com.brainbeats.utils.Constants;
 
 import java.io.File;
 
-public class MixerActivity extends BaseActivity implements View.OnClickListener, MixerFragment.OnFragmentInteractionListener, CreateMixFragment.OnFragmentInteractionListener, ConfirmCreateMixFragment.OnFragmentInteractionListener {
+public class MixerActivity extends BaseActivity implements View.OnClickListener,
+        MixerFragment.OnFragmentInteractionListener,
+        CreateMixFragment.OnFragmentInteractionListener,
+        ConfirmCreateMixFragment.OnFragmentInteractionListener {
 
     Fragment mMixerFragment;
     Fragment mNewMixFragment;

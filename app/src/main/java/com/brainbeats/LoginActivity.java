@@ -1,5 +1,6 @@
 package com.brainbeats;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,12 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.brainbeats.fragments.LoginFragment;
 import com.brainbeats.fragments.RegisterFragment;
+import com.brainbeats.utils.Constants;
 
 /**
  * Login screen
  * Should allow the user to login with both sound cloud and with Brain Beats
  */
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener {
 
     public static String TAG = "LoginActivity";
 
@@ -48,5 +50,12 @@ public class LoginActivity extends AppCompatActivity {
             fragmentTransaction.addToBackStack(fragmentTag);
         }
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        if (uri.compareTo(Constants.GO_TO_REGISTER_NEW_USER_URI) == 0) {
+            switchToRegisterFragment();
+        }
     }
 }

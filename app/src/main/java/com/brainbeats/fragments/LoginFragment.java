@@ -1,6 +1,7 @@
 package com.brainbeats.fragments;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -43,6 +44,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     public CoordinatorLayout mCoordinatorLayout;
     public Button mLoginButton;
     public Button mSoundCloudLogin;
+    private LoginFragment.OnFragmentInteractionListener mListener;
+
+
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
+    }
 
     public LoginFragment() {
         // Required empty public constructor
@@ -72,12 +79,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mFirebaseAuth = FirebaseAuth.getInstance();
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.email_sign_in_button:
@@ -90,7 +91,26 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         }
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof LoginFragment.OnFragmentInteractionListener) {
+            mListener = (LoginFragment.OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+
     public void goToRegisterUser() {
+        mListener.onFragmentInteraction(Constants.GO_TO_REGISTER_NEW_USER_URI);
     }
 
     private void attemptLogin() {
