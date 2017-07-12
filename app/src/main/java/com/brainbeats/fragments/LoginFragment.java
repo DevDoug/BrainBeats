@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +20,17 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.brainbeats.LoginActivity;
+import com.brainbeats.MainActivity;
 import com.brainbeats.R;
+import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.web.WebApiManager;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -32,6 +40,8 @@ import static android.R.attr.id;
  * A simple {@link Fragment} subclass.
  */
 public class LoginFragment extends Fragment implements View.OnClickListener{
+
+    public static final String TAG = "LoginFragment";
 
     //Data
     private FirebaseAuth mFirebaseAuth;
@@ -53,6 +63,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 
     public LoginFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mFirebaseAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -108,7 +124,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         mListener = null;
     }
 
-
     public void goToRegisterUser() {
         mListener.onFragmentInteraction(Constants.GO_TO_REGISTER_NEW_USER_URI);
     }
@@ -148,9 +163,21 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
             // form field with an error.
             focusView.requestFocus();
         } else {
+            mFirebaseAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(getActivity(), task -> {
+                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+                        Intent dashboardIntent = new Intent(getActivity(), MainActivity.class);
+                        startActivity(dashboardIntent);
 
-
-
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInWithEmail:failed", task.getException());
+                            Toast.makeText(getActivity(), "Auth Failed",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }
     }
 

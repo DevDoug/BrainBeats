@@ -24,7 +24,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
     public static final String TAG = "RegisterFragment";
 
-
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
 
@@ -65,6 +64,8 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             mFirebaseAuth.createUserWithEmailAndPassword(mUsername.getText().toString(), mPassword.getText().toString())
                     .addOnCompleteListener(getActivity(), task -> {
                         Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+
+
 
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
