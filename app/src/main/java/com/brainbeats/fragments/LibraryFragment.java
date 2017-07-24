@@ -81,9 +81,9 @@ public class LibraryFragment extends Fragment {
     }
 
     public void updateTabFilter(String query) {
-        LibraryTabFragment frag = (LibraryTabFragment) ((ViewPagerAdapter) mViewPager.getAdapter()).getItem(mViewPager.getCurrentItem());
+/*        LibraryTabFragment frag = (LibraryTabFragment) ((ViewPagerAdapter) mViewPager.getAdapter()).getItem(mViewPager.getCurrentItem());
         Bundle bundle = new Bundle();
         bundle.putString(Constants.KEY_EXTRA_LIBRARY_FILTER_TEXT,query);
-        getLoaderManager().restartLoader(frag.mDataType, bundle, frag);
+        getLoaderManager().restartLoader(frag.mDataType, bundle, frag);*/
     }
 }

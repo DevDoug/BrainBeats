@@ -1,36 +1,43 @@
 package com.brainbeats;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.brainbeats.architecture.BaseActivity;
 import com.brainbeats.fragments.SocialFragment;
 import com.brainbeats.fragments.UserProfileFragment;
 
-public class SocialActivity extends BaseActivity implements SocialFragment.OnFragmentInteractionListener {
+public class SocialActivity extends BaseActivity implements SocialFragment.OnFragmentInteractionListener,  View.OnClickListener {
 
     Fragment mSocialFragment;
     Fragment mUserProfileFragment;
-    private IntentFilter mIntentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
-        mSocialFragment = new SocialFragment();
-        mUserProfileFragment = new UserProfileFragment();
-        switchToSocialFragment();
-    }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        hideMainFAB();
+        if (savedInstanceState == null) {
+            mSocialFragment = new SocialFragment();
+            mUserProfileFragment = new UserProfileFragment();
+            switchToSocialFragment();
+        }
+
+        mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_add_white));
+        mMainActionFab.setOnClickListener(this);
     }
 
     public void switchToSocialFragment() {
@@ -47,8 +54,26 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_global, menu);
         return true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.main_action_fob:
+                addFriend();
+                break;
+        }
+    }
+
+    public void addFriend() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
+        LayoutInflater inflater = ((Activity) this).getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.custom_search_dialog, null);
+        builder.setView(dialogView);
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }

@@ -104,7 +104,7 @@ public class MixerDetailFragment extends Fragment implements LoaderManager.Loade
                     }
                 }*/
                 InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
-                if (getActivity().getCurrentFocus() != null) //
+                if (getActivity().getCurrentFocus() != null)
                     inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
                 ((MixerActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
             }

@@ -45,7 +45,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 
     //Data
     private FirebaseAuth mFirebaseAuth;
-    private FirebaseUser mFirebaseUser;
 
     // UI references.
     private AutoCompleteTextView mEmailView;

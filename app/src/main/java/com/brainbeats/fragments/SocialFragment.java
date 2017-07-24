@@ -29,7 +29,7 @@ import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.utils.Constants;
 
-public class SocialFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class SocialFragment extends Fragment {
 
     private RecyclerView mUserList;
     private OnFragmentInteractionListener mListener;
@@ -79,8 +79,6 @@ public class SocialFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(Constants.SOCIAL_LOADER, null, this);
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mUserList.setLayoutManager(layoutManager);
@@ -161,40 +159,6 @@ public class SocialFragment extends Fragment implements LoaderManager.LoaderCall
         mListener = null;
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case Constants.SOCIAL_LOADER:
-
-                String rawQuery =
-                        "SELECT * FROM " + BrainBeatsContract.UserEntry.TABLE_NAME + " INNER JOIN " + BrainBeatsContract.UserFollowersEntry.TABLE_NAME
-                                + " ON " + "user." + BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + " = " + "userfollowers." +
-                                BrainBeatsContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID;
-
-                return new CursorLoader(
-                        getActivity(),                      // Parent activity context
-                        BrainBeatsContract.CONTENT_URI_RAW_QUERY,
-                        null,  //return everything
-                        rawQuery, //raw query sql
-                        null, // select args
-                        null                   // Default sort order
-                );
-            default:
-                // An invalid id was passed in
-                return null;
-        }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        SocialAdapter mUserAdapter = new SocialAdapter(getContext(), data);
-        mUserList.setAdapter(mUserAdapter);
-        Log.i("com/brainbeats/data", String.valueOf(data.getColumnCount()));
-    }
-
-    @Override
-    public void onLoaderReset(Loader loader) {
-    }
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
