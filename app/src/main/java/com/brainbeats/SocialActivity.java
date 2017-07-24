@@ -13,13 +13,20 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.brainbeats.architecture.BaseActivity;
 import com.brainbeats.fragments.SocialFragment;
 import com.brainbeats.fragments.UserProfileFragment;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SocialActivity extends BaseActivity implements SocialFragment.OnFragmentInteractionListener,  View.OnClickListener {
+
+    //Data
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mFirebasDatabaseReference;
 
     Fragment mSocialFragment;
     Fragment mUserProfileFragment;
@@ -28,6 +35,10 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
+
+        mFirebaseDatabase = mFirebaseDatabase.getInstance();
+        mFirebasDatabaseReference = mFirebaseDatabase.getReference("users");
+
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
 
         if (savedInstanceState == null) {
@@ -63,15 +74,28 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
         int id = v.getId();
         switch (id) {
             case R.id.main_action_fob:
-                addFriend();
+                showAddFriendDialog();
                 break;
         }
     }
 
-    public void addFriend() {
+    public void showAddFriendDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
         LayoutInflater inflater = ((Activity) this).getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.custom_search_dialog, null);
+        SearchView search = (SearchView) dialogView.findViewById(R.id.friend_search);
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         builder.setView(dialogView);
         AlertDialog alert = builder.create();
         alert.show();

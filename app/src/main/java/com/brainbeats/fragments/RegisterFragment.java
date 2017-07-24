@@ -1,5 +1,6 @@
 package com.brainbeats.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,10 +13,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.brainbeats.MainActivity;
 import com.brainbeats.R;
+import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.utils.Constants;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,7 +34,8 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     public static final String TAG = "RegisterFragment";
 
     private FirebaseAuth mFirebaseAuth;
-    private FirebaseUser mFirebaseUser;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mUserReference;
 
     private EditText mUsername;
     private EditText mPassword;
@@ -40,6 +50,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mFirebaseAuth = FirebaseAuth.getInstance();
+        mUserReference = FirebaseDatabase.getInstance().getReference();
     }
 
     @Override
@@ -65,18 +76,51 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                     .addOnCompleteListener(getActivity(), task -> {
                         Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
-
-
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
+                        if (task.isSuccessful()) {
+                            mFirebaseAuth.signInWithEmailAndPassword(mUsername.getText().toString(), mPassword.getText().toString())
+                                    .addOnCompleteListener(getActivity(), signInTask -> {
+                                        addNewUser();
+                                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+
+                                        // If sign in fails, display a message to the user. If sign in succeeds
+                                        // the auth state listener will be notified and logic to handle the
+                                        // signed in user can be handled in the listener.
+                                        if (!task.isSuccessful()) {
+                                            Log.w(TAG, "signInWithEmail:failed", task.getException());
+                                            Toast.makeText(getActivity(), "Auth Failed",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        } else {
                             Toast.makeText(getContext(), "Auth Failed", Toast.LENGTH_SHORT).show();
                         }
                     });
         } else {
             Constants.buildInfoDialog(getActivity(), "", "There was an issue creating that account");
         }
+    }
+
+    public void addNewUser(){
+        DatabaseReference usersRef = mUserReference.child("users");
+        String key = mUsername.getText().toString().split("@")[0];
+
+        Map<String, Object> brainBeatsUser = new HashMap<String, Object>();
+        brainBeatsUser.put(mFirebaseAuth.getCurrentUser().getUid(), new BrainBeatsUser(mUsername.getText().toString()));
+
+        usersRef.updateChildren(brainBeatsUser, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if(databaseError != null) { //if there was an error tell the user
+                    Constants.buildInfoDialog(getActivity(), "Error", "There was an issue saving that user to the database");
+                } else {
+                    Intent dashboardIntent = new Intent(getActivity(), MainActivity.class);
+                    startActivity(dashboardIntent);
+                }
+            }
+        });
     }
 
     public boolean isValid() {

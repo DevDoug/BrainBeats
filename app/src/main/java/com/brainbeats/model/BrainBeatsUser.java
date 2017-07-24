@@ -17,6 +17,10 @@ public class BrainBeatsUser implements Parcelable {
 
     public BrainBeatsUser(){}
 
+    public BrainBeatsUser(String title){
+        this.mUserName = title;
+    }
+
     public BrainBeatsUser(com.brainbeats.entity.User user){
         this.mUserName = user.getUsername();
         this.mDescription = user.getDescription();

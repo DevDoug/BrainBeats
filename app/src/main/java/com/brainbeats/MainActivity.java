@@ -168,7 +168,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         if(mAudioService != null)
             if(mAudioService.getIsPlaying()) {
-                if (mDashboardDetailFragment.isVisible()) {                                                             //if they are on the dashboard detail screen update the detail widgets
+                if (mDashboardDetailFragment.isVisible()) {
                     (((MusicDetailFragment) mDashboardDetailFragment)).updateTrackUI(mAudioService.getPlayingSong());
                 }
             }
