@@ -95,7 +95,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                                         }
                                     });
                         } else {
-                            Toast.makeText(getContext(), "Auth Failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Auth Failed:", Toast.LENGTH_SHORT).show();
                         }
                     });
         } else {
@@ -104,11 +104,11 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     }
 
     public void addNewUser(){
+        String mUserName = mUsername.getText().toString().split("@")[0];
         DatabaseReference usersRef = mUserReference.child("users");
-        String key = mUsername.getText().toString().split("@")[0];
 
         Map<String, Object> brainBeatsUser = new HashMap<String, Object>();
-        brainBeatsUser.put(mFirebaseAuth.getCurrentUser().getUid(), new BrainBeatsUser(mUsername.getText().toString()));
+        brainBeatsUser.put(mUserName, new BrainBeatsUser(mFirebaseAuth.getCurrentUser().getUid(),mUsername.getText().toString()));
 
         usersRef.updateChildren(brainBeatsUser, new DatabaseReference.CompletionListener() {
             @Override
