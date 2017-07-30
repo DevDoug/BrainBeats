@@ -173,7 +173,7 @@ public class MixerDetailFragment extends Fragment implements LoaderManager.Loade
                 break;
         }
         item.setMixItemLevel(Constants.MIX_ITEM_DEFAULT_LEVEL);
-        Uri returnRow = getActivity().getContentResolver().insert(BrainBeatsContract.MixItemsEntry.CONTENT_URI, Constants.buildMixItemsRecord(mSelectedMix.getMixId(), item));
+        //Uri returnRow = getActivity().getContentResolver().insert(BrainBeatsContract.MixItemsEntry.CONTENT_URI, Constants.buildMixItemsRecord(mSelectedMix.getMixId(), item));
     }
 
     public void playMix() {

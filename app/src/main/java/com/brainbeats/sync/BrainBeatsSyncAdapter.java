@@ -322,60 +322,6 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         }*/
     }
 
-    public void addMix(Track track, boolean inLibrary, boolean isFavorite, boolean inMixer, ContentProviderClient provider) {
-        Mix newMix = Constants.buildMixRecordFromTrack(track);
-        newMix.setMixFavorite((isFavorite) ? 1 : 0);
-        newMix.setIsInLibrary((inLibrary) ? 1 : 0);
-        newMix.setIsInMixer((inMixer) ? 1 : 0);
-
-        //Before adding this mix add the mix user if they are not already in the Brain beats system
-        Cursor userCursor = null;
-        try {
-            userCursor = provider.query( //get this mixes user
-                    BrainBeatsContract.UserEntry.CONTENT_URI,
-                    null,  //return everything
-                    BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
-                    new String[]{String.valueOf(track.getUser().getId())},
-                    null);
-
-            long userId;
-            if(userCursor != null && userCursor.getCount() != 0 ) {
-                // this user already exists so just get the user id
-                userCursor.moveToFirst();
-                userId = userCursor.getLong(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID));
-                newMix.setMixUserId(userId);
-                Log.i("found user id", String.valueOf(userId));
-            } else { //otherwise add the user this mix belongs to
-                Uri result = provider.insert(BrainBeatsContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(new BrainBeatsUser(track.getUser())));
-                userId = ContentUris.parseId(result);
-                newMix.setMixUserId(userId);
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
-
-        //newMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(getContext()).getUserId()));
-
-        try {
-            Uri result = provider.insert(BrainBeatsContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(newMix));
-            long returnRowId = ContentUris.parseId(result);
-            //TODO - implement in version 2.0 beta version
-/*            if(returnRowId != -1){
-                String[] tagList = newMix.getMixTagList().split(" ");
-                Set<String> set = new HashSet<String>();
-                Collections.addAll(set, tagList);
-                for(String tag : set){
-                    tag = tag.replaceAll("\"","");
-                    tag = new StringBuilder(tag).insert(0,'#').toString();
-                    Uri tagResult = provider.insert(BrainBeatsContract.MixTagEntry.CONTENT_URI, Constants.buildTagRecord(tag,track.getID()));
-                }
-            }*/
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void addPlaylist(UserPlaylistsResponse playlistsResponse, ContentProviderClient provider) {
         Playlist playlist = new Playlist();
         playlist.setPlaylistTitle(playlistsResponse.getTitle());

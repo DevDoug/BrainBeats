@@ -15,45 +15,19 @@ import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.model.Mix;
 import com.brainbeats.utils.Constants;
 
+import java.util.ArrayList;
+
 /**
  * Created by douglas on 5/13/2016.
  */
-public class MixerAdapter extends RecyclerViewCursorAdapter<MixerAdapter.ViewHolder>{
+public class MixerAdapter extends RecyclerView.Adapter<MixerAdapter.ViewHolder> {
 
     Context mAdapterContext;
+    ArrayList<Mix> mMixList;
 
-    public MixerAdapter(Context context, Cursor cursor) {
-        super(context,cursor);
+    public MixerAdapter(Context context, ArrayList<Mix> items) {
         mAdapterContext = context;
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
-        String title = cursor.getString(cursor.getColumnIndexOrThrow(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE));
-        if(title != null)
-            viewHolder.mTitleText.setText(title);
-
-        viewHolder.mContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //((MixerActivity) mAdapterContext).loadMixerDetailFragment(Constants.buildMixFromCursor(mAdapterContext, getCursor(), viewHolder.getAdapterPosition()));
-            }
-        });
-
-        viewHolder.mContainer.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                //load delete dialog
-                Constants.buildActionDialog(mAdapterContext, "Delete Mix", "Do you want to delete this mix from your mixer", "confirm", new Constants.ConfirmDialogActionListener() {
-                    @Override
-                    public void PerformDialogAction() {
-                        Mix selectedMix = Constants.buildMixFromCursor(mAdapterContext,getCursor(), viewHolder.getAdapterPosition()); // get the selected mix item
-                        mAdapterContext.getContentResolver().delete(BrainBeatsContract.MixEntry.CONTENT_URI, "_Id" + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, new String[]{String.valueOf(selectedMix.getMixId())});
-                    }
-                });
-                return false;
-            }
-        });
+        mMixList = items;
     }
 
     @Override
@@ -61,6 +35,17 @@ public class MixerAdapter extends RecyclerViewCursorAdapter<MixerAdapter.ViewHol
         View itemView = LayoutInflater.from(mAdapterContext).inflate(R.layout.mixer_item, parent, false);
         ViewHolder vh = new ViewHolder(itemView);
         return vh;
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        Mix mix = mMixList.get(position);
+        holder.mTitleText.setText(mix.getMixTitle());
+    }
+
+    @Override
+    public int getItemCount() {
+        return mMixList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

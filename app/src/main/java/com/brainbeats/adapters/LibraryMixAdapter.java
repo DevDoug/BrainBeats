@@ -34,6 +34,21 @@ public class LibraryMixAdapter extends RecyclerView.Adapter<LibraryMixAdapter.Vi
         mMixList = items;
     }
 
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        CardView mContainer;
+        TextView mTitleText;
+        ImageView mPlay;
+        ImageView mMix;
+
+        public ViewHolder(View view){
+            super(view);
+            mContainer = (CardView) view.findViewById(R.id.card_view);
+            mTitleText = (TextView) view.findViewById(R.id.album_title);
+            mPlay = (ImageView) view.findViewById(R.id.play_mix);
+            mMix = (ImageView) view.findViewById(R.id.mix_beat);
+        }
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(mAdapterContext).inflate(R.layout.library_beat_item, parent, false);
@@ -49,20 +64,5 @@ public class LibraryMixAdapter extends RecyclerView.Adapter<LibraryMixAdapter.Vi
     @Override
     public int getItemCount() {
         return mMixList.size();
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        CardView mContainer;
-        TextView mTitleText;
-        ImageView mPlay;
-        ImageView mMix;
-
-        public ViewHolder(View view){
-            super(view);
-            mContainer = (CardView) view.findViewById(R.id.card_view);
-            mTitleText = (TextView) view.findViewById(R.id.album_title);
-            mPlay = (ImageView) view.findViewById(R.id.play_mix);
-            mMix = (ImageView) view.findViewById(R.id.mix_beat);
-        }
     }
 }

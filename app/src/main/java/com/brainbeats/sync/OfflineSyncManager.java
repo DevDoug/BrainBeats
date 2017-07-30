@@ -47,7 +47,7 @@ public class OfflineSyncManager {
 
         switch (SYNC_TYPE) {
             case 0: //com.brainbeats.sync mixes
-                try {
+/*                try {
                     if(selectedTrack != null){
                         final Cursor mixCursor = provider.query(
                                 BrainBeatsContract.MixEntry.CONTENT_URI, //Get mixes
@@ -64,13 +64,13 @@ public class OfflineSyncManager {
                                 case 0: //add to lib
                                     if (mixCursor.getCount() != 0) { // this mix exists so update the record.
                                         Mix mix = Constants.buildMixFromCursor(mContext, mixCursor, 0);
-                                        if (mix.getIsInLibrary() == 0) {
+*//*                                        if (mix.getIsInLibrary() == 0) {
                                             mix.setIsInLibrary(1);
                                             updateMixRecord(provider, mix, selectedTrack.getID());
                                             showSnackMessage(coordinatorLayout, R.string.song_added_to_library_snack_message);
                                         } else if (mix.getIsInLibrary() == 1) {
                                             showSnackMessage(coordinatorLayout, R.string.error_this_mix_is_already_in_library);
-                                        }
+                                        }*//*
                                     } else {
                                         addMix(selectedTrack, true, false, false, provider); // create this as a mix from a sound cloud track
                                         showSnackMessage(coordinatorLayout, R.string.song_added_to_library_snack_message);
@@ -127,7 +127,7 @@ public class OfflineSyncManager {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
+                }*/
 
                 //TODO after updating locally tell the syncadapter to update the server if it can be updated on server E.X. user favorites can be added to SC
                 break;
@@ -178,7 +178,7 @@ public class OfflineSyncManager {
 
     }
 
-    public void addMix(Track track, boolean inLibrary, boolean isFavorite, boolean inMixer, ContentResolver provider) {
+/*    public void addMix(Track track, boolean inLibrary, boolean isFavorite, boolean inMixer, ContentResolver provider) {
         Mix newMix = Constants.buildMixRecordFromTrack(track);
         newMix.setMixFavorite((isFavorite) ? 1 : 0);
         newMix.setIsInLibrary((inLibrary) ? 1 : 0);
@@ -213,7 +213,7 @@ public class OfflineSyncManager {
             e.printStackTrace();
         }
 
-    }
+    }*/
 
     public void addUser(com.brainbeats.entity.User collection, boolean isFollowing, ContentResolver provider) {
         BrainBeatsUser brainBeatsUser = new BrainBeatsUser();

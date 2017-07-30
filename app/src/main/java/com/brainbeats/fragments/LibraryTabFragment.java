@@ -40,7 +40,7 @@ public class LibraryTabFragment extends Fragment {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mFirebasDatabaseReference;
 
-    ArrayList<Mix> mixList;
+    private ArrayList<Mix> mixList;
     private RecyclerView mMixRecyclerView;
     private LibraryMixAdapter mLibraryMixAdapter;
     private LibraryPlaylistAdapter mLibraryPlaylistAdapter;
@@ -56,7 +56,7 @@ public class LibraryTabFragment extends Fragment {
         LibraryTabFragment tabFragment = new LibraryTabFragment();
         Bundle args = new Bundle();
         args.putInt(Constants.KEY_LIBRARY_DATA_TYPE, dataType.getCode());
-        args.putString(Constants.KEY_EXTRA_LIBRARY_FILTER_TEXT,tabFilter);
+        args.putString(Constants.KEY_EXTRA_LIBRARY_FILTER_TEXT, tabFilter);
         tabFragment.setArguments(args);
         return tabFragment;
     }
@@ -93,14 +93,14 @@ public class LibraryTabFragment extends Fragment {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mMixRecyclerView.setLayoutManager(layoutManager);
 
-        mLibraryMixAdapter = new LibraryMixAdapter(getContext(),mixList);
+        mLibraryMixAdapter = new LibraryMixAdapter(getContext(), mixList);
         mMixRecyclerView.setAdapter(mLibraryMixAdapter);
 
         updateMixes();
     }
 
 
-    public void updateMixes(){
+    public void updateMixes() {
         mFirebasDatabaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -125,18 +125,20 @@ public class LibraryTabFragment extends Fragment {
             }
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
     }
 
     private int getItemIndex(Mix mix) {
         int index = -1;
 
-        for(int i =0; i < mixList.size(); i++) {
-            if(mixList.get(i).getMixTitle().equalsIgnoreCase(mix.getMixTitle())) {
+        for (int i = 0; i < mixList.size(); i++) {
+            if (mixList.get(i).getMixTitle().equalsIgnoreCase(mix.getMixTitle())) {
                 index = i;
             }
         }
