@@ -20,14 +20,28 @@ import com.brainbeats.adapters.LibraryPlaylistAdapter;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.entity.Track;
+import com.brainbeats.model.Mix;
 import com.brainbeats.utils.Constants;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class LibraryTabFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class LibraryTabFragment extends Fragment {
 
-    ArrayList<Track> trackList;
-    private RecyclerView mMixListView;
+
+    //Data
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mFirebasDatabaseReference;
+
+    private ArrayList<Mix> mixList;
+    private RecyclerView mMixRecyclerView;
     private LibraryMixAdapter mLibraryMixAdapter;
     private LibraryPlaylistAdapter mLibraryPlaylistAdapter;
     public int mDataType;
@@ -42,7 +56,7 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
         LibraryTabFragment tabFragment = new LibraryTabFragment();
         Bundle args = new Bundle();
         args.putInt(Constants.KEY_LIBRARY_DATA_TYPE, dataType.getCode());
-        args.putString(Constants.KEY_EXTRA_LIBRARY_FILTER_TEXT,tabFilter);
+        args.putString(Constants.KEY_EXTRA_LIBRARY_FILTER_TEXT, tabFilter);
         tabFragment.setArguments(args);
         return tabFragment;
     }
@@ -61,7 +75,7 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_library_tab, container, false);
-        mMixListView = (RecyclerView) v.findViewById(R.id.library_content_list);
+        mMixRecyclerView = (RecyclerView) v.findViewById(R.id.library_content_list);
         mEmptyDataPlaceholder = (TextView) v.findViewById(R.id.empty_text);
         return v;
     }
@@ -69,101 +83,66 @@ public class LibraryTabFragment extends Fragment implements LoaderManager.Loader
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        trackList = new ArrayList<>();
-        setRetainInstance(true);
-        getLoaderManager().initLoader(mDataType, null, this);
+        mFirebaseDatabase = mFirebaseDatabase.getInstance();
+        mFirebasDatabaseReference = mFirebaseDatabase.getReference("mixes");
 
-        // use a linear layout manager
+        mixList = new ArrayList<>();
+
+        mMixRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mMixListView.setLayoutManager(layoutManager);
+        mMixRecyclerView.setLayoutManager(layoutManager);
+
+        mLibraryMixAdapter = new LibraryMixAdapter(getContext(), mixList);
+        mMixRecyclerView.setAdapter(mLibraryMixAdapter);
+
+        updateMixes();
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int loaderID, Bundle args) {
-        String query;
 
-        if (args != null)
-            query = args.getString(Constants.KEY_EXTRA_LIBRARY_FILTER_TEXT);
-        else
-            query = "";
+    public void updateMixes() {
+        mFirebasDatabaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                mixList.add(dataSnapshot.getValue(Mix.class));
+                mLibraryMixAdapter.notifyDataSetChanged();
+            }
 
-        switch (loaderID) {
-            case 0:
-                return new CursorLoader(
-                        getActivity(),                                                      // Parent activity context
-                        BrainBeatsContract.MixEntry.CONTENT_URI,                            // Table to query
-                        null,                                                               // Projection to return
-                        BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY +
-                                BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL +
-                                BrainBeatsDbHelper.AND_CLAUSE +
-                                BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE +
-                                BrainBeatsDbHelper.WHERE_CLAUSE_LIKE,                       // Where the mix is in the lib
-                        new String[]{BrainBeatsDbHelper.DB_TRUE_VALUE, query + "%"},        // No selection arguments
-                        null                                                                // Default sort order
-                );
-            case 1:
-                return new CursorLoader(
-                        getActivity(),                                                      // Parent activity context
-                        BrainBeatsContract.PlaylistEntry.CONTENT_URI,                    // Table to query
-                        null,                                                               // Projection to return
-                        null,
-                        null,
-                        null                                                                // Default sort order
-                );
-            case 2:
-                return new CursorLoader(
-                        getActivity(),                                                      // Parent activity context
-                        BrainBeatsContract.MixEntry.CONTENT_URI,                            // Table to query
-                        null,                                                               // Projection to return
-                        BrainBeatsContract.MixEntry.COLUMN_NAME_IS_FAVORITE +
-                                BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL +
-                                BrainBeatsDbHelper.AND_CLAUSE +
-                                BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE +
-                                BrainBeatsDbHelper.WHERE_CLAUSE_LIKE,
-                        new String[]{BrainBeatsDbHelper.DB_TRUE_VALUE, query + "%"},
-                        null                                                                // Default sort order
-                );
-            default:
-                return new CursorLoader(
-                        getActivity(),                                                      // Parent activity context
-                        BrainBeatsContract.MixEntry.CONTENT_URI,                            // Table to query
-                        null,                                                               // Projection to return
-                        BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY +
-                                BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,                      // Where the mix is in the lib
-                        new String[]{BrainBeatsDbHelper.DB_TRUE_VALUE},                     // No selection arguments
-                        null                                                                // Default sort order
-                );
-        }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Mix mix = dataSnapshot.getValue(Mix.class);
+                int index = getItemIndex(mix);
+                mixList.set(index, mix);
+                mLibraryMixAdapter.notifyItemChanged(index);
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Mix mix = dataSnapshot.getValue(Mix.class);
+                int index = getItemIndex(mix);
+                mixList.remove(index);
+                mLibraryMixAdapter.notifyItemRemoved(index);
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data.getCount() == 0) {
-            if(mDataType == 0)
-                mEmptyDataPlaceholder.setText("Add a song to your library.");
-            else if(mDataType == 1)
-                mEmptyDataPlaceholder.setText("Add a new playlist.");
-            else if(mDataType == 2)
-                mEmptyDataPlaceholder.setText("Favorite a song.");
+    private int getItemIndex(Mix mix) {
+        int index = -1;
 
-            mMixListView.setVisibility(View.GONE);
-            mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
-        } else {
-            mEmptyDataPlaceholder.setVisibility(View.INVISIBLE);
-            if (mDataType == 0 || mDataType == 2) {
-                mLibraryMixAdapter = new LibraryMixAdapter(getContext(), data);
-                mMixListView.setAdapter(mLibraryMixAdapter);
-            } else {
-                mLibraryPlaylistAdapter = new LibraryPlaylistAdapter(getContext(), data);
-                mMixListView.setAdapter(mLibraryPlaylistAdapter);
+        for (int i = 0; i < mixList.size(); i++) {
+            if (mixList.get(i).getMixTitle().equalsIgnoreCase(mix.getMixTitle())) {
+                index = i;
             }
         }
-    }
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        if(mLibraryMixAdapter != null)
-            mLibraryMixAdapter.changeCursor(null);
+        return index;
     }
 }

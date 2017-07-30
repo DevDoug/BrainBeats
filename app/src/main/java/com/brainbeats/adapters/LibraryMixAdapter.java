@@ -19,77 +19,19 @@ import com.brainbeats.entity.Track;
 import com.brainbeats.model.Mix;
 import com.brainbeats.utils.Constants;
 
+import java.util.ArrayList;
+
 /**
  * Created by douglas on 5/20/2016.
  */
-public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapter.ViewHolder> {
+public class LibraryMixAdapter extends RecyclerView.Adapter<LibraryMixAdapter.ViewHolder> {
 
     Context mAdapterContext;
+    ArrayList<Mix> mMixList;
 
-    public LibraryMixAdapter(Context context, Cursor cursor) {
-        super(context,cursor);
+    public LibraryMixAdapter(Context context, ArrayList<Mix> items) {
         mAdapterContext = context;
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
-        String title = cursor.getString(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE));
-        if(title != null)
-            viewHolder.mTitleText.setText(title);
-
-        viewHolder.mContainer.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                //load delete dialog
-                Constants.buildActionDialog(mAdapterContext, "Delete Song", "Do you want to delete this song from your library", "confirm", new Constants.ConfirmDialogActionListener() {
-                    @Override
-                    public void PerformDialogAction() {
-                        Mix selectedMix = Constants.buildMixFromCursor(mAdapterContext,getCursor(), viewHolder.getAdapterPosition()); // get the selected mix item
-                        mAdapterContext.getContentResolver().delete(BrainBeatsContract.MixEntry.CONTENT_URI, "_Id" + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, new String[]{String.valueOf(selectedMix.getMixId())});
-                    }
-                });
-                return false;
-            }
-        });
-
-        viewHolder.mPlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO fix user is null when navigating to this mix after selecting from lib
-                Mix selectedMix = Constants.buildMixFromCursor(mAdapterContext, getCursor(), viewHolder.getAdapterPosition()); // get the selected mix item
-                Track playTrack = new Track(selectedMix);
-
-                ((LibraryActivity) mAdapterContext).mCurrentSong = playTrack;
-                ((LibraryActivity) mAdapterContext).mAudioService.setPlayingSong(playTrack);
-                ((LibraryActivity) mAdapterContext).mAudioService.playSong(Uri.parse(selectedMix.getStreamURL()));
-            }
-        });
-
-/*        viewHolder.mMix.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Mix selectedMix = Constants.buildMixFromCursor(mAdapterContext,getCursor(), viewHolder.getAdapterPosition()); // get the selected mix item
-
-                //update local db with change
-                Bundle settingsBundle = new Bundle();
-                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_TYPE, Constants.SyncDataType.Mixes.getCode());
-                settingsBundle.putInt(Constants.KEY_EXTRA_SYNC_ACTION, Constants.SyncDataAction.UpdateAddToMixer.getCode());
-                settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_MIX, selectedMix);
-                OfflineSyncManager.getInstance(mAdapterContext).performSyncOnLocalDb(((LibraryActivity) mAdapterContext).mCoordinatorLayout, settingsBundle, mAdapterContext.getContentResolver());
-
-                //start intent to send user to their new mix for them to add/sub mix items.
-                Intent mixerIntent = new Intent(mAdapterContext, MixerActivity.class);
-                mixerIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, selectedMix);
-                mixerIntent.setAction(Constants.INTENT_ACTION_GO_TO_MIX_DETAIL_FRAGMENT);
-                mAdapterContext.startActivity(mixerIntent);
-            }
-        });*/
-    }
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(mAdapterContext).inflate(R.layout.library_beat_item, parent, false);
-        return new ViewHolder(itemView);
+        mMixList = items;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -108,7 +50,19 @@ public class LibraryMixAdapter extends RecyclerViewCursorAdapter<LibraryMixAdapt
     }
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(mAdapterContext).inflate(R.layout.library_beat_item, parent, false);
+        return new ViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        Mix mix = mMixList.get(position);
+        holder.mTitleText.setText(mix.getMixTitle());
+    }
+
+    @Override
+    public int getItemCount() {
+        return mMixList.size();
     }
 }

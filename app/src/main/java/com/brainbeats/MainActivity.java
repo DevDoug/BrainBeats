@@ -17,6 +17,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -40,10 +41,24 @@ import com.brainbeats.model.Playlist;
 import com.brainbeats.sync.SyncManager;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.web.WebApiManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, BrowseMusicFragment.OnFragmentInteractionListener, MusicDetailFragment.OnFragmentInteractionListener {
+
+
+    //Data
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseUser mFirebaseUser;
+    private DatabaseReference mDatabase;
 
     public Fragment mDashboardFragment;
     public Fragment mDashboardDetailFragment;
@@ -63,6 +78,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        if (mFirebaseUser == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
@@ -96,12 +121,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     }
                 }
             }
-        }
-
-        if (!AccountManager.getInstance(this).isLoggedIn()) { //if the user has not created an account load login activity
-            Intent loginIntent = new Intent(this, LoginActivity.class);
-            startActivity(loginIntent);
-            finish();
         }
 
         mIntentFilter = new IntentFilter();
@@ -149,7 +168,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         if(mAudioService != null)
             if(mAudioService.getIsPlaying()) {
-                if (mDashboardDetailFragment.isVisible()) {                                                             //if they are on the dashboard detail screen update the detail widgets
+                if (mDashboardDetailFragment.isVisible()) {
                     (((MusicDetailFragment) mDashboardDetailFragment)).updateTrackUI(mAudioService.getPlayingSong());
                 }
             }
@@ -174,7 +193,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 if (mDashboardFragment.isVisible())
                     ((BrowseMusicFragment) mDashboardFragment).getTracks("","",WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR,"");
                 else if (mDashboardDetailFragment.isVisible())
-                    ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateMix, null);
+                    addMixToLibrary();
                 break;
             case R.id.action_two_fob:
                 animateFAB();
@@ -198,6 +217,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     showAddToPlaylist();
                 break;*/
         }
+    }
+
+    public void addMixToLibrary(){
+        DatabaseReference mixRef = mDatabase.child("mixes");
+
+        Map<String, Object> mix = new HashMap<String, Object>();
+        mix.put(mCurrentSong.getTitle(), new Mix(mCurrentSong));
+
+        mixRef.updateChildren(mix, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if(databaseError != null) { //if there was an error tell the user
+                    Constants.buildInfoDialog(MainActivity.this, "Error", "There was an issue saving that mix to the database");
+                }
+            }
+        });
     }
 
     public void showAddToPlaylist() {
@@ -406,6 +441,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             if (mAudioService != null)
                 if (mAudioService.getIsPlaying() || mAudioService.getIsPaused())
                     ((MusicDetailFragment) mDashboardDetailFragment).isCurrentSong = (mAudioService.getPlayingSong().getID() == ((MusicDetailFragment) mDashboardDetailFragment).mSelectedTrack.getID());
+        } else if(uri.compareTo(Constants.LOGOUT_URI) == 0) {
+            mFirebaseAuth.signOut();
+            startActivity(new Intent(this, LoginActivity.class));
         }
     }
 

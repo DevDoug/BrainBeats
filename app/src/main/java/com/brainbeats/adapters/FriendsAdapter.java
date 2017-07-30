@@ -12,35 +12,23 @@ import android.widget.TextView;
 
 import com.brainbeats.R;
 import com.brainbeats.data.BrainBeatsContract;
+import com.brainbeats.model.BrainBeatsUser;
+import com.brainbeats.model.Mix;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 /**
  * Created by douglas on 5/13/2016.
  */
-public class SocialAdapter extends RecyclerViewCursorAdapter<SocialAdapter.ViewHolder> {
+public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHolder> {
 
     Context mAdapterContext;
+    ArrayList<BrainBeatsUser> mUserList;
 
-    public SocialAdapter(Context context, Cursor cursor) {
-        super(context,cursor);
-        mAdapterContext = context;
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
-        String title = cursor.getString(cursor.getColumnIndexOrThrow(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME));
-        if(title != null)
-            viewHolder.mUsername.setText(title);
-        Picasso.with(mAdapterContext).load(cursor.getString(cursor.getColumnIndexOrThrow(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PROFILE_IMG))).into(viewHolder.mArtistThumbnail);
-        viewHolder.mDescription.setText(cursor.getString(cursor.getColumnIndexOrThrow(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_DESCRIPTION)));
-
-        viewHolder.mArtistContainerCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO - implement in version 2.0 beta version
-                //((SocialActivity) mAdapterContext).switchToUserProfileFragment();
-            }
-        });
+    public FriendsAdapter(Context context, ArrayList<BrainBeatsUser> userList) {
+        this.mAdapterContext = context;
+        this.mUserList = userList;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -51,10 +39,10 @@ public class SocialAdapter extends RecyclerViewCursorAdapter<SocialAdapter.ViewH
 
         public ViewHolder(View view){
             super(view);
-            mUsername = (TextView) view.findViewById(R.id.user_name);
+            mUsername = (TextView) view.findViewById(R.id.artist_name);
             mDescription = (TextView) view.findViewById(R.id.artist_description);
             mArtistThumbnail = (ImageView) view.findViewById(R.id.artist_thumbnail);
-            mArtistContainerCard = (CardView) view.findViewById(R.id.card_view);
+            mArtistContainerCard = (CardView) view.findViewById(R.id.artist_name_container);
         }
     }
 
@@ -62,6 +50,17 @@ public class SocialAdapter extends RecyclerViewCursorAdapter<SocialAdapter.ViewH
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(mAdapterContext).inflate(R.layout.user_item, parent, false);
         return new ViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        BrainBeatsUser user = mUserList.get(position);
+        holder.mUsername.setText(user.getUserName());
+    }
+
+    @Override
+    public int getItemCount() {
+        return mUserList.size();
     }
 
     @Override

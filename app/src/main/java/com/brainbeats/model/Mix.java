@@ -10,7 +10,25 @@ import com.brainbeats.entity.Track;
  */
 public class Mix implements Parcelable {
 
-    private long mId;
+    public Mix() {}
+
+    public Mix(String title) {
+        this.mMixTitle = title;
+    }
+
+    public   Mix(Track track) {
+        mMixId = "";
+        mArtistId = "";
+        mMixTitle = track.getTitle();
+        mBeatAlbumCoverArtSource = track.getArtworkURL();
+        mMixSoundCloudId = track.getID();
+        mStreamURL = track.getStreamURL();
+        mDuration = track.getDuration();
+    }
+
+    private String mMixId;
+
+    public String mArtistId;
 
     private String mMixTitle;
 
@@ -24,14 +42,6 @@ public class Mix implements Parcelable {
 
     private int mRelatedTracksId;
 
-    private int mIsInLibrary;
-
-    private int mIsinMixer;
-
-    private long mMixUserId;
-
-    private long mMixItemsId;
-
     private String mStreamURL;
 
     private String mMixTagList;
@@ -40,25 +50,20 @@ public class Mix implements Parcelable {
 
     private int mIsDownvoted;
 
-    private BrainBeatsUser mBrainBeatsUser;
-
-    public Mix() {
+    public String getMixId() {
+        return mMixId;
     }
 
-    public Mix(Track track) {
-        mMixTitle = track.getTitle();
-        mBeatAlbumCoverArtSource = track.getArtworkURL();
-        mMixSoundCloudId = track.getID();
-        mStreamURL = track.getStreamURL();
-        mDuration = track.getDuration();
+    public void setMixId(String mixId) {
+        this.mMixId = mixId;
     }
 
-    public long getMixId() {
-        return mId;
+    public String getArtistId() {
+        return mArtistId;
     }
 
-    public void setMixId(long mixId) {
-        this.mId = mixId;
+    public void setArtistId(String artistId) {
+        this.mArtistId = artistId;
     }
 
     public String getMixTitle() {
@@ -109,30 +114,6 @@ public class Mix implements Parcelable {
         this.mRelatedTracksId = relatedTracksId;
     }
 
-    public int getIsInLibrary() {
-        return mIsInLibrary;
-    }
-
-    public void setIsInLibrary(int isinlibrary) {
-        this.mIsInLibrary = isinlibrary;
-    }
-
-    public int getIsInMixer() {
-        return mIsinMixer;
-    }
-
-    public void setIsInMixer(int isinMixer) {
-        this.mIsinMixer = isinMixer;
-    }
-
-    public long getMixUserId() {
-        return mMixUserId;
-    }
-
-    public void setMixUserId(long mixUserId) {
-        this.mMixUserId = mixUserId;
-    }
-
     public String getStreamURL() {
         return mStreamURL;
     }
@@ -157,14 +138,6 @@ public class Mix implements Parcelable {
         this.mMixTagList = mixertaglist;
     }
 
-    public long getMixItemsId() {
-        return mMixItemsId;
-    }
-
-    public void setMixItemsUserId(long mixItemsUserId) {
-        this.mMixItemsId = mixItemsUserId;
-    }
-
     public int getIsDownvoted() {
         return mIsDownvoted;
     }
@@ -173,6 +146,8 @@ public class Mix implements Parcelable {
         this.mIsDownvoted = isDownvoted;
     }
 
+    private BrainBeatsUser mBrainBeatsUser;
+
     @Override
     public int describeContents() {
         return 0;
@@ -180,17 +155,13 @@ public class Mix implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(mId);
+        dest.writeString(mMixId);
         dest.writeString(mMixTitle);
         dest.writeString(mBeatAlbumCoverArtSource);
         dest.writeInt(mMixFavorite);
         dest.writeInt(mMixRating);
         dest.writeInt(mMixSoundCloudId);
         dest.writeInt(mRelatedTracksId);
-        dest.writeInt(mIsInLibrary);
-        dest.writeInt(mIsinMixer);
-        dest.writeLong(mMixUserId);
-        dest.writeLong(mMixItemsId);
         dest.writeString(mStreamURL);
         dest.writeString(mMixTagList);
         dest.writeInt(mDuration);
@@ -198,17 +169,13 @@ public class Mix implements Parcelable {
     }
 
     protected Mix(Parcel in) {
-        mId = in.readLong();
+        mMixId = in.readString();
         mMixTitle = in.readString();
         mBeatAlbumCoverArtSource = in.readString();
         mMixFavorite = in.readInt();
         mMixRating = in.readInt();
         mMixSoundCloudId = in.readInt();
         mRelatedTracksId = in.readInt();
-        mIsInLibrary = in.readInt();
-        mIsinMixer = in.readInt();
-        mMixUserId = in.readLong();
-        mMixItemsId = in.readLong();
         mStreamURL = in.readString();
         mMixTagList = in.readString();
         mDuration = in.readInt();

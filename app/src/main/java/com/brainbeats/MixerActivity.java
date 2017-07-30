@@ -19,10 +19,22 @@ import com.brainbeats.fragments.MixerDetailFragment;
 import com.brainbeats.fragments.MixerFragment;
 import com.brainbeats.model.Mix;
 import com.brainbeats.utils.Constants;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
-public class MixerActivity extends BaseActivity implements View.OnClickListener, MixerFragment.OnFragmentInteractionListener, CreateMixFragment.OnFragmentInteractionListener, ConfirmCreateMixFragment.OnFragmentInteractionListener {
+public class MixerActivity extends BaseActivity implements View.OnClickListener,
+        MixerFragment.OnFragmentInteractionListener,
+        CreateMixFragment.OnFragmentInteractionListener,
+        ConfirmCreateMixFragment.OnFragmentInteractionListener {
+
+    private DatabaseReference mDatabase;
+
 
     Fragment mMixerFragment;
     Fragment mNewMixFragment;
@@ -37,6 +49,8 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
 
@@ -132,19 +146,19 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
     public void onFragmentInteraction(Uri uri, String title, String imageUrl) {
         if (uri.compareTo(Constants.MIX_ADD_NEW) == 0) {
             mNewMix.setMixTitle(title);
-            mNewMix.setIsInMixer(1);
-            mNewMix.setIsInLibrary(1);
             mNewMix.setStreamURL(getExternalCacheDir().getAbsolutePath() + "/" + title + ".3gp");
-            mNewMix.setMixUserId(Long.parseLong(AccountManager.getInstance(this).getUserId()));
-            Uri returnRow = getContentResolver().insert(BrainBeatsContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(mNewMix));
-            long returnRowId = ContentUris.parseId(returnRow);
-            if(returnRowId != -1){ //file clean-up
-                String fileName = getExternalCacheDir().getAbsolutePath() + "/" + getString(R.string.temperary_file_name) + ".3gp"; // clean up our temp file
-                File oldFile = new File(fileName);
-                File newFile = new File(getExternalCacheDir().getAbsolutePath() + "/" + title + ".3gp");
-                boolean success = oldFile.renameTo(newFile);
+            mNewMix.setArtistId(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-            }
+            DatabaseReference mixRef = mDatabase.child("mixes");
+
+            Map<String, Object> mix = new HashMap<String, Object>();
+            mix.put(title, mNewMix);
+
+            mixRef.updateChildren(mix, (databaseError, databaseReference) -> {
+                if(databaseError != null) { //if there was an error tell the user
+                    Constants.buildInfoDialog(MixerActivity.this, "Error", "There was an issue saving that mix to the database");
+                }
+            });
         }
     }
 

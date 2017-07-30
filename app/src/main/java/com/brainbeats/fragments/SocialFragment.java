@@ -7,31 +7,45 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.brainbeats.LoginActivity;
 import com.brainbeats.R;
-import com.brainbeats.adapters.SocialAdapter;
+import com.brainbeats.adapters.LibraryMixAdapter;
+import com.brainbeats.adapters.FriendsAdapter;
 import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.data.BrainBeatsContract;
-import com.brainbeats.utils.Constants;
+import com.brainbeats.entity.User;
+import com.brainbeats.model.BrainBeatsUser;
+import com.brainbeats.model.Mix;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-public class SocialFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+import java.util.ArrayList;
 
-    private RecyclerView mUserList;
+public class SocialFragment extends Fragment {
+
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mFirebasDatabaseReference;
+
+    private ArrayList<BrainBeatsUser> friendList;
+    private RecyclerView mFriendListReyclerView;
+    private FriendsAdapter mFriendsAdapter;
+    private TextView mEmptyDataPlaceholder;
     private OnFragmentInteractionListener mListener;
     private String mQueryText = "";
     private SearchView.OnQueryTextListener listener;
@@ -49,7 +63,7 @@ public class SocialFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_social, container, false);
-        mUserList = (RecyclerView) v.findViewById(R.id.user_list);
+        mFriendListReyclerView = (RecyclerView) v.findViewById(R.id.user_list);
 
         listener = new SearchView.OnQueryTextListener() {
             @Override
@@ -79,11 +93,20 @@ public class SocialFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(Constants.SOCIAL_LOADER, null, this);
+        mFirebaseDatabase = mFirebaseDatabase.getInstance();
+        mFirebasDatabaseReference = mFirebaseDatabase.getReference("users");
 
+        friendList = new ArrayList<>();
+
+        mFriendListReyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mUserList.setLayoutManager(layoutManager);
+        mFriendListReyclerView.setLayoutManager(layoutManager);
+
+        mFriendsAdapter = new FriendsAdapter(getContext(), friendList);
+        mFriendListReyclerView.setAdapter(mFriendsAdapter);
+
+        updateFriends();
     }
 
     public void onButtonPressed(Uri uri) {
@@ -161,43 +184,63 @@ public class SocialFragment extends Fragment implements LoaderManager.LoaderCall
         mListener = null;
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case Constants.SOCIAL_LOADER:
-
-                String rawQuery =
-                        "SELECT * FROM " + BrainBeatsContract.UserEntry.TABLE_NAME + " INNER JOIN " + BrainBeatsContract.UserFollowersEntry.TABLE_NAME
-                                + " ON " + "user." + BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID + " = " + "userfollowers." +
-                                BrainBeatsContract.UserFollowersEntry.COLUMN_NAME_USER_FOLLOWER_ID;
-
-                return new CursorLoader(
-                        getActivity(),                      // Parent activity context
-                        BrainBeatsContract.CONTENT_URI_RAW_QUERY,
-                        null,  //return everything
-                        rawQuery, //raw query sql
-                        null, // select args
-                        null                   // Default sort order
-                );
-            default:
-                // An invalid id was passed in
-                return null;
-        }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        SocialAdapter mUserAdapter = new SocialAdapter(getContext(), data);
-        mUserList.setAdapter(mUserAdapter);
-        Log.i("com/brainbeats/data", String.valueOf(data.getColumnCount()));
-    }
-
-    @Override
-    public void onLoaderReset(Loader loader) {
-    }
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+
+    public void updateFriends() {
+        mFirebasDatabaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                BrainBeatsUser user = dataSnapshot.getValue(BrainBeatsUser.class);
+                if(!user.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                    friendList.add(user);
+                    mFriendsAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                BrainBeatsUser user = dataSnapshot.getValue(BrainBeatsUser.class);
+                if(!user.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                    int index = getItemIndex(user);
+                    friendList.set(index, user);
+                    mFriendsAdapter.notifyItemChanged(index);
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                BrainBeatsUser user = dataSnapshot.getValue(BrainBeatsUser.class);
+                if(!user.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                    int index = getItemIndex(user);
+                    friendList.remove(index);
+                    mFriendsAdapter.notifyItemRemoved(index);
+                }
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private int getItemIndex(BrainBeatsUser user) {
+        int index = -1;
+
+        for (int i = 0; i < friendList.size(); i++) {
+            if (friendList.get(i).getUserId().equalsIgnoreCase(user.getUserId())) {
+                index = i;
+            }
+        }
+
+        return index;
     }
 }

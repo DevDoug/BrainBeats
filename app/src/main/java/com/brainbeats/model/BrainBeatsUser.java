@@ -8,7 +8,7 @@ import android.os.Parcelable;
  */
 public class BrainBeatsUser implements Parcelable {
 
-    private long mUserId;
+    private String mUserId;
     private String mUserName;
     private String mDescription;
     private String mPassword;
@@ -17,6 +17,11 @@ public class BrainBeatsUser implements Parcelable {
 
     public BrainBeatsUser(){}
 
+    public BrainBeatsUser(String userId, String username){
+        this.mUserId = userId;
+        this.mUserName = username;
+    }
+
     public BrainBeatsUser(com.brainbeats.entity.User user){
         this.mUserName = user.getUsername();
         this.mDescription = user.getDescription();
@@ -24,11 +29,11 @@ public class BrainBeatsUser implements Parcelable {
         this.mSoundCloudUserId = user.getId();
     }
 
-    public long getUserId() {
+    public String getUserId() {
         return mUserId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(String userId) {
         this.mUserId = userId;
     }
 
@@ -71,7 +76,7 @@ public class BrainBeatsUser implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(mUserId);
+        dest.writeString(mUserId);
         dest.writeString(mUserName);
         dest.writeString(mDescription);
         dest.writeString(mUserProfileImage);
@@ -80,7 +85,7 @@ public class BrainBeatsUser implements Parcelable {
     }
 
     protected BrainBeatsUser(Parcel in) {
-        mUserId = in.readLong();
+        mUserId = in.readString();
         mUserName = in.readString();
         mDescription = in.readString();
         mUserProfileImage = in.readString();

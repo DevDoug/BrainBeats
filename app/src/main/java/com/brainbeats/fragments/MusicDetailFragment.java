@@ -42,12 +42,17 @@ import com.brainbeats.entity.Track;
 import com.brainbeats.sync.OfflineSyncManager;
 import com.brainbeats.utils.BeatLearner;
 import com.brainbeats.utils.Constants;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 public class MusicDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
     public static final String TAG = "MusicDetailFragment";
     private static final int RESULT_PICK_CONTACT = 1;
+
+    //Data
+    private DatabaseReference mDatabase;
 
     private TextView mTrackTitle;
     private TextView mArtistDescription;
@@ -104,6 +109,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mUserSelections = getArguments();
         if (mUserSelections != null) {
@@ -221,30 +227,6 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
             case android.R.id.home:
                 getActivity().onBackPressed();
                 break;
-      /*      case R.id.add_to_library:
-                updateOfflineSyncManager(Constants.SyncDataAction.UpdateMix, null);
-                break;
-            case R.id.add_as_favorite:
-                updateOfflineSyncManager(Constants.SyncDataAction.UpdateFavorite, null);
-                break;
-            case R.id.follow_user:
-                updateOfflineSyncManager(null, Constants.SyncDataType.Users);
-                break;*/
-            /*case R.id.menu_item_share:*/
-
-/*                String[] friends = {"friend1","friend2"};
-                //give the user a list of people to share this song with
-                Constants.buildListDialogue(getContext(), getString(R.string.share_this_track), friends, new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent broadcastIntent = new Intent(); // send broadcast to activity to tell it to recommend this track
-                        broadcastIntent.setAction(Constants.SONG_RECIEVED_FROM_FRIEND_BROADCAST_ACTION);
-                        broadcastIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK,mSelectedTrack);
-                        getActivity().sendBroadcast(broadcastIntent);
-                    }
-                });
-                break;*/
-
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
                 Intent loginIntent = new Intent(getContext(), LoginActivity.class);
@@ -351,8 +333,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                         getActivity(),                                          // Parent activity context
                         BrainBeatsContract.MixTagEntry.CONTENT_URI,             // Table to query
                         null,                                                   // Projection to return
-                        BrainBeatsContract.MixTagEntry.COLUMN_NAME_MIX_ID +
-                                BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,          // Where the mix is in the li,
+                        BrainBeatsContract.MixTagEntry.COLUMN_NAME_MIX_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,          // Where the mix is in the li,
                         new String[]{String.valueOf(mSelectedTrack.getID())},   // No selection arguments
                         BrainBeatsDbHelper.DB_SORT_TYPE_LIMIT_FIVE              // Default sort order
                 );
@@ -425,7 +406,8 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public void playSong() {
         MainActivity main = ((MainActivity) getActivity());
 
-        if (!main.mAudioService.getIsPlaying() && !main.mAudioService.getIsPaused() || !(main.mAudioService.getPlayingSong().getID() == mSelectedTrack.getID())) { //if music not playing or not the current playing song
+        if (!main.mAudioService.getIsPlaying() && !main.mAudioService.getIsPaused()
+                || !(main.mAudioService.getPlayingSong().getID() == mSelectedTrack.getID())) { //if music not playing or not the current playing song
             showLoadingMusicDialog();
             mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI, mSelectedTrack);
         } else if (main.mAudioService.getIsPlaying()) {                                                        //Song is playing so pause song

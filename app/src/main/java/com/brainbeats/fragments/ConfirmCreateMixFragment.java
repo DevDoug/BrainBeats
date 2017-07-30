@@ -111,16 +111,8 @@ public class ConfirmCreateMixFragment extends Fragment implements View.OnClickLi
             case R.id.confirm_save_mix_button:
                 String title = String.valueOf(mMixTitle.getText());
                 if(!title.isEmpty()) { //require title
-                    Cursor returnRecord = getActivity().getContentResolver().query(BrainBeatsContract.MixEntry.CONTENT_URI, null, "mixtitle = ?", new String[]{title}, null);
-                    if (returnRecord != null) {
-                        if (returnRecord.getCount() == 0) { //only add a new mix if it does not already exist
-                            mListener.onFragmentInteraction(Constants.MIX_ADD_NEW, title, "");
-                            mListener.onFragmentInteraction(Constants.MIX_SHOW_MIX_LIST);
-                        } else {
-                            Constants.buildInfoDialog(getContext(), "Mix already exists", "There is already a mix with that name");
-                        }
-                        returnRecord.close();
-                    }
+                    mListener.onFragmentInteraction(Constants.MIX_ADD_NEW, title, "");
+                    mListener.onFragmentInteraction(Constants.MIX_SHOW_MIX_LIST);
                 } else {
                     Constants.buildInfoDialog(getContext(), "", "Please enter a title");
                 }

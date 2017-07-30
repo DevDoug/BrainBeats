@@ -19,17 +19,36 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.brainbeats.R;
+import com.brainbeats.adapters.LibraryMixAdapter;
+import com.brainbeats.adapters.LibraryPlaylistAdapter;
 import com.brainbeats.adapters.MixerAdapter;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
+import com.brainbeats.model.Mix;
 import com.brainbeats.utils.Constants;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 
-public class MixerFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
+public class MixerFragment extends Fragment {
 
-    private RecyclerView mMixerItems;
-    private TextView mEmptyText;
-    private MixerAdapter mMixerAdapter;
+    //Data
+    private FirebaseDatabase mFirebaseDatabase;
+    private Query mFirebasDatabaseReference;
+
+    private ArrayList<Mix> mixList;
+    private RecyclerView mMixRecyclerView;
+    private MixerAdapter mMixAdapter;
+    private TextView mEmptyDataPlaceholder;
+
     private OnFragmentInteractionListener mListener;
     public AlertDialog mAddOptionsDialog;
 
@@ -45,19 +64,28 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mixer, container, false);
-        mMixerItems = (RecyclerView) v.findViewById(R.id.mixer_list);
-        mEmptyText = (TextView) v.findViewById(R.id.empty_text);
+        mMixRecyclerView = (RecyclerView) v.findViewById(R.id.mixer_list);
+        mEmptyDataPlaceholder = (TextView) v.findViewById(R.id.empty_text);
         return v;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(Constants.MIXES_LOADER, null, this);
+        mFirebaseDatabase = mFirebaseDatabase.getInstance();
+        mFirebasDatabaseReference = mFirebaseDatabase.getReference("mixes").orderByChild("artistId").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
+        mixList = new ArrayList<>();
+
+        mMixRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mMixerItems.setLayoutManager(layoutManager);
+        mMixRecyclerView.setLayoutManager(layoutManager);
+
+        mMixAdapter = new MixerAdapter(getContext(), mixList);
+        mMixRecyclerView.setAdapter(mMixAdapter);
+
+        updateMixes();
     }
 
     public void onButtonPressed(Uri uri) {
@@ -90,67 +118,50 @@ public class MixerFragment extends Fragment implements LoaderManager.LoaderCallb
         mListener = null;
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        switch (position) {
-            case 0:
-                mAddOptionsDialog.dismiss();
-                break;
-            case 1:
-                mAddOptionsDialog.dismiss();
-  /*              mAddOptionsDialog = Constants.buildListDialogue(getContext(), getString(R.string.create_beat_from_title), R.array.new_from_existing_beat_options, new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        switch (position) {
-                            case 0:
-                                Toast.makeText(getContext(), "Creating from resource", Toast.LENGTH_LONG).show();
-                                break;
-                            case 1:
-                                Toast.makeText(getContext(), "Creating from resource", Toast.LENGTH_LONG).show();
-                                break;
-                            case 2:
-                                Intent libraryIntent = new Intent(getContext(), LibraryActivity.class);
-                                startActivity(libraryIntent);
-                                break;
-                        }
-                    }
-                });*/
-                break;
-        }
+    public void updateMixes() {
+        mFirebasDatabaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                mixList.add(dataSnapshot.getValue(Mix.class));
+                mMixAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Mix mix = dataSnapshot.getValue(Mix.class);
+                int index = getItemIndex(mix);
+                mixList.set(index, mix);
+                mMixAdapter.notifyItemChanged(index);
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Mix mix = dataSnapshot.getValue(Mix.class);
+                int index = getItemIndex(mix);
+                mixList.remove(index);
+                mMixAdapter.notifyItemRemoved(index);
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int loaderID, Bundle args) {
-        switch (loaderID) {
-            case Constants.MIXES_LOADER:
-                // Returns a new CursorLoader
-                return new CursorLoader(
-                        getActivity(),         // Parent activity context
-                        BrainBeatsContract.MixEntry.CONTENT_URI,  // Table to query
-                        null,                          // Projection to return
-                        BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_MIXER + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL, // where the mix is in the lib
-                        new String[]{BrainBeatsDbHelper.DB_TRUE_VALUE},                  // No selection arguments
-                        null                   // Default sort order
-                );
-            default:
-                // An invalid id was passed in
-                return null;
-        }
-    }
+    private int getItemIndex(Mix mix) {
+        int index = -1;
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data.getCount() == 0) { //no mix com.brainbeats.data found
-            mMixerItems.setVisibility(View.GONE);
-            mEmptyText.setVisibility(View.VISIBLE);
-        } else {
-            mMixerAdapter = new MixerAdapter(getContext(), data);
-            mMixerItems.setAdapter(mMixerAdapter);
+        for (int i = 0; i < mixList.size(); i++) {
+            if (mixList.get(i).getMixTitle().equalsIgnoreCase(mix.getMixTitle())) {
+                index = i;
+            }
         }
-    }
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+        return index;
     }
 
     public interface OnFragmentInteractionListener {

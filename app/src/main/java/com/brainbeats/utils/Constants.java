@@ -93,8 +93,10 @@ public class Constants {
     public static final int BEAT_LEVEL_INCREASE_DIFFERENCE = 10;
     public static final int MIX_ITEM_DEFAULT_LEVEL = 50;
     public static final int BEAT_ITEM_DRAWABLES[] = new int[]{R.drawable.ic_alpha, R.drawable.ic_beta, R.drawable.ic_google, R.drawable.ic_theta,};
-    public static final int PASSWORD_MINIMUM_LENGTH = 3;
-    public static final String OREINTATION_SHIFT = "LayoutShift";
+
+    public static final int USERNAME_MINIMUM_LENGTH = 3;
+    public static final int PASSWORD_MINIMUM_LENGTH = 6;
+
 
     //Fragment Uris
     public static final Uri LOAD_SONG_URI                                           = Uri.parse("base://dashboard_detail_load_song");
@@ -107,6 +109,10 @@ public class Constants {
     public static final Uri DASHBOARD_DETAIL_PLAY_SONG_URI                          = Uri.parse("main://dashboard_detail_play_song");
     public static final Uri DASHBOARD_DETAIL_PAUSE_SONG_URI                         = Uri.parse("main://dashboard_detail_pause_song");
     public static final Uri STOP_SONG_URI                                           = Uri.parse("audio://stop_song");
+
+
+    public static final Uri GO_TO_REGISTER_NEW_USER_URI                                         = Uri.parse("main://new_user");
+    public static final Uri LOGOUT_URI                                         = Uri.parse("main://logout");
 
 
     public static final Uri DASHBOARD_DETAIL_DOWNVOTE_SONG_URI                      = Uri.parse("main://dashboard_detail_downvote_song");
@@ -196,7 +202,7 @@ public class Constants {
 
     public static Mix buildMixRecordFromTrack(Track track) {
         Mix mix = new Mix();
-        mix.setMixId(track.getID());
+        //mix.setMixId(track.getID());
         mix.setMixTitle(track.getTitle());
         mix.setMixAlbumCoverArt(track.getArtworkURL());
         mix.setSoundCloudId(track.getID());
@@ -210,8 +216,8 @@ public class Constants {
         cursor.moveToPosition(position);
 
         Mix mix = new Mix();
-        mix.setMixId(cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.MixEntry._ID)));
-        mix.setMixTitle(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE)));
+        //mix.setMixId(cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.MixEntry._ID)));
+/*        mix.setMixTitle(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE)));
         mix.setMixAlbumCoverArt(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL)));
         mix.setMixFavorite(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_FAVORITE)));
         mix.setSoundCloudId(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.MixEntry.COLUMN_NAME_SOUND_CLOUD_ID)));
@@ -231,12 +237,12 @@ public class Constants {
         BrainBeatsUser brainBeatsBrainBeatsUser = new BrainBeatsUser();
         if (userCursor != null && userCursor.getCount() != 0) {
             userCursor.moveToFirst();
-            brainBeatsBrainBeatsUser.setUserId(userCursor.getLong(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
-            brainBeatsBrainBeatsUser.setUserName(userCursor.getString(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));
+*//*            brainBeatsBrainBeatsUser.setUserId(userCursor.getLong(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
+            brainBeatsBrainBeatsUser.setUserName(userCursor.getString(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));*//*
             brainBeatsBrainBeatsUser.setSoundCloudUserId(userCursor.getInt(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID)));
             userCursor.close();
             mix.setUser(brainBeatsBrainBeatsUser);
-        }
+        }*/
 
 //        Cursor mixItemsCursor = context.getContentResolver().query( //get this mixes mix items
 //                BrainBeatsContract.MixItemsEntry.CONTENT_URI,
@@ -289,7 +295,7 @@ public class Constants {
         cursor.moveToFirst();
 
         BrainBeatsUser brainBeatsUser = new BrainBeatsUser();
-        brainBeatsUser.setUserId(cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
+        //brainBeatsUser.setUserId(cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
         brainBeatsUser.setUserName(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));
         brainBeatsUser.setSoundCloudUserId(cursor.getInt(cursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID)));
 
@@ -308,7 +314,7 @@ public class Constants {
 
     public static ContentValues buildMixRecord(Mix mix) {
         ContentValues values = new ContentValues();
-        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE, mix.getMixTitle());
+/*        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE, mix.getMixTitle());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_ALBUM_ART_URL, mix.getMixAlbumCoverArt());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_FAVORITE, mix.getMixFavorite());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_USER_ID_FK, mix.getMixUserId());
@@ -317,7 +323,7 @@ public class Constants {
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_LIBRARY, mix.getIsInLibrary());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_MIXER, mix.getIsInMixer());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_STREAM_URL, mix.getStreamURL());
-        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_DURATION, mix.getDuration());
+        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_DURATION, mix.getDuration());*/
         return values;
     }
 
@@ -407,7 +413,7 @@ public class Constants {
         return null;
     }
 
-    public static Mix buildNewDefaultMixRecord(Context context) {
+/*    public static Mix buildNewDefaultMixRecord(Context context) {
         Mix defaultMix = new Mix(); //build new default mix
         defaultMix.setMixTitle(context.getString(R.string.default_mix_title));
         defaultMix.setMixAlbumCoverArt(context.getString(R.string.default_mix_album_art_url));
@@ -433,7 +439,7 @@ public class Constants {
         }
 
         return defaultMix;
-    }
+    }*/
 
     public static AlertDialog buildRatingDialog(Context context, String title, final ImageAdapter.DialogImageSelectedListener selectionListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);

@@ -13,14 +13,14 @@
             android:id="@+id/action_mixer"
             android:icon="@drawable/ic_album"
             android:title="@string/nav_item_label_mixer" />
-<!--        <item
+        <item
             android:id="@+id/action_social"
             android:icon="@drawable/ic_navview_social"
             android:title="@string/nav_item_label_social" />
         <item
             android:id="@+id/action_settings"
             android:icon="@drawable/ic_settings"
-            android:title="@string/nav_item_label_settings" />-->
+            android:title="@string/nav_item_label_settings" />
         <item
             android:id="@+id/action_info"
             android:icon="@drawable/ic_info_outline"
