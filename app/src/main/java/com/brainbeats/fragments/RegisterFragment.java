@@ -1,6 +1,8 @@
 package com.brainbeats.fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -41,6 +43,13 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     private EditText mPassword;
     private EditText mConfirmPassword;
     private Button mRegisterButton;
+
+    private RegisterFragment.OnFragmentInteractionListener mListener;
+
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
+    }
+
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -103,6 +112,23 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof RegisterFragment.OnFragmentInteractionListener) {
+            mListener = (RegisterFragment.OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
     public void addNewUser(){
         String mUserName = mUsername.getText().toString().split("@")[0];
         DatabaseReference usersRef = mUserReference.child("users");
@@ -116,8 +142,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 if(databaseError != null) { //if there was an error tell the user
                     Constants.buildInfoDialog(getActivity(), "Error", "There was an issue saving that user to the database");
                 } else {
-                    Intent dashboardIntent = new Intent(getActivity(), MainActivity.class);
-                    startActivity(dashboardIntent);
+                    mListener.onFragmentInteraction(Constants.SHOW_NEW_ARTIST_INFO);
                 }
             }
         });

@@ -111,8 +111,8 @@ public class Constants {
     public static final Uri STOP_SONG_URI                                           = Uri.parse("audio://stop_song");
 
 
-    public static final Uri GO_TO_REGISTER_NEW_USER_URI                                         = Uri.parse("main://new_user");
-    public static final Uri LOGOUT_URI                                         = Uri.parse("main://logout");
+    public static final Uri GO_TO_REGISTER_NEW_USER_URI                             = Uri.parse("main://new_user");
+    public static final Uri LOGOUT_URI                                              = Uri.parse("main://logout");
 
 
     public static final Uri DASHBOARD_DETAIL_DOWNVOTE_SONG_URI                      = Uri.parse("main://dashboard_detail_downvote_song");
@@ -126,7 +126,10 @@ public class Constants {
     public static final Uri NEW_MIX_HIDE_FAB                                        = Uri.parse("mixer://new_mix_hide_fab");
     public static final Uri NEW_MIX_LOAD_CONFIRM_FRAG                               = Uri.parse("mixer://new_mix_load_confirm_frag");
     public static final Uri MIX_SHOW_MIX_LIST                                       = Uri.parse("mixer://mix_show_mix_list");
-    public static final Uri MIX_ADD_NEW                                        = Uri.parse("mixer://mix_add_new");
+    public static final Uri MIX_ADD_NEW                                             = Uri.parse("mixer://mix_add_new");
+
+    public static final Uri SHOW_NEW_ARTIST_INFO                                    = Uri.parse("mixer://new_artist");
+
 
 
 
@@ -483,18 +486,7 @@ public class Constants {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
         builder.setTitle(title);
         builder.setMessage(dialogMessage);
-        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
+        builder.setPositiveButton("OK", (dialogInterface, i) -> dialogInterface.dismiss());
         AlertDialog alert = builder.create();
         alert.show();
         return alert;

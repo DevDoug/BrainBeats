@@ -154,7 +154,7 @@
     <string name="error_rating_message">There was a problem rating this mix.</string>
     <string name="error_unknown_message">An unexpected error occurred.</string>
     <string name="error_invalid_email">This email address is invalid.</string>
-    <string name="error_invalid_password">This password is too short.</string>
+    <string name="error_invalid_password">This password is to short.</string>
     <string name="error_incorrect_password">This password is incorrect.</string>
     <string name="error_field_required">This field is required.</string>
     <string name="error_no_results_found_error_message">No Results Found</string>
