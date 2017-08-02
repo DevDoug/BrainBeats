@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
-import com.brainbeats.fragments.ArtistInfoFragment;
+import com.brainbeats.fragments.AddNewArtistInfoFragment;
 import com.brainbeats.fragments.LoginFragment;
 import com.brainbeats.fragments.RegisterFragment;
 import com.brainbeats.utils.Constants;
@@ -32,7 +32,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
         if (savedInstanceState == null) {
             mLoginFragment = new LoginFragment();
             mRegisterFragment = new RegisterFragment();
-            mNewArtistFragment = new ArtistInfoFragment();
+            mNewArtistFragment = new AddNewArtistInfoFragment();
             switchToLoginFragment();
         }
     }
@@ -43,9 +43,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
 
     public void switchToArtistInfoFragment(){replaceFragment(mNewArtistFragment, "ArtistFragTag");}
 
-    public void switchToRegisterFragment() {
-        replaceFragment(mRegisterFragment, "RegisterFragTag");
-    }
+    public void switchToRegisterFragment() {replaceFragment(mRegisterFragment, "RegisterFragTag");}
 
     public void replaceFragment(Fragment fragment, String fragmentTag) {
         FragmentManager fm = getSupportFragmentManager();

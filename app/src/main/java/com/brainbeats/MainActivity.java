@@ -70,6 +70,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public FloatingActionButton mExtraActionTwoFab;
     public FloatingActionButton mExtraActionThreeFab;
     public FloatingActionButton mExtraActionFourFab;
+
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;
     public boolean mIsFabOpen;
     AlertDialog alert;
@@ -225,12 +226,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         Map<String, Object> mix = new HashMap<String, Object>();
         mix.put(mCurrentSong.getTitle(), new Mix(mCurrentSong));
 
-        mixRef.updateChildren(mix, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if(databaseError != null) { //if there was an error tell the user
-                    Constants.buildInfoDialog(MainActivity.this, "Error", "There was an issue saving that mix to the database");
-                }
+        mixRef.updateChildren(mix, (databaseError, databaseReference) -> {
+            if(databaseError != null) { //if there was an error tell the user
+                Constants.buildInfoDialog(MainActivity.this, "Error", "There was an issue saving that mix to the database");
             }
         });
     }

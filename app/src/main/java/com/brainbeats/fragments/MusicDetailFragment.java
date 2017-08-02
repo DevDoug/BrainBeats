@@ -51,9 +51,6 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public static final String TAG = "MusicDetailFragment";
     private static final int RESULT_PICK_CONTACT = 1;
 
-    //Data
-    private DatabaseReference mDatabase;
-
     private TextView mTrackTitle;
     private TextView mArtistDescription;
     private ImageView mAlbumCoverArt;
@@ -109,7 +106,6 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mUserSelections = getArguments();
         if (mUserSelections != null) {

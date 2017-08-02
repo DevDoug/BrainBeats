@@ -36,7 +36,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     public static final String TAG = "RegisterFragment";
 
     private FirebaseAuth mFirebaseAuth;
-    private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mUserReference;
 
     private EditText mUsername;
@@ -136,14 +135,11 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         Map<String, Object> brainBeatsUser = new HashMap<String, Object>();
         brainBeatsUser.put(mUserName, new BrainBeatsUser(mFirebaseAuth.getCurrentUser().getUid(),mUsername.getText().toString()));
 
-        usersRef.updateChildren(brainBeatsUser, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if(databaseError != null) { //if there was an error tell the user
-                    Constants.buildInfoDialog(getActivity(), "Error", "There was an issue saving that user to the database");
-                } else {
-                    mListener.onFragmentInteraction(Constants.SHOW_NEW_ARTIST_INFO);
-                }
+        usersRef.updateChildren(brainBeatsUser, (databaseError, databaseReference) -> {
+            if(databaseError != null) { //if there was an error tell the user
+                Constants.buildInfoDialog(getActivity(), "Error", "There was an issue saving that user to the database");
+            } else {
+                mListener.onFragmentInteraction(Constants.SHOW_NEW_ARTIST_INFO);
             }
         });
     }
