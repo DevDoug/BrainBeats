@@ -273,27 +273,6 @@ public class Constants {
         return mix;
     }
 
-/*    public static BrainBeatsUser getCurrentUser(Context context){
-        Cursor userCursor = context.getContentResolver().query( //get this mixes user
-                BrainBeatsContract.UserEntry.CONTENT_URI,
-                null,  //return everything
-                BrainBeatsContract.UserEntry._ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
-                new String[]{String.valueOf(AccountManager.getInstance(context).getUserId())},
-                null);
-
-        BrainBeatsUser brainBeatsUser = new BrainBeatsUser();
-
-        if (userCursor != null && userCursor.getCount() != 0) {
-            userCursor.moveToFirst();
-            brainBeatsUser.setUserId(userCursor.getLong(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
-            brainBeatsUser.setUserName(userCursor.getString(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));
-            brainBeatsUser.setSoundCloudUserId(userCursor.getInt(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID)));
-            userCursor.close();
-        }
-
-        return brainBeatsUser;
-    }*/
-
     public static BrainBeatsUser buildUserFromCursor(Context context, Cursor cursor) {
         cursor.moveToFirst();
 
@@ -327,19 +306,6 @@ public class Constants {
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_IN_MIXER, mix.getIsInMixer());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_STREAM_URL, mix.getStreamURL());
         values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_DURATION, mix.getDuration());*/
-        return values;
-    }
-
-    public static ContentValues buildTagRecord(String tagTitle, long mixId){
-        ContentValues values = new ContentValues();
-        values.put(BrainBeatsContract.MixTagEntry.COLUMN_NAME_TAG_TITLE, tagTitle);
-        values.put(BrainBeatsContract.MixTagEntry.COLUMN_NAME_MIX_ID,mixId);
-        return values;
-    }
-
-    public static ContentValues buildMixRelatedRecord() {
-        ContentValues values = new ContentValues();
-        values.put(BrainBeatsContract.MixRelatedEntry.COLUMN_NAME_TAG_CLOUD_ID, 0);
         return values;
     }
 
@@ -416,72 +382,6 @@ public class Constants {
         return null;
     }
 
-/*    public static Mix buildNewDefaultMixRecord(Context context) {
-        Mix defaultMix = new Mix(); //build new default mix
-        defaultMix.setMixTitle(context.getString(R.string.default_mix_title));
-        defaultMix.setMixAlbumCoverArt(context.getString(R.string.default_mix_album_art_url));
-
-        if(!AccountManager.getInstance(context).isConnnectedToSoundCloud()) {
-
-            //Search for the current user the username will be assigned as user id on log in
-            Cursor userCursor = context.getContentResolver().query( //find if this user exists
-                    BrainBeatsContract.UserEntry.CONTENT_URI, //Get users
-                    null,  //return everything
-                    BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
-                    new String[]{String.valueOf(AccountManager.getInstance(context).getUserId())},
-                    null
-            );
-
-            if(userCursor != null && userCursor.getCount() > 0){
-                defaultMix.setMixUserId(userCursor.getInt(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
-                userCursor.close();
-            }
-
-        } else {
-            defaultMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(context).getUserId())); //BrainBeatsUser is logged in to sound cloud
-        }
-
-        return defaultMix;
-    }*/
-
-    public static AlertDialog buildRatingDialog(Context context, String title, final ImageAdapter.DialogImageSelectedListener selectionListener) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
-        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.custom_image_list_dialog_layout, null);
-        ((TextView) dialogView.findViewById(R.id.separator_title)).setText(title);
-        ((GridView) dialogView.findViewById(R.id.options_list)).setAdapter(new ImageAdapter(context, selectionListener));
-        builder.setView(dialogView);
-        AlertDialog alert = builder.create();
-        alert.show();
-        return alert;
-    }
-
-    public static AlertDialog buildImageListDialogue(Context context, String title, final ImageAdapter.DialogImageSelectedListener selectionListener) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
-        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.custom_image_list_dialog_layout, null);
-        ((TextView) dialogView.findViewById(R.id.separator_title)).setText(title);
-        ((GridView) dialogView.findViewById(R.id.options_list)).setAdapter(new ImageAdapter(context, selectionListener));
-        builder.setView(dialogView);
-        AlertDialog alert = builder.create();
-        alert.show();
-        return alert;
-    }
-
-    public static AlertDialog buildListDialogue(Context context, String title, String[] options, DialogInterface.OnClickListener listener) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
-        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.custom_list_dialog_layout, null);
-        ((TextView) dialogView.findViewById(R.id.separator_title)).setText(title);
-        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.dialog_list_item, R.id.dialog_item, options);
-        //((ListView) dialogView.findViewById(R.id.options_list)).setAdapter(adapter);
-        builder.setView(dialogView);
-        builder.setItems(options, listener);
-        AlertDialog alert = builder.create();
-        alert.show();
-        return alert;
-    }
-
     public static AlertDialog buildInfoDialog(Context context, String title, String dialogMessage){
         AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
         builder.setTitle(title);
@@ -541,6 +441,10 @@ public class Constants {
         ConnectivityManager connectivityManager = (ConnectivityManager) context. getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public static void displayErrorMessageDialog(){
+
     }
 
 }

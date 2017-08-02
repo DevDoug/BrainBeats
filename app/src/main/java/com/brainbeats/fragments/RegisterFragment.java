@@ -27,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,7 +49,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
-
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -84,26 +84,30 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                     .addOnCompleteListener(getActivity(), task -> {
                         Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
                         if (task.isSuccessful()) {
                             mFirebaseAuth.signInWithEmailAndPassword(mUsername.getText().toString(), mPassword.getText().toString())
                                     .addOnCompleteListener(getActivity(), signInTask -> {
                                         addNewUser();
                                         Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
-                                        // If sign in fails, display a message to the user. If sign in succeeds
-                                        // the auth state listener will be notified and logic to handle the
-                                        // signed in user can be handled in the listener.
                                         if (!task.isSuccessful()) {
-                                            Log.w(TAG, "signInWithEmail:failed", task.getException());
-                                            Toast.makeText(getActivity(), "Auth Failed",
-                                                    Toast.LENGTH_SHORT).show();
+                                            try {
+                                                throw task.getException();
+
+                                            } catch (Exception e) {
+                                                Log.w(TAG, "signInWithEmail:failed", task.getException());
+                                                Toast.makeText(getActivity(), "Auth Failed:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
                                         }
                                     });
                         } else {
-                            Toast.makeText(getContext(), "Auth Failed:", Toast.LENGTH_SHORT).show();
+                            try {
+                                throw task.getException();
+
+                            } catch (Exception e) {
+                                Log.w(TAG, "Register:failed", task.getException());
+                                Toast.makeText(getActivity(), "Auth Failed:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
         } else {

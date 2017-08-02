@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +19,14 @@ import android.widget.TextView;
 
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -34,6 +41,8 @@ public class AddNewArtistInfoFragment extends Fragment implements View.OnClickLi
 
     private int PICK_IMAGE_REQUEST = 1;
 
+    StorageReference mStorageRef;
+
     Uri mUploadedProfileImageUri;
     TextView mArtistName;
     ImageView mArtistProfile;
@@ -43,6 +52,12 @@ public class AddNewArtistInfoFragment extends Fragment implements View.OnClickLi
 
     public AddNewArtistInfoFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mStorageRef = FirebaseStorage.getInstance().getReference();
     }
 
     @Override
@@ -64,10 +79,11 @@ public class AddNewArtistInfoFragment extends Fragment implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.confirm_save_artist_detail_button:
+                uploadArtistCoverImageToCloudStorage();
                 saveArtistDetail();
                 break;
             case R.id.profile_cover_image:
-                uploadArtistCover();
+                pickArtistCoverImage();
                 break;
             case R.id.skip_text:
                 goToDashboard();
@@ -104,11 +120,31 @@ public class AddNewArtistInfoFragment extends Fragment implements View.OnClickLi
         goToDashboard();
     }
 
-    public void uploadArtistCover(){
+    public void pickArtistCoverImage(){
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    public void uploadArtistCoverImageToCloudStorage(){
+        StorageReference riversRef = mStorageRef.child("images/" + mUploadedProfileImageUri.getLastPathSegment());
+        UploadTask uploadTask = riversRef.putFile(mUploadedProfileImageUri);
+
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+            }
+        });
+
+
     }
 
     public void goToDashboard(){

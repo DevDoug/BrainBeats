@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.brainbeats">
 
     <permission android:name="android.permission.INTERNET" />
@@ -26,6 +27,7 @@
         android:logo="@mipmap/ic_brain"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
+        android:name=".architecture.Application"
         android:theme="@style/BrainBeatsTheme">
         <activity
             android:name=".MainActivity"
