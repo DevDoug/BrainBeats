@@ -10,9 +10,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -58,6 +61,8 @@ import com.brainbeats.model.Mix;
 import com.brainbeats.service.AudioService;
 import com.brainbeats.utils.Constants;
 
+import java.io.IOException;
+
 import static com.brainbeats.utils.Constants.KEY_EXTRA_SELECTED_TRACK;
 
 /**
@@ -97,6 +102,7 @@ public class BaseActivity extends AppCompatActivity {
     public boolean mBound = false;
 
     private FirebaseAuth mFirebaseAuth;
+    private FirebaseUser mFirebaseUser;
     private DatabaseReference mUserRef;
 
     @Override
@@ -114,6 +120,13 @@ public class BaseActivity extends AppCompatActivity {
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mUserRef = FirebaseDatabase.getInstance().getReference().child("users");
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+
+        if (mFirebaseUser == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
 
         String emailName = FirebaseAuth.getInstance().getCurrentUser().getEmail().split("@")[0];
         DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("users").child(emailName);
@@ -122,6 +135,7 @@ public class BaseActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 BrainBeatsUser currentUser = dataSnapshot.getValue(BrainBeatsUser.class);
                 ((com.brainbeats.architecture.Application) getApplication()).setUserDetails(currentUser);
+                setUserProfileImage();
             }
 
             @Override
@@ -423,8 +437,13 @@ public class BaseActivity extends AppCompatActivity {
 
     public void setUserProfileImage(){
         BrainBeatsUser user = ((Application) this.getApplication()).getUserDetails();
-        if(!user.getUserProfileImage().isEmpty()){
-            //mArtistCoverImage.setImageBitmap(user.getUserProfileImage());
+        if (!user.getUserProfileImage().isEmpty()) {
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.parse(user.getUserProfileImage()));
+                mArtistCoverImage.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

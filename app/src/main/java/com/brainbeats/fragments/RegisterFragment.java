@@ -87,13 +87,12 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                         if (task.isSuccessful()) {
                             mFirebaseAuth.signInWithEmailAndPassword(mUsername.getText().toString(), mPassword.getText().toString())
                                     .addOnCompleteListener(getActivity(), signInTask -> {
-                                        addNewUser();
                                         Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+                                        addNewUser();
 
                                         if (!task.isSuccessful()) {
                                             try {
                                                 throw task.getException();
-
                                             } catch (Exception e) {
                                                 Log.w(TAG, "signInWithEmail:failed", task.getException());
                                                 Toast.makeText(getActivity(), "Auth Failed:" + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -103,7 +102,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                         } else {
                             try {
                                 throw task.getException();
-
                             } catch (Exception e) {
                                 Log.w(TAG, "Register:failed", task.getException());
                                 Toast.makeText(getActivity(), "Auth Failed:" + e.getMessage(), Toast.LENGTH_SHORT).show();

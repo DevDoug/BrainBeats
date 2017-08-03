@@ -8,6 +8,7 @@
     <ImageView
         android:id="@+id/profile_cover_image"
         android:layout_width="match_parent"
+        android:src="@drawable/profile_placeholder"
         android:layout_height="@dimen/nav_drawer_height" />
 
 </FrameLayout>

@@ -10,9 +10,9 @@ public class BrainBeatsUser implements Parcelable {
 
     private String mUserId;
     private String mUserName;
-    private String mDescription;
-    private String mPassword;
-    private String mUserProfileImage;
+    private String artistProfileImage;
+    private String artistName;
+    private String artistDescription;
     private int mSoundCloudUserId;
 
     public BrainBeatsUser(){}
@@ -24,8 +24,7 @@ public class BrainBeatsUser implements Parcelable {
 
     public BrainBeatsUser(com.brainbeats.entity.User user){
         this.mUserName = user.getUsername();
-        this.mDescription = user.getDescription();
-        this.mUserProfileImage = user.getAvatarUrl();
+        this.artistProfileImage = user.getAvatarUrl();
         this.mSoundCloudUserId = user.getId();
     }
 
@@ -45,20 +44,12 @@ public class BrainBeatsUser implements Parcelable {
         this.mUserName = UserName;
     }
 
-    public String getDescription() {
-        return mDescription;
-    }
-
-    public void setDescription(String description) {
-        this.mDescription = description;
-    }
-
     public String getUserProfileImage() {
-        return mUserProfileImage;
+        return artistProfileImage;
     }
 
     public void setUserProfileImage(String userProfileImage) {
-        this.mUserProfileImage = userProfileImage;
+        this.artistProfileImage = userProfileImage;
     }
 
     public long getSoundCloudUserId() {
@@ -67,6 +58,22 @@ public class BrainBeatsUser implements Parcelable {
 
     public void setSoundCloudUserId(int soundCloudUserId) {
         this.mSoundCloudUserId = soundCloudUserId;
+    }
+
+    public String getArtistName() {
+        return artistName;
+    }
+
+    public void setArtistName(String artistName) {
+        this.artistName = artistName;
+    }
+
+    public String getArtistDescription() {
+        return artistDescription;
+    }
+
+    public void setArtistDescription(String artistDescription) {
+        this.artistDescription = artistDescription;
     }
 
     @Override
@@ -78,19 +85,19 @@ public class BrainBeatsUser implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mUserId);
         dest.writeString(mUserName);
-        dest.writeString(mDescription);
-        dest.writeString(mUserProfileImage);
-        dest.writeString(mPassword);
+        dest.writeString(artistProfileImage);
         dest.writeInt(mSoundCloudUserId);
+        dest.writeString(artistName);
+        dest.writeString(artistDescription);
     }
 
     protected BrainBeatsUser(Parcel in) {
         mUserId = in.readString();
         mUserName = in.readString();
-        mDescription = in.readString();
-        mUserProfileImage = in.readString();
-        mPassword = in.readString();
+        artistProfileImage = in.readString();
         mSoundCloudUserId = in.readInt();
+        artistName = in.readString();
+        artistDescription = in.readString();
     }
 
     public static final Creator<BrainBeatsUser> CREATOR = new Creator<BrainBeatsUser>() {

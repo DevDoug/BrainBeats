@@ -334,7 +334,6 @@ public class Constants {
     public static ContentValues buildUserRecord(BrainBeatsUser brainBeatsUser) {
         ContentValues values = new ContentValues();
         values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME, brainBeatsUser.getUserName());
-        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_DESCRIPTION, brainBeatsUser.getDescription());
         values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PASSWORD, Constants.generateEncryptedPass());
         values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PROFILE_IMG, brainBeatsUser.getUserProfileImage());
         values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID, brainBeatsUser.getSoundCloudUserId());

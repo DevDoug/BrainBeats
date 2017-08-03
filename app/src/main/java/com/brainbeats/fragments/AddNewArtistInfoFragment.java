@@ -114,7 +114,7 @@ public class AddNewArtistInfoFragment extends Fragment implements View.OnClickLi
         Map<String, Object> userData = new HashMap<String, Object>();
         userData.put("artistName", mArtistName.getText().toString());
         userData.put("artistDescription", mArtistDescription.getText().toString());
-        userData.put("profileImage", mUploadedProfileImageUri.toString());
+        userData.put("artistProfileImage", mUploadedProfileImageUri.getPath());
         user.updateChildren(userData);
 
         goToDashboard();
@@ -128,23 +128,23 @@ public class AddNewArtistInfoFragment extends Fragment implements View.OnClickLi
     }
 
     public void uploadArtistCoverImageToCloudStorage(){
-        StorageReference riversRef = mStorageRef.child("images/" + mUploadedProfileImageUri.getLastPathSegment());
-        UploadTask uploadTask = riversRef.putFile(mUploadedProfileImageUri);
-
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
+        try {
+            if (mUploadedProfileImageUri != null) {
+                StorageReference riversRef = mStorageRef.child("images/" + mUploadedProfileImageUri.getLastPathSegment());
+                UploadTask uploadTask = riversRef.putFile(mUploadedProfileImageUri);
+                uploadTask.addOnFailureListener(exception -> {
+                    // Handle unsuccessful uploads
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    }
+                });
             }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-            }
-        });
-
-
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void goToDashboard(){
