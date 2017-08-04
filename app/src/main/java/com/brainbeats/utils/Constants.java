@@ -129,6 +129,7 @@ public class Constants {
     public static final Uri MIX_ADD_NEW                                             = Uri.parse("mixer://mix_add_new");
 
     public static final Uri SHOW_NEW_ARTIST_INFO                                    = Uri.parse("mixer://new_artist");
+    public static final Uri GO_TO_ARTIST_PROFILE_URI                                = Uri.parse("mixer://go_to_artist_profile");
 
 
 

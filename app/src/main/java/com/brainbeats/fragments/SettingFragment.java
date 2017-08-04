@@ -8,19 +8,17 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 
 import com.brainbeats.R;
-import com.brainbeats.architecture.AccountManager;
+import com.brainbeats.utils.Constants;
 
-public class SettingFragment extends Fragment {
+public class SettingFragment extends Fragment implements View.OnClickListener {
 
     public static final String TAG = "SettingsFragment";
-
-    public CheckBox mIncogCheckBox;
-    public CheckBox mSyncWithSoundCloud;
     private OnFragmentInteractionListener mListener;
+
+    LinearLayout mUserProfileContainer;
 
     public SettingFragment() {
         // Required empty public constructor
@@ -34,31 +32,15 @@ public class SettingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_setting, container, false);
-        //mIncogCheckBox = (CheckBox) v.findViewById(R.id.is_incognito_checkbox);
-        mSyncWithSoundCloud = (CheckBox) v.findViewById(R.id.sync_with_sound_cloud);
+        mUserProfileContainer = (LinearLayout) v.findViewById(R.id.artist_profile_setting_option_container);
+
+        mUserProfileContainer.setOnClickListener(this);
         return v;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //mIncogCheckBox.setChecked(AccountManager.getInstance(getContext()).getIsIncognito());
-        mSyncWithSoundCloud.setChecked(AccountManager.getInstance(getContext()).getIsSyncedToSoundCloud());
-/*
-        mIncogCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                AccountManager.getInstance(getContext()).isInCognito(mIncogCheckBox.isChecked());
-            }
-        });*/
-
-        mSyncWithSoundCloud.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                //called when the up affordance/carat in actionbar is pressed
-                AccountManager.getInstance(getContext()).setSyncToSoundCloud(mSyncWithSoundCloud.isChecked());
-            }
-        });
     }
 
     public void onButtonPressed(Uri uri) {
@@ -82,6 +64,16 @@ public class SettingFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.artist_profile_setting_option_container:
+                mListener.onFragmentInteraction(Constants.GO_TO_ARTIST_PROFILE_URI);
+                break;
+        }
+
     }
 
     public interface OnFragmentInteractionListener {

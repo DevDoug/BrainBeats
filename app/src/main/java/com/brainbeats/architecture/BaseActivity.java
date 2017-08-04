@@ -128,7 +128,7 @@ public class BaseActivity extends AppCompatActivity {
             return;
         }
 
-        String emailName = FirebaseAuth.getInstance().getCurrentUser().getEmail().split("@")[0];
+/*        String emailName = FirebaseAuth.getInstance().getCurrentUser().getEmail().split("@")[0];
         DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("users").child(emailName);
         user.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -140,7 +140,7 @@ public class BaseActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {}
-        });
+        });*/
 
         Intent intent = new Intent(BaseActivity.this, AudioService.class);
         intent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);

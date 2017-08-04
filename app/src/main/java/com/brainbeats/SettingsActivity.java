@@ -7,18 +7,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.brainbeats.architecture.BaseActivity;
+import com.brainbeats.fragments.ArtistProfileFragment;
 import com.brainbeats.fragments.SettingFragment;
+import com.brainbeats.utils.Constants;
 
-public class SettingsActivity extends BaseActivity implements SettingFragment.OnFragmentInteractionListener {
+public class SettingsActivity extends BaseActivity implements SettingFragment.OnFragmentInteractionListener, ArtistProfileFragment.OnFragmentInteractionListener {
 
     public Fragment mSettingsFragment;
+    public Fragment mArtistProfileFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
-        mSettingsFragment = new SettingFragment();
-        switchToSettingsFragment();
+
+        if (savedInstanceState == null) {
+            mSettingsFragment = new SettingFragment();
+            mArtistProfileFragment = new ArtistProfileFragment();
+            switchToSettingsFragment();
+        }
     }
 
     @Override
@@ -31,8 +38,15 @@ public class SettingsActivity extends BaseActivity implements SettingFragment.On
         replaceFragment(mSettingsFragment, mSettingsFragment.getTag());
     }
 
+    public void switchToArtistProfileFragment(){
+        toggleNavDrawerIcon();
+        replaceFragment(mArtistProfileFragment, mArtistProfileFragment.getTag());
+    }
+
     @Override
     public void onFragmentInteraction(Uri uri) {
+        if (uri.compareTo(Constants.GO_TO_ARTIST_PROFILE_URI) == 0)
+            switchToArtistProfileFragment();
     }
 
     @Override

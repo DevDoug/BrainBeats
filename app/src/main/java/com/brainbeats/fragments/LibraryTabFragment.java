@@ -43,7 +43,6 @@ public class LibraryTabFragment extends Fragment {
     private ArrayList<Mix> mixList;
     private RecyclerView mMixRecyclerView;
     private LibraryMixAdapter mLibraryMixAdapter;
-    private LibraryPlaylistAdapter mLibraryPlaylistAdapter;
     public int mDataType;
     public String mFilter = "";
     private TextView mEmptyDataPlaceholder;
