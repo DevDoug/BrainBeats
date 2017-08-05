@@ -1,9 +1,14 @@
 package com.brainbeats.fragments;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -12,9 +17,28 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.brainbeats.R;
 import com.brainbeats.SettingsActivity;
+import com.brainbeats.utils.Constants;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,16 +46,38 @@ import com.brainbeats.SettingsActivity;
  * {@link ArtistProfileFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class ArtistProfileFragment extends Fragment {
+public class ArtistProfileFragment extends Fragment implements View.OnClickListener {
 
+    private int PICK_IMAGE_REQUEST = 1;
+
+    Uri mUploadedProfileImageUri;
+    StorageReference mStorageRef;
+
+    private EditText mArtistName;
+    private ImageView mProfileImage;
+    private EditText mArtistDescription;
+    private Button mSaveButton;
     private OnFragmentInteractionListener mListener;
 
-    public ArtistProfileFragment() {
+    public ArtistProfileFragment() {}
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mStorageRef = FirebaseStorage.getInstance().getReference();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_artist_profile, container, false);
+        View v = inflater.inflate(R.layout.fragment_artist_profile, container, false);
+        mArtistName = (EditText) v.findViewById(R.id.artist_name);
+        mProfileImage = (ImageView) v.findViewById(R.id.profile_cover_image);
+        mArtistDescription = (EditText) v.findViewById(R.id.artist_description);
+        mSaveButton = (Button) v.findViewById(R.id.confirm_save_artist_detail_button);
+
+        mProfileImage.setOnClickListener(this);
+        mSaveButton.setOnClickListener(this);
+        return v;
     }
 
     @Override
@@ -74,7 +120,76 @@ public class ArtistProfileFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.confirm_save_artist_detail_button:
+                saveArtistDetails();
+                break;
+            case R.id.profile_cover_image:
+                pickArtistCoverImage();
+                break;
+        }
+    }
+
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void pickArtistCoverImage(){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            mUploadedProfileImageUri = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mUploadedProfileImageUri);
+                mProfileImage.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void uploadArtistCoverImageToCloudStorage(){
+        try {
+            if (mUploadedProfileImageUri != null) {
+                StorageReference riversRef = mStorageRef.child("images/" + mUploadedProfileImageUri.getLastPathSegment());
+                UploadTask uploadTask = riversRef.putFile(mUploadedProfileImageUri);
+                uploadTask.addOnFailureListener(exception -> {
+                    // Handle unsuccessful uploads
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    }
+                });
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void saveArtistDetails(){
+        String emailName = FirebaseAuth.getInstance().getCurrentUser().getEmail().split("@")[0];
+        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("users").child(emailName);
+        Map<String, Object> userData = new HashMap<String, Object>();
+        userData.put("artistName", mArtistName.getText().toString());
+        userData.put("artistDescription", mArtistDescription.getText().toString());
+        //userData.put("artistProfileImage", mUploadedProfileImageUri.getPath());
+        user.updateChildren(userData).addOnCompleteListener(task -> {
+            if(task.isSuccessful())
+                Constants.buildInfoDialog(getContext(), "Saved", "Artist details saved successfully");
+            else
+                Constants.buildInfoDialog(getContext(), "Error", "There was an issue saving artist details please try again later");
+        });
     }
 }

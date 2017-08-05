@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -34,6 +35,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -41,6 +44,7 @@ public class SocialFragment extends Fragment {
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mFirebasDatabaseReference;
+    private Query mUserFriendsReference;
 
     private ArrayList<BrainBeatsUser> friendList;
     private RecyclerView mFriendListReyclerView;
@@ -49,6 +53,7 @@ public class SocialFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private String mQueryText = "";
     private SearchView.OnQueryTextListener listener;
+    private CardView mPendingFriendsCard;
 
     public SocialFragment() {
         // Required empty public constructor
@@ -64,6 +69,7 @@ public class SocialFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_social, container, false);
         mFriendListReyclerView = (RecyclerView) v.findViewById(R.id.user_list);
+        mPendingFriendsCard = (CardView) v.findViewById(R.id.pending_friend_container);
 
         listener = new SearchView.OnQueryTextListener() {
             @Override
@@ -95,6 +101,18 @@ public class SocialFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mFirebaseDatabase = mFirebaseDatabase.getInstance();
         mFirebasDatabaseReference = mFirebaseDatabase.getReference("users");
+
+        mUserFriendsReference = mFirebaseDatabase.getReference("userFriendRequest");//.orderByChild("userId").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mUserFriendsReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getChildrenCount() != 0){
+                    mPendingFriendsCard.setVisibility(View.VISIBLE);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
 
         friendList = new ArrayList<>();
 

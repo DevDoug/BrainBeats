@@ -147,7 +147,7 @@ public class AddNewArtistInfoFragment extends Fragment implements View.OnClickLi
         }
     }
 
-    public void goToDashboard(){
+    public void goToDashboard() {
         Intent dashboardIntent = new Intent(getContext(), MainActivity.class);
         startActivity(dashboardIntent);
     }
