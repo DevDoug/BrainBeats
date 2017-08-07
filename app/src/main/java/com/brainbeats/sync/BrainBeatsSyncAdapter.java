@@ -355,7 +355,6 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
     public void addUser(com.brainbeats.entity.User soundCloudUser, boolean isFollowing, ContentProviderClient provider) {
         BrainBeatsUser brainBeatsUser = new BrainBeatsUser();
         brainBeatsUser.setUserName(soundCloudUser.getUsername());
-        brainBeatsUser.setDescription(soundCloudUser.getDescription());
         brainBeatsUser.setSoundCloudUserId(soundCloudUser.getId());
         brainBeatsUser.setUserProfileImage(soundCloudUser.getAvatarUrl());
 

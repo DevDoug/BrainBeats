@@ -43,9 +43,11 @@ import com.brainbeats.utils.Constants;
 import com.brainbeats.web.WebApiManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,7 +58,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 
     //Data
-    private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
     private DatabaseReference mDatabase;
 
@@ -70,6 +71,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public FloatingActionButton mExtraActionTwoFab;
     public FloatingActionButton mExtraActionThreeFab;
     public FloatingActionButton mExtraActionFourFab;
+
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;
     public boolean mIsFabOpen;
     AlertDialog alert;
@@ -78,14 +80,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
-
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseUser = mFirebaseAuth.getCurrentUser();
-        if (mFirebaseUser == null) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-            return;
-        }
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -225,12 +219,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         Map<String, Object> mix = new HashMap<String, Object>();
         mix.put(mCurrentSong.getTitle(), new Mix(mCurrentSong));
 
-        mixRef.updateChildren(mix, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if(databaseError != null) { //if there was an error tell the user
-                    Constants.buildInfoDialog(MainActivity.this, "Error", "There was an issue saving that mix to the database");
-                }
+        mixRef.updateChildren(mix, (databaseError, databaseReference) -> {
+            if(databaseError != null) { //if there was an error tell the user
+                Constants.buildInfoDialog(MainActivity.this, "Error", "There was an issue saving that mix to the database");
             }
         });
     }
@@ -442,6 +433,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 if (mAudioService.getIsPlaying() || mAudioService.getIsPaused())
                     ((MusicDetailFragment) mDashboardDetailFragment).isCurrentSong = (mAudioService.getPlayingSong().getID() == ((MusicDetailFragment) mDashboardDetailFragment).mSelectedTrack.getID());
         } else if(uri.compareTo(Constants.LOGOUT_URI) == 0) {
+            mAudioService.stopSong();
             mFirebaseAuth.signOut();
             startActivity(new Intent(this, LoginActivity.class));
         }

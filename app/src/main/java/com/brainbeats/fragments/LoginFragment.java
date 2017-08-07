@@ -1,6 +1,7 @@
 package com.brainbeats.fragments;
 
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -26,14 +27,24 @@ import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
 import com.brainbeats.architecture.AccountManager;
+import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.web.WebApiManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import static android.R.attr.data;
 import static android.R.attr.id;
 
 /**
@@ -140,7 +151,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (!isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -164,17 +175,31 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         } else {
             mFirebaseAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(getActivity(), task -> {
-                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
-                        Intent dashboardIntent = new Intent(getActivity(), MainActivity.class);
-                        startActivity(dashboardIntent);
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithEmail:failed", task.getException());
-                            Toast.makeText(getActivity(), "Auth Failed",
-                                    Toast.LENGTH_SHORT).show();
+                            String emailName = FirebaseAuth.getInstance().getCurrentUser().getEmail().split("@")[0];
+                            DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("users").child(emailName);
+                            user.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    BrainBeatsUser currentUser = dataSnapshot.getValue(BrainBeatsUser.class);
+                                    ((com.brainbeats.architecture.Application) getActivity().getApplication()).setUserDetails(currentUser);
+                                    Intent dashboardIntent = new Intent(getActivity(), MainActivity.class);
+                                    startActivity(dashboardIntent);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {}
+                            });
+                        } else {
+                            try {
+                                throw task.getException();
+                            } catch(FirebaseAuthInvalidCredentialsException e) {
+                                Constants.buildInfoDialog(getContext(), "Error", "Invalid login or password.");
+                            } catch(Exception e) {
+                                Log.e(TAG, e.getMessage());
+                            }
                         }
                     });
         }
@@ -197,6 +222,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > Constants.USERNAME_MINIMUM_LENGTH;
+        return password.length() >= Constants.USERNAME_MINIMUM_LENGTH;
     }
 }

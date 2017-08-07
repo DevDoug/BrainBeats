@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -21,38 +22,42 @@ import android.widget.TextView;
 
 import com.brainbeats.LoginActivity;
 import com.brainbeats.R;
-import com.brainbeats.adapters.LibraryMixAdapter;
 import com.brainbeats.adapters.FriendsAdapter;
 import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.data.BrainBeatsContract;
-import com.brainbeats.entity.User;
 import com.brainbeats.model.BrainBeatsUser;
-import com.brainbeats.model.Mix;
+import com.brainbeats.utils.Constants;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class SocialFragment extends Fragment {
+public class SocialFragment extends Fragment implements View.OnClickListener {
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mFirebasDatabaseReference;
+    private Query mUserFriendsReference;
+
+    private String mQueryText = "";
+
+    private OnFragmentInteractionListener mListener;
+    private SearchView.OnQueryTextListener queryListener;
 
     private ArrayList<BrainBeatsUser> friendList;
     private RecyclerView mFriendListReyclerView;
     private FriendsAdapter mFriendsAdapter;
+    private CardView mPendingFriendsCard;
+    private TextView mAcceptFriendRequest;
+    private TextView mAllRequestsText;
     private TextView mEmptyDataPlaceholder;
-    private OnFragmentInteractionListener mListener;
-    private String mQueryText = "";
-    private SearchView.OnQueryTextListener listener;
 
-    public SocialFragment() {
-        // Required empty public constructor
-    }
+    public SocialFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,8 +69,15 @@ public class SocialFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_social, container, false);
         mFriendListReyclerView = (RecyclerView) v.findViewById(R.id.user_list);
+        mPendingFriendsCard = (CardView) v.findViewById(R.id.pending_friend_container);
+        mAcceptFriendRequest = (TextView) v.findViewById(R.id.accept_friend_request);
+        mAllRequestsText = (TextView) v.findViewById(R.id.all_friend_requests);
 
-        listener = new SearchView.OnQueryTextListener() {
+
+        mAcceptFriendRequest.setOnClickListener(this);
+        mAllRequestsText.setOnClickListener(this);
+
+        queryListener = new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 mQueryText = query;
@@ -96,6 +108,19 @@ public class SocialFragment extends Fragment {
         mFirebaseDatabase = mFirebaseDatabase.getInstance();
         mFirebasDatabaseReference = mFirebaseDatabase.getReference("users");
 
+        mUserFriendsReference = mFirebaseDatabase.getReference("userFriendRequest");//.orderByChild("userId").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mUserFriendsReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getChildrenCount() != 0){
+                    mPendingFriendsCard.setVisibility(View.VISIBLE);
+                    mAllRequestsText.setVisibility(View.VISIBLE);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+
         friendList = new ArrayList<>();
 
         mFriendListReyclerView.setHasFixedSize(true);
@@ -109,26 +134,19 @@ public class SocialFragment extends Fragment {
         updateFriends();
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_social, menu);
         MenuItem searchMenuItem = menu.findItem(R.id.action_search);
         SearchView mSearchView = (SearchView) searchMenuItem.getActionView();
-        mSearchView.setOnQueryTextListener(listener);
+        mSearchView.setOnQueryTextListener(queryListener);
 
         if (!mQueryText.equalsIgnoreCase("")) {
             searchMenuItem.expandActionView();
             ((SearchView) searchMenuItem.getActionView()).setQuery(mQueryText, true);
         }
 
-        // Define the listener
+        // Define the queryListener
         MenuItemCompat.OnActionExpandListener expandListener = new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
@@ -151,7 +169,7 @@ public class SocialFragment extends Fragment {
             }
         };
 
-        // Assign the listener to that action item
+        // Assign the queryListener to that action item
         MenuItemCompat.setOnActionExpandListener(searchMenuItem, expandListener);
     }
 
@@ -184,41 +202,56 @@ public class SocialFragment extends Fragment {
         mListener = null;
     }
 
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.accept_friend_request:
+                mListener.onFragmentInteraction(Constants.ACCEPT_FRIEND_REQUEST_URI);
+                break;
+            case R.id.all_friend_requests:
+                mListener.onFragmentInteraction(Constants.GO_TO_ALL_FRIEND_REQUEST_URI);
+                break;
+        }
     }
 
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
+    }
 
     public void updateFriends() {
         mFirebasDatabaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 BrainBeatsUser user = dataSnapshot.getValue(BrainBeatsUser.class);
-                if(!user.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                    friendList.add(user);
-                    mFriendsAdapter.notifyDataSetChanged();
+                if(user != null) {
+                    if(!user.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                        friendList.add(user);
+                        mFriendsAdapter.notifyDataSetChanged();
+                    }
                 }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 BrainBeatsUser user = dataSnapshot.getValue(BrainBeatsUser.class);
-                if(!user.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                    int index = getItemIndex(user);
-                    friendList.set(index, user);
-                    mFriendsAdapter.notifyItemChanged(index);
+                if(user != null) {
+                    if(!user.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                        int index = getItemIndex(user);
+                        friendList.set(index, user);
+                        mFriendsAdapter.notifyItemChanged(index);
+                    }
                 }
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 BrainBeatsUser user = dataSnapshot.getValue(BrainBeatsUser.class);
-                if(!user.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                    int index = getItemIndex(user);
-                    friendList.remove(index);
-                    mFriendsAdapter.notifyItemRemoved(index);
+                if(user != null) {
+                    if(!user.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                        int index = getItemIndex(user);
+                        friendList.remove(index);
+                        mFriendsAdapter.notifyItemRemoved(index);
+                    }
                 }
             }
 

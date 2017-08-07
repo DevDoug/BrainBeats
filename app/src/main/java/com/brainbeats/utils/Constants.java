@@ -111,8 +111,8 @@ public class Constants {
     public static final Uri STOP_SONG_URI                                           = Uri.parse("audio://stop_song");
 
 
-    public static final Uri GO_TO_REGISTER_NEW_USER_URI                                         = Uri.parse("main://new_user");
-    public static final Uri LOGOUT_URI                                         = Uri.parse("main://logout");
+    public static final Uri GO_TO_REGISTER_NEW_USER_URI                             = Uri.parse("main://new_user");
+    public static final Uri LOGOUT_URI                                              = Uri.parse("main://logout");
 
 
     public static final Uri DASHBOARD_DETAIL_DOWNVOTE_SONG_URI                      = Uri.parse("main://dashboard_detail_downvote_song");
@@ -126,10 +126,12 @@ public class Constants {
     public static final Uri NEW_MIX_HIDE_FAB                                        = Uri.parse("mixer://new_mix_hide_fab");
     public static final Uri NEW_MIX_LOAD_CONFIRM_FRAG                               = Uri.parse("mixer://new_mix_load_confirm_frag");
     public static final Uri MIX_SHOW_MIX_LIST                                       = Uri.parse("mixer://mix_show_mix_list");
-    public static final Uri MIX_ADD_NEW                                        = Uri.parse("mixer://mix_add_new");
+    public static final Uri MIX_ADD_NEW                                             = Uri.parse("mixer://mix_add_new");
 
-
-
+    public static final Uri SHOW_NEW_ARTIST_INFO                                    = Uri.parse("mixer://new_artist");
+    public static final Uri GO_TO_ARTIST_PROFILE_URI                                = Uri.parse("mixer://go_to_artist_profile");
+    public static final Uri ACCEPT_FRIEND_REQUEST_URI                               = Uri.parse("mixer://accept_friend_request");
+    public static final Uri GO_TO_ALL_FRIEND_REQUEST_URI                            = Uri.parse("mixer://go_to_all_friend_request");
 
     public enum AudioServiceRepeatType {
         RepeatOff(0),
@@ -270,27 +272,6 @@ public class Constants {
         return mix;
     }
 
-/*    public static BrainBeatsUser getCurrentUser(Context context){
-        Cursor userCursor = context.getContentResolver().query( //get this mixes user
-                BrainBeatsContract.UserEntry.CONTENT_URI,
-                null,  //return everything
-                BrainBeatsContract.UserEntry._ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
-                new String[]{String.valueOf(AccountManager.getInstance(context).getUserId())},
-                null);
-
-        BrainBeatsUser brainBeatsUser = new BrainBeatsUser();
-
-        if (userCursor != null && userCursor.getCount() != 0) {
-            userCursor.moveToFirst();
-            brainBeatsUser.setUserId(userCursor.getLong(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
-            brainBeatsUser.setUserName(userCursor.getString(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME)));
-            brainBeatsUser.setSoundCloudUserId(userCursor.getInt(userCursor.getColumnIndex(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID)));
-            userCursor.close();
-        }
-
-        return brainBeatsUser;
-    }*/
-
     public static BrainBeatsUser buildUserFromCursor(Context context, Cursor cursor) {
         cursor.moveToFirst();
 
@@ -327,19 +308,6 @@ public class Constants {
         return values;
     }
 
-    public static ContentValues buildTagRecord(String tagTitle, long mixId){
-        ContentValues values = new ContentValues();
-        values.put(BrainBeatsContract.MixTagEntry.COLUMN_NAME_TAG_TITLE, tagTitle);
-        values.put(BrainBeatsContract.MixTagEntry.COLUMN_NAME_MIX_ID,mixId);
-        return values;
-    }
-
-    public static ContentValues buildMixRelatedRecord() {
-        ContentValues values = new ContentValues();
-        values.put(BrainBeatsContract.MixRelatedEntry.COLUMN_NAME_TAG_CLOUD_ID, 0);
-        return values;
-    }
-
     public static ContentValues buildMixItemsRecord(long mixId, MixItem mixitem) {
         ContentValues values = new ContentValues();
         values.put(BrainBeatsContract.MixItemsEntry.COLUMN_NAME_MIX_ITEM_TITLE, mixitem.getMixItemTitle());
@@ -365,7 +333,6 @@ public class Constants {
     public static ContentValues buildUserRecord(BrainBeatsUser brainBeatsUser) {
         ContentValues values = new ContentValues();
         values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME, brainBeatsUser.getUserName());
-        values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_DESCRIPTION, brainBeatsUser.getDescription());
         values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PASSWORD, Constants.generateEncryptedPass());
         values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_PROFILE_IMG, brainBeatsUser.getUserProfileImage());
         values.put(BrainBeatsContract.UserEntry.COLUMN_NAME_USER_SOUND_CLOUD_ID, brainBeatsUser.getSoundCloudUserId());
@@ -413,88 +380,11 @@ public class Constants {
         return null;
     }
 
-/*    public static Mix buildNewDefaultMixRecord(Context context) {
-        Mix defaultMix = new Mix(); //build new default mix
-        defaultMix.setMixTitle(context.getString(R.string.default_mix_title));
-        defaultMix.setMixAlbumCoverArt(context.getString(R.string.default_mix_album_art_url));
-
-        if(!AccountManager.getInstance(context).isConnnectedToSoundCloud()) {
-
-            //Search for the current user the username will be assigned as user id on log in
-            Cursor userCursor = context.getContentResolver().query( //find if this user exists
-                    BrainBeatsContract.UserEntry.CONTENT_URI, //Get users
-                    null,  //return everything
-                    BrainBeatsContract.UserEntry.COLUMN_NAME_USER_NAME + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,
-                    new String[]{String.valueOf(AccountManager.getInstance(context).getUserId())},
-                    null
-            );
-
-            if(userCursor != null && userCursor.getCount() > 0){
-                defaultMix.setMixUserId(userCursor.getInt(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID)));
-                userCursor.close();
-            }
-
-        } else {
-            defaultMix.setMixUserId(Integer.parseInt(AccountManager.getInstance(context).getUserId())); //BrainBeatsUser is logged in to sound cloud
-        }
-
-        return defaultMix;
-    }*/
-
-    public static AlertDialog buildRatingDialog(Context context, String title, final ImageAdapter.DialogImageSelectedListener selectionListener) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
-        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.custom_image_list_dialog_layout, null);
-        ((TextView) dialogView.findViewById(R.id.separator_title)).setText(title);
-        ((GridView) dialogView.findViewById(R.id.options_list)).setAdapter(new ImageAdapter(context, selectionListener));
-        builder.setView(dialogView);
-        AlertDialog alert = builder.create();
-        alert.show();
-        return alert;
-    }
-
-    public static AlertDialog buildImageListDialogue(Context context, String title, final ImageAdapter.DialogImageSelectedListener selectionListener) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
-        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.custom_image_list_dialog_layout, null);
-        ((TextView) dialogView.findViewById(R.id.separator_title)).setText(title);
-        ((GridView) dialogView.findViewById(R.id.options_list)).setAdapter(new ImageAdapter(context, selectionListener));
-        builder.setView(dialogView);
-        AlertDialog alert = builder.create();
-        alert.show();
-        return alert;
-    }
-
-    public static AlertDialog buildListDialogue(Context context, String title, String[] options, DialogInterface.OnClickListener listener) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
-        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.custom_list_dialog_layout, null);
-        ((TextView) dialogView.findViewById(R.id.separator_title)).setText(title);
-        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.dialog_list_item, R.id.dialog_item, options);
-        //((ListView) dialogView.findViewById(R.id.options_list)).setAdapter(adapter);
-        builder.setView(dialogView);
-        builder.setItems(options, listener);
-        AlertDialog alert = builder.create();
-        alert.show();
-        return alert;
-    }
-
     public static AlertDialog buildInfoDialog(Context context, String title, String dialogMessage){
         AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert);
         builder.setTitle(title);
         builder.setMessage(dialogMessage);
-        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
+        builder.setPositiveButton("OK", (dialogInterface, i) -> dialogInterface.dismiss());
         AlertDialog alert = builder.create();
         alert.show();
         return alert;
@@ -549,6 +439,10 @@ public class Constants {
         ConnectivityManager connectivityManager = (ConnectivityManager) context. getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public static void displayErrorMessageDialog(){
+
     }
 
 }

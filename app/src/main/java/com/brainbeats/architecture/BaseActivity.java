@@ -10,9 +10,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -36,12 +39,20 @@ import android.widget.TextView;
 
 import com.brainbeats.InfoActivity;
 import com.brainbeats.LibraryActivity;
+import com.brainbeats.LoginActivity;
 import com.brainbeats.MainActivity;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import com.brainbeats.SettingsActivity;
 import com.brainbeats.SocialActivity;
 import com.brainbeats.fragments.MusicDetailFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import com.brainbeats.entity.Track;
@@ -49,6 +60,8 @@ import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.model.Mix;
 import com.brainbeats.service.AudioService;
 import com.brainbeats.utils.Constants;
+
+import java.io.IOException;
 
 import static com.brainbeats.utils.Constants.KEY_EXTRA_SELECTED_TRACK;
 
@@ -73,6 +86,7 @@ public class BaseActivity extends AppCompatActivity {
     public ImageView mAlbumThumbnail;
     public NavigationView mNavView;
     public Account mAccount;
+    public ImageView mArtistCoverImage;
     public FloatingActionButton mMainActionFab;
 
     //Audio members for base activity.
@@ -87,6 +101,10 @@ public class BaseActivity extends AppCompatActivity {
     public AudioService mAudioService;
     public boolean mBound = false;
 
+    public FirebaseAuth mFirebaseAuth;
+    private FirebaseUser mFirebaseUser;
+    private DatabaseReference mUserRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +117,30 @@ public class BaseActivity extends AppCompatActivity {
                 mCurrentSong = (Track) intentBundle.get(KEY_EXTRA_SELECTED_TRACK);
             }
         }
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mUserRef = FirebaseDatabase.getInstance().getReference().child("users");
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+
+        if (mFirebaseUser == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+
+/*        String emailName = FirebaseAuth.getInstance().getCurrentUser().getEmail().split("@")[0];
+        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("users").child(emailName);
+        user.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                BrainBeatsUser currentUser = dataSnapshot.getValue(BrainBeatsUser.class);
+                ((com.brainbeats.architecture.Application) getApplication()).setUserDetails(currentUser);
+                setUserProfileImage();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });*/
 
         Intent intent = new Intent(BaseActivity.this, AudioService.class);
         intent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
@@ -214,54 +256,52 @@ public class BaseActivity extends AppCompatActivity {
     public void setUpNavDrawer() {
         mNavigationDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavView = (NavigationView) findViewById(R.id.navView);
+        mArtistCoverImage = (ImageView) findViewById(R.id.profile_cover_image);
         getToolBar();
         mDrawerToggle = new ActionBarDrawerToggle(this, mNavigationDrawer, mToolBar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mNavigationDrawer.addDrawerListener(mDrawerToggle);
-        mNavView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_browse:
-                        Intent browseIntent = new Intent(getApplicationContext(), MainActivity.class);
-                        browseIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
-                        browseIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
-                        createBackStack(browseIntent);
-                        break;
-                    case R.id.action_library:
-                        Intent libraryIntent = new Intent(getApplicationContext(), LibraryActivity.class);
-                        libraryIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
-                        libraryIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
-                        createBackStack(libraryIntent);
-                        break;
-                    case R.id.action_mixer:
-                        Intent mixerIntent = new Intent(getApplicationContext(), MixerActivity.class);
-                        mixerIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
-                        mixerIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
-                        createBackStack(mixerIntent);
-                        break;
-                    case R.id.action_social:
-                        Intent socialIntent = new Intent(getApplicationContext(), SocialActivity.class);
-                        socialIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
-                        socialIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
-                        createBackStack(socialIntent);
-                        break;
-                    case R.id.action_settings:
-                        Intent settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
-                        settingsIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
-                        settingsIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
-                        createBackStack(settingsIntent);
-                        break;
-                    case R.id.action_info:
-                        Intent infoIntent = new Intent(getApplicationContext(), InfoActivity.class);
-                        infoIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
-                        infoIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
-                        createBackStack(infoIntent);
-                        break;
-                    default:
-                        return false;
-                }
-                return true;
+        mNavView.setNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.action_browse:
+                    Intent browseIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    browseIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                    browseIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
+                    createBackStack(browseIntent);
+                    break;
+                case R.id.action_library:
+                    Intent libraryIntent = new Intent(getApplicationContext(), LibraryActivity.class);
+                    libraryIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                    libraryIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
+                    createBackStack(libraryIntent);
+                    break;
+                case R.id.action_mixer:
+                    Intent mixerIntent = new Intent(getApplicationContext(), MixerActivity.class);
+                    mixerIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                    mixerIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
+                    createBackStack(mixerIntent);
+                    break;
+                case R.id.action_social:
+                    Intent socialIntent = new Intent(getApplicationContext(), SocialActivity.class);
+                    socialIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                    socialIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
+                    createBackStack(socialIntent);
+                    break;
+                case R.id.action_settings:
+                    Intent settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
+                    settingsIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                    settingsIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
+                    createBackStack(settingsIntent);
+                    break;
+                case R.id.action_info:
+                    Intent infoIntent = new Intent(getApplicationContext(), InfoActivity.class);
+                    infoIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
+                    infoIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
+                    createBackStack(infoIntent);
+                    break;
+                default:
+                    return false;
             }
+            return true;
         });
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -347,16 +387,6 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public boolean isAudioServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -403,6 +433,18 @@ public class BaseActivity extends AppCompatActivity {
     public void hideCurrentSongView(){
         mDisplayCurrentSongView = false;
         mCurrentSongPlayingView.setVisibility(View.INVISIBLE);
+    }
+
+    public void setUserProfileImage(){
+        BrainBeatsUser user = ((Application) this.getApplication()).getUserDetails();
+        if (!user.getUserProfileImage().isEmpty()) {
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.parse(user.getUserProfileImage()));
+                mArtistCoverImage.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void startProgressBarThread() {
