@@ -130,10 +130,8 @@ public class Constants {
 
     public static final Uri SHOW_NEW_ARTIST_INFO                                    = Uri.parse("mixer://new_artist");
     public static final Uri GO_TO_ARTIST_PROFILE_URI                                = Uri.parse("mixer://go_to_artist_profile");
-
-
-
-
+    public static final Uri ACCEPT_FRIEND_REQUEST_URI                               = Uri.parse("mixer://accept_friend_request");
+    public static final Uri GO_TO_ALL_FRIEND_REQUEST_URI                            = Uri.parse("mixer://go_to_all_friend_request");
 
     public enum AudioServiceRepeatType {
         RepeatOff(0),

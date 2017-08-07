@@ -101,7 +101,7 @@ public class BaseActivity extends AppCompatActivity {
     public AudioService mAudioService;
     public boolean mBound = false;
 
-    private FirebaseAuth mFirebaseAuth;
+    public FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
     private DatabaseReference mUserRef;
 

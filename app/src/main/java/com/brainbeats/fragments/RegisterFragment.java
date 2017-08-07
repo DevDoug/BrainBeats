@@ -104,7 +104,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                                 throw task.getException();
                             } catch (Exception e) {
                                 Log.w(TAG, "Register:failed", task.getException());
-                                Toast.makeText(getActivity(), "Auth Failed:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                Constants.buildInfoDialog(getContext(), "Unable To Create Account", e.getMessage());
                             }
                         }
                     });

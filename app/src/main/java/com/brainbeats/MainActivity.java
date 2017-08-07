@@ -58,7 +58,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 
     //Data
-    private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
     private DatabaseReference mDatabase;
 
@@ -434,6 +433,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 if (mAudioService.getIsPlaying() || mAudioService.getIsPaused())
                     ((MusicDetailFragment) mDashboardDetailFragment).isCurrentSong = (mAudioService.getPlayingSong().getID() == ((MusicDetailFragment) mDashboardDetailFragment).mSelectedTrack.getID());
         } else if(uri.compareTo(Constants.LOGOUT_URI) == 0) {
+            mAudioService.stopSong();
             mFirebaseAuth.signOut();
             startActivity(new Intent(this, LoginActivity.class));
         }

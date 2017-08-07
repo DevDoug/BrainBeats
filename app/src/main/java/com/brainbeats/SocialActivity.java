@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.brainbeats.architecture.BaseActivity;
+import com.brainbeats.fragments.FriendRequestsFragment;
 import com.brainbeats.fragments.SocialFragment;
 import com.brainbeats.fragments.UserProfileFragment;
 import com.brainbeats.model.BrainBeatsUser;
@@ -34,20 +37,21 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SocialActivity extends BaseActivity implements SocialFragment.OnFragmentInteractionListener,  View.OnClickListener {
+public class SocialActivity extends BaseActivity implements SocialFragment.OnFragmentInteractionListener, FriendRequestsFragment.OnFragmentInteractionListener, View.OnClickListener {
 
     //Data
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mUsersReference;
 
-
     Fragment mSocialFragment;
     Fragment mUserProfileFragment;
+    Fragment mFriendRequestsFragment;
 
     AlertDialog friendUserDialog;
     LinearLayout addArtistContainer;
     TextView mArtistTitle;
     Button mAddFriendButton;
+    CoordinatorLayout mCoordinatorLayout;
 
     BrainBeatsUser mAddUser;
 
@@ -59,6 +63,7 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
         if (savedInstanceState == null) {
             mSocialFragment = new SocialFragment();
             mUserProfileFragment = new UserProfileFragment();
+            mFriendRequestsFragment = new FriendRequestsFragment();
             switchToSocialFragment();
         }
 
@@ -66,6 +71,8 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
         mUsersReference = mFirebaseDatabase.getReference("users");
 
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
+
         mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_add_white));
         mMainActionFab.setOnClickListener(this);
     }
@@ -78,8 +85,19 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
         replaceFragment(mUserProfileFragment, mUserProfileFragment.getTag());
     }
 
+    public void switchToFriendRequestsFragment() {
+        replaceFragment(mFriendRequestsFragment, mFriendRequestsFragment.getTag());
+    }
+
     @Override
     public void onFragmentInteraction(Uri uri) {
+        if (uri.compareTo(Constants.ACCEPT_FRIEND_REQUEST_URI) == 0) {
+            Snackbar friendRequestAcceptedSnack;
+            friendRequestAcceptedSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.friend_request_accepted), Snackbar.LENGTH_LONG);
+            friendRequestAcceptedSnack.show();
+        } else if (uri.compareTo(Constants.GO_TO_ALL_FRIEND_REQUEST_URI) == 0) {
+            switchToFriendRequestsFragment();
+        }
     }
 
     @Override
