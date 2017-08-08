@@ -222,6 +222,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mixRef.updateChildren(mix, (databaseError, databaseReference) -> {
             if(databaseError != null) { //if there was an error tell the user
                 Constants.buildInfoDialog(MainActivity.this, "Error", "There was an issue saving that mix to the database");
+            } else {
+                Snackbar mixAddedSnack;
+                mixAddedSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.song_added_to_library_snack_message), Snackbar.LENGTH_LONG);
+                mixAddedSnack.show();
             }
         });
     }

@@ -108,7 +108,7 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
         mFirebaseDatabase = mFirebaseDatabase.getInstance();
         mFirebasDatabaseReference = mFirebaseDatabase.getReference("users");
 
-        mUserFriendsReference = mFirebaseDatabase.getReference("userFriendRequest");//.orderByChild("userId").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mUserFriendsReference = mFirebaseDatabase.getReference("userFriendRequest");
         mUserFriendsReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -223,7 +223,7 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 BrainBeatsUser user = dataSnapshot.getValue(BrainBeatsUser.class);
-                if(user != null) {
+                if(user != null && user.getUserId() != null) {
                     if(!user.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                         friendList.add(user);
                         mFriendsAdapter.notifyDataSetChanged();

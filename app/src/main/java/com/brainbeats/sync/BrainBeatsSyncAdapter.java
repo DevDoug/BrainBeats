@@ -356,7 +356,7 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         BrainBeatsUser brainBeatsUser = new BrainBeatsUser();
         brainBeatsUser.setUserName(soundCloudUser.getUsername());
         brainBeatsUser.setSoundCloudUserId(soundCloudUser.getId());
-        brainBeatsUser.setUserProfileImage(soundCloudUser.getAvatarUrl());
+        //brainBeatsUser.setUserProfileImage(soundCloudUser.getAvatarUrl());
 
         try {
             Uri result = provider.insert(BrainBeatsContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(brainBeatsUser)); //insert brainBeatsUser rec

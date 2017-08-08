@@ -42,7 +42,7 @@ public class User implements Parcelable {
             id = (int) modelBrainBeatsUser.getUserId();*/
 
         username = modelBrainBeatsUser.getUserName();
-        avatarUrl = modelBrainBeatsUser.getUserProfileImage();
+        //avatarUrl = modelBrainBeatsUser.getUserProfileImage();
     }
 
     public int getId() {

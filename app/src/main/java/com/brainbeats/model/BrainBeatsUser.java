@@ -44,12 +44,12 @@ public class BrainBeatsUser implements Parcelable {
         this.mUserName = UserName;
     }
 
-    public String getUserProfileImage() {
+    public String getArtistProfileImage() {
         return artistProfileImage;
     }
 
-    public void setUserProfileImage(String userProfileImage) {
-        this.artistProfileImage = userProfileImage;
+    public void setArtistProfileImage(String artistProfileImage) {
+        this.artistProfileImage = artistProfileImage;
     }
 
     public long getSoundCloudUserId() {

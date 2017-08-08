@@ -78,7 +78,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             mFirebaseAuth.createUserWithEmailAndPassword(mUsername.getText().toString(), mPassword.getText().toString())
                     .addOnCompleteListener(getActivity(), task -> {
                         Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-
                         if (task.isSuccessful()) {
                             mFirebaseAuth.signInWithEmailAndPassword(mUsername.getText().toString(), mPassword.getText().toString())
                                     .addOnCompleteListener(getActivity(), signInTask -> {
@@ -132,7 +131,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
         usersRef.updateChildren(brainBeatsUser, (databaseError, databaseReference) -> {
             if (databaseError != null) { //if there was an error tell the user
-                Constants.buildInfoDialog(getActivity(), "Error", "There was an issue saving that user to the database");
+                Constants.buildInfoDialog(getActivity(), "Unable To Login", "There was an issue saving that user to the database");
             } else {
                 mListener.onFragmentInteraction(Constants.SHOW_NEW_ARTIST_INFO);
             }
@@ -154,7 +153,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             return false;
         }
 
-        if (!mConfirmPassword.getText().equals(mPassword.getText())) {
+        if (mConfirmPassword.getText().toString().compareTo(mPassword.getText().toString()) != 0) {
             mConfirmPassword.setError(getString(R.string.error_confirm_password_does_not_match));
             mConfirmPassword.requestFocus();
             return false;
