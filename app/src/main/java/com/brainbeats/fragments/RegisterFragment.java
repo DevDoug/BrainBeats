@@ -1,7 +1,6 @@
 package com.brainbeats.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,19 +14,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.brainbeats.MainActivity;
 import com.brainbeats.R;
 import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.utils.Constants;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -108,8 +103,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                             }
                         }
                     });
-        } else {
-            Constants.buildInfoDialog(getActivity(), "", "There was an issue creating that account");
         }
     }
 
@@ -130,15 +123,15 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         mListener = null;
     }
 
-    public void addNewUser(){
+    public void addNewUser() {
         String mUserName = mUsername.getText().toString().split("@")[0];
         DatabaseReference usersRef = mUserReference.child("users");
 
         Map<String, Object> brainBeatsUser = new HashMap<String, Object>();
-        brainBeatsUser.put(mUserName, new BrainBeatsUser(mFirebaseAuth.getCurrentUser().getUid(),mUsername.getText().toString()));
+        brainBeatsUser.put(mUserName, new BrainBeatsUser(mFirebaseAuth.getCurrentUser().getUid(), mUsername.getText().toString()));
 
         usersRef.updateChildren(brainBeatsUser, (databaseError, databaseReference) -> {
-            if(databaseError != null) { //if there was an error tell the user
+            if (databaseError != null) { //if there was an error tell the user
                 Constants.buildInfoDialog(getActivity(), "Error", "There was an issue saving that user to the database");
             } else {
                 mListener.onFragmentInteraction(Constants.SHOW_NEW_ARTIST_INFO);
@@ -150,14 +143,20 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         if (TextUtils.isEmpty(mUsername.getText())
                 || mUsername.getText().length() < Constants.USERNAME_MINIMUM_LENGTH
                 || !mUsername.getText().toString().contains("@")) {
+            mUsername.setError(getString(R.string.error_invalid_email));
+            mUsername.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(mPassword.getText()) || mPassword.getText().length() < Constants.PASSWORD_MINIMUM_LENGTH) {
+            mPassword.setError(getString(R.string.error_invalid_password));
+            mPassword.requestFocus();
             return false;
         }
 
-        if (TextUtils.isEmpty(mConfirmPassword.getText()) || mConfirmPassword.getText().length() < Constants.PASSWORD_MINIMUM_LENGTH) {
+        if (!mConfirmPassword.getText().equals(mPassword.getText())) {
+            mConfirmPassword.setError(getString(R.string.error_confirm_password_does_not_match));
+            mConfirmPassword.requestFocus();
             return false;
         }
 
