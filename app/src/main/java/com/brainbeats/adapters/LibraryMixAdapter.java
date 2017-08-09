@@ -26,8 +26,8 @@ import java.util.ArrayList;
  */
 public class LibraryMixAdapter extends RecyclerView.Adapter<LibraryMixAdapter.ViewHolder> {
 
-    Context mAdapterContext;
-    ArrayList<Mix> mMixList;
+    private Context mAdapterContext;
+    private ArrayList<Mix> mMixList;
 
     public LibraryMixAdapter(Context context, ArrayList<Mix> items) {
         mAdapterContext = context;
@@ -59,6 +59,12 @@ public class LibraryMixAdapter extends RecyclerView.Adapter<LibraryMixAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, int position) {
         Mix mix = mMixList.get(position);
         holder.mTitleText.setText(mix.getMixTitle());
+        holder.mPlay.setOnClickListener(v -> {
+            Track playTrack = new Track(mix);
+            ((LibraryActivity) mAdapterContext).mCurrentSong = playTrack;
+            ((LibraryActivity) mAdapterContext).mAudioService.setPlayingSong(playTrack);
+            ((LibraryActivity) mAdapterContext).mAudioService.playSong(Uri.parse(mix.getStreamURL()));
+        });
     }
 
     @Override

@@ -123,11 +123,11 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     }
 
     public void addNewUser() {
-        String mUserName = mUsername.getText().toString().split("@")[0];
+        String Uid = mFirebaseAuth.getCurrentUser().getUid();
         DatabaseReference usersRef = mUserReference.child("users");
 
         Map<String, Object> brainBeatsUser = new HashMap<String, Object>();
-        brainBeatsUser.put(mUserName, new BrainBeatsUser(mFirebaseAuth.getCurrentUser().getUid(), mUsername.getText().toString()));
+        brainBeatsUser.put(Uid, new BrainBeatsUser(mFirebaseAuth.getCurrentUser().getUid(), mUsername.getText().toString()));
 
         usersRef.updateChildren(brainBeatsUser, (databaseError, databaseReference) -> {
             if (databaseError != null) { //if there was an error tell the user

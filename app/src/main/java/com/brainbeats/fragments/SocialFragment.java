@@ -41,7 +41,7 @@ import java.util.ArrayList;
 public class SocialFragment extends Fragment implements View.OnClickListener {
 
     private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mFirebasDatabaseReference;
+    private Query mFirebasDatabaseReference;
     private Query mUserFriendsReference;
 
     private String mQueryText = "";
@@ -106,15 +106,17 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mFirebaseDatabase = mFirebaseDatabase.getInstance();
-        mFirebasDatabaseReference = mFirebaseDatabase.getReference("users");
+        mFirebasDatabaseReference = mFirebaseDatabase.getReference("users").orderByChild("userId").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         mUserFriendsReference = mFirebaseDatabase.getReference("userFriendRequest");
         mUserFriendsReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getChildrenCount() != 0){
+                if(dataSnapshot.getChildrenCount() != 0) {
                     mPendingFriendsCard.setVisibility(View.VISIBLE);
                     mAllRequestsText.setVisibility(View.VISIBLE);
+
+
                 }
             }
             @Override
