@@ -17,7 +17,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -43,16 +42,10 @@ import com.brainbeats.utils.Constants;
 import com.brainbeats.web.WebApiManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, BrowseMusicFragment.OnFragmentInteractionListener, MusicDetailFragment.OnFragmentInteractionListener {
 
@@ -83,18 +76,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
-        mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
-        mExtraActionOneFab = (FloatingActionButton) findViewById(R.id.action_one_fob);
-        mExtraActionTwoFab = (FloatingActionButton) findViewById(R.id.action_two_fob);
-        mExtraActionThreeFab = (FloatingActionButton) findViewById(R.id.action_three_fob);
-        //mExtraActionFourFab = (FloatingActionButton) findViewById(R.id.action_four_fob);
-
-        fab_open = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_open);
-        fab_close = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_close);
-        rotate_forward = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate_forward);
-        rotate_backward = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate_backward);
-
         if (savedInstanceState == null) {
             mDashboardFragment = new BrowseMusicFragment();
             mDashboardDetailFragment = new MusicDetailFragment();
@@ -116,6 +97,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 }
             }
         }
+
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
+        mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
+        mExtraActionOneFab = (FloatingActionButton) findViewById(R.id.action_one_fob);
+        mExtraActionTwoFab = (FloatingActionButton) findViewById(R.id.action_two_fob);
+        mExtraActionThreeFab = (FloatingActionButton) findViewById(R.id.action_three_fob);
+        //mExtraActionFourFab = (FloatingActionButton) findViewById(R.id.action_four_fob);
+
+        fab_open = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate_backward);
 
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
@@ -214,20 +207,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     public void addMixToLibrary(){
-        DatabaseReference mixRef = mDatabase.child("mixes");
-
-        Map<String, Object> mix = new HashMap<String, Object>();
-        mix.put(mCurrentSong.getTitle(), new Mix(mCurrentSong));
-
-        mixRef.updateChildren(mix, (databaseError, databaseReference) -> {
-            if(databaseError != null) { //if there was an error tell the user
-                Constants.buildInfoDialog(MainActivity.this, "Error", "There was an issue saving that mix to the database");
-            } else {
-                Snackbar mixAddedSnack;
-                mixAddedSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.song_added_to_library_snack_message), Snackbar.LENGTH_LONG);
-                mixAddedSnack.show();
-            }
-        });
+        DatabaseReference mixRef = mDatabase.child("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid()); //save this mix under mixes --> userUid -- new song
+        mixRef.push().setValue(new Mix(mCurrentSong));
     }
 
     public void showAddToPlaylist() {

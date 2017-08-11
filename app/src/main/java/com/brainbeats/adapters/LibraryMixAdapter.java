@@ -40,7 +40,7 @@ public class LibraryMixAdapter extends RecyclerView.Adapter<LibraryMixAdapter.Vi
         ImageView mPlay;
         ImageView mMix;
 
-        public ViewHolder(View view){
+        public ViewHolder(View view) {
             super(view);
             mContainer = (CardView) view.findViewById(R.id.card_view);
             mTitleText = (TextView) view.findViewById(R.id.album_title);
@@ -59,6 +59,16 @@ public class LibraryMixAdapter extends RecyclerView.Adapter<LibraryMixAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, int position) {
         Mix mix = mMixList.get(position);
         holder.mTitleText.setText(mix.getMixTitle());
+
+        holder.mMix.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Track playTrack = new Track(mix);
+                ((LibraryActivity) mAdapterContext).mCurrentSong = playTrack;
+                ((LibraryActivity) mAdapterContext).mAudioService.setPlayingSong(playTrack);
+                ((LibraryActivity) mAdapterContext).mAudioService.playSong(Uri.parse(playTrack.getStreamURL()));
+            }
+        });
     }
 
     @Override

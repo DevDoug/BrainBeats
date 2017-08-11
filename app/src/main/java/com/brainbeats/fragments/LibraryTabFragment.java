@@ -29,6 +29,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class LibraryTabFragment extends Fragment {
 
     //Data
     private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mFirebasDatabaseReference;
+    private Query mFirebasDatabaseReference;
 
     private ArrayList<Mix> mixList;
     private RecyclerView mMixRecyclerView;
@@ -83,7 +84,7 @@ public class LibraryTabFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mFirebaseDatabase = mFirebaseDatabase.getInstance();
-        mFirebasDatabaseReference = mFirebaseDatabase.getReference("mixes");
+        mFirebasDatabaseReference = mFirebaseDatabase.getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid());//.equalTo("SfiyOZBXB6S8hjC4qvE2TLcvahu2");
 
         mixList = new ArrayList<>();
 
