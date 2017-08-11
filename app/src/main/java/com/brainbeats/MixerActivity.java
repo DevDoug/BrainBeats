@@ -35,7 +35,6 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
 
     private DatabaseReference mDatabase;
 
-
     Fragment mMixerFragment;
     Fragment mNewMixFragment;
     Fragment mConfirmNewMixFragment;
@@ -51,8 +50,6 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
         setContentView(R.layout.activity_base);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
 
         if (savedInstanceState == null) {
             mMixerFragment = new MixerFragment();
@@ -74,6 +71,8 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
                 loadMixerDetailFragment(mix);
             }
         }
+
+        mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
 
         mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_add_white));
         mMainActionFab.setOnClickListener(this);
@@ -173,7 +172,6 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_global, menu);
         return true;
     }

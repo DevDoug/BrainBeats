@@ -44,7 +44,6 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
     private DatabaseReference mUsersReference;
 
     Fragment mSocialFragment;
-    Fragment mUserProfileFragment;
     Fragment mFriendRequestsFragment;
 
     AlertDialog friendUserDialog;
@@ -60,15 +59,14 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
 
+        mFirebaseDatabase = mFirebaseDatabase.getInstance();
+        mUsersReference = mFirebaseDatabase.getReference("users");
+
         if (savedInstanceState == null) {
             mSocialFragment = new SocialFragment();
-            mUserProfileFragment = new UserProfileFragment();
             mFriendRequestsFragment = new FriendRequestsFragment();
             switchToSocialFragment();
         }
-
-        mFirebaseDatabase = mFirebaseDatabase.getInstance();
-        mUsersReference = mFirebaseDatabase.getReference("users");
 
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
@@ -79,10 +77,6 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
 
     public void switchToSocialFragment() {
         replaceFragment(mSocialFragment, mSocialFragment.getTag());
-    }
-
-    public void switchToUserProfileFragment() {
-        replaceFragment(mUserProfileFragment, mUserProfileFragment.getTag());
     }
 
     public void switchToFriendRequestsFragment() {
