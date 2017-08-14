@@ -21,6 +21,7 @@ import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.entity.Track;
 import com.brainbeats.model.Mix;
+import com.brainbeats.model.Playlist;
 import com.brainbeats.utils.Constants;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +44,10 @@ public class LibraryTabFragment extends Fragment {
     private Query mFirebasDatabaseReference;
 
     private ArrayList<Mix> mixList;
+    private ArrayList<Playlist> playLists;
     private RecyclerView mMixRecyclerView;
     private LibraryMixAdapter mLibraryMixAdapter;
+    private LibraryPlaylistAdapter mLibraryPlaylistAdapter;
     public int mDataType;
     public String mFilter = "";
     private TextView mEmptyDataPlaceholder;
@@ -84,19 +88,44 @@ public class LibraryTabFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mFirebaseDatabase = mFirebaseDatabase.getInstance();
-        mFirebasDatabaseReference = mFirebaseDatabase.getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid());//.equalTo("SfiyOZBXB6S8hjC4qvE2TLcvahu2");
 
         mixList = new ArrayList<>();
+        playLists = new ArrayList<>();
 
         mMixRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mMixRecyclerView.setLayoutManager(layoutManager);
 
-        mLibraryMixAdapter = new LibraryMixAdapter(getContext(), mixList);
-        mMixRecyclerView.setAdapter(mLibraryMixAdapter);
+        if(mDataType == 0)
+            mFirebasDatabaseReference = mFirebaseDatabase.getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+        else if(mDataType == 1)
+            mFirebasDatabaseReference = mFirebaseDatabase.getReference("playlists/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+        else
+            mFirebasDatabaseReference = mFirebaseDatabase.getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid()).orderByChild("isFavorite").equalTo(true);
 
-        updateMixes();
+
+        if(mDataType == 0 || mDataType == 2) {
+            mLibraryMixAdapter = new LibraryMixAdapter(getContext(), mixList);
+            mMixRecyclerView.setAdapter(mLibraryMixAdapter);
+            updateMixes();
+        } else {
+            mLibraryPlaylistAdapter = new LibraryPlaylistAdapter(getContext(), playLists);
+            mMixRecyclerView.setAdapter(mLibraryPlaylistAdapter);
+            updatePlaylists();
+        }
+
+        mFirebasDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()) {
+                    mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
+                    mMixRecyclerView.setVisibility(View.INVISIBLE);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
     }
 
 
@@ -122,16 +151,55 @@ public class LibraryTabFragment extends Fragment {
                 int index = getItemIndex(mix);
                 mixList.remove(index);
                 mLibraryMixAdapter.notifyItemRemoved(index);
+
+                if(index == 1){
+                    mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
+                    mMixRecyclerView.setVisibility(View.INVISIBLE);
+                }
             }
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
+    }
+
+    public void updatePlaylists(){
+        mFirebasDatabaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+/*                mixList.add(dataSnapshot.getValue(Mix.class));
+                mLibraryMixAdapter.notifyDataSetChanged();*/
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+/*                Mix mix = dataSnapshot.getValue(Mix.class);
+                int index = getItemIndex(mix);
+                mixList.set(index, mix);
+                mLibraryMixAdapter.notifyItemChanged(index);*/
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+/*                Mix mix = dataSnapshot.getValue(Mix.class);
+                int index = getItemIndex(mix);
+                mixList.remove(index);
+                mLibraryMixAdapter.notifyItemRemoved(index);
+
+                if(index == 1){
+                    mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
+                    mMixRecyclerView.setVisibility(View.INVISIBLE);
+                }*/
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+
     }
 
     private int getItemIndex(Mix mix) {

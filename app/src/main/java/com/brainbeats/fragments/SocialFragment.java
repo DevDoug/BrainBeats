@@ -26,6 +26,7 @@ import com.brainbeats.adapters.FriendsAdapter;
 import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.model.BrainBeatsUser;
+import com.brainbeats.model.FriendRequest;
 import com.brainbeats.utils.Constants;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -106,17 +107,22 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mFirebaseDatabase = mFirebaseDatabase.getInstance();
-        mFirebasDatabaseReference = mFirebaseDatabase.getReference("users").orderByChild("userId").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mFirebasDatabaseReference = mFirebaseDatabase.getReference("users")
+                .orderByChild("senderId")
+                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        mUserFriendsReference = mFirebaseDatabase.getReference("userFriendRequest");
+
+        mUserFriendsReference = mFirebaseDatabase.getReference("friend_request")
+                .orderByChild("receiverId")
+                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
         mUserFriendsReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getChildrenCount() != 0) {
+                    FriendRequest friendRequest = dataSnapshot.getValue(FriendRequest.class);
                     mPendingFriendsCard.setVisibility(View.VISIBLE);
                     mAllRequestsText.setVisibility(View.VISIBLE);
-
-
                 }
             }
             @Override
@@ -258,12 +264,9 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
     }
 

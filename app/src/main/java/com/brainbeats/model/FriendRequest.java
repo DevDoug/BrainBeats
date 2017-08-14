@@ -6,22 +6,41 @@ package com.brainbeats.model;
 
 public class FriendRequest {
 
-    public enum FriendRequestStatus{
-        Pending,
-        Accepted,
-        Rejected,
-        Blocked
+    public String senderId;
+
+    public String receiverId;
+
+    public String status;
+
+    public FriendRequest() {}
+
+    public FriendRequest(String senderId, String receiverId, String status) {
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+        this.status = status;
     }
 
-    public String userId;
+    public String getSenderId() {
+        return senderId;
+    }
 
-    public String friendId;
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
+    }
 
-    public FriendRequestStatus status;
+    public String getReceiverId() {
+        return receiverId;
+    }
 
-    public FriendRequest(String userId, String friendId, FriendRequestStatus pending) {
-        this.userId = userId;
-        this.friendId = friendId;
-        this.status = pending;
+    public void setReceiverId(String receiverId) {
+        this.receiverId = receiverId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

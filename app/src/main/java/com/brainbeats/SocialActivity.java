@@ -2,12 +2,18 @@ package com.brainbeats;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -86,9 +92,7 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
     @Override
     public void onFragmentInteraction(Uri uri) {
         if (uri.compareTo(Constants.ACCEPT_FRIEND_REQUEST_URI) == 0) {
-            Snackbar friendRequestAcceptedSnack;
-            friendRequestAcceptedSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.friend_request_accepted), Snackbar.LENGTH_LONG);
-            friendRequestAcceptedSnack.show();
+            acceptFriendRequest();
         } else if (uri.compareTo(Constants.GO_TO_ALL_FRIEND_REQUEST_URI) == 0) {
             switchToFriendRequestsFragment();
         }
@@ -137,7 +141,7 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
     }
 
     public void searchForFriends(String searchTerm){
-        mUsersReference.orderByChild(searchTerm).addChildEventListener(new ChildEventListener() {
+        mUsersReference.orderByChild("artistName").equalTo(searchTerm).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 populateAddArtistCard(dataSnapshot);
@@ -161,10 +165,10 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
     }
 
     public void addFriendRequest(){
-        DatabaseReference friendRequest = mFirebaseDatabase.getReference("FriendRequest");
+        DatabaseReference friendRequest = mFirebaseDatabase.getReference("friend_request");
 
         Map<String, Object> request = new HashMap<String, Object>();
-        request.put(mAddUser.getUserId(), new FriendRequest(FirebaseAuth.getInstance().getCurrentUser().getUid(), mAddUser.getUserId(), FriendRequest.FriendRequestStatus.Pending));
+        request.put(mAddUser.getUserId(), new FriendRequest(FirebaseAuth.getInstance().getCurrentUser().getUid(), mAddUser.getUserId(), "Pending"));
 
         friendRequest.updateChildren(request, (databaseError, databaseReference) -> {
             if(databaseError != null) { //if there was an error tell the user
@@ -172,7 +176,14 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
             } else {
                 friendUserDialog.dismiss();
                 Constants.buildInfoDialog(SocialActivity.this, "Request Sent", "Your friend request has been sent.");
+                sendFriendNotification();
             }
         });
+    }
+
+    public void acceptFriendRequest(){
+    }
+
+    public void sendFriendNotification(){
     }
 }

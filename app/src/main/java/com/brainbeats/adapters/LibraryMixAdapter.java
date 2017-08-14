@@ -60,7 +60,18 @@ public class LibraryMixAdapter extends RecyclerView.Adapter<LibraryMixAdapter.Vi
         Mix mix = mMixList.get(position);
         holder.mTitleText.setText(mix.getMixTitle());
 
-        holder.mMix.setOnClickListener(new View.OnClickListener() {
+        holder.mContainer.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Constants.buildActionDialog(mAdapterContext, "Delete Song", "Do you want to delete this song from your library", "confirm", new Constants.ConfirmDialogActionListener() {
+                    @Override
+                    public void PerformDialogAction() {
+                    }
+                });
+                return false;
+            }
+        });
+        holder.mPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Track playTrack = new Track(mix);

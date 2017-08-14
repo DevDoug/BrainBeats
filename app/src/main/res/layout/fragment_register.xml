@@ -30,7 +30,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/login_header_container"
         android:paddingBottom="10dp"
-        android:paddingTop="10dp"
+        android:paddingTop="50dp"
         android:orientation="vertical"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true">

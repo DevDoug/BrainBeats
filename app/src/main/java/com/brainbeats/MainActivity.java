@@ -215,24 +215,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         ArrayList<String> playlistNames = new ArrayList<String>();
         playlistNames.add("Create New Playlist");
 
-        Cursor userPlaylistsCursor = getContentResolver().query(
-                BrainBeatsContract.PlaylistEntry.CONTENT_URI,
-                null,
-                null,
-                null,
-                null
-        );
-
-        if (userPlaylistsCursor != null) {
-            userPlaylistsCursor.moveToFirst();
-            for (int i = 0; i < userPlaylistsCursor.getCount(); i++) {
-                playlistNames.add(userPlaylistsCursor.getString(userPlaylistsCursor.getColumnIndex(BrainBeatsContract.PlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE)));
-                userPlaylistsCursor.moveToNext();
-            }
-
-            userPlaylistsCursor.close();
-        }
-
         String[] mOptions = new String[playlistNames.size()];
         mOptions = playlistNames.toArray(mOptions);
 
@@ -242,16 +224,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         ((TextView) dialogView.findViewById(R.id.separator_title)).setText("");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.dialog_list_item, R.id.dialog_item, mOptions);
         ((ListView) dialogView.findViewById(R.id.option_list_view)).setAdapter(adapter);
-        ((ListView) dialogView.findViewById(R.id.option_list_view)).setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0)
-                    showEnterPlaylistTitleDialog();
-                else {
-                    TextView titleView = (TextView) view.findViewById(R.id.dialog_item);
-                    String title = titleView.getText().toString();
-                    addToExistingPlaylist(title);
-                }
+        ((ListView) dialogView.findViewById(R.id.option_list_view)).setOnItemClickListener((parent, view, position, id) -> {
+            if (position == 0)
+                showEnterPlaylistTitleDialog();
+            else {
+                TextView titleView = (TextView) view.findViewById(R.id.dialog_item);
+                String title = titleView.getText().toString();
+                addToExistingPlaylist(title);
             }
         });
         builder.setView(dialogView);
@@ -267,7 +246,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         View dialogView = inflater.inflate(R.layout.create_playlist_dialog, null);
         ((TextView) dialogView.findViewById(R.id.separator_title)).setText("");
         EditText editText = ((EditText) dialogView.findViewById(R.id.playlist_title));
-
         builder.setView(dialogView);
         builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
             @Override
@@ -284,25 +262,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     public void createNewPlaylist(String title) {
         if (!title.isEmpty()) { //require title
-            Cursor returnRecord = getContentResolver().query(BrainBeatsContract.PlaylistEntry.CONTENT_URI, null, "playlisttitle = ?", new String[]{title}, null);
-            if (returnRecord != null) {
-                if (returnRecord.getCount() == 0) { //only add a new playlist if it does not already exist
+            Playlist playList = new Playlist();
+            playList.setPlaylistTitle(title);
+            playList.setSoundCloudId(0);
 
-                    Playlist playList = new Playlist();
-                    playList.setPlaylistTitle(title);
-                    playList.setSoundCloudId(0);
-                    Uri returnRow = getContentResolver().insert(BrainBeatsContract.PlaylistEntry.CONTENT_URI, Constants.buildPlaylistRecord(playList));
-                    long returnRowId = ContentUris.parseId(returnRow);
-                    alert.dismiss();
+            DatabaseReference playlistmixRef = mDatabase.child("playlists/" + FirebaseAuth.getInstance().getCurrentUser().getUid()); //save this mix under mixes --> userUid -- new song
+            playlistmixRef.push().setValue(playList);
 
-                    Snackbar newPlayListAddedSnack;
-                    newPlayListAddedSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.new_playlist_added), Snackbar.LENGTH_LONG);
-                    newPlayListAddedSnack.show();
-                } else {
-                    Constants.buildInfoDialog(this, "Playlist already exists", "There is already a playlist with that name");
-                }
-                returnRecord.close();
-            }
+            Snackbar newPlayListAddedSnack;
+            newPlayListAddedSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.new_playlist_added), Snackbar.LENGTH_LONG);
+            newPlayListAddedSnack.show();
         } else {
             Constants.buildInfoDialog(this, "", "Please enter a title");
         }

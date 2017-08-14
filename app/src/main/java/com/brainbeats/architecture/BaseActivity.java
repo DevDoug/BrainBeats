@@ -128,7 +128,7 @@ public class BaseActivity extends AppCompatActivity {
             return;
         }
 
-        String emailName = FirebaseAuth.getInstance().getCurrentUser().getEmail().split("@")[0];
+        String emailName = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("users").child(emailName);
         user.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

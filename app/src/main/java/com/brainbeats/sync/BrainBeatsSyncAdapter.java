@@ -334,9 +334,9 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-/*    public void getUserInfo(int userId, ContentProviderClient provider){
+/*    public void getUserInfo(int senderId, ContentProviderClient provider){
 
-        WebApiManager.getSoundCloudUser(getContext(), String.valueOf(userId), new WebApiManager.OnObjectResponseListener() {
+        WebApiManager.getSoundCloudUser(getContext(), String.valueOf(senderId), new WebApiManager.OnObjectResponseListener() {
             @Override
             public void onObjectResponse(JSONObject object) {
                 Gson gson = new Gson();

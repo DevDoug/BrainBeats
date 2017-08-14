@@ -192,17 +192,17 @@ public class OfflineSyncManager {
                 new String[]{String.valueOf(track.getUser().getId())},
                 null);
 
-        long userId;
+        long senderId;
         if(userCursor != null && userCursor.getCount() != 0 ) {
             // this user already exists so just get the user id
             userCursor.moveToFirst();
-            userId = userCursor.getLong(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID));
-            newMix.setMixUserId(userId);
+            senderId = userCursor.getLong(userCursor.getColumnIndex(BrainBeatsContract.UserEntry._ID));
+            newMix.setMixUserId(senderId);
             userCursor.close();
         } else { //otherwise add the user this mix belongs to
             Uri result = provider.insert(BrainBeatsContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(new BrainBeatsUser(track.getUser())));
-            userId = ContentUris.parseId(result);
-            newMix.setMixUserId(userId);
+            senderId = ContentUris.parseId(result);
+            newMix.setMixUserId(senderId);
         }
 
         Log.i("New Mix", "Adding new mix");

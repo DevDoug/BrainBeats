@@ -93,6 +93,18 @@
                 android:resource="@xml/account_authenticator" />
         </service>
 
+        <service android:name=".service.FirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <service android:name=".service.FirebaseIdService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
         <receiver
             android:name=".utils.WidgetProvider"
             android:icon="@drawable/ic_brain_drawable"

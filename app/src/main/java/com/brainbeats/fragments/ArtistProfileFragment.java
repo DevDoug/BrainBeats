@@ -23,13 +23,17 @@ import android.widget.ImageView;
 
 import com.brainbeats.R;
 import com.brainbeats.SettingsActivity;
+import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.utils.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -51,7 +55,9 @@ public class ArtistProfileFragment extends Fragment implements View.OnClickListe
     private int PICK_IMAGE_REQUEST = 1;
 
     Uri mUploadedProfileImageUri;
+    DatabaseReference mArtistReference;
     StorageReference mStorageRef;
+
 
     private EditText mArtistName;
     private ImageView mProfileImage;
@@ -64,6 +70,7 @@ public class ArtistProfileFragment extends Fragment implements View.OnClickListe
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mArtistReference = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());;
         mStorageRef = FirebaseStorage.getInstance().getReference();
     }
 
@@ -97,10 +104,20 @@ public class ArtistProfileFragment extends Fragment implements View.OnClickListe
         });
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        mArtistReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                BrainBeatsUser user = dataSnapshot.getValue(BrainBeatsUser.class);
+                setUserDetails(user);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
     }
 
     @Override
@@ -179,17 +196,21 @@ public class ArtistProfileFragment extends Fragment implements View.OnClickListe
     }
 
     public void saveArtistDetails(){
-        String emailName = FirebaseAuth.getInstance().getCurrentUser().getEmail().split("@")[0];
-        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("users").child(emailName);
         Map<String, Object> userData = new HashMap<String, Object>();
         userData.put("artistName", mArtistName.getText().toString());
         userData.put("artistDescription", mArtistDescription.getText().toString());
         //userData.put("artistProfileImage", mUploadedProfileImageUri.getPath());
-        user.updateChildren(userData).addOnCompleteListener(task -> {
+
+        mArtistReference.updateChildren(userData).addOnCompleteListener(task -> {
             if(task.isSuccessful())
                 Constants.buildInfoDialog(getContext(), "Saved", "Artist details saved successfully");
             else
                 Constants.buildInfoDialog(getContext(), "Error", "There was an issue saving artist details please try again later");
         });
+    }
+
+    public void setUserDetails(BrainBeatsUser user) {
+        mArtistName.setText(user.getArtistName());
+        mArtistDescription.setText(user.getArtistDescription());
     }
 }
