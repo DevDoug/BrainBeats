@@ -182,6 +182,10 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
     }
 
     public void acceptFriendRequest(){
+        DatabaseReference friends = mFirebaseDatabase.getReference("friends");
+
+        Map<String, Object> request = new HashMap<String, Object>();
+        request.put(mAddUser.getUserId(), new FriendRequest(FirebaseAuth.getInstance().getCurrentUser().getUid(), mAddUser.getUserId(), "Pending"));
     }
 
     public void sendFriendNotification(){

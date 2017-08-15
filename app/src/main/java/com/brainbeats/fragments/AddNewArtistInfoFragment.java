@@ -42,6 +42,8 @@ public class AddNewArtistInfoFragment extends Fragment implements View.OnClickLi
     private int PICK_IMAGE_REQUEST = 1;
 
     StorageReference mStorageRef;
+    String userUid;
+    DatabaseReference user;
 
     Uri mUploadedProfileImageUri;
     TextView mArtistName;
@@ -73,6 +75,13 @@ public class AddNewArtistInfoFragment extends Fragment implements View.OnClickLi
         mConfirmButton.setOnClickListener(this);
         mSkipText.setOnClickListener(this);
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        user = FirebaseDatabase.getInstance().getReference().child("users").child(userUid);
     }
 
     @Override
@@ -109,17 +118,9 @@ public class AddNewArtistInfoFragment extends Fragment implements View.OnClickLi
     }
 
     public void saveArtistDetail() {
-        String emailName = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("users").child(emailName);
         Map<String, Object> userData = new HashMap<String, Object>();
         userData.put("artistName", mArtistName.getText().toString());
         userData.put("artistDescription", mArtistDescription.getText().toString());
-
-        if(mUploadedProfileImageUri != null)
-            userData.put("artistProfileImage", mUploadedProfileImageUri.getPath());
-        else
-            userData.put("artistProfileImage", "");
-
         user.updateChildren(userData);
         goToDashboard();
     }
@@ -138,12 +139,16 @@ public class AddNewArtistInfoFragment extends Fragment implements View.OnClickLi
                 UploadTask uploadTask = riversRef.putFile(mUploadedProfileImageUri);
                 uploadTask.addOnFailureListener(exception -> {
                     // Handle unsuccessful uploads
-                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    }
+
+                }).addOnSuccessListener(taskSnapshot -> {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+/*                    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("users").child(userUid);
+
+                    Map<String, Object> userData = new HashMap<String, Object>();
+                    userData.put("artistProfileImage", downloadUrl);
+                    user.updateChildren(userData);*/
                 });
             }
         } catch (Exception ex) {

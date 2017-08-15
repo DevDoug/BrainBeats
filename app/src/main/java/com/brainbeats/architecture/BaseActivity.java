@@ -46,6 +46,8 @@ import com.brainbeats.R;
 import com.brainbeats.SettingsActivity;
 import com.brainbeats.SocialActivity;
 import com.brainbeats.fragments.MusicDetailFragment;
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -53,6 +55,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import com.brainbeats.entity.Track;
@@ -256,7 +260,7 @@ public class BaseActivity extends AppCompatActivity {
     public void setUpNavDrawer() {
         mNavigationDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavView = (NavigationView) findViewById(R.id.navView);
-        mArtistCoverImage = (ImageView) findViewById(R.id.profile_cover_image);
+        mArtistCoverImage = (ImageView) mNavView.getHeaderView(0).findViewById(R.id.profile_cover_image);
         getToolBar();
         mDrawerToggle = new ActionBarDrawerToggle(this, mNavigationDrawer, mToolBar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mNavigationDrawer.addDrawerListener(mDrawerToggle);
@@ -437,14 +441,12 @@ public class BaseActivity extends AppCompatActivity {
 
     public void setUserProfileImage(){
         BrainBeatsUser user = ((Application) this.getApplication()).getUserDetails();
-        if (user.getArtistProfileImage() != null && !user.getArtistProfileImage().isEmpty()) {
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.parse(user.getArtistProfileImage()));
-                mArtistCoverImage.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://brainbeats-e9839.appspot.com/images/image:86");
+
+        Glide.with(this)
+                .using(new FirebaseImageLoader())
+                .load(storageReference)
+                .into(mArtistCoverImage);
     }
 
     public void startProgressBarThread() {

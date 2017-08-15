@@ -98,6 +98,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
         }
 
+
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
         mExtraActionOneFab = (FloatingActionButton) findViewById(R.id.action_one_fob);
@@ -187,7 +188,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 if (mDashboardFragment.isVisible())
                     ((BrowseMusicFragment) mDashboardFragment).getTracks("","",WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT,"Recent");
                 else if (mDashboardDetailFragment.isVisible())
-                    ((MusicDetailFragment) mDashboardDetailFragment).updateOfflineSyncManager(Constants.SyncDataAction.UpdateFavorite, null);
+                   addMixToFavorites();
                 break;
             case R.id.action_three_fob:
                 animateFAB();
@@ -209,6 +210,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public void addMixToLibrary(){
         DatabaseReference mixRef = mDatabase.child("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid()); //save this mix under mixes --> userUid -- new song
         mixRef.push().setValue(new Mix(mCurrentSong));
+
+        Snackbar mixAddedSnack;
+        mixAddedSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.song_added_to_library_snack_message), Snackbar.LENGTH_LONG);
+        mixAddedSnack.show();
+    }
+
+    public void addMixToFavorites(){
+        DatabaseReference mixRef = mDatabase.child("mixes_favorites/" + FirebaseAuth.getInstance().getCurrentUser().getUid()); //save this mix under mixes --> userUid -- new song
+        mixRef.push().setValue(new Mix(mCurrentSong));
+
+        Snackbar mixAddedSnack;
+        mixAddedSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.song_added_to_favorites_snack_message), Snackbar.LENGTH_LONG);
+        mixAddedSnack.show();
+
     }
 
     public void showAddToPlaylist() {
@@ -247,13 +262,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         ((TextView) dialogView.findViewById(R.id.separator_title)).setText("");
         EditText editText = ((EditText) dialogView.findViewById(R.id.playlist_title));
         builder.setView(dialogView);
-        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String playlistTitle = editText.getText().toString();
-                createNewPlaylist(playlistTitle);
-                dialog.dismiss();
-            }
+        builder.setPositiveButton("Create", (dialog, which) -> {
+            String playlistTitle = editText.getText().toString();
+            createNewPlaylist(playlistTitle);
+            dialog.dismiss();
         });
         alert = builder.create();
         alert.show();
@@ -266,8 +278,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             playList.setPlaylistTitle(title);
             playList.setSoundCloudId(0);
 
-            DatabaseReference playlistmixRef = mDatabase.child("playlists/" + FirebaseAuth.getInstance().getCurrentUser().getUid()); //save this mix under mixes --> userUid -- new song
-            playlistmixRef.push().setValue(playList);
+            DatabaseReference playlistRef = mDatabase.child("playlists/" + FirebaseAuth.getInstance().getCurrentUser().getUid()); //save this mix under mixes --> userUid -- new song
+            playlistRef.push().setValue(playList);
 
             Snackbar newPlayListAddedSnack;
             newPlayListAddedSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.new_playlist_added), Snackbar.LENGTH_LONG);
@@ -279,49 +291,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     public void addToExistingPlaylist(String title) {
         alert.dismiss();
-
-        long mixId = 0;
-
-        //find playlist
-        Cursor playlistCursor = getContentResolver().query(BrainBeatsContract.PlaylistEntry.CONTENT_URI, null, "playlisttitle = ?", new String[]{title}, null);
-        if (playlistCursor != null) {
-            playlistCursor.moveToFirst();
-
-            Cursor mixCursor = getContentResolver().query(BrainBeatsContract.MixEntry.CONTENT_URI, null, "mixtitle = ?", new String[]{mCurrentSong.getTitle()}, null);
-            if (mixCursor != null) {
-                if (mixCursor.getCount() != 0) {
-                    mixCursor.moveToFirst();
-                    mixId = mixCursor.getLong(mixCursor.getColumnIndex(BrainBeatsContract.MixEntry._ID));
-                    mixCursor.close();
-                } else {
-                    Uri returnRecord = getContentResolver().insert(BrainBeatsContract.MixEntry.CONTENT_URI, Constants.buildMixRecord(Constants.buildMixRecordFromTrack(mCurrentSong)));
-                    mixId = ContentUris.parseId(returnRecord);
-                }
-            }
-
-            MixPlaylist mixPlaylist = new MixPlaylist();
-            mixPlaylist.mMixId = mixId;
-            mixPlaylist.mPlaylistId = playlistCursor.getLong(playlistCursor.getColumnIndex(BrainBeatsContract.MixPlaylistEntry._ID));
-
-            //determine if this mix is already part of this playlist
-            Cursor mixPlaylistCursor = getContentResolver().query(BrainBeatsContract.MixPlaylistEntry.CONTENT_URI, null, "mixid = ?", new String[]{String.valueOf(mixPlaylist.mMixId)}, null);
-
-            if (mixPlaylistCursor != null) {
-                if (mixPlaylistCursor.getCount() == 0) {
-                    Uri returnRow = getContentResolver().insert(BrainBeatsContract.MixPlaylistEntry.CONTENT_URI, Constants.buildMixPlaylistRecord(mixPlaylist));
-                    long returnRowId = ContentUris.parseId(returnRow);
-                    alert.dismiss();
-
-                    Snackbar songAddedToExistingPlaylistSnack;
-                    songAddedToExistingPlaylistSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.song_added_to_existing_playlist), Snackbar.LENGTH_LONG);
-                    songAddedToExistingPlaylistSnack.show();
-                } else {
-                    Constants.buildInfoDialog(this, "Duplicate Song", "Song is already in this playlist");
-                }
-                mixPlaylistCursor.close();
-            }
-            playlistCursor.close();
-        }
     }
 
     public void switchToDashboardFragment() {

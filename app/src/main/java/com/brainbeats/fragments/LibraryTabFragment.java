@@ -102,7 +102,7 @@ public class LibraryTabFragment extends Fragment {
         else if(mDataType == 1)
             mFirebasDatabaseReference = mFirebaseDatabase.getReference("playlists/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
         else
-            mFirebasDatabaseReference = mFirebaseDatabase.getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid()).orderByChild("isFavorite").equalTo(true);
+            mFirebasDatabaseReference = mFirebaseDatabase.getReference("mixes_favorites/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
 
         if(mDataType == 0 || mDataType == 2) {

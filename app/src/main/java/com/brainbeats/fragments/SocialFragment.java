@@ -107,27 +107,7 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mFirebaseDatabase = mFirebaseDatabase.getInstance();
-        mFirebasDatabaseReference = mFirebaseDatabase.getReference("users")
-                .orderByChild("senderId")
-                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-
-        mUserFriendsReference = mFirebaseDatabase.getReference("friend_request")
-                .orderByChild("receiverId")
-                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-        mUserFriendsReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getChildrenCount() != 0) {
-                    FriendRequest friendRequest = dataSnapshot.getValue(FriendRequest.class);
-                    mPendingFriendsCard.setVisibility(View.VISIBLE);
-                    mAllRequestsText.setVisibility(View.VISIBLE);
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
+        mFirebasDatabaseReference = mFirebaseDatabase.getReference("friends").orderByChild("senderId").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         friendList = new ArrayList<>();
 
@@ -140,6 +120,7 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
         mFriendListReyclerView.setAdapter(mFriendsAdapter);
 
         updateFriends();
+        searchForPendingFreindRequests();
     }
 
     @Override
@@ -280,5 +261,21 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
         }
 
         return index;
+    }
+
+    public void searchForPendingFreindRequests(){
+        mUserFriendsReference = mFirebaseDatabase.getReference("friend_request").orderByChild("receiverId").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mUserFriendsReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getChildrenCount() != 0) {
+                    FriendRequest friendRequest = dataSnapshot.getValue(FriendRequest.class);
+                    mPendingFriendsCard.setVisibility(View.VISIBLE);
+                    mAllRequestsText.setVisibility(View.VISIBLE);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
     }
 }
