@@ -98,7 +98,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
         }
 
-
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
         mExtraActionOneFab = (FloatingActionButton) findViewById(R.id.action_one_fob);

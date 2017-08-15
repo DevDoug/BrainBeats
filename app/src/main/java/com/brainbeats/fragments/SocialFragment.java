@@ -26,13 +26,11 @@ import com.brainbeats.adapters.FriendsAdapter;
 import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.model.BrainBeatsUser;
-import com.brainbeats.model.FriendRequest;
 import com.brainbeats.utils.Constants;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -42,7 +40,7 @@ import java.util.ArrayList;
 public class SocialFragment extends Fragment implements View.OnClickListener {
 
     private FirebaseDatabase mFirebaseDatabase;
-    private Query mFirebasDatabaseReference;
+    private Query mFriendsReference;
     private Query mUserFriendsReference;
 
     private String mQueryText = "";
@@ -57,6 +55,8 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
     private TextView mAcceptFriendRequest;
     private TextView mAllRequestsText;
     private TextView mEmptyDataPlaceholder;
+
+    BrainBeatsUser friendToAdd;
 
     public SocialFragment() {}
 
@@ -107,7 +107,7 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mFirebaseDatabase = mFirebaseDatabase.getInstance();
-        mFirebasDatabaseReference = mFirebaseDatabase.getReference("friends").orderByChild("senderId").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mFriendsReference = mFirebaseDatabase.getReference("friends" + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         friendList = new ArrayList<>();
 
@@ -120,7 +120,7 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
         mFriendListReyclerView.setAdapter(mFriendsAdapter);
 
         updateFriends();
-        searchForPendingFreindRequests();
+        searchForPendingFriendRequests();
     }
 
     @Override
@@ -195,7 +195,7 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.accept_friend_request:
-                mListener.onFragmentInteraction(Constants.ACCEPT_FRIEND_REQUEST_URI);
+                mListener.onFragmentInteraction(Constants.ACCEPT_FRIEND_REQUEST_URI, null);
                 break;
             case R.id.all_friend_requests:
                 mListener.onFragmentInteraction(Constants.GO_TO_ALL_FRIEND_REQUEST_URI);
@@ -205,10 +205,11 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(Uri uri, BrainBeatsUser user);
     }
 
     public void updateFriends() {
-        mFirebasDatabaseReference.addChildEventListener(new ChildEventListener() {
+        mFriendsReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 BrainBeatsUser user = dataSnapshot.getValue(BrainBeatsUser.class);
@@ -263,13 +264,12 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
         return index;
     }
 
-    public void searchForPendingFreindRequests(){
+    public void searchForPendingFriendRequests(){
         mUserFriendsReference = mFirebaseDatabase.getReference("friend_request").orderByChild("receiverId").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
         mUserFriendsReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getChildrenCount() != 0) {
-                    FriendRequest friendRequest = dataSnapshot.getValue(FriendRequest.class);
                     mPendingFriendsCard.setVisibility(View.VISIBLE);
                     mAllRequestsText.setVisibility(View.VISIBLE);
                 }

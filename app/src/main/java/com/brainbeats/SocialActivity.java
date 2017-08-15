@@ -91,10 +91,15 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-        if (uri.compareTo(Constants.ACCEPT_FRIEND_REQUEST_URI) == 0) {
-            acceptFriendRequest();
-        } else if (uri.compareTo(Constants.GO_TO_ALL_FRIEND_REQUEST_URI) == 0) {
+        if (uri.compareTo(Constants.GO_TO_ALL_FRIEND_REQUEST_URI) == 0) {
             switchToFriendRequestsFragment();
+        }
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri, BrainBeatsUser user) {
+        if (uri.compareTo(Constants.ACCEPT_FRIEND_REQUEST_URI) == 0) {
+            acceptFriendRequest(user);
         }
     }
 
@@ -146,7 +151,6 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 populateAddArtistCard(dataSnapshot);
             }
-
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
             @Override
@@ -181,11 +185,9 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
         });
     }
 
-    public void acceptFriendRequest(){
-        DatabaseReference friends = mFirebaseDatabase.getReference("friends");
-
-        Map<String, Object> request = new HashMap<String, Object>();
-        request.put(mAddUser.getUserId(), new FriendRequest(FirebaseAuth.getInstance().getCurrentUser().getUid(), mAddUser.getUserId(), "Pending"));
+    public void acceptFriendRequest(BrainBeatsUser user){
+        DatabaseReference friends = mFirebaseDatabase.getReference("friends/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+        friends.push().setValue(new BrainBeatsUser("Doug4less"));
     }
 
     public void sendFriendNotification(){
