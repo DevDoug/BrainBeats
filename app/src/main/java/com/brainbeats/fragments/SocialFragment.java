@@ -107,7 +107,7 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mFirebaseDatabase = mFirebaseDatabase.getInstance();
-        mFriendsReference = mFirebaseDatabase.getReference("friends" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mFriendsReference = mFirebaseDatabase.getReference("friends/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         friendList = new ArrayList<>();
 

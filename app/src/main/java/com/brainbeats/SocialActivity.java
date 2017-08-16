@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.brainbeats.architecture.Application;
 import com.brainbeats.architecture.BaseActivity;
 import com.brainbeats.fragments.FriendRequestsFragment;
 import com.brainbeats.fragments.SocialFragment;
@@ -170,10 +171,10 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
 
     public void acceptFriendRequest(BrainBeatsUser user){
         DatabaseReference friendsOfCurrentUser = mFirebaseDatabase.getReference("friends/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
-        friendsOfCurrentUser.push().setValue(new BrainBeatsUser("Doug4less"));
+        friendsOfCurrentUser.push().setValue(user);
 
         DatabaseReference friendsOfSendingUser = mFirebaseDatabase.getReference("friends/" + user.getUserId());
-        friendsOfSendingUser.push().setValue(user);
+        friendsOfSendingUser.push().setValue(((Application) this.getApplication()).getUserDetails());
     }
 
     public void sendFriendNotification(){}

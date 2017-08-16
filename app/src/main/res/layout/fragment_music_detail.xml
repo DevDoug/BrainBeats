@@ -125,11 +125,9 @@
                 android:layout_marginTop="@dimen/content_margin_top" />
 
             <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/card_view"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:elevation="1dp"
+                android:layout_height="150dp"
                 android:layout_below="@+id/blue_line_seperator"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="10dp"
@@ -169,7 +167,7 @@
                         android:textColor="@color/theme_secondary_text_color"
                         android:textSize="13sp"
                         android:layout_marginLeft="15dp"/>
-
+                    
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
 
