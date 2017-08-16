@@ -2,18 +2,11 @@ package com.brainbeats;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,10 +19,8 @@ import android.widget.TextView;
 import com.brainbeats.architecture.BaseActivity;
 import com.brainbeats.fragments.FriendRequestsFragment;
 import com.brainbeats.fragments.SocialFragment;
-import com.brainbeats.fragments.UserProfileFragment;
 import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.model.FriendRequest;
-import com.brainbeats.model.Mix;
 import com.brainbeats.utils.Constants;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -37,11 +28,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class SocialActivity extends BaseActivity implements SocialFragment.OnFragmentInteractionListener, FriendRequestsFragment.OnFragmentInteractionListener, View.OnClickListener {
 
@@ -127,18 +113,16 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
         mArtistTitle = (TextView) dialogView.findViewById(R.id.artist_name);
         mAddFriendButton = (Button) dialogView.findViewById(R.id.add_friend_button);
         EditText search = (EditText) dialogView.findViewById(R.id.friend_search);
+
         TextView.OnEditorActionListener searchListener = (searchView, actionId, event) -> {
             if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                 searchForFriends(searchView.getText().toString());
             }
             return true;
         };
-        mAddFriendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addFriendRequest();
-            }
-        });
+
+        mAddFriendButton.setOnClickListener(v -> addFriendRequest());
+
         search.setOnEditorActionListener(searchListener);
         builder.setView(dialogView);
         friendUserDialog = builder.create();
@@ -169,27 +153,28 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
     }
 
     public void addFriendRequest(){
-        DatabaseReference friendRequest = mFirebaseDatabase.getReference("friend_request");
-
-        Map<String, Object> request = new HashMap<String, Object>();
-        request.put(mAddUser.getUserId(), new FriendRequest(FirebaseAuth.getInstance().getCurrentUser().getUid(), mAddUser.getUserId(), "Pending"));
-
-        friendRequest.updateChildren(request, (databaseError, databaseReference) -> {
-            if(databaseError != null) { //if there was an error tell the user
-                Constants.buildInfoDialog(SocialActivity.this, "Error", "There was an issue when sending that request.");
-            } else {
-                friendUserDialog.dismiss();
-                Constants.buildInfoDialog(SocialActivity.this, "Request Sent", "Your friend request has been sent.");
-                sendFriendNotification();
-            }
-        });
+        DatabaseReference friendRequest = mFirebaseDatabase.getReference("friend_request/" + mAddUser.getUserId());
+        friendRequest
+                .push()
+                .setValue(new FriendRequest("Pending", new BrainBeatsUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), "Doug")))
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        friendUserDialog.dismiss();
+                        Constants.buildInfoDialog(SocialActivity.this, "Request Sent", "Your friend request has been sent.");
+                        sendFriendNotification();
+                    } else {
+                        Constants.buildInfoDialog(SocialActivity.this, "Error", "There was an issue when sending that request.");
+                    }
+                });
     }
 
     public void acceptFriendRequest(BrainBeatsUser user){
-        DatabaseReference friends = mFirebaseDatabase.getReference("friends/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
-        friends.push().setValue(new BrainBeatsUser("Doug4less"));
+        DatabaseReference friendsOfCurrentUser = mFirebaseDatabase.getReference("friends/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+        friendsOfCurrentUser.push().setValue(new BrainBeatsUser("Doug4less"));
+
+        DatabaseReference friendsOfSendingUser = mFirebaseDatabase.getReference("friends/" + user.getUserId());
+        friendsOfSendingUser.push().setValue(user);
     }
 
-    public void sendFriendNotification(){
-    }
+    public void sendFriendNotification(){}
 }

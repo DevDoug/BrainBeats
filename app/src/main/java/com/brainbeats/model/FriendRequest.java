@@ -6,34 +6,15 @@ package com.brainbeats.model;
 
 public class FriendRequest {
 
-    public String senderId;
-
-    public String receiverId;
-
     public String status;
+
+    BrainBeatsUser user;
 
     public FriendRequest() {}
 
-    public FriendRequest(String senderId, String receiverId, String status) {
-        this.senderId = senderId;
-        this.receiverId = receiverId;
+    public FriendRequest(String status, BrainBeatsUser user) {
         this.status = status;
-    }
-
-    public String getSenderId() {
-        return senderId;
-    }
-
-    public void setSenderId(String senderId) {
-        this.senderId = senderId;
-    }
-
-    public String getReceiverId() {
-        return receiverId;
-    }
-
-    public void setReceiverId(String receiverId) {
-        this.receiverId = receiverId;
+        this.user = user;
     }
 
     public String getStatus() {
@@ -43,4 +24,8 @@ public class FriendRequest {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public BrainBeatsUser getUser() {return user;}
+
+    public void setUser(BrainBeatsUser user) {this.user = user;}
 }

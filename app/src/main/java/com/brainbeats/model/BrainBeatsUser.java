@@ -15,8 +15,6 @@ public class BrainBeatsUser implements Parcelable {
     private String artistProfileImage;
     private String artistName;
     private String artistDescription;
-    private ArrayList<BrainBeatsUser> mFriends;
-
     private int mSoundCloudUserId;
 
     public BrainBeatsUser(){}
@@ -82,14 +80,6 @@ public class BrainBeatsUser implements Parcelable {
 
     public void setArtistDescription(String artistDescription) {
         this.artistDescription = artistDescription;
-    }
-
-    public ArrayList<BrainBeatsUser> getFriends() {
-        return mFriends;
-    }
-
-    public void setFriends(ArrayList<BrainBeatsUser> mFriends) {
-        this.mFriends = mFriends;
     }
 
     @Override
