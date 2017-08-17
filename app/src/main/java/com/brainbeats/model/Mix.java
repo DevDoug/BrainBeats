@@ -10,22 +10,6 @@ import com.brainbeats.entity.Track;
  */
 public class Mix implements Parcelable {
 
-    public Mix() {}
-
-    public Mix(String title) {
-        this.mMixTitle = title;
-    }
-
-    public   Mix(Track track) {
-        mMixId = "";
-        mArtistId = "";
-        mMixTitle = track.getTitle();
-        mBeatAlbumCoverArtSource = track.getArtworkURL();
-        mMixSoundCloudId = track.getID();
-        mStreamURL = track.getStreamURL();
-        mDuration = track.getDuration();
-    }
-
     private String mMixId;
 
     public String mArtistId;
@@ -49,6 +33,8 @@ public class Mix implements Parcelable {
     private int mDuration;
 
     private int mIsDownvoted;
+
+    private String firebaseStorageUrl;
 
     public String getMixId() {
         return mMixId;
@@ -146,7 +132,31 @@ public class Mix implements Parcelable {
         this.mIsDownvoted = isDownvoted;
     }
 
+    public String getFirebaseStorageUrl() {
+        return firebaseStorageUrl;
+    }
+
+    public void setFirebaseStorageUrl(String firebaseStorageUrl) {
+        this.firebaseStorageUrl = firebaseStorageUrl;
+    }
+
     private BrainBeatsUser mBrainBeatsUser;
+
+    public Mix() {}
+
+    public Mix(String title) {
+        this.mMixTitle = title;
+    }
+
+    public   Mix(Track track) {
+        mMixId = "";
+        mArtistId = "";
+        mMixTitle = track.getTitle();
+        mBeatAlbumCoverArtSource = track.getArtworkURL();
+        mMixSoundCloudId = track.getID();
+        mStreamURL = track.getStreamURL();
+        mDuration = track.getDuration();
+    }
 
     @Override
     public int describeContents() {

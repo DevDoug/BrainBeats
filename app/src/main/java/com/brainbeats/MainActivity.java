@@ -57,9 +57,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, BrowseMusicFragment.OnFragmentInteractionListener, MusicDetailFragment.OnFragmentInteractionListener {
 
-
     //Data
-    private FirebaseUser mFirebaseUser;
     private DatabaseReference mDatabase;
 
     public Fragment mDashboardFragment;

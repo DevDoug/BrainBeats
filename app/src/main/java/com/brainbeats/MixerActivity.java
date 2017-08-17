@@ -4,7 +4,9 @@ import android.content.ContentUris;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
@@ -24,6 +26,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.util.HashMap;
@@ -35,6 +40,7 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
         ConfirmCreateMixFragment.OnFragmentInteractionListener {
 
     private FirebaseDatabase mDatabase;
+    StorageReference mStorageRef;
 
     Fragment mMixerFragment;
     Fragment mNewMixFragment;
@@ -44,6 +50,8 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
     Bundle mUserSelections;
     public FloatingActionButton mMainActionFab;
     public Mix mNewMix;
+    public CoordinatorLayout mCoordinatorLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +59,7 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
         setContentView(R.layout.activity_base);
 
         mDatabase = FirebaseDatabase.getInstance();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
         if (savedInstanceState == null) {
             mMixerFragment = new MixerFragment();
@@ -73,6 +82,7 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
             }
         }
 
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
         mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
 
         mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_add_white));
@@ -145,18 +155,18 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
     @Override
     public void onFragmentInteraction(Uri uri, String title, String imageUrl) {
         if (uri.compareTo(Constants.MIX_ADD_NEW) == 0) {
+            File tempFile = new File(getExternalCacheDir().getAbsolutePath() + "/" + "temp" + ".3gp");
+            File mixFile =  new File(getExternalCacheDir().getAbsolutePath() + "/" + title + ".3gp");
+            boolean success = tempFile.renameTo(mixFile);
+
             mNewMix.setMixTitle(title);
-            mNewMix.setStreamURL(getExternalCacheDir().getAbsolutePath() + "/" + title + ".3gp");
+            mNewMix.setFirebaseStorageUrl("mix/" + title + ".3gp");
             mNewMix.setArtistId(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+            uploadArtistMixToCloudStorage(mixFile);
 
             Query mixRef = mDatabase.getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
             mixRef.getRef().push().setValue(mNewMix);
-
-/*            mixRef.updateChildren(mix, (databaseError, databaseReference) -> {
-                if(databaseError != null) { //if there was an error tell the user
-                    Constants.buildInfoDialog(MixerActivity.this, "Error", "There was an issue saving that mix to the database");
-                }
-            });*/
         }
     }
 
@@ -173,5 +183,27 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_global, menu);
         return true;
+    }
+
+    public void uploadArtistMixToCloudStorage(File mix){
+        try {
+            if (mix != null) {
+                Uri uri = Uri.fromFile(mix);
+                StorageReference riversRef = mStorageRef.child("mixes/" + uri.getLastPathSegment());
+                UploadTask uploadTask = riversRef.putFile(uri);
+                uploadTask.addOnFailureListener(exception -> {
+                    // Handle unsuccessful uploads
+                    Snackbar errorSnack;
+                    errorSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.error_processing_request), Snackbar.LENGTH_LONG);
+                    errorSnack.show();
+                }).addOnSuccessListener(taskSnapshot -> {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+
+                });
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

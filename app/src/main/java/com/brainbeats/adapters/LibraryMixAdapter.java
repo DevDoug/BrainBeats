@@ -66,6 +66,7 @@ public class LibraryMixAdapter extends RecyclerView.Adapter<LibraryMixAdapter.Vi
                 Constants.buildActionDialog(mAdapterContext, "Delete Song", "Do you want to delete this song from your library", "confirm", new Constants.ConfirmDialogActionListener() {
                     @Override
                     public void PerformDialogAction() {
+
                     }
                 });
                 return false;

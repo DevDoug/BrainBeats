@@ -13,7 +13,7 @@
         android:backgroundTintMode="src_atop"
         android:elevation="6dp"
         app:tabGravity="fill"
-        app:tabIndicatorColor="#aae6fb"
+        app:tabIndicatorColor="#fff"
         app:tabMode="fixed"
         app:tabTextColor="@color/theme_primary_text_color" />
 
