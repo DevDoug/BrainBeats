@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.io.File;
 import java.util.HashMap;
@@ -33,7 +34,7 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
         CreateMixFragment.OnFragmentInteractionListener,
         ConfirmCreateMixFragment.OnFragmentInteractionListener {
 
-    private DatabaseReference mDatabase;
+    private FirebaseDatabase mDatabase;
 
     Fragment mMixerFragment;
     Fragment mNewMixFragment;
@@ -49,7 +50,7 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase = FirebaseDatabase.getInstance();
 
         if (savedInstanceState == null) {
             mMixerFragment = new MixerFragment();
@@ -148,16 +149,14 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
             mNewMix.setStreamURL(getExternalCacheDir().getAbsolutePath() + "/" + title + ".3gp");
             mNewMix.setArtistId(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-            DatabaseReference mixRef = mDatabase.child("mixes");
+            Query mixRef = mDatabase.getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+            mixRef.getRef().push().setValue(mNewMix);
 
-            Map<String, Object> mix = new HashMap<String, Object>();
-            mix.put(title, mNewMix);
-
-            mixRef.updateChildren(mix, (databaseError, databaseReference) -> {
+/*            mixRef.updateChildren(mix, (databaseError, databaseReference) -> {
                 if(databaseError != null) { //if there was an error tell the user
                     Constants.buildInfoDialog(MixerActivity.this, "Error", "There was an issue saving that mix to the database");
                 }
-            });
+            });*/
         }
     }
 

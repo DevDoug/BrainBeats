@@ -12,11 +12,13 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -40,10 +42,16 @@ import com.brainbeats.model.Playlist;
 import com.brainbeats.sync.SyncManager;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.web.WebApiManager;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -229,27 +237,41 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         ArrayList<String> playlistNames = new ArrayList<String>();
         playlistNames.add("Create New Playlist");
 
-        String[] mOptions = new String[playlistNames.size()];
-        mOptions = playlistNames.toArray(mOptions);
+        DatabaseReference playlistRef = mDatabase.child("playlists/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+        playlistRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot data : dataSnapshot.getChildren()) {
+                    Playlist playlist = data.getValue(Playlist.class);
+                    playlistNames.add(playlist.getPlaylistTitle());
+                }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
-        LayoutInflater inflater = ((Activity) this).getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.custom_list_dialog_layout, null);
-        ((TextView) dialogView.findViewById(R.id.separator_title)).setText("");
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.dialog_list_item, R.id.dialog_item, mOptions);
-        ((ListView) dialogView.findViewById(R.id.option_list_view)).setAdapter(adapter);
-        ((ListView) dialogView.findViewById(R.id.option_list_view)).setOnItemClickListener((parent, view, position, id) -> {
-            if (position == 0)
-                showEnterPlaylistTitleDialog();
-            else {
-                TextView titleView = (TextView) view.findViewById(R.id.dialog_item);
-                String title = titleView.getText().toString();
-                addToExistingPlaylist(title);
+                String[] mOptions = new String[playlistNames.size()];
+                mOptions = playlistNames.toArray(mOptions);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, android.R.style.Theme_Material_Light_Dialog_Alert);
+                LayoutInflater inflater = ((Activity) MainActivity.this).getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.custom_list_dialog_layout, null);
+                ((TextView) dialogView.findViewById(R.id.separator_title)).setText("");
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, R.layout.dialog_list_item, R.id.dialog_item, mOptions);
+                ((ListView) dialogView.findViewById(R.id.option_list_view)).setAdapter(adapter);
+                ((ListView) dialogView.findViewById(R.id.option_list_view)).setOnItemClickListener((parent, view, position, id) -> {
+                    if (position == 0)
+                        showEnterPlaylistTitleDialog();
+                    else {
+                        TextView titleView = (TextView) view.findViewById(R.id.dialog_item);
+                        String title = titleView.getText().toString();
+                        addToExistingPlaylist(title);
+                    }
+                });
+                builder.setView(dialogView);
+                alert = builder.create();
+                alert.show();
             }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
         });
-        builder.setView(dialogView);
-        alert = builder.create();
-        alert.show();
     }
 
     public void showEnterPlaylistTitleDialog() {
@@ -275,20 +297,40 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (!title.isEmpty()) { //require title
             Playlist playList = new Playlist();
             playList.setPlaylistTitle(title);
-            playList.setSoundCloudId(0);
 
             DatabaseReference playlistRef = mDatabase.child("playlists/" + FirebaseAuth.getInstance().getCurrentUser().getUid()); //save this mix under mixes --> userUid -- new song
-            playlistRef.push().setValue(playList);
-
-            Snackbar newPlayListAddedSnack;
-            newPlayListAddedSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.new_playlist_added), Snackbar.LENGTH_LONG);
-            newPlayListAddedSnack.show();
+            playlistRef.push().setValue(playList).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()) {
+                        Snackbar newPlayListAddedSnack;
+                        newPlayListAddedSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.new_playlist_added), Snackbar.LENGTH_LONG);
+                        newPlayListAddedSnack.show();
+                    } else {
+                        Snackbar errorSnack;
+                        errorSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.error_processing_request), Snackbar.LENGTH_LONG);
+                        errorSnack.show();
+                    }
+                }
+            });
         } else {
             Constants.buildInfoDialog(this, "", "Please enter a title");
         }
     }
 
     public void addToExistingPlaylist(String title) {
+        Query playlistQuery = mDatabase.child("playlists/" + FirebaseAuth.getInstance().getCurrentUser().getUid()).orderByChild("playlistTitle").equalTo(title);
+        playlistQuery.getRef().push().setValue(new Mix(mCurrentSong)).addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                Snackbar newPlayListAddedSnack;
+                newPlayListAddedSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.song_added_to_existing_playlist), Snackbar.LENGTH_LONG);
+                newPlayListAddedSnack.show();
+            } else {
+                Snackbar errorSnack;
+                errorSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.error_processing_request), Snackbar.LENGTH_LONG);
+                errorSnack.show();
+            }
+        });
         alert.dismiss();
     }
 

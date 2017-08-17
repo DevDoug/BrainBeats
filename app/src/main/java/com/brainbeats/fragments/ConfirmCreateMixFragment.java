@@ -57,7 +57,7 @@ public class ConfirmCreateMixFragment extends Fragment implements View.OnClickLi
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_confirm_create_mix, container, false);
         mSaveMixButton = (Button) v.findViewById(R.id.confirm_save_mix_button);
-        mMixTitle = (TextView) v.findViewById(R.id.mix_title);
+        mMixTitle = (TextView) v.findViewById(R.id.mix_name);
         mAlbumCoverImage = (ImageView) v.findViewById(R.id.album_cover_art);
 
         mAlbumCoverImage.setOnClickListener(this);

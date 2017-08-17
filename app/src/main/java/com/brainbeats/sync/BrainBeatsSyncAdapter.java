@@ -322,53 +322,6 @@ public class BrainBeatsSyncAdapter extends AbstractThreadedSyncAdapter {
         }*/
     }
 
-    public void addPlaylist(UserPlaylistsResponse playlistsResponse, ContentProviderClient provider) {
-        Playlist playlist = new Playlist();
-        playlist.setPlaylistTitle(playlistsResponse.getTitle());
-        playlist.setSoundCloudId(playlistsResponse.getId());
-
-        try {
-            Uri result = provider.insert(BrainBeatsContract.PlaylistEntry.CONTENT_URI, Constants.buildPlaylistRecord(playlist));
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-/*    public void getUserInfo(int senderId, ContentProviderClient provider){
-
-        WebApiManager.getSoundCloudUser(getContext(), String.valueOf(senderId), new WebApiManager.OnObjectResponseListener() {
-            @Override
-            public void onObjectResponse(JSONObject object) {
-                Gson gson = new Gson();
-                Type token = new TypeToken<com.brainbeats.entity.User>() {}.getType();
-                com.brainbeats.entity.User soundCloudUser = gson.fromJson(object.toString(), token);
-                addUser(soundCloudUser, true, provider);
-            }
-        }, new WebApiManager.OnErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-    }*/
-
-    public void addUser(com.brainbeats.entity.User soundCloudUser, boolean isFollowing, ContentProviderClient provider) {
-        BrainBeatsUser brainBeatsUser = new BrainBeatsUser();
-        brainBeatsUser.setUserName(soundCloudUser.getUsername());
-        brainBeatsUser.setSoundCloudUserId(soundCloudUser.getId());
-        //brainBeatsUser.setUserProfileImage(soundCloudUser.getAvatarUrl());
-
-        try {
-            Uri result = provider.insert(BrainBeatsContract.UserEntry.CONTENT_URI, Constants.buildUserRecord(brainBeatsUser)); //insert brainBeatsUser rec
-            if (isFollowing) { //if the brainBeatsUser is following this person add the record to the following table, now when quered
-                Uri relatedResult = provider.insert(BrainBeatsContract.UserFollowersEntry.CONTENT_URI, Constants.buildUserFollowingRecord(AccountManager.getInstance(getContext()).getUserId(), String.valueOf(brainBeatsUser.getSoundCloudUserId())));
-                Log.i("Add following rec", "brainBeatsUser collection Id " + String.valueOf(brainBeatsUser.getSoundCloudUserId()));
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
 /*    public void favoriteTrackOnSoundCloud(int trackId, ContentProviderClient provider) {
         WebApiManager.putUserFavorite(getContext(), com.brainbeats.architecture.AccountManager.getInstance(getContext()).getUserId(), String.valueOf(trackId), new WebApiManager.OnObjectResponseListener() {
             @Override

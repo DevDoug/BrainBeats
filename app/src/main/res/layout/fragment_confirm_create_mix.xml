@@ -10,7 +10,7 @@
         android:layout_height="fill_parent">
 
         <EditText
-            android:id="@+id/artist_name"
+            android:id="@+id/mix_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -22,7 +22,7 @@
             android:gravity="center"
             android:paddingEnd="45dp"
             android:paddingStart="45dp"
-            android:hint="Artist name"
+            android:hint="Mix name"
             android:singleLine="true"
             android:textColor="@color/theme_secondary_text_color"
             android:textSize="@dimen/album_detail_title_text_size" />
@@ -31,7 +31,7 @@
             android:id="@+id/beat_detail_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/artist_name">
+            android:layout_below="@+id/mix_name">
 
             <ImageView
                 android:id="@+id/album_cover_art"

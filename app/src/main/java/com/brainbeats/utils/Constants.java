@@ -316,13 +316,6 @@ public class Constants {
         return values;
     }
 
-    public static ContentValues buildPlaylistRecord(Playlist playlist) {
-        ContentValues values = new ContentValues();
-        values.put(BrainBeatsContract.PlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE, playlist.getPlaylistTitle());
-        values.put(BrainBeatsContract.PlaylistEntry.COLUMN_NAME_PLAYLIST_SOUNDCLOUD_ID, playlist.getSoundCloudId());
-        return values;
-    }
-
     public static ContentValues buildMixPlaylistRecord(MixPlaylist mixPlaylist) {
         ContentValues values = new ContentValues();
         values.put(BrainBeatsContract.MixPlaylistEntry.COLUMN_NAME_MIX_ID, mixPlaylist.getMixId());

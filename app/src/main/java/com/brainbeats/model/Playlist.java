@@ -1,20 +1,22 @@
 package com.brainbeats.model;
 
+import java.util.ArrayList;
+
 /**
  * Created by douglas on 7/28/2016.
  */
 public class Playlist {
 
-    public long mID;
+    public long playlistId;
 
     public String mPlaylistTitle;
 
-    private int mSoundCloudId;
+    public ArrayList<Mix> mMixes;
 
-    public long getPlaylistId() {return mID;}
+    public long getPlaylistId() {return playlistId;}
 
     public void setPlaylistId(long Id) {
-        this.mID = Id;
+        this.playlistId = Id;
     }
 
     public String getPlaylistTitle() {
@@ -25,11 +27,12 @@ public class Playlist {
         this.mPlaylistTitle = playlisttitle;
     }
 
-    public int getSoundCloudId() {
-        return mSoundCloudId;
+    public ArrayList<Mix> getMixes() {
+        return mMixes;
     }
 
-    public void setSoundCloudId(int soundCloudId) {
-        this.mSoundCloudId = soundCloudId;
+    public void setMixes(ArrayList<Mix> mixes) {
+        this.mMixes = mixes;
     }
+
 }

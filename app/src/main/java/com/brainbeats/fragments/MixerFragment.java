@@ -73,7 +73,7 @@ public class MixerFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mFirebaseDatabase = mFirebaseDatabase.getInstance();
-        mFirebasDatabaseReference = mFirebaseDatabase.getReference("mixes").orderByChild("artistId").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mFirebasDatabaseReference = mFirebaseDatabase.getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid()).orderByChild("artistId").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         mixList = new ArrayList<>();
 
@@ -86,6 +86,18 @@ public class MixerFragment extends Fragment {
         mMixRecyclerView.setAdapter(mMixAdapter);
 
         updateMixes();
+
+        mFirebasDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()) {
+                    mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
+                    mMixRecyclerView.setVisibility(View.INVISIBLE);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
     }
 
     public void onButtonPressed(Uri uri) {
