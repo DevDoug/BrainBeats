@@ -17,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -46,6 +47,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 public class MusicDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
     public static final String TAG = "MusicDetailFragment";
@@ -61,6 +64,8 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     private ImageView mLoopSongButton;
     private TextView mArtistName;
     private ImageView mArtistThumbnail;
+    private TextView mShowArtistDetails;
+    private CardView mArtistCard;
 
     public Bundle mUserSelections;
     public volatile boolean mIsAlive = true;
@@ -170,12 +175,15 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         mArtistThumbnail = (ImageView) v.findViewById(R.id.artist_thumbnail);
         mPlayTrackSeekBar = (SeekBar) v.findViewById(R.id.play_song_seek_bar);
         mArtistName = (TextView) v.findViewById(R.id.user_name);
+        mShowArtistDetails = (TextView) v.findViewById(R.id.artist_detail_toggle_switch);
+        mArtistCard = (CardView) v.findViewById(R.id.card_view);
 
         mPlaySongButton.setOnClickListener(this);
         mUpvoteArrow.setOnClickListener(this);
         mDownVoteArrow.setOnClickListener(this);
         mSkipForwardButton.setOnClickListener(this);
         mLoopSongButton.setOnClickListener(this);
+        mShowArtistDetails.setOnClickListener(this);
 
         return v;
     }
@@ -270,6 +278,9 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                 break;
             case R.id.arrow_up:
                 upvoteSong();
+                break;
+            case R.id.artist_detail_toggle_switch:
+                showArtistDetails();
                 break;
             default:
                 break;
@@ -447,5 +458,10 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
             mLoopSongButton.setImageResource(R.drawable.ic_repeat_off);
 
         mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_SET_SONG_REPEAT_URI);
+    }
+
+    public void showArtistDetails(){
+        mShowArtistDetails.setVisibility(View.GONE);
+        mArtistCard.setVisibility(View.VISIBLE);
     }
 }

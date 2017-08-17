@@ -8,12 +8,11 @@
     <ScrollView
         android:id="@+id/main_container_scroll"
         android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/mix_title"
@@ -112,35 +111,45 @@
                         android:src="@drawable/ic_repeat_off" />
 
                 </LinearLayout>
-
             </RelativeLayout>
 
-            <include
+            <TextView
+                android:id="@+id/artist_detail_toggle_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Artist Details"
+                android:layout_margin="35dp"
+                android:layout_centerHorizontal="true"
+                android:textSize="22sp"
+                android:layout_below="@+id/beat_detail_header"
+                android:textColor="@color/theme_primary_color"/>
+
+   <!--         <include
                 android:id="@+id/blue_line_seperator"
                 layout="@layout/blue_horizontal_seperator"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/blue_horizontal_divider_height"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/beat_detail_header"
-                android:layout_marginTop="@dimen/content_margin_top" />
+                android:layout_marginTop="@dimen/content_margin_top" />-->
 
             <android.support.v7.widget.CardView
                 android:id="@+id/card_view"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_below="@+id/blue_line_seperator"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="1dp">
+                android:layout_height="130dp"
+                android:layout_below="@+id/beat_detail_header"
+                android:layout_marginLeft="45dp"
+                android:layout_marginRight="45dp"
+                android:layout_marginTop="1dp"
+                android:visibility="gone">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/custom_list_text_background"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="15dp"
-                    android:gravity="center_vertical">
+                    android:padding="15dp">
 
                     <ImageView
                         android:id="@+id/artist_thumbnail"
@@ -151,23 +160,23 @@
                         android:id="@+id/user_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/theme_secondary_text_color"
-                        android:textSize="22sp"
                         android:layout_marginBottom="5dp"
+                        android:layout_marginLeft="15dp"
                         android:layout_toRightOf="@id/artist_thumbnail"
-                        android:layout_marginLeft="15dp" />
+                        android:textColor="@color/theme_secondary_text_color"
+                        android:textSize="22sp" />
 
                     <TextView
                         android:id="@+id/artist_description"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/artist_thumbnail"
                         android:layout_below="@id/user_name"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@id/artist_thumbnail"
                         android:maxLines="3"
                         android:textColor="@color/theme_secondary_text_color"
-                        android:textSize="13sp"
-                        android:layout_marginLeft="15dp"/>
-                    
+                        android:textSize="13sp" />
+
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
 
