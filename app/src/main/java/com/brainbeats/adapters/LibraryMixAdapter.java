@@ -3,6 +3,7 @@ package com.brainbeats.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,7 +19,18 @@ import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.entity.Track;
 import com.brainbeats.model.Mix;
 import com.brainbeats.utils.Constants;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -75,10 +87,50 @@ public class LibraryMixAdapter extends RecyclerView.Adapter<LibraryMixAdapter.Vi
         holder.mPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Track playTrack = new Track(mix);
-                ((LibraryActivity) mAdapterContext).mCurrentSong = playTrack;
-                ((LibraryActivity) mAdapterContext).mAudioService.setPlayingSong(playTrack);
-                ((LibraryActivity) mAdapterContext).mAudioService.playSong(Uri.parse(playTrack.getStreamURL()));
+
+                if(mix.getStreamURL() == null || mix.getStreamURL().isEmpty()) { //coming from Brain Beats
+                    String storageUrl = mix.getFirebaseStorageUrl();
+                    FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+                    StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+                    StorageReference mixStorage = storageReference.child("mixes/" + storageUrl);
+
+                    try {
+                        final long ONE_MEGABYTE = 1024 * 1024;
+                        mixStorage.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                            @Override
+                            public void onSuccess(byte[] bytes) {
+                                try{
+                                    File outputFile = File.createTempFile(mix.getMixTitle(), ".3gp", mAdapterContext.getCacheDir());
+                                    outputFile.deleteOnExit();
+                                    FileOutputStream fileoutputstream = new FileOutputStream(outputFile);
+                                    fileoutputstream.write(bytes);
+                                    fileoutputstream.close();
+
+                                    Track playTrack = new Track(mix);
+                                    ((LibraryActivity) mAdapterContext).mCurrentSong = playTrack;
+                                    ((LibraryActivity) mAdapterContext).mAudioService.setPlayingSong(playTrack);
+                                    ((LibraryActivity) mAdapterContext).mAudioService.playBrainBeatsSong(Uri.parse(outputFile.getPath()));
+
+                                } catch (IOException ex) {
+                                    ex.printStackTrace();
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // Handle any errors
+                                exception.printStackTrace();
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Track playTrack = new Track(mix);
+                    ((LibraryActivity) mAdapterContext).mCurrentSong = playTrack;
+                    ((LibraryActivity) mAdapterContext).mAudioService.setPlayingSong(playTrack);
+                    ((LibraryActivity) mAdapterContext).mAudioService.playSong(Uri.parse(playTrack.getStreamURL()));
+                }
             }
         });
     }

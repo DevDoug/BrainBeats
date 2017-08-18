@@ -147,7 +147,6 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
             mAudioService.mIsRecordingTest = true;
             mAudioService.playSong(Uri.fromFile(new File(source)));
         } else if (uri.compareTo(Constants.NEW_MIX_LOAD_CONFIRM_FRAG) == 0) {
-            mNewMix.setStreamURL(source);
             switchToConfirmCreateMixFragment();
         }
     }
@@ -160,7 +159,7 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
             boolean success = tempFile.renameTo(mixFile);
 
             mNewMix.setMixTitle(title);
-            mNewMix.setFirebaseStorageUrl("mix/" + title + ".3gp");
+            mNewMix.setFirebaseStorageUrl(title + ".3gp");
             mNewMix.setArtistId(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
             uploadArtistMixToCloudStorage(mixFile);
