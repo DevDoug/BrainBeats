@@ -56,6 +56,9 @@ public class Constants {
     public static final String KEY_EXTRA_IS_DISPLAY_CURRENT_PLAYING_SONG    = "currentPlayingSong";
     public static final String RESTORE_PLAYING_SONG                         = "restorePlayingSong";
 
+    public static final String KEY_EXTRA_MAESTRO_SHOWN                      = "MaestroShown";
+
+
 
 
     //Sound Cloud
@@ -124,6 +127,7 @@ public class Constants {
 
     public static final Uri MIX_SHOW_FAB                                            = Uri.parse("mixer://mix_show_fab");
     public static final Uri NEW_MIX_HIDE_FAB                                        = Uri.parse("mixer://new_mix_hide_fab");
+    public static final Uri NEW_MIX_CREATE                                          = Uri.parse("mixer://new_mix_load_create_frag");
     public static final Uri NEW_MIX_LOAD_CONFIRM_FRAG                               = Uri.parse("mixer://new_mix_load_confirm_frag");
     public static final Uri MIX_SHOW_MIX_LIST                                       = Uri.parse("mixer://mix_show_mix_list");
     public static final Uri MIX_ADD_NEW                                             = Uri.parse("mixer://mix_add_new");

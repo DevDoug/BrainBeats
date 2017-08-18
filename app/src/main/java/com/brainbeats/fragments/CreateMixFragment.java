@@ -28,6 +28,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -59,6 +60,8 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
     private ImageView mRerecordSong;
     private SeekBar mPlayRecordingSeekBar;
     private LinearLayout mRecordingOptions;
+    RelativeLayout mMaestroPanel;
+    RelativeLayout mRecordingContainer;
 
     private MediaRecorder mRecorder = null;
     private boolean mIsRecording = false;
@@ -97,6 +100,8 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         mRerecordSong = (ImageView) v.findViewById(R.id.restart);
         mPlayRecordingSeekBar = (SeekBar) v.findViewById(R.id.play_recording_seek_bar);
         mRecordingOptions = (LinearLayout) v.findViewById(R.id.button_panel);
+        mMaestroPanel = (RelativeLayout) v.findViewById(R.id.maestro_panel);
+        mRecordingContainer = (RelativeLayout) v.findViewById(R.id.recording_container);
 
         mRecordButton.setOnClickListener(this);
         mPlayRecordingButton.setOnClickListener(this);
@@ -116,14 +121,13 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ((MixerActivity) getActivity()).mMainActionFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_add_white));
                 mListener.onFragmentInteraction(Constants.MIX_SHOW_FAB);
                 mIsRecording = false;
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 ((MixerActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
             }
         });
-
-        //mListener.onFragmentInteraction(Constants.NEW_MIX_HIDE_FAB);
     }
 
     @Override
@@ -274,5 +278,20 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public void summonMaestro() {
+        mListener.onFragmentInteraction(Constants.NEW_MIX_HIDE_FAB);
+        mRecordingContainer.animate().alpha(0.0f).withEndAction(new Runnable() {
+            @Override
+            public void run() {
+                mMaestroPanel.animate().alpha(1.0f).withStartAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        mMaestroPanel.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+        });
     }
 }

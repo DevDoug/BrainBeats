@@ -6,53 +6,9 @@
     tools:context="com.brainbeats.fragments.CreateMixFragment">
 
     <RelativeLayout
+        android:id="@+id/recording_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="25dp"
-            android:text="Welcome To Mistro"
-            android:textSize="24sp"
-            android:id="@+id/textView4" />
-
-        <TextView
-            android:id="@+id/mistro_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/textView4"
-            android:layout_below="@+id/textView4"
-            android:layout_marginTop="33dp"
-            android:text="Mistro is here to help you make awesome music. You can have mistro play a part for you or help tune your tracks. "
-            android:layout_alignEnd="@+id/textView4" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginBottom="59dp">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Guitar"
-                android:background="@drawable/login_button_background"
-                android:textColor="@color/theme_primary_text_color"
-                android:textStyle="bold"
-                android:layout_marginTop="43dp"
-                android:id="@+id/button3" />
-
-        </LinearLayout>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:visibility="gone">
+        android:layout_height="fill_parent">
 
         <TextView
             android:id="@+id/instruction_text"
@@ -146,5 +102,80 @@
                 android:src="@drawable/save" />
 
         </LinearLayout>
+
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/maestro_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:background="#fff"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/maestro_welcome_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="@android:color/transparent"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:layout_marginTop="40dp"
+            android:paddingEnd="15dp"
+            android:paddingStart="15dp"
+            android:text="Hi I'm Maestro"
+            android:textColor="@color/theme_secondary_text_color"
+            android:textSize="28sp" />
+
+        <TextView
+            android:id="@+id/help_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_below="@+id/maestro_welcome_message"
+            android:layout_marginTop="120dp"
+            android:background="@android:color/transparent"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:paddingEnd="15dp"
+            android:paddingStart="15dp"
+            android:text="Lets compose your song"
+            android:textColor="@color/theme_secondary_text_color"
+            android:textSize="18sp" />
+
+<!--        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/help_message"
+            android:layout_marginTop="30dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>-->
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/login_button_background"
+            android:text="Done"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="25dp"
+            android:textColor="@color/theme_primary_text_color"
+            android:textStyle="bold"/>
+
+
+
+
+    </RelativeLayout>
+
 </FrameLayout>

@@ -1,0 +1,66 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.brainbeats.fragments.ExplainMaestroFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:text="Say Hello To Maestro"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/mistro_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/textView4"
+            android:layout_alignStart="@+id/textView4"
+            android:layout_below="@+id/textView4"
+            android:layout_marginTop="33dp"
+            android:text="Maestro is here to help you make awesome music. You can have Maestro play a part for you or help tune your tracks. "
+            android:textSize="22sp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/mistro_fob"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/mistro_description"
+            android:layout_marginTop="50dp"
+            android:clickable="true"
+            android:elevation="@dimen/fob_elevation"
+            android:src="@drawable/ic_m" />
+
+        <TextView
+            android:id="@+id/click_for_mistro_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="61dp"
+            android:textSize="17sp"
+            android:text="Click this button anytime you want to bring up Maestro."
+            android:layout_below="@+id/mistro_fob"
+            android:layout_alignStart="@+id/mistro_description"
+            android:layout_alignEnd="@+id/mistro_description" />
+
+        <TextView
+            android:id="@+id/got_it_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Got it "
+            android:layout_marginBottom="30dp"
+            android:textColor="@color/theme_primary_color"
+            android:textSize="24sp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true" />
+
+    </RelativeLayout>
+
+</FrameLayout>
