@@ -23,8 +23,11 @@ import android.widget.ImageView;
 
 import com.brainbeats.R;
 import com.brainbeats.SettingsActivity;
+import com.brainbeats.architecture.Application;
 import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.utils.Constants;
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -212,5 +215,13 @@ public class ArtistProfileFragment extends Fragment implements View.OnClickListe
     public void setUserDetails(BrainBeatsUser user) {
         mArtistName.setText(user.getArtistName());
         mArtistDescription.setText(user.getArtistDescription());
+
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        StorageReference imageStorage = storageReference.child("images/" + user.getArtistProfileImage());
+
+        Glide.with(this)
+                .using(new FirebaseImageLoader())
+                .load(imageStorage)
+                .into(mProfileImage);
     }
 }
