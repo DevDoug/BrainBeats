@@ -96,6 +96,8 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
     public void switchToNewMixFragment() {
         toggleNavDrawerIcon();
 
+        mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_m));
+
         if(mAudioService.getIsPlaying() || mAudioService.getIsPaused()) {
             mAudioService.stopSong();
             hideCurrentSongView();
