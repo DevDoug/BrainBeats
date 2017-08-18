@@ -441,11 +441,12 @@ public class BaseActivity extends AppCompatActivity {
 
     public void setUserProfileImage(){
         BrainBeatsUser user = ((Application) this.getApplication()).getUserDetails();
-        StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://brainbeats-e9839.appspot.com/images/image:86");
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        StorageReference imageStorage = storageReference.child("images/" + user.getArtistProfileImage());
 
         Glide.with(this)
                 .using(new FirebaseImageLoader())
-                .load(storageReference)
+                .load(imageStorage)
                 .into(mArtistCoverImage);
     }
 
