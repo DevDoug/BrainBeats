@@ -17,6 +17,7 @@ import com.brainbeats.architecture.BaseActivity;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.fragments.ConfirmCreateMixFragment;
 import com.brainbeats.fragments.CreateMixFragment;
+import com.brainbeats.fragments.ExplainMaestroFragment;
 import com.brainbeats.fragments.MixerDetailFragment;
 import com.brainbeats.fragments.MixerFragment;
 import com.brainbeats.model.Mix;
@@ -37,7 +38,8 @@ import java.util.Map;
 public class MixerActivity extends BaseActivity implements View.OnClickListener,
         MixerFragment.OnFragmentInteractionListener,
         CreateMixFragment.OnFragmentInteractionListener,
-        ConfirmCreateMixFragment.OnFragmentInteractionListener {
+        ConfirmCreateMixFragment.OnFragmentInteractionListener,
+        ExplainMaestroFragment.OnFragmentInteractionListener {
 
     private FirebaseDatabase mDatabase;
     StorageReference mStorageRef;
@@ -45,6 +47,7 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
     Fragment mMixerFragment;
     Fragment mNewMixFragment;
     Fragment mConfirmNewMixFragment;
+    Fragment mExplainMaestroFragment;
     Fragment mMixerDetailFragment;
 
     Bundle mUserSelections;
@@ -65,6 +68,7 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
             mMixerFragment = new MixerFragment();
             mNewMixFragment = new CreateMixFragment();
             mConfirmNewMixFragment = new ConfirmCreateMixFragment();
+            mExplainMaestroFragment = new ExplainMaestroFragment();
             mMixerDetailFragment = new MixerDetailFragment();
             switchToMixerFragment();
         }
@@ -96,6 +100,8 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
     public void switchToNewMixFragment() {
         toggleNavDrawerIcon();
 
+        mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_m));
+
         if(mAudioService.getIsPlaying() || mAudioService.getIsPaused()) {
             mAudioService.stopSong();
             hideCurrentSongView();
@@ -103,6 +109,10 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
 
         mNewMix = new Mix();
         replaceFragment(mNewMixFragment, mNewMixFragment.getTag());
+    }
+
+    public void switchToMaestroShown(){
+        replaceFragment(mExplainMaestroFragment, mExplainMaestroFragment.getTag());
     }
 
     @Override
@@ -121,7 +131,14 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
         int id = v.getId();
         switch (id) {
             case R.id.main_action_fob:
-                switchToNewMixFragment();
+                if (mMixerFragment.isVisible()) {
+                    if(AccountManager.getInstance(this).getMaestroShown())
+                        switchToNewMixFragment();
+                    else
+                        switchToMaestroShown();
+                } else if (mNewMixFragment.isVisible()) {
+                    ((CreateMixFragment) mNewMixFragment).summonMaestro();
+                }
                 break;
         }
     }
@@ -138,6 +155,11 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
         } else if (uri.compareTo(Constants.STOP_SONG_URI) == 0){
             mAudioService.mIsRecordingTest = true;
             mAudioService.stopSong();
+        } else if (uri.compareTo(Constants.NEW_MIX_CREATE) == 0) {
+            FragmentManager fm = getSupportFragmentManager();
+            fm.popBackStack();
+            AccountManager.getInstance(this).setMaestroShown(true);
+            switchToNewMixFragment();
         }
     }
 

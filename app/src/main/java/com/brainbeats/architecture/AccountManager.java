@@ -141,15 +141,16 @@ public class AccountManager  {
         editor.commit();
     }
 
-    public boolean getDisplayCurrentSongView() {
+    public boolean getMaestroShown() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        return sharedPreferences.getBoolean(Constants.KEY_EXTRA_IS_DISPLAY_CURRENT_PLAYING_SONG, false);
+        boolean isMaestroShown = sharedPreferences.getBoolean(Constants.KEY_EXTRA_MAESTRO_SHOWN, false);
+        return isMaestroShown;
     }
 
-    public void setDisplayCurrentSongView(boolean isDisplayFadeInPlayingNotification) {
+    public void setMaestroShown(boolean isMaestroShown) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(Constants.KEY_EXTRA_IS_DISPLAY_CURRENT_PLAYING_SONG, isDisplayFadeInPlayingNotification);
+        editor.putBoolean(Constants.KEY_EXTRA_MAESTRO_SHOWN, isMaestroShown);
         editor.commit();
     }
 }
