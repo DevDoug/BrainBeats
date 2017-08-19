@@ -62,6 +62,7 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
     private LinearLayout mRecordingOptions;
     RelativeLayout mMaestroPanel;
     RelativeLayout mRecordingContainer;
+    private Button mDoneButton;
 
     private MediaRecorder mRecorder = null;
     private boolean mIsRecording = false;
@@ -102,11 +103,13 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         mRecordingOptions = (LinearLayout) v.findViewById(R.id.button_panel);
         mMaestroPanel = (RelativeLayout) v.findViewById(R.id.maestro_panel);
         mRecordingContainer = (RelativeLayout) v.findViewById(R.id.recording_container);
+        mDoneButton = (Button) v.findViewById(R.id.maestro_done);
 
         mRecordButton.setOnClickListener(this);
         mPlayRecordingButton.setOnClickListener(this);
         mSaveSong.setOnClickListener(this);
         mRerecordSong.setOnClickListener(this);
+        mDoneButton.setOnClickListener(this);
         return v;
     }
 
@@ -148,6 +151,9 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
                     showPlaybackRecordingView();
 
                 onRecord(!mIsRecording);
+                break;
+            case R.id.maestro_done:
+                dismissMaestro();
                 break;
 /*            case R.id.play_song_button:
                 mListener.onFragmentInteraction(Constants.LOAD_SONG_URI, mFileName);
@@ -293,5 +299,21 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
                 });
             }
         });
+    }
+
+    public void dismissMaestro(){
+        mMaestroPanel.animate().alpha(0.0f).withEndAction(new Runnable() {
+            @Override
+            public void run() {
+                mRecordingContainer.animate().alpha(1.0f).withStartAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        mListener.onFragmentInteraction(Constants.MIX_SHOW_FAB);
+                        mMaestroPanel.setVisibility(View.GONE);
+                    }
+                });
+            }
+        });
+
     }
 }
