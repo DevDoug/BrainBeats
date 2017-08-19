@@ -121,6 +121,7 @@ public class AddNewArtistInfoFragment extends Fragment implements View.OnClickLi
         Map<String, Object> userData = new HashMap<String, Object>();
         userData.put("artistName", mArtistName.getText().toString());
         userData.put("artistDescription", mArtistDescription.getText().toString());
+        userData.put("artistProfileImage", mUploadedProfileImageUri.getLastPathSegment());
         user.updateChildren(userData);
         goToDashboard();
     }
@@ -143,12 +144,6 @@ public class AddNewArtistInfoFragment extends Fragment implements View.OnClickLi
                 }).addOnSuccessListener(taskSnapshot -> {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
-/*                    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("users").child(userUid);
-
-                    Map<String, Object> userData = new HashMap<String, Object>();
-                    userData.put("artistProfileImage", downloadUrl);
-                    user.updateChildren(userData);*/
                 });
             }
         } catch (Exception ex) {

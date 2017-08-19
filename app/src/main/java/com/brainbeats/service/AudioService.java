@@ -167,6 +167,17 @@ public class AudioService extends IntentService implements MediaPlayer.OnPrepare
         }
     }
 
+    public void playBrainBeatsSong(Uri songPath){
+        try {
+            mPlayer.reset();
+            mPlayer.setDataSource(getApplicationContext(), songPath);
+            mPlayer.prepareAsync();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
     public void pauseSong() {
         mPlayer.pause();
         mIsPaused = true;
