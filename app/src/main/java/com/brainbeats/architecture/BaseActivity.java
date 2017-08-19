@@ -222,23 +222,16 @@ public class BaseActivity extends AppCompatActivity {
         if(mCurrentSong != null)
             updateCurrentSongNotificationUI(mCurrentSong);
 
-/*        Bundle intentBundle = getIntent().getExtras(); //If an intent is passed to main activity.
-        if (intentBundle != null) {
-            if (intentBundle.get(KEY_EXTRA_SELECTED_TRACK) != null) {
-                mCurrentSong = (Track) intentBundle.get(KEY_EXTRA_SELECTED_TRACK);
-            }
-        }*/
-
-/*        mCurrentSongPlayingView.setOnClickListener(new View.OnClickListener() {
+        mCurrentSongPlayingView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent dashboardIntent = new Intent(BaseActivity.this, MainActivity.class);
                 dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, new Mix(mCurrentSong));
-                dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_USER, new BrainBeatsUser(mCurrentSong.getUser()));
+                dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_USER, new BrainBeatsUser());
                 dashboardIntent.setAction(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT);
                 startActivity(dashboardIntent);
             }
-        });*/
+        });
     }
 
     @Override

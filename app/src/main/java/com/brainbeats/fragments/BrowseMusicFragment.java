@@ -54,6 +54,8 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
     private RecyclerView mTrackGrid;
     private SearchMusicAdapter mTrackAdapter;
     private GridLayoutManager mBeatGridLayoutManager;
+    private ArrayList<Track> mTracks;
+
     private OnFragmentInteractionListener mListener;
     private String mQueryText = "";
     private SearchView.OnQueryTextListener listener;
@@ -149,6 +151,7 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
     }
 
     public void showAdvancedSearchDialog(){
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Material_Light_Dialog_Alert);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.advanced_filter_dialog, null);
@@ -261,13 +264,15 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
                     Type token = new TypeToken<TrackCollection>() {}.getType();
                     TrackCollection tracks = gson.fromJson(object.toString(), token);
                     mNextTracksHref = tracks.getNextHref();
-                    ArrayList<Track> trackList = tracks.getTracks();
-                    if (trackList.size() != 0) {
-                        mTrackAdapter = new SearchMusicAdapter(getContext(), trackList);
+                    mTracks = tracks.getTracks();
+                    if (mTracks.size() != 0) {
+                        mTrackAdapter = new SearchMusicAdapter(getContext(), mTracks);
                         mBeatGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
 
                         if(sortOrder.equalsIgnoreCase("Alphabet"))
-                            Collections.sort(trackList);
+                            Collections.sort(mTracks);
+
+
 
                         mTrackGrid.setLayoutManager(mBeatGridLayoutManager);
                         mTrackGrid.setAdapter(mTrackAdapter);

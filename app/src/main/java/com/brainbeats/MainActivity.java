@@ -82,6 +82,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
+        mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
+        mExtraActionOneFab = (FloatingActionButton) findViewById(R.id.action_one_fob);
+        mExtraActionTwoFab = (FloatingActionButton) findViewById(R.id.action_two_fob);
+        mExtraActionThreeFab = (FloatingActionButton) findViewById(R.id.action_three_fob);
+        //mExtraActionFourFab = (FloatingActionButton) findViewById(R.id.action_four_fob);
+
+        fab_open = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate_backward);
+
         if (savedInstanceState == null) {
             mDashboardFragment = new BrowseMusicFragment();
             mDashboardDetailFragment = new MusicDetailFragment();
@@ -103,18 +115,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 }
             }
         }
-
-        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
-        mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
-        mExtraActionOneFab = (FloatingActionButton) findViewById(R.id.action_one_fob);
-        mExtraActionTwoFab = (FloatingActionButton) findViewById(R.id.action_two_fob);
-        mExtraActionThreeFab = (FloatingActionButton) findViewById(R.id.action_three_fob);
-        //mExtraActionFourFab = (FloatingActionButton) findViewById(R.id.action_four_fob);
-
-        fab_open = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_open);
-        fab_close = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_close);
-        rotate_forward = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate_forward);
-        rotate_backward = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate_backward);
 
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
