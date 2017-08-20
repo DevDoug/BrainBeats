@@ -54,6 +54,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, BrowseMusicFragment.OnFragmentInteractionListener, MusicDetailFragment.OnFragmentInteractionListener {
 
@@ -318,15 +319,40 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     public void addToExistingPlaylist(String title) {
         Query playlistQuery = mDatabase.child("playlists/" + FirebaseAuth.getInstance().getCurrentUser().getUid()).orderByChild("playlistTitle").equalTo(title);
-        playlistQuery.getRef().push().setValue(new Mix(mCurrentSong)).addOnCompleteListener(task -> {
-            if(task.isSuccessful()) {
-                Snackbar newPlayListAddedSnack;
-                newPlayListAddedSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.song_added_to_existing_playlist), Snackbar.LENGTH_LONG);
-                newPlayListAddedSnack.show();
-            } else {
-                Snackbar errorSnack;
-                errorSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.error_processing_request), Snackbar.LENGTH_LONG);
-                errorSnack.show();
+        playlistQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                    Playlist playlist = childSnapshot.getValue(Playlist.class);
+                    ArrayList<Mix> mixes = new ArrayList<Mix>();
+                    if (playlist.getMixes() != null) {
+                        mixes = playlist.getMixes();
+                    }
+                    mixes.add(new Mix(((MusicDetailFragment) mDashboardDetailFragment).mSelectedTrack));
+                    playlist.setMixes(mixes);
+
+                    DatabaseReference playlistRef = mDatabase.child("playlists/" + FirebaseAuth.getInstance().getCurrentUser().getUid()); //save this mix under mixes --> userUid -- new song
+                    playlistRef.push().setValue(playlist).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Snackbar newPlayListAddedSnack;
+                                newPlayListAddedSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.song_added_to_existing_playlist), Snackbar.LENGTH_LONG);
+                                newPlayListAddedSnack.show();
+                            } else {
+                                Snackbar errorSnack;
+                                errorSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.error_processing_request), Snackbar.LENGTH_LONG);
+                                errorSnack.show();
+                            }
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
         alert.dismiss();

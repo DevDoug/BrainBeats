@@ -287,16 +287,6 @@ public class Constants {
         return brainBeatsUser;
     }
 
-    public static Playlist buildPlaylistFromCursor(Context context, Cursor cursor, int position) {
-        cursor.moveToPosition(position);
-
-        Playlist brainBeatsPlaylist = new Playlist();
-        brainBeatsPlaylist.setPlaylistId(cursor.getLong(cursor.getColumnIndex(BrainBeatsContract.PlaylistEntry._ID)));
-        brainBeatsPlaylist.setPlaylistTitle(cursor.getString(cursor.getColumnIndex(BrainBeatsContract.PlaylistEntry.COLUMN_NAME_PLAYLIST_TITLE)));
-
-        return brainBeatsPlaylist;
-    }
-
     public static ContentValues buildMixRecord(Mix mix) {
         ContentValues values = new ContentValues();
 /*        values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE, mix.getMixTitle());

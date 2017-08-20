@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
@@ -22,6 +23,9 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -32,8 +36,10 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.brainbeats.LoginActivity;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
+import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.utils.Constants;
 
 import java.io.IOException;
@@ -85,6 +91,8 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+        setHasOptionsMenu(true);
+
         // Record to the external cache directory for visibility
         mFileName = getActivity().getExternalCacheDir().getAbsolutePath();
         mFileName += "/" + getString(R.string.temperary_file_name) + ".3gp";
@@ -116,7 +124,6 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onResume() {
         super.onResume();
-
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         Drawable up = DrawableCompat.wrap(ContextCompat.getDrawable(getContext(), R.drawable.ic_up));
         DrawableCompat.setTint(up, getResources().getColor(R.color.theme_primary_text_color));
@@ -131,6 +138,8 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
                 ((MixerActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
             }
         });
+
+        mListener.onFragmentInteraction(Constants.NEW_MIX_HIDE_FAB);
     }
 
     @Override
@@ -182,6 +191,23 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_global, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                AccountManager.getInstance(getContext()).forceLogout(getContext());
+                Intent loginIntent = new Intent(getContext(), LoginActivity.class);
+                startActivity(loginIntent);
+                break;
+        }
+        return false;
     }
 
     @Override

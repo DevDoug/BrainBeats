@@ -7,32 +7,23 @@ import java.util.ArrayList;
  */
 public class Playlist {
 
-    public long playlistId;
+    public String playlistTitle;
 
-    public String mPlaylistTitle;
-
-    public ArrayList<Mix> mMixes;
-
-    public long getPlaylistId() {return playlistId;}
-
-    public void setPlaylistId(long Id) {
-        this.playlistId = Id;
-    }
+    public ArrayList<Mix> mixes;
 
     public String getPlaylistTitle() {
-        return mPlaylistTitle;
+        return playlistTitle;
     }
 
-    public void setPlaylistTitle(String playlisttitle) {
-        this.mPlaylistTitle = playlisttitle;
+    public void setPlaylistTitle(String playlistTitle) {
+        this.playlistTitle = playlistTitle;
     }
 
     public ArrayList<Mix> getMixes() {
-        return mMixes;
+        return mixes;
     }
 
     public void setMixes(ArrayList<Mix> mixes) {
-        this.mMixes = mixes;
+        this.mixes = mixes;
     }
-
 }

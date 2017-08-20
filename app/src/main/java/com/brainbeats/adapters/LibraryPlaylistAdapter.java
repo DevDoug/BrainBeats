@@ -51,7 +51,7 @@ public class LibraryPlaylistAdapter extends RecyclerView.Adapter<LibraryPlaylist
     @Override
     public void onBindViewHolder(LibraryPlaylistAdapter.ViewHolder holder, int position) {
         Playlist playlist = mPlaylist.get(position);
-        //holder.mTitleText.setText(mix.getMixTitle());
+        holder.mTitleText.setText(playlist.getPlaylistTitle());
     }
 
     @Override

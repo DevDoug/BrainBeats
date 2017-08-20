@@ -156,7 +156,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/help_message"
-            android:layout_marginTop="76dp"
+            android:layout_marginTop="30dp"
             android:gravity="center"
             android:paddingEnd="15dp"
             android:paddingStart="15dp"

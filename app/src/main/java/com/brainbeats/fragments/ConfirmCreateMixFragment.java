@@ -16,14 +16,19 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.brainbeats.LoginActivity;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
+import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.utils.Constants;
 import com.squareup.picasso.Picasso;
@@ -97,6 +102,23 @@ public class ConfirmCreateMixFragment extends Fragment implements View.OnClickLi
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_global, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                AccountManager.getInstance(getContext()).forceLogout(getContext());
+                Intent loginIntent = new Intent(getContext(), LoginActivity.class);
+                startActivity(loginIntent);
+                break;
+        }
+        return false;
     }
 
     @Override

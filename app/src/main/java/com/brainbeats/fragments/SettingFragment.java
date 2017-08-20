@@ -1,16 +1,22 @@
 package com.brainbeats.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.brainbeats.LoginActivity;
 import com.brainbeats.R;
+import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.utils.Constants;
 
 public class SettingFragment extends Fragment implements View.OnClickListener {
@@ -27,6 +33,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -59,6 +66,23 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_global, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                AccountManager.getInstance(getContext()).forceLogout(getContext());
+                Intent loginIntent = new Intent(getContext(), LoginActivity.class);
+                startActivity(loginIntent);
+                break;
+        }
+        return false;
     }
 
     @Override

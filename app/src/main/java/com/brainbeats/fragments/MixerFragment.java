@@ -2,6 +2,7 @@ package com.brainbeats.fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,15 +14,18 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import com.brainbeats.LoginActivity;
 import com.brainbeats.R;
 import com.brainbeats.adapters.LibraryMixAdapter;
 import com.brainbeats.adapters.LibraryPlaylistAdapter;
 import com.brainbeats.adapters.MixerAdapter;
+import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.model.Mix;
@@ -59,6 +63,7 @@ public class MixerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -73,7 +78,10 @@ public class MixerFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mFirebaseDatabase = mFirebaseDatabase.getInstance();
-        mFirebasDatabaseReference = mFirebaseDatabase.getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid()).orderByChild("artistId").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mFirebasDatabaseReference = mFirebaseDatabase
+                .getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .orderByChild("artistId")
+                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         mixList = new ArrayList<>();
 
@@ -128,6 +136,21 @@ public class MixerFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getActivity().onBackPressed();
+                break;
+            case R.id.action_logout:
+                AccountManager.getInstance(getContext()).forceLogout(getContext());
+                Intent loginIntent = new Intent(getContext(), LoginActivity.class);
+                startActivity(loginIntent);
+                break;
+        }
+        return false;
     }
 
     public void updateMixes() {
