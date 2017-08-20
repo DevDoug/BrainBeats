@@ -127,11 +127,11 @@
             android:gravity="center"
             android:paddingEnd="15dp"
             android:paddingStart="15dp"
-            android:text="Hey I am Meastro"
+            android:text="Hey I am Maestro"
             android:textColor="@color/theme_secondary_text_color"
             android:textSize="28sp" />
 
-        <TextView
+<!--        <TextView
             android:id="@+id/help_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -147,7 +147,7 @@
             android:paddingStart="15dp"
             android:text="Lets compose your song !"
             android:textColor="@color/theme_secondary_text_color"
-            android:textSize="20sp" />
+            android:textSize="16sp" />-->
 
         <TextView
             android:id="@+id/add_lyrics"
@@ -155,8 +155,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/help_message"
-            android:layout_marginTop="30dp"
+            android:layout_below="@+id/maestro_welcome_message"
+            android:layout_marginTop="70dp"
             android:gravity="center"
             android:paddingEnd="15dp"
             android:paddingStart="15dp"
@@ -171,7 +171,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/add_lyrics"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="25dp"
             android:gravity="center"
             android:paddingEnd="15dp"
             android:paddingStart="15dp"
@@ -185,7 +185,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/add_instrument"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="25dp"
             android:gravity="center"
             android:paddingEnd="15dp"
             android:paddingStart="15dp"

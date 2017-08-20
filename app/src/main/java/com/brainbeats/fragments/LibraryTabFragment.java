@@ -118,7 +118,6 @@ public class LibraryTabFragment extends Fragment {
         });
     }
 
-
     public void updateMixes() {
         mFirebasDatabaseReference.addChildEventListener(new ChildEventListener() {
             @Override

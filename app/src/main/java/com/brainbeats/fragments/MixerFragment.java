@@ -14,6 +14,8 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +46,6 @@ import java.util.ArrayList;
 
 public class MixerFragment extends Fragment {
 
-    //Data
     private FirebaseDatabase mFirebaseDatabase;
     private Query mFirebasDatabaseReference;
 
@@ -118,7 +119,6 @@ public class MixerFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mListener.onFragmentInteraction(Constants.MIX_SHOW_FAB);
-
     }
 
     @Override
@@ -139,11 +139,13 @@ public class MixerFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_global, menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                getActivity().onBackPressed();
-                break;
             case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
                 Intent loginIntent = new Intent(getContext(), LoginActivity.class);

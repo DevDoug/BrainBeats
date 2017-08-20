@@ -200,12 +200,6 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
         replaceFragment(mMixerDetailFragment, mMixerDetailFragment.getTag());
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_global, menu);
-        return true;
-    }
-
     public void uploadArtistMixToCloudStorage(File mix){
         try {
             if (mix != null) {

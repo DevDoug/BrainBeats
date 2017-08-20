@@ -26,10 +26,9 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
         setContentView(R.layout.activity_library);
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
         mLibraryFragment = new LibraryFragment();
-
         switchToLibraryFragment();
 
-        listener = new SearchView.OnQueryTextListener() {
+/*        listener = new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 mQueryText = query;
@@ -41,13 +40,15 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
             public boolean onQueryTextChange(String newText) {
                 return false;
             }
-        };
+        };*/
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_library, menu);
+
+        // Inflate the menu; this adds items to the action bar if it is present.
+/*        getMenuInflater().inflate(R.menu.menu_library, menu);
         MenuItem searchMenuItem = menu.findItem(R.id.action_search);
         mSearchView = (SearchView) searchMenuItem.getActionView();
         mSearchView.setOnQueryTextListener(listener);
@@ -69,7 +70,7 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
         };
 
         // Assign the listener to that action item
-        MenuItemCompat.setOnActionExpandListener(searchMenuItem, expandListener);
+        MenuItemCompat.setOnActionExpandListener(searchMenuItem, expandListener);*/
         return true;
     }
 
