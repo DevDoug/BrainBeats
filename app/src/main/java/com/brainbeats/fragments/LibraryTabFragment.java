@@ -89,11 +89,13 @@ public class LibraryTabFragment extends Fragment {
 
         if(mDataType == 0)
             mFirebasDatabaseReference = mFirebaseDatabase.getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
-        else if(mDataType == 1)
+        else if(mDataType == 1){
             mFirebasDatabaseReference = mFirebaseDatabase.getReference("playlists/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
-        else
+            mEmptyDataPlaceholder.setText("Add a playlist to your library");
+        } else {
             mFirebasDatabaseReference = mFirebaseDatabase.getReference("mixes_favorites/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
-
+            mEmptyDataPlaceholder.setText("Add a favorite to your library");
+        }
 
         if(mDataType == 0 || mDataType == 2) {
             mLibraryMixAdapter = new LibraryMixAdapter(getContext(), mixList);
@@ -141,7 +143,7 @@ public class LibraryTabFragment extends Fragment {
                 mixList.remove(index);
                 mLibraryMixAdapter.notifyItemRemoved(index);
 
-                if(index == 1){
+                if(index == 0){
                     mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
                     mMixRecyclerView.setVisibility(View.INVISIBLE);
                 }

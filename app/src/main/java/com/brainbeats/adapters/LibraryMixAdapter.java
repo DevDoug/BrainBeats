@@ -22,8 +22,11 @@ import com.brainbeats.utils.Constants;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -78,12 +81,32 @@ public class LibraryMixAdapter extends RecyclerView.Adapter<LibraryMixAdapter.Vi
                 Constants.buildActionDialog(mAdapterContext, "Delete Song", "Do you want to delete this song from your library", "confirm", new Constants.ConfirmDialogActionListener() {
                     @Override
                     public void PerformDialogAction() {
+                        FirebaseDatabase Database = FirebaseDatabase.getInstance();
+                        Query reference = Database
+                                .getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                .orderByChild("artistId")
+                                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
+
+                        reference.getRef().addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                                    Mix mixToDelete = childSnapshot.getValue(Mix.class);
+                                    if(mixToDelete.getMixTitle().equals(mix.getMixTitle()))
+                                        childSnapshot.getRef().removeValue();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {}
+                        });
                     }
                 });
                 return false;
             }
         });
+
         holder.mPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

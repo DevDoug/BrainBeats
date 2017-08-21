@@ -29,9 +29,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -41,6 +43,7 @@ import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.utils.Constants;
+import com.brainbeats.utils.Maestro;
 
 import java.io.IOException;
 
@@ -54,6 +57,8 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
 
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private static String mFileName = null;
+    private int PICK_LYRICS_REQUEST = 1;
+
 
     // Requesting permission to RECORD_AUDIO
     private boolean permissionToRecordAccepted = false;
@@ -69,6 +74,11 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
     RelativeLayout mMaestroPanel;
     RelativeLayout mRecordingContainer;
     private Button mDoneButton;
+    private TextView addLyrics;
+    private TextView addInstrument;
+    private TextView playRandom;
+    private LinearLayout lyricsContainer;
+    AlertDialog alert;
 
     private MediaRecorder mRecorder = null;
     private boolean mIsRecording = false;
@@ -111,13 +121,21 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         mRecordingOptions = (LinearLayout) v.findViewById(R.id.button_panel);
         mMaestroPanel = (RelativeLayout) v.findViewById(R.id.maestro_panel);
         mRecordingContainer = (RelativeLayout) v.findViewById(R.id.recording_container);
+        lyricsContainer = (LinearLayout) v.findViewById(R.id.lyrics_container);
         mDoneButton = (Button) v.findViewById(R.id.maestro_done);
+
+        addLyrics = (TextView) v.findViewById(R.id.add_lyrics);
+/*        addInstrument = (TextView) v.findViewById(R.id.add_instrument);
+        playRandom = (TextView) v.findViewById(R.id.play_random);*/
 
         mRecordButton.setOnClickListener(this);
         mPlayRecordingButton.setOnClickListener(this);
         mSaveSong.setOnClickListener(this);
         mRerecordSong.setOnClickListener(this);
         mDoneButton.setOnClickListener(this);
+        addLyrics.setOnClickListener(this);
+  /*      addInstrument.setOnClickListener(this);
+        playRandom.setOnClickListener(this);*/
         return v;
     }
 
@@ -164,14 +182,14 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
             case R.id.maestro_done:
                 dismissMaestro();
                 break;
-/*            case R.id.play_song_button:
-                mListener.onFragmentInteraction(Constants.LOAD_SONG_URI, mFileName);
+            case R.id.add_lyrics:
+                addLyricsToMix();
                 break;
-            case R.id.save_button:
-                mListener.onFragmentInteraction(Constants.NEW_MIX_LOAD_CONFIRM_FRAG, mFileName);
+/*            case R.id.add_instrument:
+                addInstrumentToMix();
                 break;
-            case R.id.restart:
-                showRecordingView();
+            case R.id.play_random:
+                addRandomToMix();
                 break;*/
         }
     }
@@ -340,5 +358,40 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
             }
         });
 
+    }
+
+    public void addLyricsToMix(){
+        String[] mOptions = new String[]{"Maestro add some lyrics for me", "I have my own lyrics"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), android.R.style.Theme_Material_Light_Dialog_Alert);
+        LayoutInflater inflater = ((Activity) getActivity()).getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.custom_list_dialog_layout, null);
+        ((TextView) dialogView.findViewById(R.id.separator_title)).setText("");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.dialog_list_item, R.id.dialog_item, mOptions);
+        ((ListView) dialogView.findViewById(R.id.option_list_view)).setAdapter(adapter);
+        ((ListView) dialogView.findViewById(R.id.option_list_view)).setOnItemClickListener((parent, view, position, id) -> {
+            if (position == 0){
+                Maestro.getInstance().generateLyrics();
+                lyricsContainer.setVisibility(View.VISIBLE);
+                alert.dismiss();
+            }
+            else {
+                uploadLyrics();
+            }
+        });
+        builder.setView(dialogView);
+         alert = builder.create();
+        alert.show();
+    }
+
+    public void addInstrumentToMix(){}
+
+    public void addRandomToMix(){}
+
+    public void uploadLyrics() {
+        Intent intent = new Intent();
+        intent.setType("text/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select a text file"), PICK_LYRICS_REQUEST);
     }
 }
