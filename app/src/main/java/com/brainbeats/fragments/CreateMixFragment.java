@@ -77,8 +77,10 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
     private TextView addLyrics;
     private TextView addInstrument;
     private TextView playRandom;
+    private TextView songLyrics;
     private LinearLayout lyricsContainer;
     AlertDialog alert;
+    private String lyrics = "";
 
     private MediaRecorder mRecorder = null;
     private boolean mIsRecording = false;
@@ -122,6 +124,7 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         mMaestroPanel = (RelativeLayout) v.findViewById(R.id.maestro_panel);
         mRecordingContainer = (RelativeLayout) v.findViewById(R.id.recording_container);
         lyricsContainer = (LinearLayout) v.findViewById(R.id.lyrics_container);
+        songLyrics = (TextView) v.findViewById(R.id.song_lyrics);
         mDoneButton = (Button) v.findViewById(R.id.maestro_done);
 
         addLyrics = (TextView) v.findViewById(R.id.add_lyrics);
@@ -157,7 +160,7 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
             }
         });
 
-        mListener.onFragmentInteraction(Constants.NEW_MIX_HIDE_FAB);
+        mListener.onFragmentInteraction(Constants.MIX_SHOW_FAB);
     }
 
     @Override
@@ -260,6 +263,10 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
             Log.e(LOG_TAG, "prepare() failed");
         }
 
+        songLyrics.setText(lyrics);
+        songLyrics.setVisibility(View.VISIBLE);
+        mInstructionText.setVisibility(View.INVISIBLE);
+
         mRecorder.start();
         mIsRecording = true;
         mRecordButton.setImageResource(R.drawable.stop);
@@ -273,6 +280,8 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
             mRecorder = null;
             mIsRecording = false;
             mRecordButton.setImageResource(R.drawable.ic_mic);
+/*            songLyrics.setVisibility(View.INVISIBLE);
+            mInstructionText.setVisibility(View.VISIBLE);*/
             getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } catch (RuntimeException ex) {
             ex.printStackTrace();
@@ -371,12 +380,12 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         ((ListView) dialogView.findViewById(R.id.option_list_view)).setAdapter(adapter);
         ((ListView) dialogView.findViewById(R.id.option_list_view)).setOnItemClickListener((parent, view, position, id) -> {
             if (position == 0){
-                Maestro.getInstance().generateLyrics();
+                lyrics = Maestro.getInstance().generateLyrics();
                 lyricsContainer.setVisibility(View.VISIBLE);
                 alert.dismiss();
             }
             else {
-                uploadLyrics();
+                retrievLyrics();
             }
         });
         builder.setView(dialogView);
@@ -388,7 +397,7 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
 
     public void addRandomToMix(){}
 
-    public void uploadLyrics() {
+    public void retrievLyrics() {
         Intent intent = new Intent();
         intent.setType("text/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
