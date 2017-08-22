@@ -1,6 +1,7 @@
 package com.brainbeats.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -103,7 +104,16 @@ public class LibraryPlaylistAdapter extends RecyclerView.Adapter<LibraryPlaylist
                 Track playListTrack = new Track(playlist.getMixes().get(i));
                 playListQue.add(playListTrack);
             }
-            ((LibraryActivity) mAdapterContext).mAudioService.setPlaylist(playListQue);
+
+            if(playListQue.size() > 0) {
+                ((LibraryActivity) mAdapterContext).mAudioService.mIsPlayingPlaylist = true;
+                ((LibraryActivity) mAdapterContext).mAudioService.setPlayingSong(playListQue.peek());
+                ((LibraryActivity) mAdapterContext).mAudioService.setPlaylist(playListQue);
+                ((LibraryActivity) mAdapterContext).mAudioService.playSong(Uri.parse(playListQue.peek().getStreamURL()));
+                ((LibraryActivity) mAdapterContext).mAudioService.mPlaylistSongs.remove();
+            } else {
+                Constants.buildInfoDialog(mAdapterContext, "Empty Playlist", "Add a song to this playlist.");
+            }
         });
     }
 
