@@ -39,7 +39,7 @@ public class Maestro {
             for(int i = 0; i < standardSongWordCount; i++) {
                 Random randomGenerator = new Random();
                 int random = randomGenerator.nextInt(words.length);
-                lyrics = lyrics.concat(words[random]);
+                lyrics = lyrics.concat(words[random] + " ");
             }
         } catch (Exception e) {
             e.printStackTrace();
