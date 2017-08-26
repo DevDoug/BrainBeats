@@ -380,7 +380,7 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
     }
 
     public void addLyricsToMix(){
-        String[] mOptions = new String[]{"Maestro add some lyrics for me", "I have my own lyrics"};
+        String[] mOptions = new String[]{"Maestro add some lyrics for me", /*"I have my own lyrics"*/};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), android.R.style.Theme_Material_Light_Dialog_Alert);
         LayoutInflater inflater = ((Activity) getActivity()).getLayoutInflater();
