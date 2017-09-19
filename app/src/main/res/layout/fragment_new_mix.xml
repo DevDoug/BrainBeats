@@ -198,21 +198,22 @@
                 android:paddingRight="10dp">
 
                 <TextView
+                    android:id="@+id/lyric_preview_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight=".7"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
-                    android:text="Big booty big booty bitches aww yeah i like them big booty bitches ..."
                     android:textColor="@color/theme_secondary_text_color"
                     android:textSize="16sp" />
 
                 <Button
+                    android:id="@+id/edit_song_lyrics_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight=".3"
                     android:background="@drawable/login_button_background"
-                    android:text="Edit"
+                    android:text="Remove"
                     android:textColor="@color/theme_primary_text_color"
                     android:textStyle="bold" />
 
