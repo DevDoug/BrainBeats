@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,8 @@ import com.brainbeats.R;
 import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.web.WebApiManager;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.database.DataSnapshot;
@@ -45,11 +48,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private TextView mSignUpText;
+    private TextView mResetPasswordText;
     public CoordinatorLayout mCoordinatorLayout;
     public Button mLoginButton;
     public Button mSoundCloudLogin;
     private LoginFragment.OnFragmentInteractionListener mListener;
-
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
@@ -70,6 +73,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         mEmailView = (AutoCompleteTextView) view.findViewById(R.id.email_text_input);
         mSignUpText = (TextView) view.findViewById(R.id.register_text);
+        mResetPasswordText = (TextView) view.findViewById(R.id.forgot_password);
         mLoginButton = (Button) view.findViewById(R.id.email_sign_in_button);
         mPasswordView = (EditText) view.findViewById(R.id.password_text_input);
         mSoundCloudLogin = (Button) view.findViewById(R.id.sound_cloud_sign_in_button);
@@ -77,13 +81,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         mLoginButton.setOnClickListener(this);
         mSoundCloudLogin.setOnClickListener(this);
-
-        mSignUpText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToRegisterUser();
-            }
-        });
+        mSignUpText.setOnClickListener(this);
+        mResetPasswordText.setOnClickListener(this);
 
         return view;
     }
@@ -96,6 +95,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.sound_cloud_sign_in_button:
                 attemptSoundCloudLogin();
+                break;
+            case R.id.register_text:
+                goToRegisterUser();
+                break;
+            case R.id.forgot_password:
+                resetPassword();
+                break;
             default:
                 break;
         }
@@ -183,5 +189,24 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         }
 
         return true;
+    }
+
+    public void resetPassword() {
+        if (mEmailView.getText().toString().length() != 0) {
+            FirebaseAuth.getInstance().sendPasswordResetEmail(mEmailView.getText().toString())
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "Email sent.");
+                                Constants.buildInfoDialog(getContext(), "Email Sent", "An email has been sent to that email address.");
+                            } else {
+                                Constants.buildInfoDialog(getContext(), "Reset Failed", "There was an issue reseting that password.");
+                            }
+                        }
+                    });
+        } else {
+            Constants.buildInfoDialog(getContext(), "Reset Failed", "There was an issue reseting that password.");
+        }
     }
 }

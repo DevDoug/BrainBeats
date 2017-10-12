@@ -34,8 +34,15 @@ import com.brainbeats.R;
 import com.brainbeats.adapters.SearchMusicAdapter;
 import com.brainbeats.entity.Track;
 import com.brainbeats.entity.TrackCollection;
+import com.brainbeats.model.Mix;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.web.WebApiManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -49,10 +56,13 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
 
     public static final String TAG = "BrowseMusicFragment";
 
+    private FirebaseDatabase mFirebaseDatabase;
+    private Query mFirebasDatabaseReference;
+
     private RecyclerView mTrackGrid;
     private SearchMusicAdapter mTrackAdapter;
     private GridLayoutManager mBeatGridLayoutManager;
-    private ArrayList<Track> mTracks;
+    private ArrayList<Track> mTracks = new ArrayList<>();
 
     private OnFragmentInteractionListener mListener;
     private String mQueryText = "";
@@ -149,7 +159,6 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
     }
 
     public void showAdvancedSearchDialog(){
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Material_Light_Dialog_Alert);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.advanced_filter_dialog, null);
@@ -201,17 +210,11 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
         builder.setPositiveButton("Go", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //perform advanced search
                 getTracks(songTitle.getText().toString(),genreSpinner.getSelectedItem().toString(),mAdvancedSearchTagsList,"");
                 mAdvancedSearchTagsList = "";
             }
         });
-        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                mAdvancedSearchTagsList = "";
-            }
-        });
+        builder.setOnDismissListener(dialog -> mAdvancedSearchTagsList = "");
         alert = builder.create();
         alert.show();
     }
@@ -219,6 +222,47 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mFirebaseDatabase = mFirebaseDatabase.getInstance();
+        mFirebasDatabaseReference = mFirebaseDatabase
+                .getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .orderByChild("artistId")
+                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+    }
+
+    public void updateMixes() {
+        mFirebasDatabaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                mTracks.add(new Track(dataSnapshot.getValue(Mix.class)));
+                mTrackAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+/*                Track track = new Track(dataSnapshot.getValue(Mix.class));
+                int index = getMixItemIndex(mix);
+                mixList.set(index, mix);
+                mLibraryMixAdapter.notifyItemChanged(index);*/
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+/*                Mix mix = dataSnapshot.getValue(Mix.class);
+                int index = getMixItemIndex(mix);
+                mixList.remove(index);
+                mLibraryMixAdapter.notifyItemRemoved(index);
+
+                if(index == 0){
+                    mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
+                    mMixRecyclerView.setVisibility(View.INVISIBLE);
+                }*/
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
     }
 
     @Override
@@ -270,11 +314,11 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
                         if(sortOrder.equalsIgnoreCase("Alphabet"))
                             Collections.sort(mTracks);
 
-
-
                         mTrackGrid.setLayoutManager(mBeatGridLayoutManager);
                         mTrackGrid.setAdapter(mTrackAdapter);
                         mTrackAdapter.notifyDataSetChanged();
+
+                        updateMixes();
 
                         mTrackGrid.addOnScrollListener(recyclerViewOnScrollListener);
 
