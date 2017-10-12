@@ -1,6 +1,6 @@
 package com.brainbeats.utils;
 
-/**
+/*
  * Created by Doug on 8/20/2017.
  */
 

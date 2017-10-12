@@ -4,9 +4,10 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-/**
+/*
  * Created by douglas on 5/24/2016.
  */
+
 public class Playlist {
 
     @SerializedName("tracks")

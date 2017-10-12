@@ -1,6 +1,6 @@
 package com.brainbeats.model;
 
-/**
+/*
  * Created by Doug on 7/28/2017.
  */
 

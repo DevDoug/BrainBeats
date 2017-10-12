@@ -4,7 +4,6 @@ package com.brainbeats.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -29,9 +28,7 @@ import com.brainbeats.LoginActivity;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import com.brainbeats.architecture.AccountManager;
-import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.utils.Constants;
-import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 

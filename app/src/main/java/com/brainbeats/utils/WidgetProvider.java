@@ -10,9 +10,10 @@ import android.widget.RemoteViews;
 
 import com.brainbeats.R;
 
-/**
+/*
  * Created by douglas on 7/11/2016.
  */
+
 public class WidgetProvider extends AppWidgetProvider {
 
     private static final String ACTION_CLICK = "ACTION_CLICK";

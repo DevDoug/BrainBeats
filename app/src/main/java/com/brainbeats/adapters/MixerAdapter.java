@@ -1,7 +1,6 @@
 package com.brainbeats.adapters;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,16 +9,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.brainbeats.R;
-import com.brainbeats.data.BrainBeatsContract;
-import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.model.Mix;
-import com.brainbeats.utils.Constants;
 
 import java.util.ArrayList;
 
-/**
+/*
  * Created by douglas on 5/13/2016.
  */
+
 public class MixerAdapter extends RecyclerView.Adapter<MixerAdapter.ViewHolder> {
 
     Context mAdapterContext;

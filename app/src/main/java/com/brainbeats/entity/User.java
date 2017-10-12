@@ -7,9 +7,10 @@ import com.google.gson.annotations.SerializedName;
 
 import com.brainbeats.model.BrainBeatsUser;
 
-/**
+/*
  * Created by douglas on 8/2/2016.
  */
+
 public class User implements Parcelable {
 
     @SerializedName("id")

@@ -1,8 +1,9 @@
 package com.brainbeats.model;
 
-/**
+/*
  * Created by douglas on 5/16/2016.
  */
+
 public class MixItem {
 
     private long mMixItemId;

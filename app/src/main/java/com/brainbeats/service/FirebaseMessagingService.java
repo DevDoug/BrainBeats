@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
 
-/**
+/*
  * Created by Doug on 8/13/2017.
  */
 

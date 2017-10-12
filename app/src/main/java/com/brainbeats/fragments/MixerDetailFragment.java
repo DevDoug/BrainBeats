@@ -4,7 +4,6 @@ package com.brainbeats.fragments;
 import android.app.Dialog;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -103,6 +102,7 @@ public class MixerDetailFragment extends Fragment implements LoaderManager.Loade
                                 new String[]{String.valueOf(item.getMixItemId())});
                     }
                 }*/
+
                 InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
                 if (getActivity().getCurrentFocus() != null)
                     inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);

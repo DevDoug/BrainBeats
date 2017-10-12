@@ -1,7 +1,6 @@
 package com.brainbeats.adapters;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,16 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.brainbeats.R;
-import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.model.BrainBeatsUser;
-import com.brainbeats.model.Mix;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-/**
+/*
  * Created by douglas on 5/13/2016.
  */
+
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHolder> {
 
     Context mAdapterContext;

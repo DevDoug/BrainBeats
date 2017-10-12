@@ -3,11 +3,10 @@ package com.brainbeats.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-
-/**
+/*
  * Created by douglas on 5/13/2016.
  */
+
 public class BrainBeatsUser implements Parcelable {
 
     private String mUserId;

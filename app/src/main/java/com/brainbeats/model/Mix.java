@@ -5,9 +5,10 @@ import android.os.Parcelable;
 
 import com.brainbeats.entity.Track;
 
-/**
+/*
  * Created by Douglas on 4/15/2016.
  */
+
 public class Mix implements Parcelable {
 
     private String mMixId;

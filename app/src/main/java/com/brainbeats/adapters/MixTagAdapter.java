@@ -11,9 +11,10 @@ import android.widget.Button;
 import com.brainbeats.R;
 import com.brainbeats.data.BrainBeatsContract;
 
-/**
+/*
  * Created by douglas on 8/18/2016.
  */
+
 public class MixTagAdapter extends RecyclerViewCursorAdapter<MixTagAdapter.ViewHolder> {
 
     Context mAdapterContext;

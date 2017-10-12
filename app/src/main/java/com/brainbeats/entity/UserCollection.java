@@ -5,9 +5,10 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/*
  * Created by douglas on 8/2/2016.
  */
+
 public class UserCollection {
 
     @SerializedName("collection")

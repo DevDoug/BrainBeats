@@ -2,9 +2,10 @@ package com.brainbeats.entity;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
+/*
  * Created by douglas on 6/6/2016.
  */
+
 public class CreatedWith {
 
     @SerializedName("permalink_url")

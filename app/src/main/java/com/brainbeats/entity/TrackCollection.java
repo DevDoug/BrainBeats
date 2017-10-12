@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-/**
+/*
  * Created by douglas.ray on 6/8/2017.
  */
 

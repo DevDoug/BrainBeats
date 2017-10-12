@@ -4,24 +4,9 @@ import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.SyncResult;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.RemoteException;
-import android.util.Log;
-
-import com.brainbeats.architecture.AccountManager;
-import com.brainbeats.data.BrainBeatsContract;
-import com.brainbeats.data.BrainBeatsDbHelper;
-import com.brainbeats.entity.Track;
-import com.brainbeats.entity.UserPlaylistsResponse;
-import com.brainbeats.model.BrainBeatsUser;
-import com.brainbeats.model.Mix;
-import com.brainbeats.model.Playlist;
-import com.brainbeats.utils.Constants;
 
 /**
  * Created by douglas on 7/21/2016.

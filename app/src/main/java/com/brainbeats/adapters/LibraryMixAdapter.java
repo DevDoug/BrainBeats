@@ -1,7 +1,6 @@
 package com.brainbeats.adapters;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
@@ -14,8 +13,6 @@ import android.widget.TextView;
 
 import com.brainbeats.LibraryActivity;
 import com.brainbeats.R;
-import com.brainbeats.data.BrainBeatsContract;
-import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.entity.Track;
 import com.brainbeats.model.Mix;
 import com.brainbeats.utils.Constants;
@@ -27,7 +24,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -36,9 +32,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
+/*
  * Created by douglas on 5/20/2016.
  */
+
 public class LibraryMixAdapter extends RecyclerView.Adapter<LibraryMixAdapter.ViewHolder> {
 
     Context mAdapterContext;

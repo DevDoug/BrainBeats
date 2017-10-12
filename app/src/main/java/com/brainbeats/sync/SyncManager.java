@@ -7,9 +7,10 @@ import android.os.Bundle;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.utils.Constants;
 
-/**
+/*
  * Created by douglas on 7/28/2016.
  */
+
 public class SyncManager {
 
     public static final long SECONDS_PER_MINUTE = 60L;

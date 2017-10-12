@@ -1,7 +1,6 @@
 package com.brainbeats.sync;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -19,9 +18,10 @@ import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.model.Mix;
 import com.brainbeats.utils.Constants;
 
-/**
+/*
  * Created by douglas on 7/28/2016.
  */
+
 public class OfflineSyncManager {
 
     private static OfflineSyncManager mInstance;

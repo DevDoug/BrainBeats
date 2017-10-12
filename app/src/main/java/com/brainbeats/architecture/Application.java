@@ -2,7 +2,7 @@ package com.brainbeats.architecture;
 
 import com.brainbeats.model.BrainBeatsUser;
 
-/**
+/*
  * Created by Doug on 8/1/2017.
  */
 

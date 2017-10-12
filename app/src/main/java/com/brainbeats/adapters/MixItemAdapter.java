@@ -13,9 +13,10 @@ import android.widget.TextView;
 import com.brainbeats.R;
 import com.brainbeats.data.BrainBeatsContract;
 
-/**
+/*
  * Created by douglas on 5/16/2016.
  */
+
 public class MixItemAdapter extends RecyclerViewCursorAdapter<MixItemAdapter.ViewHolder> {
 
     Context mAdapterContext;

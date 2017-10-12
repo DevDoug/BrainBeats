@@ -11,9 +11,10 @@ import com.brainbeats.model.MixItem;
 
 import java.util.ArrayList;
 
-/**
+/*
  * Created by douglas on 6/15/2016.
  */
+
 public class MixManager {
 
     private static MixManager mInstance;

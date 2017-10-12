@@ -43,11 +43,7 @@ import com.brainbeats.entity.Track;
 import com.brainbeats.sync.OfflineSyncManager;
 import com.brainbeats.utils.BeatLearner;
 import com.brainbeats.utils.Constants;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 public class MusicDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 

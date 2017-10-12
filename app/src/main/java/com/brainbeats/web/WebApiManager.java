@@ -19,9 +19,10 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
+/*
  * Created by douglas on 5/24/2016.
  */
+
 public class WebApiManager {
 
     public static final int MY_SOCKET_TIMEOUT_MS = 30000;

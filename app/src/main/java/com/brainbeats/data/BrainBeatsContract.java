@@ -5,7 +5,7 @@ import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-/**
+/*
  * Created by douglas on 5/25/2016.
  */
 public class BrainBeatsContract {

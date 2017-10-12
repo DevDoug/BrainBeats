@@ -2,9 +2,10 @@ package com.brainbeats.model;
 
 import java.util.ArrayList;
 
-/**
+/*
  * Created by douglas on 7/28/2016.
  */
+
 public class Playlist {
 
     public String playlistTitle;

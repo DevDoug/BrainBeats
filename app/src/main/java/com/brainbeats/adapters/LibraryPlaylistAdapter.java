@@ -14,9 +14,10 @@ import com.brainbeats.model.Playlist;
 
 import java.util.ArrayList;
 
-/**
+/*
  * Created by douglas on 7/28/2016.
  */
+
 public class LibraryPlaylistAdapter extends RecyclerView.Adapter<LibraryPlaylistAdapter.ViewHolder> {
 
     Context mAdapterContext;

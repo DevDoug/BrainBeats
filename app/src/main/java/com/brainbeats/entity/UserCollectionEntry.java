@@ -2,9 +2,10 @@ package com.brainbeats.entity;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
+/*
  * Created by douglas on 8/2/2016.
  */
+
 public class UserCollectionEntry {
 
 

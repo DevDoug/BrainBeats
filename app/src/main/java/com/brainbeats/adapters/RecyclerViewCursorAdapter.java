@@ -4,9 +4,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 
-/**
+/*
  * Created by douglas on 8/11/2016.
  */
+
 public abstract class RecyclerViewCursorAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
     Context mContext;

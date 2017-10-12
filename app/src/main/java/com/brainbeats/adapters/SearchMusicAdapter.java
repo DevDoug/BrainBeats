@@ -16,9 +16,10 @@ import java.util.List;
 
 import com.brainbeats.entity.Track;
 
-/**
+/*
  * Created by douglas on 5/31/2016.
  */
+
 public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.ViewHolder> {
 
     Context mAdapterContext;

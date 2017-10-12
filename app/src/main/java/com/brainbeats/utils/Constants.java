@@ -1,6 +1,5 @@
 package com.brainbeats.utils;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,14 +8,8 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.GridView;
-import android.widget.TextView;
 
 import com.brainbeats.R;
-import com.brainbeats.adapters.ImageAdapter;
-import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.entity.Track;
@@ -24,7 +17,6 @@ import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.model.Mix;
 import com.brainbeats.model.MixItem;
 import com.brainbeats.model.MixPlaylist;
-import com.brainbeats.model.Playlist;
 
 import java.util.ArrayList;
 import java.util.HashMap;

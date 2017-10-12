@@ -11,9 +11,10 @@ import com.brainbeats.R;
 
 import com.brainbeats.utils.Constants;
 
-/**
+/*
  * Created by douglas on 5/17/2016.
  */
+
 public class ImageAdapter extends BaseAdapter {
 
     Context mAdapterContext;

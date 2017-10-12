@@ -2,7 +2,6 @@ package com.brainbeats.architecture;
 
 import android.accounts.Account;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,12 +9,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -26,14 +22,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutCompat;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -44,8 +37,11 @@ import com.brainbeats.MainActivity;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import com.brainbeats.SettingsActivity;
-import com.brainbeats.SocialActivity;
-import com.brainbeats.fragments.MusicDetailFragment;
+import com.brainbeats.entity.Track;
+import com.brainbeats.model.BrainBeatsUser;
+import com.brainbeats.model.Mix;
+import com.brainbeats.service.AudioService;
+import com.brainbeats.utils.Constants;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,17 +55,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
-import com.brainbeats.entity.Track;
-import com.brainbeats.model.BrainBeatsUser;
-import com.brainbeats.model.Mix;
-import com.brainbeats.service.AudioService;
-import com.brainbeats.utils.Constants;
-
-import java.io.IOException;
-
 import static com.brainbeats.utils.Constants.KEY_EXTRA_SELECTED_TRACK;
 
-/**
+/*
  * Created by Douglas on 4/21/2016.
  */
 public class BaseActivity extends AppCompatActivity {
