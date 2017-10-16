@@ -287,10 +287,7 @@ public class AudioService extends IntentService implements MediaPlayer.OnPrepare
     public boolean requestAudioFocus(Context context){
         AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         int result = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-            return true;
-        else
-            return false;
+        return result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
     }
 
     public void loadNextTrack(){

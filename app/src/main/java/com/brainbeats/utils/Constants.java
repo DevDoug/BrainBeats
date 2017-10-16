@@ -420,8 +420,4 @@ public class Constants {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public static void displayErrorMessageDialog(){
-
-    }
-
 }

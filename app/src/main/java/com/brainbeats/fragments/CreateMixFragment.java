@@ -390,7 +390,7 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         ((ListView) dialogView.findViewById(R.id.option_list_view)).setAdapter(adapter);
         ((ListView) dialogView.findViewById(R.id.option_list_view)).setOnItemClickListener((parent, view, position, id) -> {
             if (position == 0){
-                lyrics = Maestro.getInstance().generateLyrics(getContext());
+                lyrics = Maestro.getInstance().generateLyrics();
                 lyricsContainer.setVisibility(View.VISIBLE);
                 mPreviewLyricsText.setText(lyrics);
                 alert.dismiss();

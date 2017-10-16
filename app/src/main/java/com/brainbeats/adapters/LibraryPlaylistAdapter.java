@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.brainbeats.LibraryActivity;
 import com.brainbeats.R;
 import com.brainbeats.entity.Track;
-import com.brainbeats.model.Mix;
 import com.brainbeats.model.Playlist;
 import com.brainbeats.utils.Constants;
 import com.google.firebase.auth.FirebaseAuth;
