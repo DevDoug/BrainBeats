@@ -17,6 +17,4 @@ public class Maestro {
     public String generateLyrics(){
         return "I like big booty bitches ba ba big booty bitches";
     }
-
-
 }

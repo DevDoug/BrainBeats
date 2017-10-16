@@ -306,14 +306,8 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void createBackStack(Intent backStackIntent) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
-            TaskStackBuilder taskSstackBuilder = TaskStackBuilder.create(this);
-            taskSstackBuilder.addNextIntentWithParentStack(backStackIntent);
-            taskSstackBuilder.startActivities();
-        } else {
-            startActivity(backStackIntent);
-            finish();
-        }
+        startActivity(backStackIntent);
+        finish();
     }
 
     public Toolbar getToolBar() {
@@ -322,12 +316,7 @@ public class BaseActivity extends AppCompatActivity {
 
         if (mToolBar != null) {
             mToolBar.setNavigationIcon(R.drawable.ic_navigation_drawer);
-            mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mNavigationDrawer.openDrawer(GravityCompat.START);
-                }
-            });
+            mToolBar.setNavigationOnClickListener(view -> mNavigationDrawer.openDrawer(GravityCompat.START));
         }
         return mToolBar;
     }
@@ -442,33 +431,30 @@ public class BaseActivity extends AppCompatActivity {
             mPlayTrackSeekBar.setProgress(mProgressStatus);
         }
 
-        mUpdateSeekBar = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while ((mProgressStatus < trackDuration)  && mIsAlive) {
-                    try {
-                        Thread.sleep(1000); //Update once per second
-                        mProgressStatus = mAudioService.getPlayerPosition();
-                        mPlayTrackSeekBar.setProgress(mProgressStatus);
-                        mPlayTrackSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                            @Override
-                            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                                if (fromUser) {
-                                    mAudioService.seekPlayerTo(progress);
-                                }
+        mUpdateSeekBar = new Thread(() -> {
+            while ((mProgressStatus < trackDuration)  && mIsAlive) {
+                try {
+                    Thread.sleep(1000); //Update once per second
+                    mProgressStatus = mAudioService.getPlayerPosition();
+                    mPlayTrackSeekBar.setProgress(mProgressStatus);
+                    mPlayTrackSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                            if (fromUser) {
+                                mAudioService.seekPlayerTo(progress);
                             }
-                            @Override
-                            public void onStartTrackingTouch(SeekBar seekBar) {}
-                            @Override
-                            public void onStopTrackingTouch(SeekBar seekBar) {}
-                        });
+                        }
+                        @Override
+                        public void onStartTrackingTouch(SeekBar seekBar) {}
+                        @Override
+                        public void onStopTrackingTouch(SeekBar seekBar) {}
+                    });
 
-                    } catch (InterruptedException e) {
-                        mIsAlive = false;
-                        Log.i("Progress bar thread", "Exception occured" + e.toString());
-                    } catch (Exception ex) {
-                        Log.i("Progress bar thread", "Exception occured" + ex.toString());
-                    }
+                } catch (InterruptedException e) {
+                    mIsAlive = false;
+                    Log.i("Progress bar thread", "Exception occured" + e.toString());
+                } catch (Exception ex) {
+                    Log.i("Progress bar thread", "Exception occured" + ex.toString());
                 }
             }
         });

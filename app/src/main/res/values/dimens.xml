@@ -3,26 +3,9 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:
-         https://developer.android.com/design/patterns/navigation-drawer.html -->
-    <dimen name="navigation_drawer_width">240dp</dimen>
-
-    <!-- Dashboard screen dimens. -->
-    <dimen name="album_art_title_margin_bottom">10dp</dimen>
-    <dimen name="beat_grid_item_padding">5dp</dimen>
-
     <!-- Nav drawer dimens. -->
     <dimen name="nav_drawer_height">200dp</dimen>
-    <dimen name="navview_start_padding">16dp</dimen>
-    <dimen name="navview_end_padding">16dp</dimen>
-    <dimen name="navview_top_padding">16dp</dimen>
-    <dimen name="navview_header_bottom_padding">16dp</dimen>
-    <dimen name="navview_between_text_and_account_selector">16dp</dimen>
-    <dimen name="navview_account_list_top_padding">8dp</dimen>
-    <dimen name="navview_menu_item_top_bottom_padding">8dp</dimen>
-
     <dimen name="content_margin_top">20dp</dimen>
-    <dimen name="fragment_content_margin_top">55dp</dimen>
     <dimen name="fragment_content_item_top_margin">20dp</dimen>
 
     <!-- Divider dimens -->
@@ -30,8 +13,6 @@
     <dimen name="blue_horizontal_divider_title_text_size">21sp</dimen>
 
     <!-- Floating action button dimens -->
-    <dimen name="floating_action_button_bottom_margin">20dp</dimen>
-    <dimen name="floating_action_button_right_margin">20dp</dimen>
     <dimen name="fob_elevation">8dp</dimen>
 
     <dimen name="seek_bar_start_margin">28dp</dimen>
@@ -47,8 +28,6 @@
     <dimen name="mixer_item_text_size">17sp</dimen>
 
     <!-- Animation value dimens -->
-    <dimen name="fab_press_translation_z">12dp</dimen>
-    <dimen name="title_text_size">35sp</dimen>
     <dimen name="login_text_size">20sp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 

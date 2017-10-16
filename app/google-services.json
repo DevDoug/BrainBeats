@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "640978339341",
+    "firebase_url": "https://brainbeats-e9839.firebaseio.com",
+    "project_id": "brainbeats-e9839",
+    "storage_bucket": "brainbeats-e9839.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:640978339341:android:89c14cd565a2d04a",
+        "android_client_info": {
+          "package_name": "com.brainbeats"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "640978339341-vjcres7ibn5s7ub3lqs0r99q4mifbev9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.brainbeats",
+            "certificate_hash": "f36e5a336b91c8e279ffe8efe5cb203128bba379"
+          }
+        },
+        {
+          "client_id": "640978339341-pjrpn0pd0lv9jec7vqomablgrntgis9m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFP1sXCm2OTs5wJTNj21wC6W14iyhIpH0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "640978339341-pjrpn0pd0lv9jec7vqomablgrntgis9m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

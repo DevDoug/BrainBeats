@@ -275,7 +275,6 @@ public class WebApiManager {
             @Override
             public void onResponse(JSONArray response) {
                 onArrayResponseListener.onArrayResponse(response);
-                response.toString();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -292,9 +291,9 @@ public class WebApiManager {
                     int i = 1;
                     for (Map.Entry<String, String> entry : urlParams.entrySet()) {
                         if (i == 1) {
-                            stringBuilder.append("?" + entry.getKey() + "=" + entry.getValue());
+                            stringBuilder.append("?").append(entry.getKey()).append("=").append(entry.getValue());
                         } else {
-                            stringBuilder.append("&" + entry.getKey() + "=" + entry.getValue());
+                            stringBuilder.append("&").append(entry.getKey()).append("=").append(entry.getValue());
                         }
                         i++;
                     }
@@ -338,9 +337,9 @@ public class WebApiManager {
                     int i = 1;
                     for (Map.Entry<String, String> entry : urlParams.entrySet()) {
                         if (i == 1) {
-                            stringBuilder.append("?" + entry.getKey() + "=" + entry.getValue());
+                            stringBuilder.append("?").append(entry.getKey()).append("=").append(entry.getValue());
                         } else {
-                            stringBuilder.append("&" + entry.getKey() + "=" + entry.getValue());
+                            stringBuilder.append("&").append(entry.getKey()).append("=").append(entry.getValue());
                         }
                         i++;
                     }
