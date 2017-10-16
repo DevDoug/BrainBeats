@@ -43,9 +43,9 @@ public class AddNewArtistInfoFragment extends Fragment implements View.OnClickLi
     DatabaseReference user;
 
     Uri mUploadedProfileImageUri;
-    TextView mArtistName;
+    EditText mArtistName;
     ImageView mArtistProfile;
-    TextView mArtistDescription;
+    EditText mArtistDescription;
     TextView mSkipText;
     Button mConfirmButton;
 
@@ -62,11 +62,11 @@ public class AddNewArtistInfoFragment extends Fragment implements View.OnClickLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_new_artist_info, container, false);
-        mArtistName = (EditText) view.findViewById(R.id.artist_name);
-        mArtistProfile = (ImageView) view.findViewById(R.id.profile_cover_image);
-        mArtistDescription = (EditText) view.findViewById(R.id.artist_description);
-        mConfirmButton = (Button) view.findViewById(R.id.confirm_save_artist_detail_button);
-        mSkipText = (TextView) view.findViewById(R.id.skip_text);
+        mArtistName = view.findViewById(R.id.artist_name);
+        mArtistProfile = view.findViewById(R.id.profile_cover_image);
+        mArtistDescription = view.findViewById(R.id.artist_description);
+        mConfirmButton = view.findViewById(R.id.confirm_save_artist_detail_button);
+        mSkipText =  view.findViewById(R.id.skip_text);
 
         mArtistProfile.setOnClickListener(this);
         mConfirmButton.setOnClickListener(this);

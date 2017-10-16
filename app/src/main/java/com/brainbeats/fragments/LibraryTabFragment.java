@@ -42,9 +42,7 @@ public class LibraryTabFragment extends Fragment {
     public String mFilter = "";
     private TextView mEmptyDataPlaceholder;
 
-    public LibraryTabFragment() {
-        // Required empty public constructor
-    }
+    public LibraryTabFragment() {}
 
     public static LibraryTabFragment newInstance(Constants.LibraryDataType dataType, String tabFilter) {
         LibraryTabFragment tabFragment = new LibraryTabFragment();
@@ -91,10 +89,10 @@ public class LibraryTabFragment extends Fragment {
             mFirebasDatabaseReference = mFirebaseDatabase.getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
         else if(mDataType == 1){
             mFirebasDatabaseReference = mFirebaseDatabase.getReference("playlists/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
-            mEmptyDataPlaceholder.setText("Add a playlist to your library");
+            mEmptyDataPlaceholder.setText(R.string.add_playlist_to_lib);
         } else {
             mFirebasDatabaseReference = mFirebaseDatabase.getReference("mixes_favorites/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
-            mEmptyDataPlaceholder.setText("Add a favorite to your library");
+            mEmptyDataPlaceholder.setText(R.string.add_fav_to_lib);
         }
 
         if(mDataType == 0 || mDataType == 2) {

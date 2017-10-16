@@ -78,7 +78,7 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
         mAcceptFriendRequest.setOnClickListener(this);
         mAllRequestsText.setOnClickListener(this);
 
-        queryListener = new SearchView.OnQueryTextListener() {
+/*        queryListener = new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 mQueryText = query;
@@ -99,14 +99,14 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
             public boolean onQueryTextChange(String newText) {
                 return false;
             }
-        };
+        };*/
         return v;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mFirebaseDatabase = mFirebaseDatabase.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFriendsReference = mFirebaseDatabase.getReference("friends/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         friendList = new ArrayList<>();

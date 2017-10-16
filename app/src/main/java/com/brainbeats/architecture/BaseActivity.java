@@ -37,6 +37,7 @@ import com.brainbeats.MainActivity;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import com.brainbeats.SettingsActivity;
+import com.brainbeats.SocialActivity;
 import com.brainbeats.entity.Track;
 import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.model.Mix;
@@ -265,12 +266,12 @@ public class BaseActivity extends AppCompatActivity {
                     mixerIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                     createBackStack(mixerIntent);
                     break;
-/*                case R.id.action_social:
+                case R.id.action_social:
                     Intent socialIntent = new Intent(getApplicationContext(), SocialActivity.class);
                     socialIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
                     socialIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                     createBackStack(socialIntent);
-                    break;*/
+                    break;
                 case R.id.action_settings:
                     Intent settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
                     settingsIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
