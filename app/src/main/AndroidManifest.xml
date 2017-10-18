@@ -5,7 +5,6 @@
 
     <permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -16,26 +15,25 @@
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".architecture.Application"
         android:allowBackup="true"
         android:icon="@drawable/ic_brain_beats_logo"
         android:label="@string/app_name"
         android:logo="@mipmap/ic_brain"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
-        android:name=".architecture.Application"
         android:theme="@style/BrainBeatsTheme">
         <activity android:name=".architecture.BaseActivity" />
         <activity
             android:name=".MainActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -44,32 +42,35 @@
                 <action android:name="playtrack" />
                 <data android:scheme="brainbeats" />
             </intent-filter>
-          <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="audio/*" />
-            </intent-filter>-->
+            </intent-filter>
         </activity>
-        <activity android:name=".LibraryActivity"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden"/>
-        <activity android:name=".MixerActivity"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden"/>
-        <activity android:name=".SocialActivity"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden"/>
+        <activity
+            android:name=".LibraryActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MixerActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SocialActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SettingsActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_settings"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".LoginActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_login"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -79,16 +80,23 @@
         </activity>
         <activity
             android:name=".InfoActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_info"
-            android:theme="@style/BrainBeatsTheme"
             android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden"/>
+            android:theme="@style/BrainBeatsTheme" />
+        <activity
+            android:name=".MusicAnalyticsActivity"
+            android:label="@string/title_activity_music_analytics"
+            android:theme="@style/BrainBeatsTheme">
+        </activity>
 
         <provider
             android:name=".data.BrainBeatsContentProvider"
             android:authorities="com.brainbeats" />
 
-        <service android:name=".service.AudioService" android:exported="false" />
+        <service
+            android:name=".service.AudioService"
+            android:exported="false" />
         <service
             android:name=".service.SyncService"
             android:exported="true"
@@ -96,7 +104,6 @@
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
-
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/brain_beats_sync_adapter_meta_data" />
@@ -105,21 +112,18 @@
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
-
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/account_authenticator" />
         </service>
-
         <service android:name=".service.FirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service android:name=".service.FirebaseIdService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 

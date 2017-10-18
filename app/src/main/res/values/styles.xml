@@ -26,6 +26,7 @@
     </style>
 
     <style name="BrainBeatsTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <style name="BrainBeatsTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

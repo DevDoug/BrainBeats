@@ -205,5 +205,6 @@
     <string name="start_recording_text">Start Recording</string>
     <string name="add_playlist_to_lib">Add a playlist to your library</string>
     <string name="add_fav_to_lib">Add a favorite to your library</string>
+    <string name="title_activity_music_analytics">MusicAnalyticsActivity</string>
 
 </resources>
