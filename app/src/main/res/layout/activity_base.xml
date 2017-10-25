@@ -51,7 +51,7 @@
             app:layout_anchorGravity="top|end"
             android:layout_gravity="top"
             android:elevation="@dimen/fob_elevation"
-            android:src="@drawable/ic_sort_by_alpha_white"
+            android:src="@drawable/ic_m"
             android:visibility="invisible" />
 
         <android.support.design.widget.FloatingActionButton

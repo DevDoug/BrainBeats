@@ -81,7 +81,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mExtraActionOneFab = (FloatingActionButton) findViewById(R.id.action_one_fob);
         mExtraActionTwoFab = (FloatingActionButton) findViewById(R.id.action_two_fob);
         mExtraActionThreeFab = (FloatingActionButton) findViewById(R.id.action_three_fob);
-        //mExtraActionFourFab = (FloatingActionButton) findViewById(R.id.action_four_fob);
+        mExtraActionFourFab = (FloatingActionButton) findViewById(R.id.action_four_fob);
 
         fab_open = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_close);
@@ -121,7 +121,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mExtraActionOneFab.setOnClickListener(this);
         mExtraActionTwoFab.setOnClickListener(this);
         mExtraActionThreeFab.setOnClickListener(this);
-        //mExtraActionFourFab.setOnClickListener(this);
+        mExtraActionFourFab.setOnClickListener(this);
     }
 
     @Override
@@ -133,6 +133,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mExtraActionOneFab.setImageDrawable(getDrawable(R.drawable.ic_whatshot_white));
         mExtraActionTwoFab.setImageDrawable(getDrawable(R.drawable.ic_access_time_white));
         mExtraActionThreeFab.setImageDrawable(getDrawable(R.drawable.ic_sort_by_alpha_white));
+        mExtraActionFourFab.setImageDrawable(getDrawable(R.drawable.ic_m));
+
 
         FragmentManager fm = getSupportFragmentManager();
         navigateUpOrBack(this, fm);
@@ -196,13 +198,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 else if (mDashboardDetailFragment.isVisible())
                     showAddToPlaylist();
                 break;
-/*            case R.id.action_four_fob:
+            case R.id.action_four_fob:
                 animateFAB();
-                if (mDashboardFragment.isVisible())
-                    ((BrowseMusicFragment) mDashboardFragment).getTracks(WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_A_TO_Z);
-                else if (mDashboardDetailFragment.isVisible())
-                    showAddToPlaylist();
-                break;*/
+                //load mistro
+                break;
         }
     }
 
@@ -242,7 +241,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 mOptions = playlistNames.toArray(mOptions);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, android.R.style.Theme_Material_Light_Dialog_Alert);
-                LayoutInflater inflater = ((Activity) MainActivity.this).getLayoutInflater();
+                LayoutInflater inflater = MainActivity.this.getLayoutInflater();
                 View dialogView = inflater.inflate(R.layout.custom_list_dialog_layout, null);
                 ((TextView) dialogView.findViewById(R.id.separator_title)).setText("");
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, R.layout.dialog_list_item, R.id.dialog_item, mOptions);
@@ -363,7 +362,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mExtraActionOneFab.setImageDrawable(getDrawable(R.drawable.ic_library_add_white));
         mExtraActionTwoFab.setImageDrawable(getDrawable(R.drawable.ic_favorite_white));
         mExtraActionThreeFab.setImageDrawable(getDrawable(R.drawable.ic_playlist_add_white));
-        //mExtraActionFourFab.setImageDrawable(getDrawable(R.drawable.ic_playlist_add_white));
+        mExtraActionFourFab.setImageDrawable(getDrawable(R.drawable.ic_m));
 
         replaceFragment(mDashboardDetailFragment, "DashboardDetailFrag");
     }
@@ -377,8 +376,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             mExtraActionTwoFab.setClickable(false);
             mExtraActionThreeFab.startAnimation(fab_close);
             mExtraActionThreeFab.setClickable(false);
-/*            mExtraActionFourFab.startAnimation(fab_close);
-            mExtraActionFourFab.setClickable(false);*/
+            mExtraActionFourFab.startAnimation(fab_close);
+            mExtraActionFourFab.setClickable(false);
 
             mIsFabOpen = false;
         } else {
@@ -389,8 +388,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             mExtraActionTwoFab.setClickable(true);
             mExtraActionThreeFab.startAnimation(fab_open);
             mExtraActionThreeFab.setClickable(true);
-/*            mExtraActionFourFab.startAnimation(fab_open);
-            mExtraActionFourFab.setClickable(true);*/
+            mExtraActionFourFab.startAnimation(fab_open);
+            mExtraActionFourFab.setClickable(true);
 
             mIsFabOpen = true;
         }

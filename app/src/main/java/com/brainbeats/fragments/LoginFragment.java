@@ -28,6 +28,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -153,6 +154,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         } else {
                             try {
                                 throw task.getException();
+                            } catch (FirebaseAuthInvalidUserException ex){
+                                Constants.buildInfoDialog(getContext(), "Error", "Please enter a valid username");
                             } catch (FirebaseAuthInvalidCredentialsException e) {
                                 Constants.buildInfoDialog(getContext(), "Error", "Invalid login or password.");
                             } catch (Exception e) {
@@ -182,6 +185,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             return false;
         }
 
+        if (!Constants.isValidEmail(mEmailView.getText())) {
+            mEmailView.setError(getString(R.string.error_invalid_email));
+            mEmailView.requestFocus();
+            return false;
+        }
+
         if (TextUtils.isEmpty(mPasswordView.getText()) || mPasswordView.getText().length() < Constants.PASSWORD_MINIMUM_LENGTH) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             mPasswordView.requestFocus();
@@ -206,7 +215,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         }
                     });
         } else {
-            Constants.buildInfoDialog(getContext(), "Reset Failed", "There was an issue reseting that password.");
+            Constants.buildInfoDialog(getContext(), "Reset Failed", "Please enter an email to be reset.");
         }
     }
 }

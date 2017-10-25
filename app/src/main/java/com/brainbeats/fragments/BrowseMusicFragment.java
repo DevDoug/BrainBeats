@@ -179,9 +179,7 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
         genreSpinner.setSelection(0);
 
@@ -222,7 +220,7 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mFirebaseDatabase = mFirebaseDatabase.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebasDatabaseReference = mFirebaseDatabase
                 .getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .orderByChild("artistId")
