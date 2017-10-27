@@ -59,10 +59,10 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
-        mUsername = (EditText) view.findViewById(R.id.username_edit_text);
-        mPassword = (EditText) view.findViewById(R.id.password_edit_text);
-        mConfirmPassword = (EditText) view.findViewById(R.id.confirm_password_edit_text);
-        mRegisterButton = (Button) view.findViewById(R.id.create_user_button);
+        mUsername = view.findViewById(R.id.username_edit_text);
+        mPassword = view.findViewById(R.id.password_edit_text);
+        mConfirmPassword = view.findViewById(R.id.confirm_password_edit_text);
+        mRegisterButton = view.findViewById(R.id.create_user_button);
 
         mRegisterButton.setOnClickListener(this);
         return view;

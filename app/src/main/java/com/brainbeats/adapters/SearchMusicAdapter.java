@@ -37,8 +37,8 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
 
         public ViewHolder(View v) {
             super(v);
-            mAlbumArtCover = (ImageView) v.findViewById(R.id.album_cover_art);
-            mTrackTitle = (TextView) v.findViewById(R.id.album_title);
+            mAlbumArtCover = v.findViewById(R.id.album_cover_art);
+            mTrackTitle = v.findViewById(R.id.album_title);
             //mNoCoverArt = (TextView) v.findViewById(R.id.no_cover_art);
 
             v.setOnClickListener(new View.OnClickListener() { //Mix selected load detail screen

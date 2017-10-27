@@ -60,15 +60,15 @@ public class MixerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mixer, container, false);
-        mMixRecyclerView = (RecyclerView) v.findViewById(R.id.mixer_list);
-        mEmptyDataPlaceholder = (TextView) v.findViewById(R.id.empty_text);
+        mMixRecyclerView = v.findViewById(R.id.mixer_list);
+        mEmptyDataPlaceholder = v.findViewById(R.id.empty_text);
         return v;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mFirebaseDatabase = mFirebaseDatabase.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebasDatabaseReference = mFirebaseDatabase
                 .getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .orderByChild("artistId")

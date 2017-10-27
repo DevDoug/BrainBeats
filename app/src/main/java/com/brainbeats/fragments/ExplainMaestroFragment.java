@@ -37,7 +37,7 @@ public class ExplainMaestroFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_explain_mistro, container, false);
-        mGotItText = (TextView) v.findViewById(R.id.got_it_text);
+        mGotItText = v.findViewById(R.id.got_it_text);
 
         mGotItText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,7 +52,7 @@ public class ExplainMaestroFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         Drawable up = DrawableCompat.wrap(ContextCompat.getDrawable(getContext(), R.drawable.ic_up));
         DrawableCompat.setTint(up, getResources().getColor(R.color.theme_primary_text_color));
         toolbar.setNavigationIcon(up);

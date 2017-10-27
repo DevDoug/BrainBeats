@@ -79,8 +79,8 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
             }
         }
 
-        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
-        mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
+        mCoordinatorLayout = findViewById(R.id.main_content_coordinator_layout);
+        mMainActionFab = findViewById(R.id.main_action_fob);
 
         mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_add_white));
         mMainActionFab.setOnClickListener(this);

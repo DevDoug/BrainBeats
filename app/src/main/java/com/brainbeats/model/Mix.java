@@ -190,7 +190,7 @@ public class Mix implements Parcelable {
         mStreamURL = in.readString();
         mMixTagList = in.readString();
         mDuration = in.readInt();
-        mBrainBeatsUser = (BrainBeatsUser) in.readParcelable(BrainBeatsUser.class.getClassLoader());
+        mBrainBeatsUser = in.readParcelable(BrainBeatsUser.class.getClassLoader());
     }
 
     public static final Creator<Mix> CREATOR = new Creator<Mix>() {

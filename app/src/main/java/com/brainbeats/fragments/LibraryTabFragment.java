@@ -67,15 +67,15 @@ public class LibraryTabFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_library_tab, container, false);
-        mMixRecyclerView = (RecyclerView) v.findViewById(R.id.library_content_list);
-        mEmptyDataPlaceholder = (TextView) v.findViewById(R.id.empty_text);
+        mMixRecyclerView = v.findViewById(R.id.library_content_list);
+        mEmptyDataPlaceholder = v.findViewById(R.id.empty_text);
         return v;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mFirebaseDatabase = mFirebaseDatabase.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
 
         mixList = new ArrayList<>();
         playLists = new ArrayList<>();

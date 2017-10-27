@@ -72,13 +72,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
-        mEmailView = (AutoCompleteTextView) view.findViewById(R.id.email_text_input);
-        mSignUpText = (TextView) view.findViewById(R.id.register_text);
-        mResetPasswordText = (TextView) view.findViewById(R.id.forgot_password);
-        mLoginButton = (Button) view.findViewById(R.id.email_sign_in_button);
-        mPasswordView = (EditText) view.findViewById(R.id.password_text_input);
-        mSoundCloudLogin = (Button) view.findViewById(R.id.sound_cloud_sign_in_button);
-        mCoordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.main_content_coordinator_layout);
+        mEmailView = view.findViewById(R.id.email_text_input);
+        mSignUpText = view.findViewById(R.id.register_text);
+        mResetPasswordText = view.findViewById(R.id.forgot_password);
+        mLoginButton = view.findViewById(R.id.email_sign_in_button);
+        mPasswordView = view.findViewById(R.id.password_text_input);
+        mSoundCloudLogin = view.findViewById(R.id.sound_cloud_sign_in_button);
+        mCoordinatorLayout = view.findViewById(R.id.main_content_coordinator_layout);
 
         mLoginButton.setOnClickListener(this);
         mSoundCloudLogin.setOnClickListener(this);

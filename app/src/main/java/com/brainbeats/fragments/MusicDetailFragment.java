@@ -160,19 +160,19 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         View v = inflater.inflate(R.layout.fragment_music_detail, container, false);
         //mMixerTags = (RecyclerView) v.findViewById(R.id.mix_tag_grid);    //TODO - implement in version 2.0 beta version
 
-        mTrackTitle = (TextView) v.findViewById(R.id.mix_title);
-        mArtistDescription = (TextView) v.findViewById(R.id.artist_description);
-        mAlbumCoverArt = (ImageView) v.findViewById(R.id.album_cover_art);
-        mPlaySongButton = (ImageView) v.findViewById(R.id.play_song_button);
-        mUpvoteArrow = (ImageView) v.findViewById(R.id.arrow_up);
-        mDownVoteArrow = (ImageView) v.findViewById(R.id.arrow_down);
-        mSkipForwardButton = (ImageView) v.findViewById(R.id.skip_forward_button);
-        mLoopSongButton = (ImageView) v.findViewById(R.id.repeat_button);
-        mArtistThumbnail = (ImageView) v.findViewById(R.id.artist_thumbnail);
-        mPlayTrackSeekBar = (SeekBar) v.findViewById(R.id.play_song_seek_bar);
-        mArtistName = (TextView) v.findViewById(R.id.user_name);
-        mShowArtistDetails = (TextView) v.findViewById(R.id.artist_detail_toggle_switch);
-        mArtistCard = (CardView) v.findViewById(R.id.card_view);
+        mTrackTitle = v.findViewById(R.id.mix_title);
+        mArtistDescription = v.findViewById(R.id.artist_description);
+        mAlbumCoverArt = v.findViewById(R.id.album_cover_art);
+        mPlaySongButton = v.findViewById(R.id.play_song_button);
+        mUpvoteArrow = v.findViewById(R.id.arrow_up);
+        mDownVoteArrow = v.findViewById(R.id.arrow_down);
+        mSkipForwardButton = v.findViewById(R.id.skip_forward_button);
+        mLoopSongButton = v.findViewById(R.id.repeat_button);
+        mArtistThumbnail = v.findViewById(R.id.artist_thumbnail);
+        mPlayTrackSeekBar = v.findViewById(R.id.play_song_seek_bar);
+        mArtistName = v.findViewById(R.id.user_name);
+        mShowArtistDetails = v.findViewById(R.id.artist_detail_toggle_switch);
+        mArtistCard = v.findViewById(R.id.card_view);
 
         mPlaySongButton.setOnClickListener(this);
         mUpvoteArrow.setOnClickListener(this);
@@ -188,7 +188,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public void onResume() {
         super.onResume();
 
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         Drawable up = DrawableCompat.wrap(ContextCompat.getDrawable(getContext(), R.drawable.ic_up));
         DrawableCompat.setTint(up, getResources().getColor(R.color.theme_primary_text_color));
         toolbar.setNavigationIcon(up);

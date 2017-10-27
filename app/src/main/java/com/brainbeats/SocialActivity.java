@@ -52,7 +52,7 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
 
-        mFirebaseDatabase = mFirebaseDatabase.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
         mUsersReference = mFirebaseDatabase.getReference("users");
 
         if (savedInstanceState == null) {
@@ -61,8 +61,8 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
             switchToSocialFragment();
         }
 
-        mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
-        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
+        mMainActionFab = findViewById(R.id.main_action_fob);
+        mCoordinatorLayout = findViewById(R.id.main_content_coordinator_layout);
 
         mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_add_white));
         mMainActionFab.setOnClickListener(this);
@@ -108,12 +108,12 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
 
     public void showAddFriendDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
-        LayoutInflater inflater = ((Activity) this).getLayoutInflater();
+        LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.custom_search_dialog, null);
-        addArtistContainer = (LinearLayout) dialogView.findViewById(R.id.add_artist_container);
-        mArtistTitle = (TextView) dialogView.findViewById(R.id.artist_name);
-        mAddFriendButton = (Button) dialogView.findViewById(R.id.add_friend_button);
-        EditText search = (EditText) dialogView.findViewById(R.id.friend_search);
+        addArtistContainer = dialogView.findViewById(R.id.add_artist_container);
+        mArtistTitle = dialogView.findViewById(R.id.artist_name);
+        mAddFriendButton = dialogView.findViewById(R.id.add_friend_button);
+        EditText search = dialogView.findViewById(R.id.friend_search);
 
         TextView.OnEditorActionListener searchListener = (searchView, actionId, event) -> {
             if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {

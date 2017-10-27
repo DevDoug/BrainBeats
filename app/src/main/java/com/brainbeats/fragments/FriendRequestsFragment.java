@@ -44,7 +44,7 @@ public class FriendRequestsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_friend_requests, container, false);
-        mFriendRequestReyclerView = (RecyclerView) v.findViewById(R.id.friend_request_list);
+        mFriendRequestReyclerView = v.findViewById(R.id.friend_request_list);
 
         return v;
     }
@@ -52,7 +52,7 @@ public class FriendRequestsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mFirebaseDatabase = mFirebaseDatabase.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebasDatabaseReference = mFirebaseDatabase.getReference("userFriendRequest");
 
     }

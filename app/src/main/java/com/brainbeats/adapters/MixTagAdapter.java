@@ -36,7 +36,7 @@ public class MixTagAdapter extends RecyclerViewCursorAdapter<MixTagAdapter.ViewH
 
         public ViewHolder(View view){
             super(view);
-            mSoundCloudTag = (Button) view.findViewById(R.id.sound_cloud_tag);
+            mSoundCloudTag = view.findViewById(R.id.sound_cloud_tag);
         }
     }
 

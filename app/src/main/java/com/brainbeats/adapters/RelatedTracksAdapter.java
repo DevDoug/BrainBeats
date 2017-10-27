@@ -31,7 +31,7 @@ public class RelatedTracksAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, final Cursor cursor) {
-        TextView titleText = (TextView) view.findViewById(R.id.album_title);
+        TextView titleText = view.findViewById(R.id.album_title);
         titleText.setText(cursor.getString(cursor.getColumnIndexOrThrow(BrainBeatsContract.MixEntry.COLUMN_NAME_MIX_TITLE)));
     }
 }

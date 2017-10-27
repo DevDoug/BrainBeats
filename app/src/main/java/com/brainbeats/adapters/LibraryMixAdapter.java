@@ -54,10 +54,10 @@ public class LibraryMixAdapter extends RecyclerView.Adapter<LibraryMixAdapter.Vi
 
         public ViewHolder(View view) {
             super(view);
-            mContainer = (CardView) view.findViewById(R.id.card_view);
-            mTitleText = (TextView) view.findViewById(R.id.album_title);
-            mPlay = (ImageView) view.findViewById(R.id.play_mix);
-            mMix = (ImageView) view.findViewById(R.id.mix_beat);
+            mContainer = view.findViewById(R.id.card_view);
+            mTitleText = view.findViewById(R.id.album_title);
+            mPlay = view.findViewById(R.id.play_mix);
+            mMix = view.findViewById(R.id.mix_beat);
         }
     }
 

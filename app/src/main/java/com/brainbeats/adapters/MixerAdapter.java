@@ -51,8 +51,8 @@ public class MixerAdapter extends RecyclerView.Adapter<MixerAdapter.ViewHolder> 
 
         public ViewHolder(View view){
             super(view);
-            mContainer =(CardView) view.findViewById(R.id.card_view);
-            mTitleText = (TextView) view.findViewById(R.id.album_title);
+            mContainer = view.findViewById(R.id.card_view);
+            mTitleText = view.findViewById(R.id.album_title);
         }
     }
 

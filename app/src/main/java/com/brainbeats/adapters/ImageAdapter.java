@@ -51,7 +51,7 @@ public class ImageAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.dialog_image_item, parent, false);
         }
 
-        ImageView imageView = (ImageView) convertView.findViewById(R.id.dialog_image_list_item);
+        ImageView imageView = convertView.findViewById(R.id.dialog_image_list_item);
         switch (position) {
             case 0:
                 imageView.setImageDrawable(mAdapterContext.getDrawable(R.drawable.ic_alpha));

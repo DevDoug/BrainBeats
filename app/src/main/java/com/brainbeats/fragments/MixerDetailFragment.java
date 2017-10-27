@@ -60,9 +60,9 @@ public class MixerDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mixer_detail, container, false);
-        mMixerItemList = (RecyclerView) v.findViewById(R.id.beat_mix_item_list);
-        mMixTitle = (EditText) v.findViewById(R.id.mix_title);
-        mPlayMixButton = (ImageView) v.findViewById(R.id.play_song_button);
+        mMixerItemList = v.findViewById(R.id.beat_mix_item_list);
+        mMixTitle = v.findViewById(R.id.mix_title);
+        mPlayMixButton = v.findViewById(R.id.play_song_button);
         ((TextView) v.findViewById(R.id.separator_title)).setText(R.string.beat_levels);
         //mAddNewBeatButton = (FloatingActionButton) v.findViewById(R.id.mixer_fob);
 
@@ -76,7 +76,7 @@ public class MixerDetailFragment extends Fragment implements LoaderManager.Loade
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         Drawable up = DrawableCompat.wrap(ContextCompat.getDrawable(getContext(), R.drawable.ic_up));
         DrawableCompat.setTint(up, getResources().getColor(R.color.theme_primary_text_color));
         toolbar.setNavigationIcon(up);

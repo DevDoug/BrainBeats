@@ -70,10 +70,10 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_social, container, false);
-        mFriendListReyclerView = (RecyclerView) v.findViewById(R.id.user_list);
-        mPendingFriendsCard = (CardView) v.findViewById(R.id.pending_friend_container);
-        mAcceptFriendRequest = (TextView) v.findViewById(R.id.accept_friend_request);
-        mAllRequestsText = (TextView) v.findViewById(R.id.all_friend_requests);
+        mFriendListReyclerView = v.findViewById(R.id.user_list);
+        mPendingFriendsCard = v.findViewById(R.id.pending_friend_container);
+        mAcceptFriendRequest = v.findViewById(R.id.accept_friend_request);
+        mAllRequestsText = v.findViewById(R.id.all_friend_requests);
 
         mAcceptFriendRequest.setOnClickListener(this);
         mAllRequestsText.setOnClickListener(this);

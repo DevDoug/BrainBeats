@@ -58,9 +58,9 @@ public class ConfirmCreateMixFragment extends Fragment implements View.OnClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_confirm_create_mix, container, false);
-        mSaveMixButton = (Button) v.findViewById(R.id.confirm_save_mix_button);
-        mMixTitle = (TextView) v.findViewById(R.id.mix_name);
-        mAlbumCoverImage = (ImageView) v.findViewById(R.id.album_cover_art);
+        mSaveMixButton = v.findViewById(R.id.confirm_save_mix_button);
+        mMixTitle = v.findViewById(R.id.mix_name);
+        mAlbumCoverImage = v.findViewById(R.id.album_cover_art);
 
         mAlbumCoverImage.setOnClickListener(this);
         mSaveMixButton.setOnClickListener(this);
@@ -71,7 +71,7 @@ public class ConfirmCreateMixFragment extends Fragment implements View.OnClickLi
     public void onResume() {
         super.onResume();
 
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         Drawable up = DrawableCompat.wrap(ContextCompat.getDrawable(getContext(), R.drawable.ic_up));
         DrawableCompat.setTint(up, getResources().getColor(R.color.theme_primary_text_color));
         toolbar.setNavigationIcon(up);

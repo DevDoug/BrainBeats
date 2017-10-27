@@ -69,17 +69,17 @@ public class ArtistProfileFragment extends Fragment implements View.OnClickListe
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mArtistReference = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());;
+        mArtistReference = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         mStorageRef = FirebaseStorage.getInstance().getReference();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_artist_profile, container, false);
-        mArtistName = (EditText) v.findViewById(R.id.artist_name);
-        mProfileImage = (ImageView) v.findViewById(R.id.profile_cover_image);
-        mArtistDescription = (EditText) v.findViewById(R.id.artist_description);
-        mSaveButton = (Button) v.findViewById(R.id.confirm_save_artist_detail_button);
+        mArtistName = v.findViewById(R.id.artist_name);
+        mProfileImage = v.findViewById(R.id.profile_cover_image);
+        mArtistDescription = v.findViewById(R.id.artist_description);
+        mSaveButton = v.findViewById(R.id.confirm_save_artist_detail_button);
 
         mProfileImage.setOnClickListener(this);
         mSaveButton.setOnClickListener(this);
@@ -90,7 +90,7 @@ public class ArtistProfileFragment extends Fragment implements View.OnClickListe
     public void onResume() {
         super.onResume();
 
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         Drawable up = DrawableCompat.wrap(ContextCompat.getDrawable(getContext(), R.drawable.ic_up));
         DrawableCompat.setTint(up, getResources().getColor(R.color.theme_primary_text_color));
         toolbar.setNavigationIcon(up);

@@ -26,7 +26,7 @@ public class MusicAnalyticsActivity extends BaseActivity implements View.OnClick
             switchToMusicAnalyticsFragment();
         }
 
-        mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
+        mMainActionFab = findViewById(R.id.main_action_fob);
 
         mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_m));
         mMainActionFab.setOnClickListener(this);

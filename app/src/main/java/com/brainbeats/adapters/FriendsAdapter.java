@@ -36,10 +36,10 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
         public ViewHolder(View view){
             super(view);
-            mUsername = (TextView) view.findViewById(R.id.artist_name);
-            mDescription = (TextView) view.findViewById(R.id.artist_description);
-            mArtistThumbnail = (ImageView) view.findViewById(R.id.artist_thumbnail);
-            mArtistContainerCard = (CardView) view.findViewById(R.id.artist_name_container);
+            mUsername = view.findViewById(R.id.artist_name);
+            mDescription = view.findViewById(R.id.artist_description);
+            mArtistThumbnail = view.findViewById(R.id.artist_thumbnail);
+            mArtistContainerCard = view.findViewById(R.id.artist_name_container);
         }
     }
 

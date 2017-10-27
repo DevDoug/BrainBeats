@@ -22,7 +22,7 @@ public class LibraryActivity extends BaseActivity implements LibraryFragment.OnF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_library);
-        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
+        mCoordinatorLayout = findViewById(R.id.main_content_coordinator_layout);
         mLibraryFragment = new LibraryFragment();
         switchToLibraryFragment();
 

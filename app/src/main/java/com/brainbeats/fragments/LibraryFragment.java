@@ -33,8 +33,8 @@ public class LibraryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_library, container, false);
-        mTabLayout = (TabLayout) v.findViewById(R.id.tab_layout);
-        mViewPager = (ViewPager) v.findViewById(R.id.base_viewpager);
+        mTabLayout = v.findViewById(R.id.tab_layout);
+        mViewPager = v.findViewById(R.id.base_viewpager);
         return v;
     }
 

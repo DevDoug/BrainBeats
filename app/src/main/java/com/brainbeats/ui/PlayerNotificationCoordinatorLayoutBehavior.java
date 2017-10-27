@@ -20,7 +20,7 @@ public class PlayerNotificationCoordinatorLayoutBehavior extends CoordinatorLayo
 
     @Override
     public boolean layoutDependsOn(CoordinatorLayout parent, FloatingActionButton child, View dependency) {
-        RelativeLayout audioNotificationBar = (RelativeLayout) parent.findViewById(R.id.current_track_container);
+        RelativeLayout audioNotificationBar = parent.findViewById(R.id.current_track_container);
         return audioNotificationBar != null && audioNotificationBar.getVisibility() == View.VISIBLE;
     }
 

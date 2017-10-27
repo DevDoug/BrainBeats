@@ -38,7 +38,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_setting, container, false);
-        mUserProfileContainer = (LinearLayout) v.findViewById(R.id.artist_profile_setting_option_container);
+        mUserProfileContainer = v.findViewById(R.id.artist_profile_setting_option_container);
 
         mUserProfileContainer.setOnClickListener(this);
         return v;

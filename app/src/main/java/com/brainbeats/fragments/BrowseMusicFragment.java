@@ -87,7 +87,7 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_browse, container, false);
-        mTrackGrid = (RecyclerView) v.findViewById(R.id.category_grid);
+        mTrackGrid = v.findViewById(R.id.category_grid);
 
         listener = new SearchView.OnQueryTextListener() {
             @Override
@@ -164,10 +164,10 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
         View dialogView = inflater.inflate(R.layout.advanced_filter_dialog, null);
         ((TextView) dialogView.findViewById(R.id.separator_title)).setText("");
 
-        EditText songTitle = (EditText) dialogView.findViewById(R.id.query_text);
-        final EditText songTags = (EditText) dialogView.findViewById(R.id.tag_text);
-        Spinner genreSpinner = (Spinner) dialogView.findViewById(R.id.genres_spinner);
-        LinearLayout tagContainer = (LinearLayout) dialogView.findViewById(R.id.tag_container);
+        EditText songTitle = dialogView.findViewById(R.id.query_text);
+        final EditText songTags = dialogView.findViewById(R.id.tag_text);
+        Spinner genreSpinner = dialogView.findViewById(R.id.genres_spinner);
+        LinearLayout tagContainer = dialogView.findViewById(R.id.tag_container);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.genres, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -188,7 +188,7 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     View tag = inflater.inflate(R.layout.tag_item, null);
-                    Button b = (Button) tag.findViewById(R.id.sound_cloud_tag);
+                    Button b = tag.findViewById(R.id.sound_cloud_tag);
                     mAdvancedSearchTagsList = mAdvancedSearchTagsList.concat("#" + songTags.getText().toString() + " ");
                     b.setText(songTags.getText().toString());
 /*                    b.setOnClickListener(new View.OnClickListener() {

@@ -76,12 +76,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content_coordinator_layout);
-        mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
-        mExtraActionOneFab = (FloatingActionButton) findViewById(R.id.action_one_fob);
-        mExtraActionTwoFab = (FloatingActionButton) findViewById(R.id.action_two_fob);
-        mExtraActionThreeFab = (FloatingActionButton) findViewById(R.id.action_three_fob);
-        mExtraActionFourFab = (FloatingActionButton) findViewById(R.id.action_four_fob);
+        mCoordinatorLayout = findViewById(R.id.main_content_coordinator_layout);
+        mMainActionFab = findViewById(R.id.main_action_fob);
+        mExtraActionOneFab = findViewById(R.id.action_one_fob);
+        mExtraActionTwoFab = findViewById(R.id.action_two_fob);
+        mExtraActionThreeFab = findViewById(R.id.action_three_fob);
+        mExtraActionFourFab = findViewById(R.id.action_four_fob);
 
         fab_open = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_close);
@@ -250,7 +250,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     if (position == 0)
                         showEnterPlaylistTitleDialog();
                     else {
-                        TextView titleView = (TextView) view.findViewById(R.id.dialog_item);
+                        TextView titleView = view.findViewById(R.id.dialog_item);
                         String title = titleView.getText().toString();
                         addToExistingPlaylist(title);
                     }
@@ -269,10 +269,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         alert.dismiss();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
-        LayoutInflater inflater = ((Activity) this).getLayoutInflater();
+        LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.create_playlist_dialog, null);
         ((TextView) dialogView.findViewById(R.id.separator_title)).setText("");
-        EditText editText = ((EditText) dialogView.findViewById(R.id.playlist_title));
+        EditText editText = dialogView.findViewById(R.id.playlist_title);
         builder.setView(dialogView);
         builder.setPositiveButton("Create", (dialog, which) -> {
             String playlistTitle = editText.getText().toString();
@@ -471,7 +471,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
-                Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+                Track newTrack = intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
                 if (mDashboardDetailFragment.isVisible()) {                                                             //if they are on the dashboard detail screen update the detail widgets
                     (((MusicDetailFragment) mDashboardDetailFragment)).updateTrackUI(newTrack);
                     hideCurrentSongView();
@@ -487,7 +487,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             } else if (intent.getAction().equals(Constants.PLAYLIST_COMPLETE_BROADCAST_ACTION)) {
                 hideCurrentSongView();
             } else if (intent.getAction().equals(Constants.RESTORE_FROM_SERVICE_BROADCAST_ACTION)) {
-                Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+                Track newTrack = intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
                 if (mDashboardDetailFragment.isVisible()) {                                                             //if they are on the dashboard detail screen update the detail widgets
                     (((MusicDetailFragment) mDashboardDetailFragment)).updateTrackUI(newTrack);
                 }

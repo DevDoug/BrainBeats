@@ -202,12 +202,12 @@ public class BaseActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
         setUpNavDrawer();
 
-        mCurrentSongPlayingView = (LinearLayout) findViewById(R.id.current_track_container);
-        mCurrentSongTitle = (TextView) findViewById(R.id.playing_mix_title);
-        mCurrentSongArtistName = (TextView) findViewById(R.id.playing_mix_artist);
-        mAlbumThumbnail = (ImageView) findViewById(R.id.album_thumbnail);
-        mPlayTrackSeekBar = (SeekBar) findViewById(R.id.playing_mix_seek_bar);
-        mMainActionFab = (FloatingActionButton) findViewById(R.id.main_action_fob);
+        mCurrentSongPlayingView = findViewById(R.id.current_track_container);
+        mCurrentSongTitle = findViewById(R.id.playing_mix_title);
+        mCurrentSongArtistName = findViewById(R.id.playing_mix_artist);
+        mAlbumThumbnail = findViewById(R.id.album_thumbnail);
+        mPlayTrackSeekBar = findViewById(R.id.playing_mix_seek_bar);
+        mMainActionFab = findViewById(R.id.main_action_fob);
 
         if(mCurrentSong != null)
             updateCurrentSongNotificationUI(mCurrentSong);
@@ -241,9 +241,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void setUpNavDrawer() {
-        mNavigationDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mNavView = (NavigationView) findViewById(R.id.navView);
-        mArtistCoverImage = (ImageView) mNavView.getHeaderView(0).findViewById(R.id.profile_cover_image);
+        mNavigationDrawer = findViewById(R.id.drawer_layout);
+        mNavView = findViewById(R.id.navView);
+        mArtistCoverImage = mNavView.getHeaderView(0).findViewById(R.id.profile_cover_image);
         getToolBar();
         mDrawerToggle = new ActionBarDrawerToggle(this, mNavigationDrawer, mToolBar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mNavigationDrawer.addDrawerListener(mDrawerToggle);
@@ -319,7 +319,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public Toolbar getToolBar() {
-        mToolBar = (Toolbar) findViewById(R.id.toolbar);
+        mToolBar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolBar);
 
         if (mToolBar != null) {
@@ -473,7 +473,7 @@ public class BaseActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
-                Track newTrack = (Track) intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+                Track newTrack = intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
                 if (newTrack != null) {
                     mCurrentSongTitle.setText(newTrack.getTitle());
 

@@ -49,12 +49,12 @@ public class MixItemAdapter extends RecyclerViewCursorAdapter<MixItemAdapter.Vie
 
         public ViewHolder(View view){
             super(view);
-            mMixerItemTitle = (TextView) view.findViewById(R.id.mix_item_title);
-            mAddItemIcon = (ImageView) view.findViewById(R.id.plus_icon);
-            mIncreaseBeatLevelIcon = (ImageView) view.findViewById(R.id.increase_icon);
-            mSubtractBeatLevelIcon = (ImageView) view.findViewById(R.id.minus_icon);
-            mRemoveBeatItemIcon = (ImageView) view.findViewById(R.id.clear_icon);
-            mProgressBar = (ProgressBar) view.findViewById(R.id.beat_level_bar);
+            mMixerItemTitle = view.findViewById(R.id.mix_item_title);
+            mAddItemIcon = view.findViewById(R.id.plus_icon);
+            mIncreaseBeatLevelIcon = view.findViewById(R.id.increase_icon);
+            mSubtractBeatLevelIcon = view.findViewById(R.id.minus_icon);
+            mRemoveBeatItemIcon = view.findViewById(R.id.clear_icon);
+            mProgressBar = view.findViewById(R.id.beat_level_bar);
 
             mAddItemIcon.setOnClickListener(this);
             mIncreaseBeatLevelIcon.setOnClickListener(this);

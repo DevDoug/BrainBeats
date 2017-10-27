@@ -116,22 +116,22 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_new_mix, container, false);
-        mInstructionText = (TextView) v.findViewById(R.id.instruction_text);
-        mRecordButton = (ImageView) v.findViewById(R.id.start_stop_recording);
-        mPlayRecordingButton = (ImageView) v.findViewById(R.id.play_song_button);
-        mSaveSong = (ImageView) v.findViewById(R.id.save_button);
-        mRerecordSong = (ImageView) v.findViewById(R.id.restart);
-        mPlayRecordingSeekBar = (SeekBar) v.findViewById(R.id.play_recording_seek_bar);
-        mRecordingOptions = (LinearLayout) v.findViewById(R.id.button_panel);
-        mMaestroPanel = (RelativeLayout) v.findViewById(R.id.maestro_panel);
-        mRecordingContainer = (RelativeLayout) v.findViewById(R.id.recording_container);
-        lyricsContainer = (LinearLayout) v.findViewById(R.id.lyrics_container);
-        songLyrics = (TextView) v.findViewById(R.id.song_lyrics);
-        mPreviewLyricsText = (TextView) v.findViewById(R.id.lyric_preview_text);
-        editSongLyricsButton = (Button) v.findViewById(R.id.edit_song_lyrics_button);
-        mDoneButton = (Button) v.findViewById(R.id.maestro_done);
+        mInstructionText = v.findViewById(R.id.instruction_text);
+        mRecordButton = v.findViewById(R.id.start_stop_recording);
+        mPlayRecordingButton = v.findViewById(R.id.play_song_button);
+        mSaveSong = v.findViewById(R.id.save_button);
+        mRerecordSong = v.findViewById(R.id.restart);
+        mPlayRecordingSeekBar = v.findViewById(R.id.play_recording_seek_bar);
+        mRecordingOptions = v.findViewById(R.id.button_panel);
+        mMaestroPanel = v.findViewById(R.id.maestro_panel);
+        mRecordingContainer = v.findViewById(R.id.recording_container);
+        lyricsContainer = v.findViewById(R.id.lyrics_container);
+        songLyrics = v.findViewById(R.id.song_lyrics);
+        mPreviewLyricsText = v.findViewById(R.id.lyric_preview_text);
+        editSongLyricsButton = v.findViewById(R.id.edit_song_lyrics_button);
+        mDoneButton = v.findViewById(R.id.maestro_done);
 
-        addLyrics = (TextView) v.findViewById(R.id.add_lyrics);
+        addLyrics = v.findViewById(R.id.add_lyrics);
 /*        addInstrument = (TextView) v.findViewById(R.id.add_instrument);
         playRandom = (TextView) v.findViewById(R.id.play_random);*/
 
@@ -150,7 +150,7 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onResume() {
         super.onResume();
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         Drawable up = DrawableCompat.wrap(ContextCompat.getDrawable(getContext(), R.drawable.ic_up));
         DrawableCompat.setTint(up, getResources().getColor(R.color.theme_primary_text_color));
         toolbar.setNavigationIcon(up);
@@ -323,7 +323,7 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), android.R.style.Theme_Material_Light_Dialog_Alert);
         View dialogView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.audio_playback_dialog, null);
         builder.setView(dialogView);
-        ((ImageView) dialogView.findViewById(R.id.play_song_button)).setOnClickListener(new View.OnClickListener() {
+        dialogView.findViewById(R.id.play_song_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onFragmentInteraction(Constants.LOAD_SONG_URI, mFileName);
@@ -383,7 +383,7 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         String[] mOptions = new String[]{"Maestro add some lyrics for me", /*"I have my own lyrics"*/};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), android.R.style.Theme_Material_Light_Dialog_Alert);
-        LayoutInflater inflater = ((Activity) getActivity()).getLayoutInflater();
+        LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.custom_list_dialog_layout, null);
         ((TextView) dialogView.findViewById(R.id.separator_title)).setText("");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.dialog_list_item, R.id.dialog_item, mOptions);
