@@ -296,33 +296,30 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
             loadingMusicDialog.setMessage(getString(R.string.loading_message));
             loadingMusicDialog.show();
 
-            WebApiManager.getTracks(getContext(), query, genre, tagList, new WebApiManager.OnObjectResponseListener() {
-                @Override
-                public void onObjectResponse(JSONObject object) {
-                    loadingMusicDialog.dismiss();
-                    Gson gson = new Gson();
-                    Type token = new TypeToken<TrackCollection>() {}.getType();
-                    TrackCollection tracks = gson.fromJson(object.toString(), token);
-                    mNextTracksHref = tracks.getNextHref();
-                    mTracks = tracks.getTracks();
-                    if (mTracks.size() != 0) {
-                        mTrackAdapter = new SearchMusicAdapter(getContext(), mTracks);
-                        mBeatGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
+            WebApiManager.getTracks(getContext(), query, genre, tagList, object -> {
+                loadingMusicDialog.dismiss();
+                Gson gson = new Gson();
+                Type token = new TypeToken<TrackCollection>() {}.getType();
+                TrackCollection tracks = gson.fromJson(object.toString(), token);
+                mNextTracksHref = tracks.getNextHref();
+                mTracks = tracks.getTracks();
+                if (mTracks.size() != 0) {
+                    mTrackAdapter = new SearchMusicAdapter(getContext(), mTracks);
+                    mBeatGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
 
-                        if(sortOrder.equalsIgnoreCase("Alphabet"))
-                            Collections.sort(mTracks);
+                    if(sortOrder.equalsIgnoreCase("Alphabet"))
+                        Collections.sort(mTracks);
 
-                        mTrackGrid.setLayoutManager(mBeatGridLayoutManager);
-                        mTrackGrid.setAdapter(mTrackAdapter);
-                        mTrackAdapter.notifyDataSetChanged();
+                    mTrackGrid.setLayoutManager(mBeatGridLayoutManager);
+                    mTrackGrid.setAdapter(mTrackAdapter);
+                    mTrackAdapter.notifyDataSetChanged();
 
-                        updateMixes();
+                    updateMixes();
 
-                        mTrackGrid.addOnScrollListener(recyclerViewOnScrollListener);
+                    mTrackGrid.addOnScrollListener(recyclerViewOnScrollListener);
 
-                    } else {
-                        Constants.buildInfoDialog(getContext(), getString(R.string.error_no_results_found_error_message), getString(R.string.no_search_results));
-                    }
+                } else {
+                    Constants.buildInfoDialog(getContext(), getString(R.string.error_no_results_found_error_message), getString(R.string.no_search_results));
                 }
             }, new WebApiManager.OnErrorListener() {
                 @Override
