@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,8 +86,10 @@ public class AddNewArtistInfoFragment extends Fragment implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.confirm_save_artist_detail_button:
-                uploadArtistCoverImageToCloudStorage();
-                saveArtistDetail();
+                if(isValid()) {
+                    uploadArtistCoverImageToCloudStorage();
+                    saveArtistDetail();
+                }
                 break;
             case R.id.profile_cover_image:
                 pickArtistCoverImage();
@@ -151,5 +154,15 @@ public class AddNewArtistInfoFragment extends Fragment implements View.OnClickLi
     public void goToDashboard() {
         Intent dashboardIntent = new Intent(getContext(), MainActivity.class);
         startActivity(dashboardIntent);
+    }
+
+    public boolean isValid(){
+        if(TextUtils.isEmpty(mArtistName.getText())){
+            mArtistName.setError(getString(R.string.error_field_required));
+            mArtistName.requestFocus();
+            return false;
+        }
+
+        return true;
     }
 }

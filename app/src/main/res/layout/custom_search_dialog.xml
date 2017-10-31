@@ -19,6 +19,11 @@
         android:hint="Search for an artist"
         android:textColor="@color/theme_secondary_text_color" />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/friend_search__list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <LinearLayout
         android:id="@+id/add_artist_container"
         android:layout_width="match_parent"

@@ -422,10 +422,7 @@ public class BaseActivity extends AppCompatActivity {
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         StorageReference imageStorage = storageReference.child("images/" + user.getArtistProfileImage());
 
-        Glide.with(this)
-                .using(new FirebaseImageLoader())
-                .load(imageStorage)
-                .into(mArtistCoverImage);
+        Glide.with(this).load(imageStorage).into(mArtistCoverImage);
     }
 
     public void startProgressBarThread() {

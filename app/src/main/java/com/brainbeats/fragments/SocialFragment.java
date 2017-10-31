@@ -55,7 +55,7 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
     private CardView mPendingFriendsCard;
     private TextView mAcceptFriendRequest;
     private TextView mAllRequestsText;
-    private TextView mEmptyDataPlaceholder;
+    private TextView mAddFriendArtistName;
 
     BrainBeatsUser friendToAdd;
 
@@ -74,6 +74,8 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
         mPendingFriendsCard = v.findViewById(R.id.pending_friend_container);
         mAcceptFriendRequest = v.findViewById(R.id.accept_friend_request);
         mAllRequestsText = v.findViewById(R.id.all_friend_requests);
+        mAddFriendArtistName = v.findViewById(R.id.artist_name);
+
 
         mAcceptFriendRequest.setOnClickListener(this);
         mAllRequestsText.setOnClickListener(this);
@@ -275,6 +277,7 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
                     for(DataSnapshot child: dataSnapshot.getChildren()) {
                         FriendRequest friendRequest = child.getValue(FriendRequest.class);
                         friendToAdd = friendRequest.getUser();
+                        populateCurrentAddFriendData(friendRequest);
                         break;
                     }
                 }
@@ -282,5 +285,9 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
+    }
+
+    public void populateCurrentAddFriendData( FriendRequest friendRequest){
+        mAddFriendArtistName.setText(friendRequest.getUser().getArtistName());
     }
 }
