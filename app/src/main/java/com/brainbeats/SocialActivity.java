@@ -39,17 +39,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
-public class SocialActivity extends BaseActivity implements SocialFragment.OnFragmentInteractionListener, FriendRequestsFragment.OnFragmentInteractionListener, View.OnClickListener {
+public class SocialActivity extends BaseActivity implements SocialFragment.OnFragmentInteractionListener,
+        FriendRequestsFragment.OnFragmentInteractionListener, View.OnClickListener {
 
     //Data
     private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mUsersReference;
 
     FirebaseRecyclerAdapter adapter;
-    Query query = FirebaseDatabase.getInstance()
-            .getReference()
-            .child("users");
-
+    Query query = FirebaseDatabase.getInstance().getReference().child("users");
 
     Fragment mSocialFragment;
     Fragment mFriendRequestsFragment;
@@ -69,7 +66,6 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
         setContentView(R.layout.activity_base);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mUsersReference = mFirebaseDatabase.getReference("users");
 
         if (savedInstanceState == null) {
             mSocialFragment = new SocialFragment();
@@ -82,12 +78,6 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
 
         mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_add_white));
         mMainActionFab.setOnClickListener(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        adapter.stopListening();
     }
 
     @Override
@@ -150,19 +140,13 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
         mAddFriendButton.setOnClickListener(v -> addFriendRequest());
         search.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
             @Override
-            public void afterTextChanged(Editable s) {
-
-            }
+            public void afterTextChanged(Editable s) {}
         });
         search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
