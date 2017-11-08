@@ -43,6 +43,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(Uri uri, String username, String password);
     }
 
     public RegisterFragment() {
@@ -74,35 +75,8 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     }
 
     public void registerUser() {
-        if (isValid()) {
-            mFirebaseAuth.createUserWithEmailAndPassword(mUsername.getText().toString(), mPassword.getText().toString())
-                    .addOnCompleteListener(getActivity(), task -> {
-                        Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-                        if (task.isSuccessful()) {
-                            mFirebaseAuth.signInWithEmailAndPassword(mUsername.getText().toString(), mPassword.getText().toString())
-                                    .addOnCompleteListener(getActivity(), signInTask -> {
-                                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
-                                        addNewUser();
-
-                                        if (!task.isSuccessful()) {
-                                            try {
-                                                throw task.getException();
-                                            } catch (Exception e) {
-                                                Log.w(TAG, "signInWithEmail:failed", task.getException());
-                                                Toast.makeText(getActivity(), "Auth Failed:" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
-                        } else {
-                            try {
-                                throw task.getException();
-                            } catch (Exception e) {
-                                Log.w(TAG, "Register:failed", task.getException());
-                                Constants.buildInfoDialog(getContext(), "Unable To Create Account", e.getMessage());
-                            }
-                        }
-                    });
-        }
+        if (isValid())
+            mListener.onFragmentInteraction(Constants.CREATE_NEW_USER_URI);
     }
 
     @Override
@@ -120,22 +94,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    public void addNewUser() {
-        String Uid = mFirebaseAuth.getCurrentUser().getUid();
-        DatabaseReference usersRef = mUserReference.child("users");
-
-        Map<String, Object> brainBeatsUser = new HashMap<String, Object>();
-        brainBeatsUser.put(Uid, new BrainBeatsUser(mFirebaseAuth.getCurrentUser().getUid(), mUsername.getText().toString()));
-
-        usersRef.updateChildren(brainBeatsUser, (databaseError, databaseReference) -> {
-            if (databaseError != null) { //if there was an error tell the user
-                Constants.buildInfoDialog(getActivity(), "Unable To Login", "There was an issue saving that user to the database");
-            } else {
-                mListener.onFragmentInteraction(Constants.SHOW_NEW_ARTIST_INFO);
-            }
-        });
     }
 
     public boolean isValid() {
