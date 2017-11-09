@@ -83,7 +83,7 @@
             android:textColor="@color/theme_primary_text_color"
             android:textStyle="bold" />
 
-        <Button
+<!--        <Button
             android:id="@+id/sound_cloud_sign_in_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
             android:background="@drawable/login_button_background"
             android:text="@string/log_in_using_sound_cloud"
             android:textColor="@color/theme_primary_text_color"
-            android:textStyle="bold" />
+            android:textStyle="bold" />-->
 
     </LinearLayout>
 

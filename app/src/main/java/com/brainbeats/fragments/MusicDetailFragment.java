@@ -228,11 +228,11 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
             case android.R.id.home:
                 getActivity().onBackPressed();
                 break;
-            case R.id.action_logout:
+/*            case R.id.action_logout:
                 AccountManager.getInstance(getContext()).forceLogout(getContext());
                 Intent loginIntent = new Intent(getContext(), LoginActivity.class);
                 startActivity(loginIntent);
-                break;
+                break;*/
         }
         return false;
     }

@@ -20,6 +20,8 @@ import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.web.WebApiManager;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -77,40 +79,6 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
         if (uri.compareTo(Constants.CREATE_NEW_USER_URI) == 0) {
             createNewFirebaseUser(username, password);
         }
-    }
-
-    @Override
-    public void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-
-        Uri returnData = intent.getData();
-        String uriFrag = returnData.getFragment();
-        HashMap<String, String> map = Constants.mapQueryParams(uriFrag);
-
-        AccountManager.getInstance(this).setAccessToken(map.get(Constants.HASH_KEY_ACCESS_TOKEN));
-        WebApiManager.getSoundCloudSelf(this, map.get(Constants.HASH_KEY_ACCESS_TOKEN), new WebApiManager.OnObjectResponseListener() {
-            @Override
-            public void onObjectResponse(JSONObject object) {
-                Log.i(getClass().getSimpleName(), "Response = " + object.toString());
-                Gson gson = new Gson();
-                Type token = new TypeToken<SoundCloudUser>() {
-                }.getType();
-                try {
-                    SoundCloudUser soundCloudUser = gson.fromJson(object.toString(), token);
-
-                    //need to fix this
-                    createNewFirebaseUser(soundCloudUser.getUsername(), "");
-
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }, new WebApiManager.OnErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
     }
 
     public void switchToLoginFragment() {

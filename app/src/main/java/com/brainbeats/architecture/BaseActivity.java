@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -30,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.brainbeats.InfoActivity;
 import com.brainbeats.LibraryActivity;
 import com.brainbeats.LoginActivity;
@@ -39,14 +41,20 @@ import com.brainbeats.MusicAnalyticsActivity;
 import com.brainbeats.R;
 import com.brainbeats.SettingsActivity;
 import com.brainbeats.SocialActivity;
+import com.brainbeats.entity.SoundCloudUser;
 import com.brainbeats.entity.Track;
+import com.brainbeats.entity.TrackCollection;
 import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.model.Mix;
 import com.brainbeats.service.AudioService;
 import com.brainbeats.utils.Constants;
+import com.brainbeats.web.WebApiManager;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.common.reflect.TypeToken;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -55,7 +63,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.brainbeats.utils.Constants.KEY_EXTRA_SELECTED_TRACK;
 
@@ -240,12 +255,64 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+/*    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        Uri returnData = intent.getData();
+        String uriFrag = returnData.getFragment();
+        HashMap<String, String> map = Constants.mapQueryParams(uriFrag);
+
+        AccountManager.getInstance(this).setAccessToken(map.get(Constants.HASH_KEY_ACCESS_TOKEN));
+        WebApiManager.getSoundCloudSelf(this, map.get(Constants.HASH_KEY_ACCESS_TOKEN), new WebApiManager.OnObjectResponseListener() {
+            @Override
+            public void onObjectResponse(JSONObject object) {
+                Log.i(getClass().getSimpleName(), "Response = " + object.toString());
+                Gson gson = new Gson();
+                Type token = new TypeToken<SoundCloudUser>() {}.getType();
+                try {
+                    SoundCloudUser soundCloudUser = gson.fromJson(object.toString(), token);
+
+                    //set this user's sound cloud id to this id and add all of their songs to there library.
+                    WebApiManager.getUserTracks(BaseActivity.this, String.valueOf(soundCloudUser.getId()), new WebApiManager.OnObjectResponseListener() {
+                        @Override
+                        public void onObjectResponse(JSONObject object) {
+                            Gson gson = new Gson();
+                            Type token = new com.google.gson.reflect.TypeToken<TrackCollection>() {}.getType();
+                            TrackCollection tracks = gson.fromJson(object.toString(), token);
+                            ArrayList<Track> trackList = tracks.getTracks();
+                            if(trackList.size() != 0) {
+                                for(Track track : trackList) {
+                                    //add this track to user's mix list
+
+                                }
+                            }
+                        }
+                    }, new WebApiManager.OnErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+
+                        }
+                    });
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }, new WebApiManager.OnErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+    }*/
+
     public void setUpNavDrawer() {
         mNavigationDrawer = findViewById(R.id.drawer_layout);
         mNavView = findViewById(R.id.navView);
         mArtistCoverImage = mNavView.getHeaderView(0).findViewById(R.id.profile_cover_image);
         getToolBar();
         mDrawerToggle = new ActionBarDrawerToggle(this, mNavigationDrawer, mToolBar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mNavigationDrawer.setBackgroundTintList(null);
         mNavigationDrawer.addDrawerListener(mDrawerToggle);
         mNavView.setNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
@@ -290,6 +357,13 @@ public class BaseActivity extends AppCompatActivity {
                     infoIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
                     infoIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                     createBackStack(infoIntent);
+                    break;
+                case R.id.action_logout:
+                    AccountManager.getInstance(getApplicationContext()).forceLogout(getApplicationContext());
+                    Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                    loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(loginIntent);
+                    finish();
                     break;
                 default:
                     return false;

@@ -9,18 +9,21 @@
         android:icon="@drawable/ic_search_white"
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="android.support.v7.widget.SearchView" />
-
     <item
         android:id="@+id/advanced_search"
         android:orderInCategory="100"
         android:title="Advanced Search"
         app:showAsAction="never">
     </item>
-
-    <item
+<!--    <item
+        android:id="@+id/sync_with_soundcloud"
+        android:orderInCategory="100"
+        android:title="Sync Account with Sound Cloud"
+        app:showAsAction="never">
+    </item>-->
+<!--    <item
         android:id="@+id/action_logout"
         android:orderInCategory="101"
         android:title="Log Off"
-        app:showAsAction="never" />
-
+        app:showAsAction="never" />-->
 </menu>

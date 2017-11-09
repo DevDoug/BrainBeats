@@ -5,10 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.brainbeats.architecture.BaseActivity" >
 
-    <item
+<!--    <item
         android:id="@+id/action_logout"
         android:title="Log Off"
         android:orderInCategory="101"
-        app:showAsAction="never"/>
+        app:showAsAction="never"/>-->
 
 </menu>

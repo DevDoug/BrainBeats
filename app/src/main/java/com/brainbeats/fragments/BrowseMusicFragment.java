@@ -143,9 +143,12 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
             case R.id.advanced_search:
                 showAdvancedSearchDialog();
                 break;
-            case R.id.action_logout:
+/*            case R.id.sync_with_soundcloud:
+                attemptSoundCloudLogin();
+                break;*/
+/*            case R.id.action_logout:
                 mListener.onFragmentInteraction(Constants.LOGOUT_URI);
-                break;
+                break;*/
         }
         return false;
     }
@@ -374,4 +377,16 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
             }
         }
     };
+
+    public void attemptSoundCloudLogin() {
+        if (Constants.isNetworkAvailable(getActivity())) {
+            String authSoundCloudURL = WebApiManager.API_CONNECT_URL + "?client_id=" + Constants.SOUND_CLOUD_CLIENT_ID + "&redirect_uri=" + Constants.CALLBACK_URL + "&response_type=token";
+            Intent loginIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(authSoundCloudURL));
+            loginIntent.addCategory(Intent.CATEGORY_DEFAULT);
+            loginIntent.addCategory(Intent.CATEGORY_BROWSABLE);
+            startActivity(loginIntent);
+        } else {
+            //Constants.buildActionDialog(getActivity(), getString(R.string.connect_to_network_message), getString(R.string.enable_wifi_in_settings_message), getString(R.string.go_to_settings_message), getActivity());
+        }
+    }
 }

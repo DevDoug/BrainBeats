@@ -36,10 +36,10 @@
         android:title="Share"
         app:actionProviderClass="android.widget.ActionProvider" />-->
 
-    <item
+<!--    <item
         android:id="@+id/action_logout"
         android:orderInCategory="98"
         android:title="Log Off"
-        app:showAsAction="never" />
+        app:showAsAction="never" />-->
 
 </menu>
