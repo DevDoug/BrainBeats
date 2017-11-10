@@ -76,7 +76,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
     public void registerUser() {
         if (isValid())
-            mListener.onFragmentInteraction(Constants.CREATE_NEW_USER_URI);
+            mListener.onFragmentInteraction(Constants.CREATE_NEW_USER_URI, mUsername.getText().toString(), mPassword.getText().toString());
     }
 
     @Override

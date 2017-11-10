@@ -7,12 +7,17 @@ const functions = require('firebase-functions');
   response.send("Hello world from Firebase!");
  });
  
- exports.sendFriendRequestNotification = functions.database.ref('/friend_request/{pushId}/user')
+ exports.sendFriendRequestNotification = functions.database.ref('/friend_request/{pushId}')
  .onWrite(event => {
-	 String friendRequestMessage = "Sent you a friend request"
+	 var friendRequestMessage = "Sent you a friend request";
+	 
 	 const friendRequest = event.data.current.val();
-     const senderUid = friendRequest.from;
-     const receiverUid = friendRequest.to;
+	 console.log(friendRequest);
+	 
+     const senderUid = friendRequest.sender.userId;
+     const receiverUid = friendRequest.receiver.userId;
+	 
+	 
      const promises = [];
 
 	 if (senderUid == receiverUid) {    
@@ -21,7 +26,7 @@ const functions = require('firebase-functions');
 		return Promise.all(promises);
 	 }
 
-     const getInstanceIdPromise = admin.database().ref(`/users/${receiverUid}/instanceId`).once('value');
+     const getInstanceIdPromise = admin.database().ref('/friend_request/{pushId}').once('value');
      const getReceiverUidPromise = admin.auth().getUser(receiverUid);
 
      return Promise.all([getInstanceIdPromise, getReceiverUidPromise]).then(results => {
@@ -44,4 +49,6 @@ const functions = require('firebase-functions');
             .catch(function (error) {
                console.log("Error sending message:", error);
             });
+ 
+	});
  });
