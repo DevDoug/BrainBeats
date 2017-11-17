@@ -8,7 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -18,6 +21,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -97,7 +101,6 @@ public class BaseActivity extends AppCompatActivity {
 
     public FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
-    private DatabaseReference mUserRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +116,6 @@ public class BaseActivity extends AppCompatActivity {
         }
 
         mFirebaseAuth = FirebaseAuth.getInstance();
-        mUserRef = FirebaseDatabase.getInstance().getReference().child("users");
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
         if (mFirebaseUser == null) {
@@ -244,6 +246,11 @@ public class BaseActivity extends AppCompatActivity {
         mNavigationDrawer = findViewById(R.id.drawer_layout);
         mNavView = findViewById(R.id.navView);
         mArtistCoverImage = mNavView.getHeaderView(0).findViewById(R.id.profile_cover_image);
+        mNavView.getMenu().findItem(R.id.action_browse).getIcon().setColorFilter(ContextCompat.getColor(this, R.color.theme_primary_dark_color), PorterDuff.Mode.SRC_IN);
+        mNavView.getMenu().findItem(R.id.action_library).getIcon().setColorFilter(ContextCompat.getColor(this, R.color.theme_primary_color), PorterDuff.Mode.SRC_IN);
+        mNavView.getMenu().findItem(R.id.action_mixer).getIcon().setColorFilter(ContextCompat.getColor(this, R.color.black), PorterDuff.Mode.SRC_IN);
+        mNavView.getMenu().findItem(R.id.action_social).getIcon().setColorFilter(ContextCompat.getColor(this, R.color.theme_primary_color), PorterDuff.Mode.SRC_IN);
+        mNavView.getMenu().findItem(R.id.action_settings).getIcon().setColorFilter(ContextCompat.getColor(this, R.color.black), PorterDuff.Mode.SRC_IN);
         getToolBar();
         mDrawerToggle = new ActionBarDrawerToggle(this, mNavigationDrawer, mToolBar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mNavigationDrawer.addDrawerListener(mDrawerToggle);
@@ -273,12 +280,12 @@ public class BaseActivity extends AppCompatActivity {
                     socialIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                     createBackStack(socialIntent);
                     break;
-                case R.id.action_analytics:
+/*                case R.id.action_analytics:
                     Intent analyticsIntent = new Intent(getApplicationContext(), MusicAnalyticsActivity.class);
                     analyticsIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
                     analyticsIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                     createBackStack(analyticsIntent);
-                    break;
+                    break;*/
                 case R.id.action_settings:
                     Intent settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
                     settingsIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
@@ -290,6 +297,13 @@ public class BaseActivity extends AppCompatActivity {
                     infoIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
                     infoIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                     createBackStack(infoIntent);
+                    break;
+                case R.id.action_logout:
+                    AccountManager.getInstance(getApplicationContext()).forceLogout(getApplicationContext());
+                    Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                    loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(loginIntent);
+                    finish();
                     break;
                 default:
                     return false;

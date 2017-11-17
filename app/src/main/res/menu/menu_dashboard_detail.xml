@@ -2,44 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<!--    <item
-        android:id="@+id/add_to_library"
-        android:orderInCategory="100"
-        android:title="Add to library"
-        app:showAsAction="never">
-    </item>
 
-    <item
-        android:id="@+id/add_as_favorite"
-        android:orderInCategory="100"
-        android:title="Favorite track"
-        app:showAsAction="never">
-    </item>
-
-    <item
-        android:id="@+id/follow_user"
-        android:orderInCategory="100"
-        android:title="Follow this artist"
-        app:showAsAction="never">
-    </item>-->
-
-<!--    <item
-        android:id="@+id/share_track"
-        android:orderInCategory="100"
-        android:title="Share this track"
-        app:showAsAction="never">
-    </item>-->
-
-<!--    <item
-        android:id="@+id/menu_item_share"
-        app:showAsAction="ifRoom"
-        android:title="Share"
-        app:actionProviderClass="android.widget.ActionProvider" />-->
-
-    <item
-        android:id="@+id/action_logout"
-        android:orderInCategory="98"
-        android:title="Log Off"
-        app:showAsAction="never" />
 
 </menu>

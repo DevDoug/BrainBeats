@@ -16,11 +16,4 @@
         android:title="Advanced Search"
         app:showAsAction="never">
     </item>
-
-    <item
-        android:id="@+id/action_logout"
-        android:orderInCategory="101"
-        android:title="Log Off"
-        app:showAsAction="never" />
-
 </menu>
