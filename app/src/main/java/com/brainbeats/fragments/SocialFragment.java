@@ -128,7 +128,7 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_social, menu);
-        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+/*        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
         SearchView mSearchView = (SearchView) searchMenuItem.getActionView();
         mSearchView.setOnQueryTextListener(queryListener);
 
@@ -158,10 +158,10 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
                 // Do something when expanded
                 return true;  // Return true to expand action view
             }
-        };
+        };*/
 
         // Assign the queryListener to that action item
-        MenuItemCompat.setOnActionExpandListener(searchMenuItem, expandListener);
+        //MenuItemCompat.setOnActionExpandListener(searchMenuItem, expandListener);
     }
 
     @Override
