@@ -105,10 +105,9 @@ public class Constants {
     public static final Uri DASHBOARD_DETAIL_PAUSE_SONG_URI                         = Uri.parse("main://dashboard_detail_pause_song");
     public static final Uri STOP_SONG_URI                                           = Uri.parse("audio://stop_song");
 
-
-    public static final Uri GO_TO_REGISTER_NEW_USER_URI                             = Uri.parse("main://new_user");
+    public static final Uri GO_TO_REGISTER_NEW_USER_URI                             = Uri.parse("main://register_new_user");
+    public static final Uri CREATE_NEW_USER_URI                                     = Uri.parse("main://create_new_user");
     public static final Uri LOGOUT_URI                                              = Uri.parse("main://logout");
-
 
     public static final Uri DASHBOARD_DETAIL_DOWNVOTE_SONG_URI                      = Uri.parse("main://dashboard_detail_downvote_song");
     public static final Uri DASHBOARD_DETAIL_SKIP_FORWARD_URI                       = Uri.parse("main://dashboard_detail_skip_forward");

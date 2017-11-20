@@ -52,7 +52,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private TextView mResetPasswordText;
     public CoordinatorLayout mCoordinatorLayout;
     public Button mLoginButton;
-    public Button mSoundCloudLogin;
     private LoginFragment.OnFragmentInteractionListener mListener;
 
     public interface OnFragmentInteractionListener {
@@ -77,11 +76,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         mResetPasswordText = view.findViewById(R.id.forgot_password);
         mLoginButton = view.findViewById(R.id.email_sign_in_button);
         mPasswordView = view.findViewById(R.id.password_text_input);
-        mSoundCloudLogin = view.findViewById(R.id.sound_cloud_sign_in_button);
         mCoordinatorLayout = view.findViewById(R.id.main_content_coordinator_layout);
 
         mLoginButton.setOnClickListener(this);
-        mSoundCloudLogin.setOnClickListener(this);
         mSignUpText.setOnClickListener(this);
         mResetPasswordText.setOnClickListener(this);
 
@@ -93,9 +90,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.email_sign_in_button:
                 attemptLogin();
-                break;
-            case R.id.sound_cloud_sign_in_button:
-                attemptSoundCloudLogin();
                 break;
             case R.id.register_text:
                 goToRegisterUser();
@@ -148,8 +142,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                 }
 
                                 @Override
-                                public void onCancelled(DatabaseError databaseError) {
-                                }
+                                public void onCancelled(DatabaseError databaseError) {}
                             });
                         } else {
                             try {
@@ -163,18 +156,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             }
                         }
                     });
-        }
-    }
-
-    public void attemptSoundCloudLogin() {
-        if (Constants.isNetworkAvailable(getActivity())) {
-            String authSoundCloudURL = WebApiManager.API_CONNECT_URL + "?client_id=" + Constants.SOUND_CLOUD_CLIENT_ID + "&redirect_uri=" + Constants.CALLBACK_URL + "&response_type=token";
-            Intent loginIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(authSoundCloudURL));
-            loginIntent.addCategory(Intent.CATEGORY_DEFAULT);
-            loginIntent.addCategory(Intent.CATEGORY_BROWSABLE);
-            startActivity(loginIntent);
-        } else {
-            //Constants.buildActionDialog(getActivity(), getString(R.string.connect_to_network_message), getString(R.string.enable_wifi_in_settings_message), getString(R.string.go_to_settings_message), getActivity());
         }
     }
 

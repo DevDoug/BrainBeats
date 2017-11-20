@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.brainbeats.architecture.AccountManager;
@@ -15,8 +16,17 @@ import com.brainbeats.entity.SoundCloudUser;
 import com.brainbeats.fragments.AddNewArtistInfoFragment;
 import com.brainbeats.fragments.LoginFragment;
 import com.brainbeats.fragments.RegisterFragment;
+import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.web.WebApiManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -24,6 +34,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Login screen
@@ -32,6 +43,9 @@ import java.util.HashMap;
 public class LoginActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, RegisterFragment.OnFragmentInteractionListener {
 
     public static String TAG = "LoginActivity";
+
+    FirebaseAuth mFirebaseAuth;
+    private DatabaseReference mUserReference;
 
     public Fragment mLoginFragment;
     public Fragment mRegisterFragment;
@@ -48,56 +62,36 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
             mNewArtistFragment = new AddNewArtistInfoFragment();
             switchToLoginFragment();
         }
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mUserReference = FirebaseDatabase.getInstance().getReference().child("users");;
     }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
         if (uri.compareTo(Constants.GO_TO_REGISTER_NEW_USER_URI) == 0) {
             switchToRegisterFragment();
-        } else if (uri.compareTo(Constants.SHOW_NEW_ARTIST_INFO) == 0) {
-            switchToArtistInfoFragment();
         }
     }
 
     @Override
-    public void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-
-        Uri returnData = intent.getData();
-        String uriFrag = returnData.getFragment();
-        HashMap<String, String> map = Constants.mapQueryParams(uriFrag);
-
-        AccountManager.getInstance(this).setAccessToken(map.get(Constants.HASH_KEY_ACCESS_TOKEN));
-        WebApiManager.getSoundCloudSelf(this, map.get(Constants.HASH_KEY_ACCESS_TOKEN), new WebApiManager.OnObjectResponseListener() {
-            @Override
-            public void onObjectResponse(JSONObject object) {
-                Log.i(getClass().getSimpleName(), "Response = " + object.toString());
-                Gson gson = new Gson();
-                Type token = new TypeToken<SoundCloudUser>() {
-                }.getType();
-                try {
-                    SoundCloudUser soundCloudUser = gson.fromJson(object.toString(), token);
-                    createFirebaseUserFromSoundCloudUser(soundCloudUser);
-
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }, new WebApiManager.OnErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
+    public void onFragmentInteraction(Uri uri, String username, String password) {
+        if (uri.compareTo(Constants.CREATE_NEW_USER_URI) == 0) {
+            createNewFirebaseUser(username, password);
+        }
     }
 
     public void switchToLoginFragment() {
         replaceFragment(mLoginFragment, "LoginFragTag");
     }
 
-    public void switchToArtistInfoFragment(){replaceFragment(mNewArtistFragment, "ArtistFragTag");}
+    public void switchToArtistInfoFragment() {
+        replaceFragment(mNewArtistFragment, "ArtistFragTag");
+    }
 
-    public void switchToRegisterFragment() {replaceFragment(mRegisterFragment, "RegisterFragTag");}
+    public void switchToRegisterFragment() {
+        replaceFragment(mRegisterFragment, "RegisterFragTag");
+    }
 
     public void replaceFragment(Fragment fragment, String fragmentTag) {
         FragmentManager fm = getSupportFragmentManager();
@@ -109,7 +103,48 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
         fragmentTransaction.commit();
     }
 
-    public void createFirebaseUserFromSoundCloudUser(SoundCloudUser soundCloudUser){
+    public void createNewFirebaseUser(String username, String password) {
+        mFirebaseAuth.createUserWithEmailAndPassword(username, password)
+                .addOnCompleteListener(LoginActivity.this, task -> {
+                    Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+                    if (task.isSuccessful()) {
+                        mFirebaseAuth.signInWithEmailAndPassword(username, password)
+                                .addOnCompleteListener(LoginActivity.this, signInTask -> {
+                                    Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
+                                    addNewBrainBeatsUser(username);
+
+                                    if (!task.isSuccessful()) {
+                                        try {
+                                            throw task.getException();
+                                        } catch (Exception e) {
+                                            Log.w(TAG, "signInWithEmail:failed", task.getException());
+                                            Toast.makeText(LoginActivity.this, "Auth Failed:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                    } else {
+                        try {
+                            throw task.getException();
+                        } catch (Exception e) {
+                            Log.w(TAG, "Register:failed", task.getException());
+                            Constants.buildInfoDialog(LoginActivity.this, "Unable To Create Account", e.getMessage());
+                        }
+                    }
+                });
+
+    }
+
+    public void addNewBrainBeatsUser(String username) {
+        String Uid = mFirebaseAuth.getCurrentUser().getUid();
+        Map<String, Object> brainBeatsUser = new HashMap<>();
+        brainBeatsUser.put(Uid, new BrainBeatsUser(mFirebaseAuth.getCurrentUser().getUid(), username));
+
+        mUserReference.updateChildren(brainBeatsUser, (databaseError, databaseReference) -> {
+            if (databaseError != null)  //if there was an error tell the user
+                Constants.buildInfoDialog(LoginActivity.this, "Unable To Login", "There was an issue saving that user to the database");
+            else
+                switchToArtistInfoFragment();
+        });
     }
 }

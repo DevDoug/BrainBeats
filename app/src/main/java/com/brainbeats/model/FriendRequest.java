@@ -8,13 +8,16 @@ public class FriendRequest {
 
     public String status;
 
-    BrainBeatsUser user;
+    BrainBeatsUser sender;
+
+    BrainBeatsUser receiver;
 
     public FriendRequest() {}
 
-    public FriendRequest(String status, BrainBeatsUser user) {
+    public FriendRequest(String status, BrainBeatsUser sender, BrainBeatsUser receiver) {
         this.status = status;
-        this.user = user;
+        this.sender = sender;
+        this.receiver = receiver;
     }
 
     public String getStatus() {
@@ -25,7 +28,9 @@ public class FriendRequest {
         this.status = status;
     }
 
-    public BrainBeatsUser getUser() {return user;}
+    public BrainBeatsUser getSender() {return sender;}
 
-    public void setUser(BrainBeatsUser user) {this.user = user;}
+    public void setSender(BrainBeatsUser sender) {this.sender = sender;}
+
+
 }

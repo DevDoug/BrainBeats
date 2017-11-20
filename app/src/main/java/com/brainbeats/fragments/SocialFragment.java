@@ -276,7 +276,7 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
                     mAllRequestsText.setVisibility(View.VISIBLE);
                     for(DataSnapshot child: dataSnapshot.getChildren()) {
                         FriendRequest friendRequest = child.getValue(FriendRequest.class);
-                        friendToAdd = friendRequest.getUser();
+                        friendToAdd = friendRequest.getSender();
                         populateCurrentAddFriendData(friendRequest);
                         break;
                     }
@@ -288,6 +288,6 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
     }
 
     public void populateCurrentAddFriendData( FriendRequest friendRequest){
-        mAddFriendArtistName.setText(friendRequest.getUser().getArtistName());
+        mAddFriendArtistName.setText(friendRequest.getSender().getArtistName());
     }
 }
