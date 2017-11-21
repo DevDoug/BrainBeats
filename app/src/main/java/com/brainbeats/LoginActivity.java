@@ -138,7 +138,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
     public void addNewBrainBeatsUser(String username) {
         String Uid = mFirebaseAuth.getCurrentUser().getUid();
         Map<String, Object> brainBeatsUser = new HashMap<>();
-        brainBeatsUser.put(Uid, new BrainBeatsUser(mFirebaseAuth.getCurrentUser().getUid(), username));
+        brainBeatsUser.put(Uid, new BrainBeatsUser(mFirebaseAuth.getCurrentUser().getUid(), username, AccountManager.getInstance(LoginActivity.this).getFirebaseToken()));
 
         mUserReference.updateChildren(brainBeatsUser, (databaseError, databaseReference) -> {
             if (databaseError != null)  //if there was an error tell the user

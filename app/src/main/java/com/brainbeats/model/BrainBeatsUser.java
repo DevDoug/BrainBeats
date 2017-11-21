@@ -15,6 +15,7 @@ public class BrainBeatsUser implements Parcelable {
     private String artistName;
     private String artistDescription;
     private int mSoundCloudUserId;
+    private String mFireBaseToken;
 
     public BrainBeatsUser(){}
 
@@ -25,6 +26,12 @@ public class BrainBeatsUser implements Parcelable {
     public BrainBeatsUser(String userId, String username){
         this.mUserId = userId;
         this.mUserName = username;
+    }
+
+    public BrainBeatsUser(String userId, String username, String firebaseToken){
+        this.mUserId = userId;
+        this.mUserName = username;
+        this.mFireBaseToken = firebaseToken;
     }
 
     public BrainBeatsUser(com.brainbeats.entity.User user){
@@ -79,6 +86,14 @@ public class BrainBeatsUser implements Parcelable {
 
     public void setArtistDescription(String artistDescription) {
         this.artistDescription = artistDescription;
+    }
+
+    public String getFireBaseToken() {
+        return mFireBaseToken;
+    }
+
+    public void setFireBaseToken(String fireBaseToken) {
+        this.mFireBaseToken = fireBaseToken;
     }
 
     @Override
