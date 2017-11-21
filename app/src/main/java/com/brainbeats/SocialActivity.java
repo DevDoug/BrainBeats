@@ -193,10 +193,10 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
     }
 
     public void addFriendRequest() {
-        BrainBeatsUser sender = new BrainBeatsUser("VqDgYnDMNVUtByH3uyLDNskPPlj1 ", "doug4less");
-        BrainBeatsUser receiver = new BrainBeatsUser("RvMaDClGqohUHrYDgKp9u5i03OI3  ", "fakefriend");
+        BrainBeatsUser sender = new BrainBeatsUser("RvMaDClGqohUHrYDgKp9u5i03OI3", "doug4less");
+        BrainBeatsUser receiver = new BrainBeatsUser("VqDgYnDMNVUtByH3uyLDNskPPlj1", "fakefriend");
 
-        DatabaseReference friendRequest = mFirebaseDatabase.getReference("friend_request/" + mAddUser.getUserId());
+        DatabaseReference friendRequest = mFirebaseDatabase.getReference("friend_request");
         friendRequest
                 .push()
                 .setValue(new FriendRequest("Pending", sender, receiver))

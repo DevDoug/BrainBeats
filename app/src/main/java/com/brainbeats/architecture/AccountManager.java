@@ -153,4 +153,17 @@ public class AccountManager  {
         editor.putBoolean(Constants.KEY_EXTRA_MAESTRO_SHOWN, isMaestroShown);
         editor.commit();
     }
+
+    public String getFirebaseToken() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String firebaseToken = sharedPreferences.getString(Constants.KEY_EXTRA_FIREBASE_TOKEN, "");
+        return firebaseToken;
+    }
+
+    public void setFirebaseToken(String firebaseToken) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constants.KEY_EXTRA_FIREBASE_TOKEN, firebaseToken);
+        editor.commit();
+    }
 }

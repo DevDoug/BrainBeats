@@ -187,7 +187,6 @@
         android:background="@android:color/white"
         app:headerLayout="@layout/nav_drawer_header_view"
         app:itemTextColor="@android:color/black"
-        app:menu="@menu/drawer"
-        app:itemIconTint="@color/theme_primary_color"/>
+        app:menu="@menu/drawer" />
 
 </android.support.v4.widget.DrawerLayout>

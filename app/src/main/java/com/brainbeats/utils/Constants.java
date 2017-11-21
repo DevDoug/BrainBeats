@@ -49,6 +49,8 @@ public class Constants {
     public static final String RESTORE_PLAYING_SONG                         = "restorePlayingSong";
 
     public static final String KEY_EXTRA_MAESTRO_SHOWN                      = "MaestroShown";
+    public static final String KEY_EXTRA_FIREBASE_TOKEN                      = "FirebaseToken";
+
 
 
 
