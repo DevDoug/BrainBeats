@@ -23,13 +23,21 @@ admin.initializeApp(functions.config().firebase);
 
 	 const senderUid = friendRequest.child("sender").child("userId").val();
 	 const receiverUid = friendRequest.child("receiver").child("userId").val();
+	 
 	 const statusMessage = friendRequest.child("status").val();
+	 
+	 const senderFirebaseId = friendRequest.child("sender").child("fireBaseToken").val()
+	 const receiverFirebaseId = friendRequest.child("receiver").child("fireBaseToken").val();
+	 console.log(receiverFirebaseId);
+	 
+	 //const senderName = friendRequest.child("sender").child("artistName").val()
+	 //const receiverName = friendRequest.child("receiver").child("artistName").val()
+
  
 	 console.log(friendRequest.val());
 	 console.log(senderUid);
 	 console.log(receiverUid);
 	 console.log(statusMessage);
-	 
 	 
      const promises = [];
 
@@ -38,36 +46,21 @@ admin.initializeApp(functions.config().firebase);
         promises.push(event.data.current.ref.remove());				
 		return Promise.all(promises);
 	 }
-
-     const getInstanceIdPromise = admin.database().ref('/friend_request/{pushId}').once('value');
+	 
+	 const getInstanceIdPromise = admin.database().ref('/friend_request/{pushId}').once('value');
      const getReceiverUidPromise = admin.auth().getUser(receiverUid);
-	 
-	  console.log(getInstanceIdPromise);
-	  console.log(getReceiverUidPromise);
-
-	 
 
      return Promise.all([getInstanceIdPromise, getReceiverUidPromise]).then(results => {
-		 const instanceId = results[0].val();
-		 console.log(instanceId);
-         const receiver = results[1];
-		 console.log(receiver);
          console.log('notifying ' + receiverUid + ' about ' + friendRequestMessage + ' from ' + senderUid);
 
          const payload = {
-			 notification: {
-				 title: receiver.displayName,
-                 body: friendRequestMessage,
-                }
-        };
+			notification: {
+				title: "Friend Request From Fake ",
+				body: " Fake wants to be your friend on Brain Beats !"
+			}
+         };
 		
-		
-    const tokens = Object.keys(instanceId.val());
-	console.log(tokens);
-	console.log(payload);
-	
-	
-	admin.messaging().sendToDevice(tokens, payload)
+	admin.messaging().sendToDevice("d5gbZX35us0:APA91bE3-GDI58bA_a-4jsq8_4UEPgOFf689CWCtJObhPGN1UgOaZyYzf17sY-VL72PFjO8vvLA57jaoRWpz0xc8HaOncyKwlSGhE5HgF0XX6TgcT56_78yahRpiYe8bQ_suZ6ZH-hQw", payload)
 		.then(function (response) {
               console.log("Successfully sent message:", response);
         })

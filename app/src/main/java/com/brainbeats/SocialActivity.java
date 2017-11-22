@@ -174,8 +174,8 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mFriendSearchRecyclerView.setLayoutManager(layoutManager);
 
-        FirebaseRecyclerOptions<BrainBeatsUser> options =
-                new FirebaseRecyclerOptions.Builder<BrainBeatsUser>()
+        FirebaseRecyclerOptions<BrainBeatsUser> options = new FirebaseRecyclerOptions
+                        .Builder<BrainBeatsUser>()
                         .setQuery(query, BrainBeatsUser.class)
                         .build();
 
@@ -193,8 +193,11 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
     }
 
     public void addFriendRequest() {
-        BrainBeatsUser sender = new BrainBeatsUser("RvMaDClGqohUHrYDgKp9u5i03OI3", "doug4less");
-        BrainBeatsUser receiver = new BrainBeatsUser("VqDgYnDMNVUtByH3uyLDNskPPlj1", "fakefriend");
+/*        BrainBeatsUser sender = new BrainBeatsUser("RvMaDClGqohUHrYDgKp9u5i03OI3", "doug4less", "d5gbZX35us0:APA91bE3-GDI58bA_a-4jsq8_4UEPgOFf689CWCtJObhPGN1UgOaZyYzf17sY-VL72PFjO8vvLA57jaoRWpz0xc8HaOncyKwlSGhE5HgF0XX6TgcT56_78yahRpiYe8bQ_suZ6ZH-hQw");
+        BrainBeatsUser receiver = new BrainBeatsUser("VqDgYnDMNVUtByH3uyLDNskPPlj1", "fakefriend", "");*/
+
+        BrainBeatsUser sender = new BrainBeatsUser("VqDgYnDMNVUtByH3uyLDNskPPlj1", "fakefriend", "c4Q6zkVZGy0:APA91bGaBxlJ0QsJtbHZ342gdWapeUaOL20hF08m2s21jXGzRndd0y16KFyzA9zvVfYcF3c7Gn6FuY3pHchiTXn4fsjIfK7DN10oDm6xYql5hHb7evLTm_T2M9B0jgx1FjGV6d9-6btd");
+        BrainBeatsUser receiver = new BrainBeatsUser("RvMaDClGqohUHrYDgKp9u5i03OI3", "doug4less", "d5gbZX35us0:APA91bE3-GDI58bA_a-4jsq8_4UEPgOFf689CWCtJObhPGN1UgOaZyYzf17sY-VL72PFjO8vvLA57jaoRWpz0xc8HaOncyKwlSGhE5HgF0XX6TgcT56_78yahRpiYe8bQ_suZ6ZH-hQw");
 
         DatabaseReference friendRequest = mFirebaseDatabase.getReference("friend_request");
         friendRequest
