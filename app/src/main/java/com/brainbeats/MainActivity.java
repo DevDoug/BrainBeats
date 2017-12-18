@@ -74,6 +74,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
 
+        if(FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+            loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(loginIntent);
+            finish();
+        }
+
+
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mCoordinatorLayout = findViewById(R.id.main_content_coordinator_layout);

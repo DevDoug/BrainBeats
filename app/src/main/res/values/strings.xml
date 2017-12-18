@@ -119,6 +119,7 @@
     </string-array>
 
     <string name="loading_message">Loading</string>
+    <string name="signing_in__message">Loading</string>
     <string name="song_added_to_favorites_snack_message">Song added to Favorites.</string>
     <string name="song_added_to_library_snack_message">Song added to Library.</string>
     <string name="song_added_to_mixer_snack_message">Song added to Mixer.</string>

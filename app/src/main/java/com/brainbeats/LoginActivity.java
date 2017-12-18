@@ -1,5 +1,6 @@
 package com.brainbeats;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -65,6 +66,12 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mUserReference = FirebaseDatabase.getInstance().getReference().child("users");;
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+        navigateUpOrBack(this, fm);
     }
 
     @Override
@@ -146,5 +153,13 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
             else
                 switchToArtistInfoFragment();
         });
+    }
+
+    public void navigateUpOrBack(Activity currentActivity, FragmentManager fm) {
+        if (fm.getBackStackEntryCount() > 1) { //if there are active com.brainbeats.fragments go up if not go back
+            fm.popBackStackImmediate();
+        } else {
+            currentActivity.finish();
+        }
     }
 }

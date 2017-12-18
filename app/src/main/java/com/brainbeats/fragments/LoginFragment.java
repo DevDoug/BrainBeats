@@ -1,6 +1,7 @@
 package com.brainbeats.fragments;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -125,6 +126,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private void attemptLogin() {
         if (isValid()) {
+            ProgressDialog signInDialog = new ProgressDialog(getActivity());
+            signInDialog.setCancelable(false);
+            signInDialog.setMessage(getString(R.string.signing_in__message));
+            signInDialog.show();
+
             mFirebaseAuth.signInWithEmailAndPassword(mEmailView.getText().toString(), mPasswordView.getText().toString())
                     .addOnCompleteListener(getActivity(), task -> {
                         if (task.isSuccessful()) {
@@ -135,6 +141,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             user.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
+                                    signInDialog.dismiss();
                                     BrainBeatsUser currentUser = dataSnapshot.getValue(BrainBeatsUser.class);
                                     ((com.brainbeats.architecture.Application) getActivity().getApplication()).setUserDetails(currentUser);
                                     Intent dashboardIntent = new Intent(getActivity(), MainActivity.class);
@@ -148,8 +155,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             try {
                                 throw task.getException();
                             } catch (FirebaseAuthInvalidUserException ex){
+                                signInDialog.dismiss();
                                 Constants.buildInfoDialog(getContext(), "Error", "Please enter a valid username");
                             } catch (FirebaseAuthInvalidCredentialsException e) {
+                                signInDialog.dismiss();
                                 Constants.buildInfoDialog(getContext(), "Error", "Invalid login or password.");
                             } catch (Exception e) {
                                 Log.e(TAG, e.getMessage());

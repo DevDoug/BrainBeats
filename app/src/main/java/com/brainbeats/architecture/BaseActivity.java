@@ -2,9 +2,11 @@ package com.brainbeats.architecture;
 
 import android.accounts.Account;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -28,7 +30,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -299,11 +303,17 @@ public class BaseActivity extends AppCompatActivity {
                     createBackStack(infoIntent);
                     break;
                 case R.id.action_logout:
-                    AccountManager.getInstance(getApplicationContext()).forceLogout(getApplicationContext());
-                    Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
-                    loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(loginIntent);
-                    finish();
+                    Constants.buildActionDialog(this, "Logout", "Are you sure you want to logout ?", "confirm", new Constants.ConfirmDialogActionListener() {
+                        @Override
+                        public void PerformDialogAction() {
+                            AccountManager.getInstance(getApplicationContext()).forceLogout(getApplicationContext());
+                            FirebaseAuth.getInstance().signOut();
+                            Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                            loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(loginIntent);
+                            finish();
+                        }
+                    });
                     break;
                 default:
                     return false;
@@ -361,9 +371,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void navigateUpOrBack(Activity currentActivity, FragmentManager fm) {
-        if (fm.getBackStackEntryCount() >= 1) { //if there are active com.brainbeats.fragments go up if not go back
+        if (fm.getBackStackEntryCount() > 1) { //if there are active com.brainbeats.fragments go up if not go back
             fm.popBackStackImmediate();
-            if (fm.getBackStackEntryCount() == 0) {
+            if (fm.getBackStackEntryCount() == 1) {
                 getToolBar();
                 mDrawerToggle.setDrawerIndicatorEnabled(true);
                 mDrawerToggle.syncState();

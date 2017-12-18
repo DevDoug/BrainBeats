@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -81,6 +82,12 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
     }
 
     @Override
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+        navigateUpOrBack(this, fm);
+    }
+
+    @Override
     public void onFragmentInteraction(Uri uri) {
         if (uri.compareTo(Constants.GO_TO_ALL_FRIEND_REQUEST_URI) == 0) {
             switchToFriendRequestsFragment();
@@ -113,6 +120,7 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
     }
 
     public void showAddFriendDialog() {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.custom_search_dialog, null);

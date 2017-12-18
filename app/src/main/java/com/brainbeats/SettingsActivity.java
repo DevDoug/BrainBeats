@@ -3,6 +3,7 @@ package com.brainbeats;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 
 import com.brainbeats.architecture.BaseActivity;
 import com.brainbeats.fragments.ArtistProfileFragment;
@@ -24,6 +25,12 @@ public class SettingsActivity extends BaseActivity implements SettingFragment.On
             mArtistProfileFragment = new ArtistProfileFragment();
             switchToSettingsFragment();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+        navigateUpOrBack(this, fm);
     }
 
     @Override

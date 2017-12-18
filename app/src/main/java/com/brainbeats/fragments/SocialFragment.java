@@ -56,6 +56,7 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
     private TextView mAcceptFriendRequest;
     private TextView mAllRequestsText;
     private TextView mAddFriendArtistName;
+    private TextView mEmptyDataPlaceholder;
 
     BrainBeatsUser friendToAdd;
 
@@ -75,6 +76,8 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
         mAcceptFriendRequest = v.findViewById(R.id.accept_friend_request);
         mAllRequestsText = v.findViewById(R.id.all_friend_requests);
         mAddFriendArtistName = v.findViewById(R.id.artist_name);
+        mEmptyDataPlaceholder = v.findViewById(R.id.empty_text);
+
 
 
         mAcceptFriendRequest.setOnClickListener(this);
@@ -117,6 +120,18 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mFriendListReyclerView.setLayoutManager(layoutManager);
+
+        mFriendsReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()) {
+                    mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
+                    mFriendListReyclerView.setVisibility(View.INVISIBLE);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
 
         mFriendsAdapter = new FriendsAdapter(getContext(), friendList);
         mFriendListReyclerView.setAdapter(mFriendsAdapter);
@@ -274,6 +289,7 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
                 if(dataSnapshot.getChildrenCount() != 0) {
                     mPendingFriendsCard.setVisibility(View.VISIBLE);
                     mAllRequestsText.setVisibility(View.VISIBLE);
+
                     for(DataSnapshot child: dataSnapshot.getChildren()) {
                         FriendRequest friendRequest = child.getValue(FriendRequest.class);
                         friendToAdd = friendRequest.getSender();
