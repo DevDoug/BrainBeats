@@ -120,7 +120,6 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
     }
 
     public void showAddFriendDialog() {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.custom_search_dialog, null);

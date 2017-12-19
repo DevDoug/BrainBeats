@@ -36,6 +36,6 @@ public class FirebaseIdService extends FirebaseInstanceIdService {
          */
         private void sendRegistrationToServer(String token) {
             // Add custom implementation, as needed.
-            AccountManager.getInstance(getApplicationContext()).setFirebaseToken(token);
+            AccountManager.getInstance(getApplicationContext()).setFirebaseToken(token); //update FB token in shared pref
         }
 }

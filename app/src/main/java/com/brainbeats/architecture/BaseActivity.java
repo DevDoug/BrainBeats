@@ -51,7 +51,9 @@ import com.brainbeats.entity.Track;
 import com.brainbeats.model.BrainBeatsUser;
 import com.brainbeats.model.Mix;
 import com.brainbeats.service.AudioService;
+import com.brainbeats.utils.BrainBeatsGlideModule;
 import com.brainbeats.utils.Constants;
+import com.brainbeats.utils.GlideApp;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
@@ -446,7 +448,9 @@ public class BaseActivity extends AppCompatActivity {
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         StorageReference imageStorage = storageReference.child("images/" + user.getArtistProfileImage());
 
-        Glide.with(this).load(imageStorage).into(mArtistCoverImage);
+        GlideApp.with(this)
+                .load(imageStorage)
+                .into(mArtistCoverImage);
     }
 
     public void startProgressBarThread() {
