@@ -39,6 +39,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class SocialActivity extends BaseActivity implements SocialFragment.OnFragmentInteractionListener,
         FriendRequestsFragment.OnFragmentInteractionListener, View.OnClickListener {
@@ -95,9 +96,9 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri, BrainBeatsUser user) {
+    public void onFragmentInteraction(Uri uri, String userId) {
         if (uri.compareTo(Constants.ACCEPT_FRIEND_REQUEST_URI) == 0) {
-            acceptFriendRequest(user);
+            acceptFriendRequest(userId);
         }
     }
 
@@ -200,16 +201,12 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
     }
 
     public void addFriendRequest() {
-/*        BrainBeatsUser sender = new BrainBeatsUser("RvMaDClGqohUHrYDgKp9u5i03OI3", "doug4less", "d5gbZX35us0:APA91bE3-GDI58bA_a-4jsq8_4UEPgOFf689CWCtJObhPGN1UgOaZyYzf17sY-VL72PFjO8vvLA57jaoRWpz0xc8HaOncyKwlSGhE5HgF0XX6TgcT56_78yahRpiYe8bQ_suZ6ZH-hQw");
-        BrainBeatsUser receiver = new BrainBeatsUser("VqDgYnDMNVUtByH3uyLDNskPPlj1", "fakefriend", "");*/
+        FriendRequest request = new FriendRequest("pending",FirebaseAuth.getInstance().getCurrentUser().getUid(),"RvMaDClGqohUHrYDgKp9u5i03OI3");
 
-        BrainBeatsUser sender = new BrainBeatsUser("VqDgYnDMNVUtByH3uyLDNskPPlj1", "fakefriend", "c4Q6zkVZGy0:APA91bGaBxlJ0QsJtbHZ342gdWapeUaOL20hF08m2s21jXGzRndd0y16KFyzA9zvVfYcF3c7Gn6FuY3pHchiTXn4fsjIfK7DN10oDm6xYql5hHb7evLTm_T2M9B0jgx1FjGV6d9-6btd");
-        BrainBeatsUser receiver = new BrainBeatsUser("RvMaDClGqohUHrYDgKp9u5i03OI3", "doug4less", "d5gbZX35us0:APA91bE3-GDI58bA_a-4jsq8_4UEPgOFf689CWCtJObhPGN1UgOaZyYzf17sY-VL72PFjO8vvLA57jaoRWpz0xc8HaOncyKwlSGhE5HgF0XX6TgcT56_78yahRpiYe8bQ_suZ6ZH-hQw");
-
-        DatabaseReference friendRequest = mFirebaseDatabase.getReference("friend_request");
+        DatabaseReference friendRequest = mFirebaseDatabase.getReference("friend_requests/" + "RvMaDClGqohUHrYDgKp9u5i03OI3");
         friendRequest
                 .push()
-                .setValue(new FriendRequest("Pending", sender, receiver))
+                .setValue(request)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         friendUserDialog.dismiss();
@@ -221,11 +218,23 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
                 });
     }
 
-    public void acceptFriendRequest(BrainBeatsUser user) {
-        DatabaseReference friendsOfCurrentUser = mFirebaseDatabase.getReference("friends/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
-        friendsOfCurrentUser.push().setValue(user);
+    public void acceptFriendRequest(String userId) {
+        DatabaseReference currentUserRef = mFirebaseDatabase.getInstance().getReference().child("users/" + userId);
+        currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                BrainBeatsUser user = dataSnapshot.getValue(BrainBeatsUser.class);
+                DatabaseReference friendsOfCurrentUser = mFirebaseDatabase.getReference("friends/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+                friendsOfCurrentUser.push().setValue(user);
+            }
 
-        DatabaseReference friendsOfSendingUser = mFirebaseDatabase.getReference("friends/" + user.getUserId());
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        DatabaseReference friendsOfSendingUser = mFirebaseDatabase.getReference("friends/" + userId);
         friendsOfSendingUser.push().setValue(((Application) this.getApplication()).getUserDetails());
     }
 

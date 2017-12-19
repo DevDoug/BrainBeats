@@ -32,6 +32,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -56,9 +57,10 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
     private TextView mAcceptFriendRequest;
     private TextView mAllRequestsText;
     private TextView mAddFriendArtistName;
+    private TextView mAddFriendArtistDescription;
     private TextView mEmptyDataPlaceholder;
 
-    BrainBeatsUser friendToAdd;
+    String friendToAddId;
 
     public SocialFragment() {}
 
@@ -76,8 +78,8 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
         mAcceptFriendRequest = v.findViewById(R.id.accept_friend_request);
         mAllRequestsText = v.findViewById(R.id.all_friend_requests);
         mAddFriendArtistName = v.findViewById(R.id.artist_name);
+        mAddFriendArtistDescription = v.findViewById(R.id.artist_description);
         mEmptyDataPlaceholder = v.findViewById(R.id.empty_text);
-
 
 
         mAcceptFriendRequest.setOnClickListener(this);
@@ -120,18 +122,6 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mFriendListReyclerView.setLayoutManager(layoutManager);
-
-        mFriendsReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists()) {
-                    mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
-                    mFriendListReyclerView.setVisibility(View.INVISIBLE);
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
 
         mFriendsAdapter = new FriendsAdapter(getContext(), friendList);
         mFriendListReyclerView.setAdapter(mFriendsAdapter);
@@ -212,7 +202,7 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.accept_friend_request:
-                mListener.onFragmentInteraction(Constants.ACCEPT_FRIEND_REQUEST_URI, friendToAdd);
+                mListener.onFragmentInteraction(Constants.ACCEPT_FRIEND_REQUEST_URI, friendToAddId);
                 break;
             case R.id.all_friend_requests:
                 mListener.onFragmentInteraction(Constants.GO_TO_ALL_FRIEND_REQUEST_URI);
@@ -222,13 +212,14 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
-        void onFragmentInteraction(Uri uri, BrainBeatsUser user);
+        void onFragmentInteraction(Uri uri, String userId);
     }
 
     public void updateFriends() {
         mFriendsReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
                 BrainBeatsUser user = dataSnapshot.getValue(BrainBeatsUser.class);
                 if(user != null && user.getUserId() != null) {
                     if(!user.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
@@ -282,17 +273,18 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
     }
 
     public void searchForPendingFriendRequests(){
-        mUserFriendsReference = mFirebaseDatabase.getReference("friend_request/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mUserFriendsReference = mFirebaseDatabase.getReference("friend_requests/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
         mUserFriendsReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getChildrenCount() != 0) {
+
                     mPendingFriendsCard.setVisibility(View.VISIBLE);
                     mAllRequestsText.setVisibility(View.VISIBLE);
 
                     for(DataSnapshot child: dataSnapshot.getChildren()) {
                         FriendRequest friendRequest = child.getValue(FriendRequest.class);
-                        friendToAdd = friendRequest.getSender();
+                        friendToAddId = friendRequest.getSenderId();
                         populateCurrentAddFriendData(friendRequest);
                         break;
                     }
@@ -303,7 +295,20 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    public void populateCurrentAddFriendData( FriendRequest friendRequest){
-        mAddFriendArtistName.setText(friendRequest.getSender().getArtistName());
+    public void populateCurrentAddFriendData(FriendRequest friendRequest){
+        DatabaseReference userRef = mFirebaseDatabase.getInstance().getReference().child("users/" + friendRequest.senderId);
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                BrainBeatsUser user = dataSnapshot.getValue(BrainBeatsUser.class);
+                mAddFriendArtistName.setText(user.getArtistName());
+                mAddFriendArtistDescription.setText(user.getArtistDescription());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }
