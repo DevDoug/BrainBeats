@@ -1,10 +1,14 @@
 package com.brainbeats.fragments;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.brainbeats.R;
+import com.brainbeats.SocialActivity;
 import com.brainbeats.adapters.FriendRequestAdapter;
 import com.brainbeats.adapters.FriendsAdapter;
 import com.brainbeats.adapters.FriendsSearchAdapter;
@@ -23,6 +28,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import android.support.v7.widget.Toolbar;
 
 import java.util.ArrayList;
 
@@ -37,7 +43,7 @@ public class FriendRequestsFragment extends Fragment {
     private FirebaseDatabase mFirebaseDatabase;
 
     FirebaseRecyclerAdapter adapter;
-    Query query = FirebaseDatabase.getInstance().getReference().child("friends/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+    Query query = FirebaseDatabase.getInstance().getReference().child("friend_requests/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
     private RecyclerView mFriendRequestReyclerView;
 
@@ -71,6 +77,22 @@ public class FriendRequestsFragment extends Fragment {
         mFriendRequestReyclerView.setAdapter(adapter);
 
         adapter.startListening();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        Drawable up = DrawableCompat.wrap(ContextCompat.getDrawable(getContext(), R.drawable.ic_up));
+        DrawableCompat.setTint(up, getResources().getColor(R.color.theme_primary_text_color));
+        toolbar.setNavigationIcon(up);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                ((SocialActivity) getActivity()).navigateUpOrBack(getActivity(), fm);
+            }
+        });
     }
 
     @Override

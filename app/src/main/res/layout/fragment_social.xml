@@ -32,7 +32,6 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="15dp"
                 android:layout_toRightOf="@id/artist_thumbnail"
-                android:text="New Challanger"
                 android:textColor="@color/theme_secondary_text_color"
                 android:textSize="17sp" />
 
@@ -44,7 +43,6 @@
                 android:layout_marginLeft="15dp"
                 android:layout_toRightOf="@id/artist_thumbnail"
                 android:maxLines="3"
-                android:text="hey yo yo yo this liiiil cChannnnge"
                 android:textColor="@color/theme_secondary_text_color"
                 android:textSize="13sp" />
 
@@ -61,6 +59,7 @@
                 android:textSize="16sp" />
 
         </RelativeLayout>
+
     </android.support.v7.widget.CardView>
 
     <TextView
@@ -83,13 +82,13 @@
         android:padding="15dp"
         android:text="Add some other artists to start jamming"
         android:textSize="22sp"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/user_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/all_friend_requests"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </RelativeLayout>

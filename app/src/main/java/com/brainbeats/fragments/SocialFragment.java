@@ -126,6 +126,18 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
         mFriendsAdapter = new FriendsAdapter(getContext(), friendList);
         mFriendListReyclerView.setAdapter(mFriendsAdapter);
 
+        mFriendsReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()) {
+                    mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
+                    mFriendListReyclerView.setVisibility(View.INVISIBLE);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+
         updateFriends();
         searchForPendingFriendRequests();
     }
