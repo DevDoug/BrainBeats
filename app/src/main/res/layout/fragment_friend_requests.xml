@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Add some other artists to start jamming"
+        android:text="There are no friend requests at this time"
         android:textSize="26sp"
         android:visibility="gone" />
 

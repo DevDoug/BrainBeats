@@ -121,7 +121,8 @@ public class AddNewArtistInfoFragment extends Fragment implements View.OnClickLi
         Map<String, Object> userData = new HashMap<String, Object>();
         userData.put("artistName", mArtistName.getText().toString());
         userData.put("artistDescription", mArtistDescription.getText().toString());
-        userData.put("artistProfileImage", mUploadedProfileImageUri.getLastPathSegment());
+        if(mUploadedProfileImageUri != null)
+            userData.put("artistProfileImage", mUploadedProfileImageUri.getLastPathSegment());
         user.updateChildren(userData);
         goToDashboard();
     }

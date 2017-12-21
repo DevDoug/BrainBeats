@@ -219,6 +219,7 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
     }
 
     public void acceptFriendRequest(String userId) {
+        //Add friend record to both users
         DatabaseReference currentUserRef = mFirebaseDatabase.getInstance().getReference().child("users/" + userId);
         currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -229,13 +230,31 @@ public class SocialActivity extends BaseActivity implements SocialFragment.OnFra
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
 
         DatabaseReference friendsOfSendingUser = mFirebaseDatabase.getReference("friends/" + userId);
         friendsOfSendingUser.push().setValue(((Application) this.getApplication()).getUserDetails());
+
+        //Delete friend request record
+/*        FirebaseDatabase Database = FirebaseDatabase.getInstance();
+        Query reference = Database
+                .getReference("friend_request/" + FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .orderByChild("userId")
+                .equalTo(user.getUserId());
+
+
+        reference.getRef().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot != null)
+                    dataSnapshot.getRef().removeValue();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });*/
+
     }
 
     public void sendFriendNotification() {}

@@ -14,16 +14,19 @@ import com.brainbeats.model.BrainBeatsUser;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 
+import java.util.ArrayList;
+
 /**
  * Created by douglas.ray on 11/1/2017.
  */
 
-public class FriendRequestAdapter extends FirebaseRecyclerAdapter<BrainBeatsUser, FriendRequestAdapter.ViewHolder> {
+public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdapter.ViewHolder> {
     Context context;
+    ArrayList<BrainBeatsUser> mUserList;
 
-    public FriendRequestAdapter(Context context, FirebaseRecyclerOptions<BrainBeatsUser> options) {
-        super(options);
+    public FriendRequestAdapter(Context context, ArrayList<BrainBeatsUser> userList) {
         this.context = context;
+        this.mUserList = userList;
     }
 
     @Override
@@ -33,8 +36,14 @@ public class FriendRequestAdapter extends FirebaseRecyclerAdapter<BrainBeatsUser
     }
 
     @Override
-    protected void onBindViewHolder(FriendRequestAdapter.ViewHolder holder, int position, BrainBeatsUser model) {
-        holder.mUserNameText.setText(model.getArtistName());
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        BrainBeatsUser user = mUserList.get(position);
+        holder.mUserNameText.setText(user.getUserName());
+    }
+
+    @Override
+    public int getItemCount() {
+        return mUserList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
