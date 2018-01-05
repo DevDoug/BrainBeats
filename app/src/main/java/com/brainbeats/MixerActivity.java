@@ -1,6 +1,7 @@
 package com.brainbeats;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -97,7 +98,7 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
 
         if(mAudioService.getIsPlaying() || mAudioService.getIsPaused()) {
             mAudioService.stopSong();
-            hideCurrentSongView();
+            //hideCurrentSongView();
         }
 
         mNewMix = new Mix();
@@ -177,10 +178,20 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
             mNewMix.setFirebaseStorageUrl(title + ".3gp");
             mNewMix.setArtistId(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
+            MediaPlayer mp = MediaPlayer.create(this, Uri.parse(String.valueOf(mixFile.toURI())));
+            int duration = mp.getDuration();
+
+            mNewMix.setDuration(duration);
+
             uploadArtistMixToCloudStorage(mixFile);
 
-            Query mixRef = mDatabase.getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+            Query mixRef = mDatabase.getReference("mixes/" );
             mixRef.getRef().push().setValue(mNewMix);
+
+            Query artistMixRef = mDatabase.getReference("artist_mix/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+            artistMixRef.getRef().push().setValue(mNewMix);
+
+
         }
     }
 

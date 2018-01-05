@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.brainbeats.LibraryActivity;
 import com.brainbeats.R;
 import com.brainbeats.entity.Track;
+import com.brainbeats.model.Mix;
 import com.brainbeats.model.Playlist;
 import com.brainbeats.utils.Constants;
 import com.google.firebase.auth.FirebaseAuth;
@@ -99,10 +100,10 @@ public class LibraryPlaylistAdapter extends RecyclerView.Adapter<LibraryPlaylist
         });
 
         holder.mPlay.setOnClickListener(v -> {
-            Queue<Track> playListQue = new PriorityQueue<>();
+            Queue<Mix> playListQue = new PriorityQueue<>();
             for (int i = 0; i < playlist.getMixes().size(); i++) {
-                Track playListTrack = new Track(playlist.getMixes().get(i));
-                playListQue.add(playListTrack);
+                //Track playListTrack = new Track(playlist.getMixes().get(i));
+                playListQue.add(playlist.getMixes().get(i));
             }
 
             if(playListQue.size() > 0) {

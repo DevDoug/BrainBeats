@@ -30,12 +30,15 @@ public class LibraryFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_library, container, false);
         mTabLayout = v.findViewById(R.id.tab_layout);
         mViewPager = v.findViewById(R.id.base_viewpager);
         return v;
+
+
     }
 
     @Override
@@ -74,7 +77,7 @@ public class LibraryFragment extends Fragment {
     public void setupViewPager() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
         adapter.addFragment(LibraryTabFragment.newInstance(Constants.LibraryDataType.Songs,""), getResources().getStringArray(R.array.library_tab_titles)[0]);
-        adapter.addFragment(LibraryTabFragment.newInstance(Constants.LibraryDataType.Playlists,""), getResources().getStringArray(R.array.library_tab_titles)[1]);
+        //adapter.addFragment(LibraryTabFragment.newInstance(Constants.LibraryDataType.Playlists,""), getResources().getStringArray(R.array.library_tab_titles)[1]);
         adapter.addFragment(LibraryTabFragment.newInstance(Constants.LibraryDataType.Favorites,""), getResources().getStringArray(R.array.library_tab_titles)[2]);
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);

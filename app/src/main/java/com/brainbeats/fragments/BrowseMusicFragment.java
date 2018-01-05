@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -31,10 +32,14 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.brainbeats.R;
+import com.brainbeats.adapters.BrowseMusicAdapter;
+import com.brainbeats.adapters.LibraryMixAdapter;
+import com.brainbeats.adapters.LibraryPlaylistAdapter;
 import com.brainbeats.adapters.SearchMusicAdapter;
 import com.brainbeats.entity.Track;
 import com.brainbeats.entity.TrackCollection;
 import com.brainbeats.model.Mix;
+import com.brainbeats.model.Playlist;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.web.WebApiManager;
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,19 +64,26 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
     private FirebaseDatabase mFirebaseDatabase;
     private Query mFirebasDatabaseReference;
 
-    private RecyclerView mTrackGrid;
+/*    private RecyclerView mTrackGrid;
     private SearchMusicAdapter mTrackAdapter;
     private GridLayoutManager mBeatGridLayoutManager;
+
     private ArrayList<Track> mTracks = new ArrayList<>();
 
     private OnFragmentInteractionListener mListener;
     private String mQueryText = "";
+    private SearchView.OnQueryTextListener listener;*/
+
+    private OnFragmentInteractionListener mListener;
     private SearchView.OnQueryTextListener listener;
+
+    private ArrayList<Mix> mixList;
+    private RecyclerView mMixGrid;
+    private BrowseMusicAdapter mBrowseMixAdapter;
+    private GridLayoutManager mBeatGridLayoutManager;
     AlertDialog alert;
 
-    private String mNextTracksHref;
-    private boolean mIsLoading;
-    private boolean mIsLastPage;
+    //private boolean mIsLastPage;
     private String mAdvancedSearchTagsList = "";
 
     public BrowseMusicFragment() {
@@ -87,9 +99,9 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_browse, container, false);
-        mTrackGrid = v.findViewById(R.id.category_grid);
+        mMixGrid = v.findViewById(R.id.category_grid);
 
-        listener = new SearchView.OnQueryTextListener() {
+/*        listener = new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 mQueryText = query;
@@ -101,12 +113,62 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
             public boolean onQueryTextChange(String newText) {
                 return false;
             }
-        };
+        };*/
         return v;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+    public void updateMixes() {
+        mFirebasDatabaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                mixList.add(dataSnapshot.getValue(Mix.class));
+                mBrowseMixAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Mix mix = dataSnapshot.getValue(Mix.class);
+                int index = getMixItemIndex(mix);
+                mixList.set(index, mix);
+                mBrowseMixAdapter.notifyItemChanged(index);
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Mix mix = dataSnapshot.getValue(Mix.class);
+                int index = getMixItemIndex(mix);
+                mixList.remove(index);
+                mBrowseMixAdapter.notifyItemRemoved(index);
+
+/*                if(index == 0){
+                    mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
+                    mMixRecyclerView.setVisibility(View.INVISIBLE);
+                }*/
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
+    private int getMixItemIndex(Mix mix) {
+        int index = -1;
+
+        for (int i = 0; i < mixList.size(); i++) {
+            if (mixList.get(i).getMixTitle().equalsIgnoreCase(mix.getMixTitle())) {
+                index = i;
+            }
+        }
+
+        return index;
+    }
+
+
+  //  @Override
+/*    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_dashboard, menu);
         MenuItem searchMenuItem = menu.findItem(R.id.action_search);
         SearchView mSearchView = (SearchView) searchMenuItem.getActionView();
@@ -122,7 +184,7 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 mQueryText = "";
-                getTracks("","","","");
+                //("","","","");
                 return true;  // Return true to collapse action view
             }
 
@@ -135,7 +197,7 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
 
         // Assign the listener to that action item
         MenuItemCompat.setOnActionExpandListener(searchMenuItem, expandListener);
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -156,9 +218,9 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
     @Override
     public void onResume() {
         super.onResume();
-        if (mQueryText.equalsIgnoreCase("")) {
+/*        if (mQueryText.equalsIgnoreCase("")) {
             getTracks("","","","");
-        }
+        }*/
     }
 
     public void showAdvancedSearchDialog(){
@@ -211,7 +273,7 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
         builder.setPositiveButton("Go", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                getTracks(songTitle.getText().toString(),genreSpinner.getSelectedItem().toString(),mAdvancedSearchTagsList,"");
+                //getTracks(songTitle.getText().toString(),genreSpinner.getSelectedItem().toString(),mAdvancedSearchTagsList,"");
                 mAdvancedSearchTagsList = "";
             }
         });
@@ -224,13 +286,29 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mFirebasDatabaseReference = mFirebaseDatabase
-                .getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .orderByChild("artistId")
-                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        mixList = new ArrayList<>();
+
+/*        mMixGrid.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mMixGrid.setLayoutManager(layoutManager);*/
+
+        mBeatGridLayoutManager = new GridLayoutManager(getContext(), Constants.GRID_SPAN_COUNT);
+        mMixGrid.setLayoutManager(mBeatGridLayoutManager);
+
+        mFirebasDatabaseReference = mFirebaseDatabase.getReference("mixes/");
+
+        mBrowseMixAdapter = new BrowseMusicAdapter(getContext(), mixList);
+        mMixGrid.setAdapter(mBrowseMixAdapter);
+
+        updateMixes();
     }
 
-    public void updateMixes() {
+
+
+
+/*    public void updateMixes() {
         mFirebasDatabaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -240,15 +318,15 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-/*                Track track = new Track(dataSnapshot.getValue(Mix.class));
+*//*                Track track = new Track(dataSnapshot.getValue(Mix.class));
                 int index = getMixItemIndex(mix);
                 mixList.set(index, mix);
-                mLibraryMixAdapter.notifyItemChanged(index);*/
+                mLibraryMixAdapter.notifyItemChanged(index);*//*
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-/*                Mix mix = dataSnapshot.getValue(Mix.class);
+*//*                Mix mix = dataSnapshot.getValue(Mix.class);
                 int index = getMixItemIndex(mix);
                 mixList.remove(index);
                 mLibraryMixAdapter.notifyItemRemoved(index);
@@ -256,7 +334,7 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
                 if(index == 0){
                     mEmptyDataPlaceholder.setVisibility(View.VISIBLE);
                     mMixRecyclerView.setVisibility(View.INVISIBLE);
-                }*/
+                }*//*
             }
 
             @Override
@@ -264,7 +342,7 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
-    }
+    }*/
 
     @Override
     public void onAttach(Context context) {
@@ -292,7 +370,7 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
         void onFragmentInteraction(Uri uri);
     }
 
-    public void getTracks(String query, String genre, String tagList, String sortOrder) {
+/*    public void getTracks(String query, String genre, String tagList, String sortOrder) {
         if (Constants.isNetworkAvailable(getContext())) {
             ProgressDialog loadingMusicDialog = new ProgressDialog(getActivity());
             loadingMusicDialog.setCancelable(false);
@@ -334,9 +412,9 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
         } else {
             Constants.buildActionDialog(getContext(), getString(R.string.connect_to_network_message), getString(R.string.enable_wifi_in_settings_message), getString(R.string.go_to_settings_message), this);
         }
-    }
+    }*/
 
-    public void loadMoreItems() {
+/*    public void loadMoreItems() {
         mIsLoading = true;
         WebApiManager.getNextTrackListByHref(getActivity(), mNextTracksHref, mQueryText, "", new WebApiManager.OnObjectResponseListener() {
             @Override
@@ -358,9 +436,9 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
 
             }
         });
-    }
+    }*/
 
-    private RecyclerView.OnScrollListener recyclerViewOnScrollListener = new RecyclerView.OnScrollListener() {
+/*    private RecyclerView.OnScrollListener recyclerViewOnScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
@@ -376,9 +454,9 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
                 }
             }
         }
-    };
+    };*/
 
-    public void attemptSoundCloudLogin() {
+/*    public void attemptSoundCloudLogin() {
         if (Constants.isNetworkAvailable(getActivity())) {
             String authSoundCloudURL = WebApiManager.API_CONNECT_URL + "?client_id=" + Constants.SOUND_CLOUD_CLIENT_ID + "&redirect_uri=" + Constants.CALLBACK_URL + "&response_type=token";
             Intent loginIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(authSoundCloudURL));
@@ -388,5 +466,9 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
         } else {
             //Constants.buildActionDialog(getActivity(), getString(R.string.connect_to_network_message), getString(R.string.enable_wifi_in_settings_message), getString(R.string.go_to_settings_message), getActivity());
         }
+    }*/
+
+    public void getTracks(String query, String genre, String tagList, String sortOrder){
+
     }
 }

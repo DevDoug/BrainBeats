@@ -43,7 +43,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
         </FrameLayout>
 
-        <android.support.design.widget.FloatingActionButton
+<!--        <android.support.design.widget.FloatingActionButton
             android:id="@+id/action_four_fob"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
             android:layout_gravity="top"
             android:elevation="@dimen/fob_elevation"
             android:src="@drawable/ic_sort_by_alpha_white"
-            android:visibility="invisible" />
+            android:visibility="invisible" />-->
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/action_two_fob"
@@ -97,6 +97,7 @@
             android:clickable="true"
             android:elevation="@dimen/fob_elevation"
             android:src="@drawable/ic_filter_list_white" />
+<!--
 
         <LinearLayout
             android:id="@+id/current_track_container"
@@ -152,7 +153,7 @@
                 android:layout_marginLeft="10dp"
                 />
 
-            <!--            <ImageView
+            &lt;!&ndash;            <ImageView
                 android:id="@+id/play_song_button"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
@@ -172,10 +173,11 @@
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/play_song_button"
                 android:contentDescription="@string/content_description_play_next_button"
-                android:src="@drawable/ic_skip_next" />-->
+                android:src="@drawable/ic_skip_next" />&ndash;&gt;
 
 
         </LinearLayout>
+-->
 
     </android.support.design.widget.CoordinatorLayout>
 

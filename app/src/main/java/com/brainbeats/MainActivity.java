@@ -38,6 +38,8 @@ import com.brainbeats.sync.SyncManager;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.web.WebApiManager;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -46,7 +48,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, BrowseMusicFragment.OnFragmentInteractionListener, MusicDetailFragment.OnFragmentInteractionListener {
@@ -88,8 +95,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mMainActionFab = findViewById(R.id.main_action_fob);
         mExtraActionOneFab = findViewById(R.id.action_one_fob);
         mExtraActionTwoFab = findViewById(R.id.action_two_fob);
-        mExtraActionThreeFab = findViewById(R.id.action_three_fob);
-        mExtraActionFourFab = findViewById(R.id.action_four_fob);
+/*        mExtraActionThreeFab = findViewById(R.id.action_three_fob);
+        mExtraActionFourFab = findViewById(R.id.action_four_fob);*/
 
         fab_open = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_close);
@@ -110,9 +117,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
                 if (getIntent().getAction().equalsIgnoreCase(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT)) {
                     if (sentMix != null) {
-                        Track playTrack = new Track(sentMix);
-                        playTrack.setUser(new com.brainbeats.entity.User(mixUser));
-                        switchToBeatDetailFragment(playTrack);
+                        switchToBeatDetailFragment(sentMix);
                     }
                 }
             }
@@ -128,8 +133,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mMainActionFab.setOnClickListener(this);
         mExtraActionOneFab.setOnClickListener(this);
         mExtraActionTwoFab.setOnClickListener(this);
-        mExtraActionThreeFab.setOnClickListener(this);
-        mExtraActionFourFab.setOnClickListener(this);
+/*        mExtraActionThreeFab.setOnClickListener(this);
+        mExtraActionFourFab.setOnClickListener(this);*/
     }
 
     @Override
@@ -140,8 +145,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_filter_list_white));
         mExtraActionOneFab.setImageDrawable(getDrawable(R.drawable.ic_whatshot_white));
         mExtraActionTwoFab.setImageDrawable(getDrawable(R.drawable.ic_access_time_white));
-        mExtraActionThreeFab.setImageDrawable(getDrawable(R.drawable.ic_sort_by_alpha_white));
-        mExtraActionFourFab.setImageDrawable(getDrawable(R.drawable.ic_m));
+/*        mExtraActionThreeFab.setImageDrawable(getDrawable(R.drawable.ic_sort_by_alpha_white));
+        mExtraActionFourFab.setImageDrawable(getDrawable(R.drawable.ic_m));*/
 
 
         FragmentManager fm = getSupportFragmentManager();
@@ -199,7 +204,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 else if (mDashboardDetailFragment.isVisible())
                    addMixToFavorites();
                 break;
-            case R.id.action_three_fob:
+/*            case R.id.action_three_fob:
                 animateFAB();
                 if (mDashboardFragment.isVisible())
                     ((BrowseMusicFragment) mDashboardFragment).getTracks("","",WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_A_TO_Z, "Alphabet");
@@ -209,13 +214,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             case R.id.action_four_fob:
                 animateFAB();
                 //load mistro
-                break;
+                break;*/
         }
     }
 
     public void addMixToLibrary(){
-        DatabaseReference mixRef = mDatabase.child("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid()); //save this mix under mixes --> userUid -- new song
-        mixRef.push().setValue(new Mix(mCurrentSong));
+        DatabaseReference mixRef = mDatabase.child("artist_mix/" + FirebaseAuth.getInstance().getCurrentUser().getUid()); //save this mix under mixes --> userUid -- new song
+        mixRef.push().setValue(mCurrentSong);
 
         Snackbar mixAddedSnack;
         mixAddedSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.song_added_to_library_snack_message), Snackbar.LENGTH_LONG);
@@ -224,7 +229,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     public void addMixToFavorites(){
         DatabaseReference mixRef = mDatabase.child("mixes_favorites/" + FirebaseAuth.getInstance().getCurrentUser().getUid()); //save this mix under mixes --> userUid -- new song
-        mixRef.push().setValue(new Mix(mCurrentSong));
+        mixRef.push().setValue(mCurrentSong);
 
         Snackbar mixAddedSnack;
         mixAddedSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.song_added_to_favorites_snack_message), Snackbar.LENGTH_LONG);
@@ -240,6 +245,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         playlistRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 for(DataSnapshot data : dataSnapshot.getChildren()) {
                     Playlist playlist = data.getValue(Playlist.class);
                     playlistNames.add(playlist.getPlaylistTitle());
@@ -289,7 +295,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         });
         alert = builder.create();
         alert.show();
-
     }
 
     public void createNewPlaylist(String title) {
@@ -305,6 +310,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                         Snackbar newPlayListAddedSnack;
                         newPlayListAddedSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.new_playlist_added), Snackbar.LENGTH_LONG);
                         newPlayListAddedSnack.show();
+
+                        addToExistingPlaylist(title);
+
                     } else {
                         Snackbar errorSnack;
                         errorSnack = Snackbar.make(mCoordinatorLayout, getString(R.string.error_processing_request), Snackbar.LENGTH_LONG);
@@ -322,13 +330,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         playlistQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     Playlist playlist = childSnapshot.getValue(Playlist.class);
                     ArrayList<Mix> mixes = new ArrayList<Mix>();
                     if (playlist.getMixes() != null) {
                         mixes = playlist.getMixes();
                     }
-                    mixes.add(new Mix(((MusicDetailFragment) mDashboardDetailFragment).mSelectedTrack));
+                    mixes.add(((MusicDetailFragment)mDashboardDetailFragment).mSelectedTrack);
                     playlist.setMixes(mixes);
 
                     DatabaseReference playlistRef = mDatabase.child("playlists/" + FirebaseAuth.getInstance().getCurrentUser().getUid()); //save this mix under mixes --> userUid -- new song
@@ -361,16 +370,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         replaceFragment(mDashboardFragment, mDashboardFragment.getTag());
     }
 
-    public void switchToBeatDetailFragment(Track track) {
+    public void switchToBeatDetailFragment(Mix mix) {
         toggleNavDrawerIcon();
-        mDashboardDetailFragment = MusicDetailFragment.newInstance(track);
-        mCurrentSong = track; //set the clicked song to the current playing
+        mDashboardDetailFragment = MusicDetailFragment.newInstance(mix);
+        mCurrentSong = mix; //set the clicked song to the current playing
 
         mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_more_vert_white));
         mExtraActionOneFab.setImageDrawable(getDrawable(R.drawable.ic_library_add_white));
         mExtraActionTwoFab.setImageDrawable(getDrawable(R.drawable.ic_favorite_white));
-        mExtraActionThreeFab.setImageDrawable(getDrawable(R.drawable.ic_playlist_add_white));
-        mExtraActionFourFab.setImageDrawable(getDrawable(R.drawable.ic_m));
+/*        mExtraActionThreeFab.setImageDrawable(getDrawable(R.drawable.ic_playlist_add_white));
+        mExtraActionFourFab.setImageDrawable(getDrawable(R.drawable.ic_m));*/
 
         replaceFragment(mDashboardDetailFragment, "DashboardDetailFrag");
     }
@@ -382,10 +391,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             mExtraActionTwoFab.startAnimation(fab_close);
             mExtraActionOneFab.setClickable(false);
             mExtraActionTwoFab.setClickable(false);
-            mExtraActionThreeFab.startAnimation(fab_close);
+/*            mExtraActionThreeFab.startAnimation(fab_close);
             mExtraActionThreeFab.setClickable(false);
             mExtraActionFourFab.startAnimation(fab_close);
-            mExtraActionFourFab.setClickable(false);
+            mExtraActionFourFab.setClickable(false);*/
 
             mIsFabOpen = false;
         } else {
@@ -394,10 +403,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             mExtraActionTwoFab.startAnimation(fab_open);
             mExtraActionOneFab.setClickable(true);
             mExtraActionTwoFab.setClickable(true);
-            mExtraActionThreeFab.startAnimation(fab_open);
+/*            mExtraActionThreeFab.startAnimation(fab_open);
             mExtraActionThreeFab.setClickable(true);
             mExtraActionFourFab.startAnimation(fab_open);
-            mExtraActionFourFab.setClickable(true);
+            mExtraActionFourFab.setClickable(true);*/
 
             mIsFabOpen = true;
         }
@@ -418,7 +427,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_CHECK_IF_CURRENT_SONG) == 0) {
             if (mAudioService != null)
                 if (mAudioService.getIsPlaying() || mAudioService.getIsPaused())
-                    ((MusicDetailFragment) mDashboardDetailFragment).isCurrentSong = (mAudioService.getPlayingSong().getID() == ((MusicDetailFragment) mDashboardDetailFragment).mSelectedTrack.getID());
+                    ((MusicDetailFragment) mDashboardDetailFragment).isCurrentSong = (mAudioService.getPlayingSong().getMixId().equals(((MusicDetailFragment) mDashboardDetailFragment).mSelectedTrack.getArtistId()));
         } else if(uri.compareTo(Constants.LOGOUT_URI) == 0) {
             mAudioService.stopSong();
             mFirebaseAuth.signOut();
@@ -427,30 +436,67 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri, Track track) {
+    public void onFragmentInteraction(Uri uri, Mix mix) {
         if (uri.compareTo(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI) == 0) {
             mAudioService.requestAudioFocus(this);
-            mAudioService.setPlayingSong(track);
-            mAudioService.playSong(Uri.parse(track.getStreamURL()));
+            mAudioService.setPlayingSong(mix);
+            //mAudioService.playSong(Uri.parse(mix.getStreamURL()));
+
+            String storageUrl = mix.getFirebaseStorageUrl();
+            StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+            StorageReference mixStorage = storageReference.child("mixes/" + storageUrl);
+
+            try {
+                final long ONE_MEGABYTE = 1024 * 1024;
+                mixStorage.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        try{
+                            File outputFile = File.createTempFile(mix.getMixTitle(), ".3gp", MainActivity.this.getCacheDir());
+                            outputFile.deleteOnExit();
+                            FileOutputStream fileoutputstream = new FileOutputStream(outputFile);
+                            fileoutputstream.write(bytes);
+                            fileoutputstream.close();
+
+                            mCurrentSong = mix;
+                            mAudioService.setPlayingSong(mix);
+                            mAudioService.playBrainBeatsSong(Uri.parse(outputFile.getPath()));
+
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                        exception.printStackTrace();
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_UPDATE_CURRENT_PLAYING_SONG_VIEW) == 0) {
             if (mAudioService.getIsPlaying() || mAudioService.getIsPaused()) {
                 mDisplayCurrentSongView = true;
                 mCurrentSongPlayingView.setVisibility(View.VISIBLE);
 
-                if (mAudioService.getPlayingSong().getID() == track.getID())
-                    updateCurrentSongNotificationUI(track);
+                if (mAudioService.getPlayingSong().getMixId().equals(mix.getMixId()))
+                    updateCurrentSongNotificationUI(mix);
             }
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_SKIP_FORWARD_URI) == 0) {
             if (mAudioService.getPlayingSong() == null)
-                mAudioService.setPlayingSong(track);
+                mAudioService.setPlayingSong(mix);
 
             mAudioService.loadNextTrack();
         } else if (uri.compareTo(Constants.DASHBOARD_DETAIL_DOWNVOTE_SONG_URI) == 0) {
             if (mAudioService.getPlayingSong() == null)
-                mAudioService.setPlayingSong(track);
+                mAudioService.setPlayingSong(mix);
 
             long mixId = 0;
-            Cursor mixCursor = getContentResolver().query(BrainBeatsContract.MixEntry.CONTENT_URI, null, "mixtitle = ?", new String[]{track.getTitle()}, null);
+            Cursor mixCursor = getContentResolver().query(BrainBeatsContract.MixEntry.CONTENT_URI, null, "mixtitle = ?", new String[]{mix.getMixTitle()}, null);
             if (mixCursor != null) {
                 if (mixCursor.getCount() != 0) {
                     mixCursor.moveToFirst();
@@ -465,7 +511,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
                     mixCursor.close();
                 } else {
-                    ContentValues values = Constants.buildMixRecord(Constants.buildMixRecordFromTrack(track));
+                    ContentValues values = Constants.buildMixRecord(mix);
                     values.put(BrainBeatsContract.MixEntry.COLUMN_NAME_IS_DOWNVOTE, 1);
                     Uri returnRecord = getContentResolver().insert(BrainBeatsContract.MixEntry.CONTENT_URI, values);
                 }
@@ -479,10 +525,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
-                Track newTrack = intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+
+                Mix mix = intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
                 if (mDashboardDetailFragment.isVisible()) {                                                             //if they are on the dashboard detail screen update the detail widgets
-                    (((MusicDetailFragment) mDashboardDetailFragment)).updateTrackUI(newTrack);
-                    hideCurrentSongView();
+                    (((MusicDetailFragment) mDashboardDetailFragment)).updateTrackUI(mix);
+                    //hideCurrentSongView();
                 }
             } else if (intent.getAction().equals(Constants.SONG_LOADING_BROADCAST_ACTION)) {
                 if (mDashboardDetailFragment.isVisible()) {
@@ -493,11 +540,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     ((MusicDetailFragment) mDashboardDetailFragment).loadingMusicDialog.dismiss();
                 }
             } else if (intent.getAction().equals(Constants.PLAYLIST_COMPLETE_BROADCAST_ACTION)) {
-                hideCurrentSongView();
+               // hideCurrentSongView();
             } else if (intent.getAction().equals(Constants.RESTORE_FROM_SERVICE_BROADCAST_ACTION)) {
-                Track newTrack = intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+                Mix mix = intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
                 if (mDashboardDetailFragment.isVisible()) {                                                             //if they are on the dashboard detail screen update the detail widgets
-                    (((MusicDetailFragment) mDashboardDetailFragment)).updateTrackUI(newTrack);
+                    (((MusicDetailFragment) mDashboardDetailFragment)).updateTrackUI(mix);
                 }
             }
         }

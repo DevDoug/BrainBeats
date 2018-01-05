@@ -40,6 +40,7 @@ import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.data.BrainBeatsContract;
 import com.brainbeats.data.BrainBeatsDbHelper;
 import com.brainbeats.entity.Track;
+import com.brainbeats.model.Mix;
 import com.brainbeats.sync.OfflineSyncManager;
 import com.brainbeats.utils.BeatLearner;
 import com.brainbeats.utils.Constants;
@@ -75,7 +76,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public boolean mProgressUpdating = false;
 
     //Playing song members.
-    public Track mSelectedTrack;
+    public Mix mSelectedTrack;
     private boolean mLooping = false;
     public ProgressDialog loadingMusicDialog;
 
@@ -93,11 +94,11 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         // Required empty public constructor
     }
 
-    public static MusicDetailFragment newInstance(Track track) {
+    public static MusicDetailFragment newInstance(Mix mix) {
         MusicDetailFragment musicFrag = new MusicDetailFragment();
 
         Bundle args = new Bundle();
-        args.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, track);
+        args.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mix);
         musicFrag.setArguments(args);
 
         return musicFrag;
@@ -110,7 +111,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
 
         mUserSelections = getArguments();
         if (mUserSelections != null) {
-            mSelectedTrack = (Track) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_TRACK);
+            mSelectedTrack = (Mix) mUserSelections.get(Constants.KEY_EXTRA_SELECTED_TRACK);
         }
     }
 
@@ -118,11 +119,11 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (mSelectedTrack != null) {
-                mTrackTitle.setText(Constants.generateUIFriendlyString(mSelectedTrack.getTitle()));
-                if (mSelectedTrack.getArtworkURL() == null)
+                mTrackTitle.setText(Constants.generateUIFriendlyString(mSelectedTrack.getMixTitle()));
+                if (mSelectedTrack.getMixAlbumCoverArt() == null)
                     mAlbumCoverArt.setImageResource(R.drawable.no_cover);
                 else
-                    Picasso.with(getContext()).load(mSelectedTrack.getArtworkURL()).into(mAlbumCoverArt);
+                    Picasso.with(getContext()).load(mSelectedTrack.getMixAlbumCoverArt()).into(mAlbumCoverArt);
         }
     }
 
@@ -152,7 +153,12 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onStop() {
         super.onStop();
-        mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_UPDATE_CURRENT_PLAYING_SONG_VIEW, mSelectedTrack);
+        try{
+            if(mSelectedTrack != null)
+                mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_UPDATE_CURRENT_PLAYING_SONG_VIEW, mSelectedTrack);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -164,22 +170,22 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         mArtistDescription = v.findViewById(R.id.artist_description);
         mAlbumCoverArt = v.findViewById(R.id.album_cover_art);
         mPlaySongButton = v.findViewById(R.id.play_song_button);
-        mUpvoteArrow = v.findViewById(R.id.arrow_up);
+/*        mUpvoteArrow = v.findViewById(R.id.arrow_up);
         mDownVoteArrow = v.findViewById(R.id.arrow_down);
         mSkipForwardButton = v.findViewById(R.id.skip_forward_button);
-        mLoopSongButton = v.findViewById(R.id.repeat_button);
+        mLoopSongButton = v.findViewById(R.id.repeat_button);*/
         mArtistThumbnail = v.findViewById(R.id.artist_thumbnail);
         mPlayTrackSeekBar = v.findViewById(R.id.play_song_seek_bar);
-        mArtistName = v.findViewById(R.id.user_name);
+/*        mArtistName = v.findViewById(R.id.user_name);
         mShowArtistDetails = v.findViewById(R.id.artist_detail_toggle_switch);
-        mArtistCard = v.findViewById(R.id.card_view);
+        mArtistCard = v.findViewById(R.id.card_view);*/
 
         mPlaySongButton.setOnClickListener(this);
-        mUpvoteArrow.setOnClickListener(this);
+/*        mUpvoteArrow.setOnClickListener(this);
         mDownVoteArrow.setOnClickListener(this);
         mSkipForwardButton.setOnClickListener(this);
-        mLoopSongButton.setOnClickListener(this);
-        mShowArtistDetails.setOnClickListener(this);
+        mLoopSongButton.setOnClickListener(this);*/
+//        mShowArtistDetails.setOnClickListener(this);
 
         return v;
     }
@@ -202,7 +208,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                 ((MainActivity) getActivity()).mMainActionFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_filter_list_white));
                 ((MainActivity) getActivity()).mExtraActionOneFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_whatshot_white));
                 ((MainActivity) getActivity()).mExtraActionTwoFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_access_time_white));
-                ((MainActivity) getActivity()).mExtraActionThreeFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_sort_by_alpha_white));
+                //((MainActivity) getActivity()).mExtraActionThreeFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_sort_by_alpha_white));
                 //((MainActivity) getActivity()).mExtraActionFourFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_sort_by_alpha_white));
 
                 mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_DASHBOARD_FAB_IMAGES);
@@ -259,7 +265,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
             case R.id.play_song_button:
                 playSong();
                 break;
-            case R.id.arrow_down:
+/*            case R.id.arrow_down:
                 downvoteSong();
                 break;
             case R.id.skip_forward_button:
@@ -270,10 +276,10 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                 break;
             case R.id.arrow_up:
                 upvoteSong();
-                break;
-            case R.id.artist_detail_toggle_switch:
+                break;*/
+/*            case R.id.artist_detail_toggle_switch:
                 showArtistDetails();
-                break;
+                break;*/
             default:
                 break;
         }
@@ -303,12 +309,10 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                             }
 
                             @Override
-                            public void onStartTrackingTouch(SeekBar seekBar) {
-                            }
+                            public void onStartTrackingTouch(SeekBar seekBar) {}
 
                             @Override
-                            public void onStopTrackingTouch(SeekBar seekBar) {
-                            }
+                            public void onStopTrackingTouch(SeekBar seekBar) {}
                         });
                     } catch (InterruptedException e) {
                         Log.i("Progress bar thread", "Exception occured" + e.toString());
@@ -333,7 +337,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
                         BrainBeatsContract.MixTagEntry.CONTENT_URI,             // Table to query
                         null,                                                   // Projection to return
                         BrainBeatsContract.MixTagEntry.COLUMN_NAME_MIX_ID + BrainBeatsDbHelper.WHERE_CLAUSE_EQUAL,          // Where the mix is in the li,
-                        new String[]{String.valueOf(mSelectedTrack.getID())},   // No selection arguments
+                        new String[]{String.valueOf(mSelectedTrack.getArtistId())},   // No selection arguments
                         BrainBeatsDbHelper.DB_SORT_TYPE_LIMIT_FIVE              // Default sort order
                 );
             default:
@@ -357,33 +361,31 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
-        void onFragmentInteraction(Uri uri, Track track);
+        void onFragmentInteraction(Uri uri, Mix mix);
     }
 
-    public void updateTrackUI(Track track) {
-        mSelectedTrack = track;
-        mTrackTitle.setText(track.getTitle());
+    public void updateTrackUI(Mix mix) {
+        mSelectedTrack = mix;
+        mTrackTitle.setText(mSelectedTrack.getMixTitle());
 
-        if (track.getArtworkURL() == null)
+        if (mSelectedTrack.getMixAlbumCoverArt() == null)
             mAlbumCoverArt.setImageResource(R.drawable.no_cover);
         else
-            Picasso.with(getContext()).load(track.getArtworkURL()).into(mAlbumCoverArt);
+            Picasso.with(getContext()).load(mSelectedTrack.getMixAlbumCoverArt()).into(mAlbumCoverArt);
 
         if (((MainActivity) getActivity()).mBound) {
-            if (track.getStreamURL() != null) {
-                mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
-                startProgressBarThread(0);
-            }
+            mPlaySongButton.setImageResource(R.drawable.ic_pause_circle);
+            startProgressBarThread(0);
         }
 
-        mArtistName.setText(track.getUser().getUsername());
-        Picasso.with(getContext()).load(track.getUser().getAvatarUrl()).into(mArtistThumbnail);
-        mArtistDescription.setText(track.getUser().getDescription());
+/*        mArtistName.setText(mSelectedTrack.getUser().getArtistName());
+        Picasso.with(getContext()).load(mSelectedTrack.getUser().getArtistProfileImage()).into(mArtistThumbnail);
+        mArtistDescription.setText(mSelectedTrack.getUser().getArtistDescription());*/
 
         if (loadingMusicDialog != null)
             loadingMusicDialog.dismiss();
     }
-
+/*
     public void updateOfflineSyncManager(Constants.SyncDataAction syncAction, Constants.SyncDataType syncDataType) {
         Bundle settingsBundle = new Bundle();
         if (syncAction != null)
@@ -393,7 +395,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
 
         settingsBundle.putParcelable(Constants.KEY_EXTRA_SELECTED_TRACK, mSelectedTrack);
         OfflineSyncManager.getInstance(getContext()).performSyncOnLocalDb(((MainActivity) getActivity()).mCoordinatorLayout, settingsBundle, getActivity().getContentResolver());
-    }
+    }*/
 
     public void showLoadingMusicDialog(){
         loadingMusicDialog = new ProgressDialog(getContext());
@@ -406,7 +408,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
         MainActivity main = ((MainActivity) getActivity());
 
         if (!main.mAudioService.getIsPlaying() && !main.mAudioService.getIsPaused()
-                || !(main.mAudioService.getPlayingSong().getID() == mSelectedTrack.getID())) { //if music not playing or not the current playing song
+                || !(main.mAudioService.getPlayingSong().getMixId().equals(mSelectedTrack.getArtistId()))) { //if music not playing or not the current playing song
             showLoadingMusicDialog();
             mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_LOAD_SONG_URI, mSelectedTrack);
         } else if (main.mAudioService.getIsPlaying()) {                                                        //Song is playing so pause song
@@ -420,7 +422,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
 
     public void downvoteSong() {
         showLoadingMusicDialog();
-        BeatLearner.getInstance(getContext()).downVoteTrack(mSelectedTrack.getID());
+        BeatLearner.getInstance(getContext()).downVoteTrack(Integer.parseInt(mSelectedTrack.getMixId()));
         mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_DOWNVOTE_SONG_URI, mSelectedTrack);
 
         Snackbar downVoteSnack;
@@ -429,7 +431,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     }
 
     public void upvoteSong(){
-        BeatLearner.getInstance(getContext()).upVoteTrack(mSelectedTrack.getID());
+        BeatLearner.getInstance(getContext()).upVoteTrack(Integer.parseInt(mSelectedTrack.getMixId()));
 
         Snackbar upvoteSnack;
         upvoteSnack = Snackbar.make(((MainActivity) getActivity()).mCoordinatorLayout, getString(R.string.upvote_track), Snackbar.LENGTH_LONG);

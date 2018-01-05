@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
+import com.brainbeats.model.Mix;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -23,9 +24,9 @@ import com.brainbeats.entity.Track;
 public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.ViewHolder> {
 
     Context mAdapterContext;
-    public List<Track> mTracks;
+    public List<Mix> mTracks;
 
-    public SearchMusicAdapter(Context context, List<Track> data) {
+    public SearchMusicAdapter(Context context, List<Mix> data) {
         mAdapterContext = context;
         mTracks = data;
     }
@@ -58,14 +59,14 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mTrackTitle.setText(mTracks.get(position).getTitle());
+/*        holder.mTrackTitle.setText(mTracks.get(position).getTitle());
         if (mTracks.get(position).getArtworkURL() != null)
             Picasso.with(mAdapterContext).load(mTracks.get(position).getArtworkURL()).into(holder.mAlbumArtCover);
         else {
-/*            holder.mAlbumArtCover.setImageResource(R.drawable.dark_logo_transparent_background);
+*//*            holder.mAlbumArtCover.setImageResource(R.drawable.dark_logo_transparent_background);
             holder.mAlbumArtCover.setAlpha(45);
-            holder.mNoCoverArt.setVisibility(View.VISIBLE);*/
-        }
+            holder.mNoCoverArt.setVisibility(View.VISIBLE);*//*
+        }*/
     }
 
     @Override

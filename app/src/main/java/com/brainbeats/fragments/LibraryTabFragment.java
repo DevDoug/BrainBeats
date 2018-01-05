@@ -86,7 +86,7 @@ public class LibraryTabFragment extends Fragment {
         mMixRecyclerView.setLayoutManager(layoutManager);
 
         if(mDataType == 0)
-            mFirebasDatabaseReference = mFirebaseDatabase.getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+            mFirebasDatabaseReference = mFirebaseDatabase.getReference("artist_mix/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
         else if(mDataType == 1){
             mFirebasDatabaseReference = mFirebaseDatabase.getReference("playlists/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
             mEmptyDataPlaceholder.setText(R.string.add_playlist_to_lib);
@@ -158,7 +158,10 @@ public class LibraryTabFragment extends Fragment {
         mFirebasDatabaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                playLists.add(dataSnapshot.getValue(Playlist.class));
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Playlist playlist = snapshot.getValue(Playlist.class);
+                    playLists.add(playlist);
+                }
                 mLibraryPlaylistAdapter.notifyDataSetChanged();
             }
 

@@ -77,7 +77,7 @@ public class BaseActivity extends AppCompatActivity {
     public static final String ACCOUNT_TYPE = "com.example.android.datasync";
     public static final String ACCOUNT = "dummyaccount";
 
-    public Track mCurrentSong;
+    public Mix mCurrentSong;
     public static boolean mDisplayCurrentSongView = false;
 
     public DrawerLayout mNavigationDrawer;
@@ -117,7 +117,7 @@ public class BaseActivity extends AppCompatActivity {
         Bundle intentBundle = getIntent().getExtras(); //If an intent is passed to main activity.
         if (intentBundle != null) {
             if (intentBundle.get(KEY_EXTRA_SELECTED_TRACK) != null) {
-                mCurrentSong = (Track) intentBundle.get(KEY_EXTRA_SELECTED_TRACK);
+                mCurrentSong = (Mix) intentBundle.get(KEY_EXTRA_SELECTED_TRACK);
             }
         }
 
@@ -191,10 +191,10 @@ public class BaseActivity extends AppCompatActivity {
                 updateCurrentSongNotificationUI(mAudioService.getPlayingSong());
             }
 
-        if (mDisplayCurrentSongView)
+/*        if (mDisplayCurrentSongView)
             showCurrentSongView();
         else
-            hideCurrentSongView();
+            hideCurrentSongView();*/
 
         registerReceiver(mReceiver, mIntentFilter);
     }
@@ -220,17 +220,17 @@ public class BaseActivity extends AppCompatActivity {
         if(mCurrentSong != null)
             updateCurrentSongNotificationUI(mCurrentSong);
 
-        mCurrentSongPlayingView.setOnClickListener(new View.OnClickListener() {
+/*        mCurrentSongPlayingView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent dashboardIntent = new Intent(BaseActivity.this, MainActivity.class);
-                dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, new Mix(mCurrentSong));
+                dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_MIX, mCurrentSong);
                 dashboardIntent.putExtra(Constants.KEY_EXTRA_SELECTED_USER, new BrainBeatsUser());
                 dashboardIntent.setAction(Constants.INTENT_ACTION_GO_TO_DETAIL_FRAGMENT);
                 startActivity(dashboardIntent);
             }
-        });
-    }
+        });*/
+}
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -252,10 +252,10 @@ public class BaseActivity extends AppCompatActivity {
         mNavigationDrawer = findViewById(R.id.drawer_layout);
         mNavView = findViewById(R.id.navView);
         mArtistCoverImage = mNavView.getHeaderView(0).findViewById(R.id.profile_cover_image);
-        mNavView.getMenu().findItem(R.id.action_browse).getIcon().setColorFilter(ContextCompat.getColor(this, R.color.theme_primary_dark_color), PorterDuff.Mode.SRC_IN);
+        mNavView.getMenu().findItem(R.id.action_browse).getIcon().setColorFilter(ContextCompat.getColor(this, R.color.theme_primary_color), PorterDuff.Mode.SRC_IN);
         mNavView.getMenu().findItem(R.id.action_library).getIcon().setColorFilter(ContextCompat.getColor(this, R.color.theme_primary_color), PorterDuff.Mode.SRC_IN);
-        mNavView.getMenu().findItem(R.id.action_mixer).getIcon().setColorFilter(ContextCompat.getColor(this, R.color.black), PorterDuff.Mode.SRC_IN);
-        mNavView.getMenu().findItem(R.id.action_social).getIcon().setColorFilter(ContextCompat.getColor(this, R.color.theme_primary_color), PorterDuff.Mode.SRC_IN);
+        mNavView.getMenu().findItem(R.id.action_mixer).getIcon().setColorFilter(ContextCompat.getColor(this, R.color.theme_primary_color), PorterDuff.Mode.SRC_IN);
+        //mNavView.getMenu().findItem(R.id.action_social).getIcon().setColorFilter(ContextCompat.getColor(this, R.color.theme_primary_color), PorterDuff.Mode.SRC_IN);
         mNavView.getMenu().findItem(R.id.action_settings).getIcon().setColorFilter(ContextCompat.getColor(this, R.color.black), PorterDuff.Mode.SRC_IN);
         getToolBar();
         mDrawerToggle = new ActionBarDrawerToggle(this, mNavigationDrawer, mToolBar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -280,12 +280,12 @@ public class BaseActivity extends AppCompatActivity {
                     mixerIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                     createBackStack(mixerIntent);
                     break;
-                case R.id.action_social:
+/*                case R.id.action_social:
                     Intent socialIntent = new Intent(getApplicationContext(), SocialActivity.class);
                     socialIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
                     socialIntent.setAction(Constants.INTENT_ACTION_DISPLAY_CURRENT_TRACK);
                     createBackStack(socialIntent);
-                    break;
+                    break;*/
 /*                case R.id.action_analytics:
                     Intent analyticsIntent = new Intent(getApplicationContext(), MusicAnalyticsActivity.class);
                     analyticsIntent.putExtra(KEY_EXTRA_SELECTED_TRACK, mCurrentSong);
@@ -411,13 +411,13 @@ public class BaseActivity extends AppCompatActivity {
         }
     };
 
-    public void updateCurrentSongNotificationUI(Track track) {
+    public void updateCurrentSongNotificationUI(Mix mix) {
         if (mDisplayCurrentSongView) {
-            mCurrentSongTitle.setText(track.getTitle());
-            Picasso.with(BaseActivity.this).load(track.getArtworkURL()).into(mAlbumThumbnail);
+            mCurrentSongTitle.setText(mix.getMixTitle());
+            Picasso.with(BaseActivity.this).load(mix.getMixAlbumCoverArt()).into(mAlbumThumbnail);
 
-            if(track.getUser() != null)
-                mCurrentSongArtistName.setText(track.getUser().getUsername());
+            if(mix.getUser() != null)
+                mCurrentSongArtistName.setText(mix.getUser().getArtistName());
 
             startProgressBarThread();
         }
@@ -438,19 +438,24 @@ public class BaseActivity extends AppCompatActivity {
         mCurrentSongPlayingView.setVisibility(View.VISIBLE);
     }
 
-    public void hideCurrentSongView(){
+/*    public void hideCurrentSongView(){
         mDisplayCurrentSongView = false;
         mCurrentSongPlayingView.setVisibility(View.INVISIBLE);
-    }
+    }*/
 
     public void setUserProfileImage(){
-        BrainBeatsUser user = ((Application) this.getApplication()).getUserDetails();
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-        StorageReference imageStorage = storageReference.child("images/" + user.getArtistProfileImage());
+        try {
+            BrainBeatsUser user = ((Application) this.getApplication()).getUserDetails();
+            StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+            StorageReference imageStorage = storageReference.child("images/" + user.getArtistProfileImage());
 
-        GlideApp.with(this)
-                .load(imageStorage)
-                .into(mArtistCoverImage);
+            GlideApp.with(this)
+                    .load(imageStorage)
+                    .into(mArtistCoverImage);
+
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void startProgressBarThread() {
@@ -498,26 +503,26 @@ public class BaseActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
-                Track newTrack = intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+                Mix newTrack = intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
                 if (newTrack != null) {
-                    mCurrentSongTitle.setText(newTrack.getTitle());
+                    mCurrentSongTitle.setText(newTrack.getMixTitle());
 
-                    if (newTrack.getArtworkURL() == null)
+                    if (newTrack.getMixAlbumCoverArt() == null)
                         mAlbumThumbnail.setImageResource(R.drawable.no_cover);
                     else
-                        Picasso.with(BaseActivity.this).load(newTrack.getArtworkURL()).into(mAlbumThumbnail);
+                        Picasso.with(BaseActivity.this).load(newTrack.getMixAlbumCoverArt()).into(mAlbumThumbnail);
 
                     if(newTrack.getUser() != null)
-                        mCurrentSongArtistName.setText(newTrack.getUser().getUsername());
+                        mCurrentSongArtistName.setText(newTrack.getUser().getArtistName());
 
                     mCurrentSong = newTrack;
                 }
 
                 showCurrentSongView();
                 startProgressBarThread();
-            } else if (intent.getAction().equals(Constants.PLAYLIST_COMPLETE_BROADCAST_ACTION)) {
+            }/* else if (intent.getAction().equals(Constants.PLAYLIST_COMPLETE_BROADCAST_ACTION)) {
                 hideCurrentSongView();
-            }
+            }*/
         }
     };
 }

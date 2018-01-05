@@ -75,23 +75,34 @@ public class LibraryMixAdapter extends RecyclerView.Adapter<LibraryMixAdapter.Vi
         holder.mContainer.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                if(mix.getMixFavorite() == 0) {
+
+                }
+
                 Constants.buildActionDialog(mAdapterContext, "Delete Song", "Do you want to delete this song from your library", "confirm", new Constants.ConfirmDialogActionListener() {
                     @Override
                     public void PerformDialogAction() {
+
+                        String nodeToDelete = "artist_mix/";
+
+                        if(mix.getMixFavorite() == 1)
+                            nodeToDelete = "mixes_favorites/";
+
                         FirebaseDatabase Database = FirebaseDatabase.getInstance();
                         Query reference = Database
-                                .getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                .getReference(nodeToDelete + FirebaseAuth.getInstance().getCurrentUser().getUid())
                                 .orderByChild("artistId")
                                 .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
 
-                        reference.getRef().addListenerForSingleValueEvent(new ValueEventListener() {
+                        reference.getRef().addListenerForSingleValueEvent(new ValueEventListener() { //remove this from there library
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                                     Mix mixToDelete = childSnapshot.getValue(Mix.class);
-                                    if(mixToDelete.getMixTitle().equals(mix.getMixTitle()))
+                                    if(mixToDelete.getMixTitle().equals(mix.getMixTitle())) {
                                         childSnapshot.getRef().removeValue();
+                                    }
                                 }
                             }
 
@@ -126,9 +137,8 @@ public class LibraryMixAdapter extends RecyclerView.Adapter<LibraryMixAdapter.Vi
                                     fileoutputstream.write(bytes);
                                     fileoutputstream.close();
 
-                                    Track playTrack = new Track(mix);
-                                    ((LibraryActivity) mAdapterContext).mCurrentSong = playTrack;
-                                    ((LibraryActivity) mAdapterContext).mAudioService.setPlayingSong(playTrack);
+                                    ((LibraryActivity) mAdapterContext).mCurrentSong = mix;
+                                    ((LibraryActivity) mAdapterContext).mAudioService.setPlayingSong(mix);
                                     ((LibraryActivity) mAdapterContext).mAudioService.playBrainBeatsSong(Uri.parse(outputFile.getPath()));
 
                                 } catch (IOException ex) {
@@ -146,10 +156,10 @@ public class LibraryMixAdapter extends RecyclerView.Adapter<LibraryMixAdapter.Vi
                         e.printStackTrace();
                     }
                 } else {
-                    Track playTrack = new Track(mix);
-                    ((LibraryActivity) mAdapterContext).mCurrentSong = playTrack;
-                    ((LibraryActivity) mAdapterContext).mAudioService.setPlayingSong(playTrack);
-                    ((LibraryActivity) mAdapterContext).mAudioService.playSong(Uri.parse(playTrack.getStreamURL()));
+                    //Track playTrack = new Track(mix);
+                    ((LibraryActivity) mAdapterContext).mCurrentSong = mix;
+                    ((LibraryActivity) mAdapterContext).mAudioService.setPlayingSong(mix);
+                    ((LibraryActivity) mAdapterContext).mAudioService.playSong(Uri.parse(mix.getStreamURL()));
                 }
             }
         });

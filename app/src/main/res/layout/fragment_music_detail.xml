@@ -5,187 +5,193 @@
     android:layout_height="wrap_content"
     tools:context="com.brainbeats.fragments.MusicDetailFragment">
 
-    <ScrollView
+<!--    <ScrollView
         android:id="@+id/main_container_scroll"
         android:layout_width="fill_parent"
         android:layout_height="match_parent">
 
+
+    </ScrollView>-->
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/mix_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="60dp"
+            android:background="@android:color/transparent"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:paddingEnd="45dp"
+            android:paddingStart="45dp"
+            android:singleLine="true"
+            android:textColor="@color/theme_secondary_text_color"
+            android:textSize="@dimen/album_detail_title_text_size" />
+
         <RelativeLayout
+            android:id="@+id/beat_detail_header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/mix_title">
 
-            <TextView
-                android:id="@+id/mix_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentStart="true"
+            <ImageView
+                android:id="@+id/album_cover_art"
+                android:layout_width="300dp"
+                android:layout_height="200dp"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="25dp"
-                android:background="@android:color/transparent"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:paddingEnd="45dp"
-                android:paddingStart="45dp"
-                android:singleLine="true"
-                android:textColor="@color/theme_secondary_text_color"
-                android:textSize="@dimen/album_detail_title_text_size" />
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/fragment_content_item_top_margin"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter" />
 
-            <RelativeLayout
-                android:id="@+id/beat_detail_header"
+            <SeekBar
+                android:id="@+id/play_song_seek_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/mix_title">
+                android:layout_alignEnd="@+id/album_cover_art"
+                android:layout_alignStart="@+id/album_cover_art"
+                android:layout_below="@+id/album_cover_art"
+                android:layout_marginLeft="@dimen/seek_bar_margin_left"
+                android:layout_marginRight="@dimen/seek_bar_margin_left"
+                android:layout_marginTop="10dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/play_song_seek_bar"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+<!--                <ImageView
+                    android:id="@+id/arrow_up"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:contentDescription="@string/content_description_shuffle_button"
+                    android:src="@drawable/ic_arrow_upward_black" />
 
                 <ImageView
-                    android:id="@+id/album_cover_art"
-                    android:layout_width="300dp"
-                    android:layout_height="200dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"
-                    android:layout_marginTop="@dimen/fragment_content_item_top_margin" />
+                    android:id="@+id/arrow_down"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:contentDescription="@string/content_description_play_prev_button"
+                    android:src="@drawable/ic_arrow_downward_black" />-->
 
-                <SeekBar
-                    android:id="@+id/play_song_seek_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/album_cover_art"
-                    android:layout_marginLeft="@dimen/seek_bar_margin_left"
-                    android:layout_marginRight="@dimen/seek_bar_margin_left"
-                    android:layout_marginTop="10dp"
-                    android:layout_alignEnd="@+id/album_cover_art"
-                    android:layout_alignStart="@+id/album_cover_art" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:id="@+id/play_song_button"
+                    android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_below="@+id/play_song_seek_bar"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:contentDescription="@string/content_description_play_button"
+                    android:src="@drawable/ic_play_circle" />
 
-                    <ImageView
-                        android:id="@+id/arrow_up"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:contentDescription="@string/content_description_shuffle_button"
-                        android:src="@drawable/ic_arrow_upward_black" />
+<!--
+                <ImageView
+                    android:id="@+id/skip_forward_button"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:contentDescription="@string/content_description_play_next_button"
+                    android:src="@drawable/ic_skip_next" />
 
-                    <ImageView
-                        android:id="@+id/arrow_down"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:contentDescription="@string/content_description_play_prev_button"
-                        android:src="@drawable/ic_arrow_downward_black" />
+                <ImageView
+                    android:id="@+id/repeat_button"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:contentDescription="@string/content_description_play_next_button"
+                    android:src="@drawable/ic_repeat_off" />
+-->
 
-                    <ImageView
-                        android:id="@+id/play_song_button"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:contentDescription="@string/content_description_play_button"
-                        android:src="@drawable/ic_play_circle" />
-
-                    <ImageView
-                        android:id="@+id/skip_forward_button"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:contentDescription="@string/content_description_play_next_button"
-                        android:src="@drawable/ic_skip_next" />
-
-                    <ImageView
-                        android:id="@+id/repeat_button"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:contentDescription="@string/content_description_play_next_button"
-                        android:src="@drawable/ic_repeat_off" />
-
-                </LinearLayout>
-            </RelativeLayout>
-
-            <TextView
-                android:id="@+id/artist_detail_toggle_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Artist Details"
-                android:layout_margin="35dp"
-                android:layout_centerHorizontal="true"
-                android:textSize="22sp"
-                android:layout_below="@+id/beat_detail_header"
-                android:textColor="@color/theme_primary_color"/>
-
-   <!--         <include
-                android:id="@+id/blue_line_seperator"
-                layout="@layout/blue_horizontal_seperator"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/blue_horizontal_divider_height"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/beat_detail_header"
-                android:layout_marginTop="@dimen/content_margin_top" />-->
-
-            <android.support.v7.widget.CardView
-                android:id="@+id/card_view"
-                android:layout_width="match_parent"
-                android:layout_height="130dp"
-                android:layout_below="@+id/beat_detail_header"
-                android:layout_marginLeft="45dp"
-                android:layout_marginRight="45dp"
-                android:layout_marginTop="15dp"
-                android:visibility="gone">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/custom_list_text_background"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="15dp">
-
-                    <ImageView
-                        android:id="@+id/artist_thumbnail"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp" />
-
-                    <TextView
-                        android:id="@+id/user_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginLeft="15dp"
-                        android:layout_toRightOf="@id/artist_thumbnail"
-                        android:textColor="@color/theme_secondary_text_color"
-                        android:textSize="22sp" />
-
-                    <TextView
-                        android:id="@+id/artist_description"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/user_name"
-                        android:layout_marginLeft="15dp"
-                        android:layout_toRightOf="@id/artist_thumbnail"
-                        android:maxLines="3"
-                        android:textColor="@color/theme_secondary_text_color"
-                        android:textSize="13sp" />
-
-                </RelativeLayout>
-            </android.support.v7.widget.CardView>
-
-            <!--<android.support.v7.widget.RecyclerView-->
-                <!--android:id="@+id/mix_tag_grid"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_below="@+id/card_view" />-->
+            </LinearLayout>
 
         </RelativeLayout>
-    </ScrollView>
+
+        <!--            <TextView
+                        android:id="@+id/artist_detail_toggle_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Artist Details"
+                        android:layout_margin="35dp"
+                        android:layout_centerHorizontal="true"
+                        android:textSize="22sp"
+                        android:layout_below="@+id/beat_detail_header"
+                        android:textColor="@color/theme_primary_color"/>-->
+
+        <!--         <include
+                     android:id="@+id/blue_line_seperator"
+                     layout="@layout/blue_horizontal_seperator"
+                     android:layout_width="match_parent"
+                     android:layout_height="@dimen/blue_horizontal_divider_height"
+                     android:layout_alignParentStart="true"
+                     android:layout_below="@+id/beat_detail_header"
+                     android:layout_marginTop="@dimen/content_margin_top" />-->
+
+        <!--            <android.support.v7.widget.CardView
+                        android:id="@+id/card_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="130dp"
+                        android:layout_below="@+id/beat_detail_header"
+                        android:layout_marginLeft="45dp"
+                        android:layout_marginRight="45dp"
+                        android:layout_marginTop="15dp"
+                        android:visibility="gone">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/custom_list_text_background"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:padding="15dp">
+
+                            <ImageView
+                                android:id="@+id/artist_thumbnail"
+                                android:layout_width="80dp"
+                                android:layout_height="80dp" />
+
+                            <TextView
+                                android:id="@+id/user_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginLeft="15dp"
+                                android:layout_toRightOf="@id/artist_thumbnail"
+                                android:textColor="@color/theme_secondary_text_color"
+                                android:textSize="22sp" />
+
+                            <TextView
+                                android:id="@+id/artist_description"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/user_name"
+                                android:layout_marginLeft="15dp"
+                                android:layout_toRightOf="@id/artist_thumbnail"
+                                android:maxLines="3"
+                                android:textColor="@color/theme_secondary_text_color"
+                                android:textSize="13sp" />
+
+                        </RelativeLayout>
+                    </android.support.v7.widget.CardView>-->
+
+        <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:id="@+id/mix_tag_grid"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/card_view" />-->
+
+    </RelativeLayout>
 </RelativeLayout>

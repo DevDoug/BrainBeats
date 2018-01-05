@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:layout_margin="15dp"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -75,12 +75,12 @@
 
     <TextView
         android:id="@+id/empty_text"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_gravity="center"
         android:padding="15dp"
-        android:text="Add some other artists to start jamming"
+        android:gravity="center_horizontal"
+        android:text="Add some other artists"
         android:textSize="22sp"
         android:visibility="gone" />
 

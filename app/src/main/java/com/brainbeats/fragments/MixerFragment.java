@@ -70,7 +70,7 @@ public class MixerFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebasDatabaseReference = mFirebaseDatabase
-                .getReference("mixes/" + FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .getReference("mixes/")
                 .orderByChild("artistId")
                 .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
 

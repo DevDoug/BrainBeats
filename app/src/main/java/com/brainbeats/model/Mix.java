@@ -149,15 +149,15 @@ public class Mix implements Parcelable {
         this.mMixTitle = title;
     }
 
-    public   Mix(Track track) {
+/*    public Mix(Mix mix) {
         mMixId = "";
         mArtistId = "";
-        mMixTitle = track.getTitle();
-        mBeatAlbumCoverArtSource = track.getArtworkURL();
+        mMixTitle = getMixTitle();
+        mBeatAlbumCoverArtSource = getMixAlbumCoverArt();
         mMixSoundCloudId = track.getID();
         mStreamURL = track.getStreamURL();
         mDuration = track.getDuration();
-    }
+    }*/
 
     @Override
     public int describeContents() {

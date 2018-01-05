@@ -7,6 +7,7 @@ import com.android.volley.VolleyError;
 import com.brainbeats.entity.Collection;
 import com.brainbeats.entity.RelatedTracksResponse;
 import com.brainbeats.entity.Track;
+import com.brainbeats.model.Mix;
 import com.brainbeats.web.WebApiManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -39,13 +40,16 @@ public class BeatLearner {
     }
 
     public interface RecommendationCompleteListener {
-        void recommendationComplete(Track track);
+        void recommendationComplete(Mix mix);
     }
 
     //TODO:Implement machine learning recommendation
     public void loadNextRecommendedBeat(int selectedTrackId, RecommendationCompleteListener listener) {
 
-        //for now do something very basic and just return a random related mix.
+
+
+
+/*        //for now do something very basic and just return a random related mix.
         WebApiManager.getRelatedTracks(mContext, String.valueOf(selectedTrackId), new WebApiManager.OnObjectResponseListener() {
             @Override
             public void onObjectResponse(JSONObject object) {
@@ -101,7 +105,7 @@ public class BeatLearner {
             public void onErrorResponse(VolleyError error) {
                 Log.i(getClass().getSimpleName(), "Response = " + error.toString());
             }
-        });
+        });*/
     }
 
     //TODO - implement in version 2.0 beta version
