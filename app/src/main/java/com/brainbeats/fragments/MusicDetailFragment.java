@@ -54,7 +54,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     private TextView mTrackTitle;
     private TextView mArtistDescription;
     private ImageView mAlbumCoverArt;
-    private ImageView mPlaySongButton;
+    public ImageView mPlaySongButton;
     private ImageView mUpvoteArrow;
     private ImageView mDownVoteArrow;
     private ImageView mSkipForwardButton;
@@ -130,7 +130,7 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onStart() {
         super.onStart();
-        mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_CHECK_IF_CURRENT_SONG);
+        //mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_CHECK_IF_CURRENT_SONG);
     }
 
     @Override
@@ -146,6 +146,10 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onPause() {
         super.onPause();
+
+        mPlaySongButton.setImageResource(R.drawable.ic_play_circle);
+        ((MainActivity) getActivity()).mAudioService.stopSong();
+
         if (mUpdateSeekBar != null)
             mUpdateSeekBar.interrupt(); // stop updating the progress bar
     }
@@ -154,8 +158,8 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
     public void onStop() {
         super.onStop();
         try{
-            if(mSelectedTrack != null)
-                mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_UPDATE_CURRENT_PLAYING_SONG_VIEW, mSelectedTrack);
+/*            if(mSelectedTrack != null)
+                mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_UPDATE_CURRENT_PLAYING_SONG_VIEW, mSelectedTrack);*/
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -217,10 +221,10 @@ public class MusicDetailFragment extends Fragment implements LoaderManager.Loade
             }
         });
 
-        ((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.INVISIBLE); // hide our playing sound view
+        //((MainActivity) getActivity()).mCurrentSongPlayingView.setVisibility(View.INVISIBLE); // hide our playing sound view
 
-        if (isCurrentSong)
-            mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_UPDATE_PROGRESS_BAR_THREAD);
+/*        if (isCurrentSong)
+            mListener.onFragmentInteraction(Constants.DASHBOARD_DETAIL_UPDATE_PROGRESS_BAR_THREAD);*/
     }
 
     @Override

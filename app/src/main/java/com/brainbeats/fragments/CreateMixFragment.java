@@ -165,7 +165,7 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
             }
         });
 
-        mListener.onFragmentInteraction(Constants.MIX_SHOW_FAB);
+        //mListener.onFragmentInteraction(Constants.MIX_SHOW_FAB);
     }
 
     @Override

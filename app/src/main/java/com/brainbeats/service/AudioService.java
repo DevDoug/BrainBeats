@@ -19,7 +19,6 @@ import android.support.v4.app.NotificationCompat;
 
 import com.brainbeats.MainActivity;
 import com.brainbeats.R;
-import com.brainbeats.entity.Track;
 import com.brainbeats.model.Mix;
 import com.brainbeats.utils.BeatLearner;
 import com.brainbeats.utils.Constants;
@@ -28,7 +27,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.IOException;
 import java.util.Queue;
 
 import static com.brainbeats.utils.Constants.KEY_EXTRA_SELECTED_TRACK;
@@ -104,7 +102,7 @@ public class AudioService extends IntentService implements MediaPlayer.OnPrepare
             //player is ready update ui
             if(!mIsRecordingTest) {
                 Intent broadcastIntent = new Intent(); // send broadcast to activity to tell it to update com.brainbeats.ui
-                broadcastIntent.setAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
+                broadcastIntent.setAction(Constants.SONG_DONE_LOADING_BROADCAST_ACTION);
                 broadcastIntent.putExtra(Constants.KEY_EXTRA_SELECTED_TRACK, mPlayingSong);
                 sendBroadcast(broadcastIntent);
             }
@@ -121,11 +119,11 @@ public class AudioService extends IntentService implements MediaPlayer.OnPrepare
             //tell ui to show loading spinner
             if (!mIsRecordingTest) {
                 mp.seekTo(0);
-/*                Intent broadcastIntent = new Intent();
-                broadcastIntent.setAction(Constants.SONG_LOADING_BROADCAST_ACTION);
+                Intent broadcastIntent = new Intent();
+                broadcastIntent.setAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
                 sendBroadcast(broadcastIntent);
 
-                if (mIsPlayingPlaylist) {
+/*                if (mIsPlayingPlaylist) {
                     if (mPlaylistSongs.size() > 0) {
                         mPlayingSong = mPlaylistSongs.peek();
                         playSong(Uri.parse(mPlaylistSongs.peek().getStreamURL()));

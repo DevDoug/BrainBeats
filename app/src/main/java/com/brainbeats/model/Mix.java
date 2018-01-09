@@ -21,6 +21,12 @@ public class Mix implements Parcelable {
 
     private int mMixFavorite;
 
+    private String firebaseStorageUrl;
+
+    private long createdOn;
+
+
+
     private int mMixRating;
 
     private int mMixSoundCloudId;
@@ -35,7 +41,6 @@ public class Mix implements Parcelable {
 
     private int mIsDownvoted;
 
-    private String firebaseStorageUrl;
 
     public String getMixId() {
         return mMixId;
@@ -141,6 +146,14 @@ public class Mix implements Parcelable {
         this.firebaseStorageUrl = firebaseStorageUrl;
     }
 
+    public long getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(long createdOn) {
+        this.createdOn = createdOn;
+    }
+
     private BrainBeatsUser mBrainBeatsUser;
 
     public Mix() {}
@@ -169,6 +182,7 @@ public class Mix implements Parcelable {
         dest.writeString(mMixId);
         dest.writeString(mMixTitle);
         dest.writeString(mBeatAlbumCoverArtSource);
+        dest.writeString(firebaseStorageUrl);
         dest.writeInt(mMixFavorite);
         dest.writeInt(mMixRating);
         dest.writeInt(mMixSoundCloudId);
@@ -183,6 +197,7 @@ public class Mix implements Parcelable {
         mMixId = in.readString();
         mMixTitle = in.readString();
         mBeatAlbumCoverArtSource = in.readString();
+        firebaseStorageUrl = in.readString();
         mMixFavorite = in.readInt();
         mMixRating = in.readInt();
         mMixSoundCloudId = in.readInt();

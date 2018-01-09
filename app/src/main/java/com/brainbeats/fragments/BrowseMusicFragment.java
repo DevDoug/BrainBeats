@@ -56,6 +56,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDialogActionListener {
 
@@ -468,7 +469,6 @@ public class BrowseMusicFragment extends Fragment implements Constants.ConfirmDi
         }
     }*/
 
-    public void getTracks(String query, String genre, String tagList, String sortOrder){
 
-    }
+    public void getTracks(){}
 }

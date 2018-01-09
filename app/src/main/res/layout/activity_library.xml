@@ -43,7 +43,7 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-        <LinearLayout
+<!--        <LinearLayout
             android:id="@+id/current_track_container"
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -97,7 +97,7 @@
                 android:layout_marginLeft="10dp"
                 />
 
-            <!--            <ImageView
+            &lt;!&ndash;            <ImageView
                 android:id="@+id/play_song_button"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
@@ -117,10 +117,10 @@
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/play_song_button"
                 android:contentDescription="@string/content_description_play_next_button"
-                android:src="@drawable/ic_skip_next" />-->
+                android:src="@drawable/ic_skip_next" />&ndash;&gt;
 
 
-        </LinearLayout>
+        </LinearLayout>-->
 
     </android.support.design.widget.CoordinatorLayout>
 

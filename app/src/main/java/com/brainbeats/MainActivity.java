@@ -1,6 +1,5 @@
 package com.brainbeats;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
@@ -28,7 +27,6 @@ import android.widget.TextView;
 import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.architecture.BaseActivity;
 import com.brainbeats.data.BrainBeatsContract;
-import com.brainbeats.entity.Track;
 import com.brainbeats.fragments.BrowseMusicFragment;
 import com.brainbeats.fragments.MusicDetailFragment;
 import com.brainbeats.model.BrainBeatsUser;
@@ -125,7 +123,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Constants.SONG_COMPLETE_BROADCAST_ACTION);
-        mIntentFilter.addAction(Constants.SONG_LOADING_BROADCAST_ACTION);
+        mIntentFilter.addAction(Constants.SONG_DONE_LOADING_BROADCAST_ACTION);
         mIntentFilter.addAction(Constants.SONG_ERROR_BROADCAST_ACTION);
         //mIntentFilter.addAction(Constants.RESTORE_FROM_SERVICE_BROADCAST_ACTION);
 
@@ -168,12 +166,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
         registerReceiver(mReceiver, mIntentFilter);
 
-        if(mAudioService != null)
+/*        if(mAudioService != null)
             if(mAudioService.getIsPlaying()) {
                 if (mDashboardDetailFragment.isVisible()) {
                     (((MusicDetailFragment) mDashboardDetailFragment)).updateTrackUI(mAudioService.getPlayingSong());
                 }
-            }
+            }*/
 
     }
 
@@ -193,14 +191,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             case R.id.action_one_fob:
                 animateFAB();
                 if (mDashboardFragment.isVisible())
-                    ((BrowseMusicFragment) mDashboardFragment).getTracks("","",WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_POPULAR,"");
+                    ((BrowseMusicFragment) mDashboardFragment).getTracks();
                 else if (mDashboardDetailFragment.isVisible())
                     addMixToLibrary();
                 break;
             case R.id.action_two_fob:
                 animateFAB();
                 if (mDashboardFragment.isVisible())
-                    ((BrowseMusicFragment) mDashboardFragment).getTracks("","",WebApiManager.SOUND_CLOUD_QUERY_FILTER_PARAM_RECENT,"Recent");
+                    ((BrowseMusicFragment) mDashboardFragment).getTracks();
                 else if (mDashboardDetailFragment.isVisible())
                    addMixToFavorites();
                 break;
@@ -524,16 +522,30 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
+            if (intent.getAction().equals(Constants.SONG_DONE_LOADING_BROADCAST_ACTION)) {
+                Mix mix = intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+                if (mDashboardDetailFragment.isVisible()) {                                                             //if they are on the dashboard detail screen update the detail widgets
+                    (((MusicDetailFragment) mDashboardDetailFragment)).updateTrackUI(mix);
+                }
+            } else if (intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
+                ((MusicDetailFragment) mDashboardDetailFragment).mPlaySongButton.setImageResource(R.drawable.ic_play_circle);
+            }
+        }
+    };
+
+/*    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Constants.SONG_DONE_LOADING_BROADCAST_ACTION)) {
 
                 Mix mix = intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
                 if (mDashboardDetailFragment.isVisible()) {                                                             //if they are on the dashboard detail screen update the detail widgets
                     (((MusicDetailFragment) mDashboardDetailFragment)).updateTrackUI(mix);
                     //hideCurrentSongView();
                 }
-            } else if (intent.getAction().equals(Constants.SONG_LOADING_BROADCAST_ACTION)) {
+            } else if (intent.getAction().equals(Constants.SONG_DONE_LOADING_BROADCAST_ACTION)) {
                 if (mDashboardDetailFragment.isVisible()) {
-                    ((MusicDetailFragment) mDashboardDetailFragment).showLoadingMusicDialog();
+                    //((MusicDetailFragment) mDashboardDetailFragment).showLoadingMusicDialog();
                 }
             } else if (intent.getAction().equals(Constants.SONG_ERROR_BROADCAST_ACTION)) {
                 if (mDashboardDetailFragment.isVisible()) {
@@ -548,5 +560,5 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 }
             }
         }
-    };
+    };*/
 }

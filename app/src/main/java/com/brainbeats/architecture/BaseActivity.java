@@ -210,7 +210,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
         setUpNavDrawer();
 
-        mCurrentSongPlayingView = findViewById(R.id.current_track_container);
+        //mCurrentSongPlayingView = findViewById(R.id.current_track_container);
         mCurrentSongTitle = findViewById(R.id.playing_mix_title);
         mCurrentSongArtistName = findViewById(R.id.playing_mix_artist);
         mAlbumThumbnail = findViewById(R.id.album_thumbnail);
@@ -412,7 +412,7 @@ public class BaseActivity extends AppCompatActivity {
     };
 
     public void updateCurrentSongNotificationUI(Mix mix) {
-        if (mDisplayCurrentSongView) {
+/*        if (mDisplayCurrentSongView) {
             mCurrentSongTitle.setText(mix.getMixTitle());
             Picasso.with(BaseActivity.this).load(mix.getMixAlbumCoverArt()).into(mAlbumThumbnail);
 
@@ -420,7 +420,7 @@ public class BaseActivity extends AppCompatActivity {
                 mCurrentSongArtistName.setText(mix.getUser().getArtistName());
 
             startProgressBarThread();
-        }
+        }*/
     }
 
     public void showMainFAB(){
@@ -503,7 +503,7 @@ public class BaseActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals(Constants.SONG_COMPLETE_BROADCAST_ACTION)) {
-                Mix newTrack = intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
+/*                Mix newTrack = intent.getExtras().getParcelable(Constants.KEY_EXTRA_SELECTED_TRACK);
                 if (newTrack != null) {
                     mCurrentSongTitle.setText(newTrack.getMixTitle());
 
@@ -516,10 +516,10 @@ public class BaseActivity extends AppCompatActivity {
                         mCurrentSongArtistName.setText(newTrack.getUser().getArtistName());
 
                     mCurrentSong = newTrack;
-                }
+                }*/
 
-                showCurrentSongView();
-                startProgressBarThread();
+/*                showCurrentSongView();
+                startProgressBarThread();*/
             }/* else if (intent.getAction().equals(Constants.PLAYLIST_COMPLETE_BROADCAST_ACTION)) {
                 hideCurrentSongView();
             }*/
