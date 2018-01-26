@@ -94,9 +94,7 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
     public void switchToNewMixFragment() {
         toggleNavDrawerIcon();
 
-        hideMainFAB();
-
-        //mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_m));
+        mMainActionFab.setImageDrawable(getDrawable(R.drawable.ic_m));
 
         if(mAudioService.getIsPlaying() || mAudioService.getIsPaused()) {
             mAudioService.stopSong();
@@ -127,16 +125,6 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
         int id = v.getId();
         switch (id) {
             case R.id.main_action_fob:
-                switchToNewMixFragment();
-        }
-    }
-
-/*
-    @Override
-    public void onClick(View v) {
-        int id = v.getId();
-        switch (id) {
-            case R.id.main_action_fob:
                 if (mMixerFragment.isVisible()) {
                     if(AccountManager.getInstance(this).getMaestroShown())
                         switchToNewMixFragment();
@@ -148,7 +136,6 @@ public class MixerActivity extends BaseActivity implements View.OnClickListener,
                 break;
         }
     }
-*/
 
     @Override
     public void onFragmentInteraction(Uri uri) {

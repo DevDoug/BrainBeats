@@ -38,12 +38,16 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.brainbeats.LoginActivity;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.utils.Maestro;
+import com.brainbeats.web.WebApiManager;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -132,8 +136,8 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         mDoneButton = v.findViewById(R.id.maestro_done);
 
         addLyrics = v.findViewById(R.id.add_lyrics);
-/*        addInstrument = (TextView) v.findViewById(R.id.add_instrument);
-        playRandom = (TextView) v.findViewById(R.id.play_random);*/
+        addInstrument = (TextView) v.findViewById(R.id.add_instrument);
+        playRandom = (TextView) v.findViewById(R.id.play_random);
 
         mRecordButton.setOnClickListener(this);
         mPlayRecordingButton.setOnClickListener(this);
@@ -142,8 +146,8 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         mDoneButton.setOnClickListener(this);
         addLyrics.setOnClickListener(this);
         editSongLyricsButton.setOnClickListener(this);
-  /*      addInstrument.setOnClickListener(this);
-        playRandom.setOnClickListener(this);*/
+        addInstrument.setOnClickListener(this);
+        playRandom.setOnClickListener(this);
         return v;
     }
 
@@ -198,12 +202,12 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
                 lyricsContainer.setVisibility(View.GONE);
                 mPreviewLyricsText.setText(lyrics);
                 break;
-/*            case R.id.add_instrument:
+            case R.id.add_instrument:
                 addInstrumentToMix();
                 break;
             case R.id.play_random:
                 addRandomToMix();
-                break;*/
+                break;
         }
     }
 
@@ -404,7 +408,25 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         alert.show();
     }
 
-    public void addInstrumentToMix(){}
+    public void addInstrumentToMix() {
+        //Allow the user to select an instrument
+
+        //once the user has seleced there instrument generate that instruments part
+
+        //call firebase cloud function to generate instrument part and return to it to app
+        WebApiManager.getGeneratedInstrument(getContext(), new WebApiManager.OnObjectResponseListener() {
+            @Override
+            public void onObjectResponse(JSONObject object) {
+                object.toString();
+            }
+        }, new WebApiManager.OnErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+
+            }
+        });
+    }
 
     public void addRandomToMix(){}
 

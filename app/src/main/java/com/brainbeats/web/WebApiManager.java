@@ -94,6 +94,23 @@ public class WebApiManager {
         }
     }
 
+    public static void getGeneratedInstrument(Context context, final OnObjectResponseListener responseListener, final OnErrorListener errorListener) {
+        HashMap<String, String> mParams = new HashMap<>();
+
+        String url = "https://us-central1-e9839.cloudfunctions.net/generateGuitarPart";
+
+        try {
+            JSONObject jsonRequest = new JSONObject();
+            sendObjectRequest(context, Request.Method.POST, url, mParams, jsonRequest, responseListener, errorListener);
+        } catch (Exception ex) {
+            errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
+        }
+
+    }
+
+
+
+
     public static void getTrack(Context context, String urlPart, final OnObjectResponseListener responseListener, final OnErrorListener errorListener) {
         HashMap<String, String> mParams = new HashMap<>();
         mParams.put(SOUND_CLOUD_API_KEY_CLIENT_ID, Constants.SOUND_CLOUD_CLIENT_ID);

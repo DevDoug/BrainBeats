@@ -13,6 +13,12 @@ admin.initializeApp(functions.config().firebase);
   response.send("Hello world from Firebase!");
  });
  
+  exports.generateGuitarPart = functions.https.onRequest((request, response) => {
+	  //Use math to generate notes per instrument, eventually would like to generate these instrument peices through machine learning
+	  
+	 response.send("21")
+ });
+ 
  exports.sendFriendRequestNotification = functions.database.ref('/friend_request/{pushId}')
  .onWrite(event => {
 	 
@@ -69,3 +75,5 @@ admin.initializeApp(functions.config().firebase);
         });
 	});
  });
+ 
+ 

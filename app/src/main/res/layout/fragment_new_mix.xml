@@ -223,7 +223,7 @@
 
         </LinearLayout>
 
-        <!--        <TextView
+        <TextView
             android:id="@+id/add_instrument"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -251,7 +251,7 @@
             android:paddingStart="15dp"
             android:text="Maestro lets play something random !"
             android:textColor="@color/theme_primary_color"
-            android:textSize="18sp" />-->
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/maestro_done"
