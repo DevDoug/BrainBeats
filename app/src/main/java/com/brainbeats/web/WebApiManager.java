@@ -29,6 +29,12 @@ public class WebApiManager {
 
     public static final String API_CONNECT_URL_FORMATED      = "https://soundcloud.com/connect";
 
+    //Firebase HTTP functions base
+    public static final String Firebase_HTTP_ROOT_URL          = "https://us-central1-brainbeats-e9839.cloudfunctions.net/generateGuitarPart";
+
+
+
+
     //Sound cloud API links
     public static final String API_CONNECT_URL       = "https://soundcloud.com/connect";
     public static final String API_OAUTH             = "https://api.soundcloud.com/oauth2/token";
@@ -97,7 +103,7 @@ public class WebApiManager {
     public static void getGeneratedInstrument(Context context, final OnObjectResponseListener responseListener, final OnErrorListener errorListener) {
         HashMap<String, String> mParams = new HashMap<>();
 
-        String url = "https://us-central1-e9839.cloudfunctions.net/generateGuitarPart";
+        String url = Firebase_HTTP_ROOT_URL;
 
         try {
             JSONObject jsonRequest = new JSONObject();
@@ -105,11 +111,7 @@ public class WebApiManager {
         } catch (Exception ex) {
             errorListener.onErrorResponse(new VolleyError(context.getString(R.string.unknown_volley_error)));
         }
-
     }
-
-
-
 
     public static void getTrack(Context context, String urlPart, final OnObjectResponseListener responseListener, final OnErrorListener errorListener) {
         HashMap<String, String> mParams = new HashMap<>();
