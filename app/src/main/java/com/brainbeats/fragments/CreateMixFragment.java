@@ -43,13 +43,17 @@ import com.brainbeats.LoginActivity;
 import com.brainbeats.MixerActivity;
 import com.brainbeats.R;
 import com.brainbeats.architecture.AccountManager;
+import com.brainbeats.entity.MaestroGeneratedPart;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.utils.Maestro;
 import com.brainbeats.web.WebApiManager;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -417,7 +421,10 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
         WebApiManager.getGeneratedInstrument(getContext(), new WebApiManager.OnObjectResponseListener() {
             @Override
             public void onObjectResponse(JSONObject object) {
-                object.toString();
+                Gson gson = new Gson();
+                Type token = new TypeToken<MaestroGeneratedPart>() {}.getType();
+                MaestroGeneratedPart part = gson.fromJson(object.toString(), token);
+                part.getNoteOne();
             }
         }, new WebApiManager.OnErrorListener() {
             @Override
