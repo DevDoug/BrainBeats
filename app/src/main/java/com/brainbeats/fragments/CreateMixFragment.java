@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.media.AudioTrack;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -46,6 +47,7 @@ import com.brainbeats.architecture.AccountManager;
 import com.brainbeats.entity.MaestroGeneratedPart;
 import com.brainbeats.utils.Constants;
 import com.brainbeats.utils.Maestro;
+import com.brainbeats.utils.MixManager;
 import com.brainbeats.web.WebApiManager;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -81,6 +83,7 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
     private LinearLayout mRecordingOptions;
     RelativeLayout mMaestroPanel;
     RelativeLayout mRecordingContainer;
+
     private Button mDoneButton;
     private TextView addLyrics;
     private Button editSongLyricsButton;
@@ -99,6 +102,8 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
     private MediaPlayer mPlayer = null;
 
     private PowerManager.WakeLock recordingWakeLock;
+
+    AudioTrack mMistroGeneratedTrack;
 
 
     public interface OnFragmentInteractionListener {
@@ -408,31 +413,43 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
             }
         });
         builder.setView(dialogView);
-         alert = builder.create();
+        alert = builder.create();
         alert.show();
     }
 
     public void addInstrumentToMix() {
         //Allow the user to select an instrument
+        String[] mOptions = new String[]{"Maestro add some Guitar"};
 
-        //once the user has seleced there instrument generate that instruments part
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), android.R.style.Theme_Material_Light_Dialog_Alert);
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.custom_list_dialog_layout, null);
+        ((TextView) dialogView.findViewById(R.id.separator_title)).setText("");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.dialog_list_item, R.id.dialog_item, mOptions);
+        ((ListView) dialogView.findViewById(R.id.option_list_view)).setAdapter(adapter);
+        ((ListView) dialogView.findViewById(R.id.option_list_view)).setOnItemClickListener((parent, view, position, id) -> {
+            if (position == 0){
+                WebApiManager.getGeneratedInstrument(getContext(), new WebApiManager.OnObjectResponseListener() {
+                    @Override
+                    public void onObjectResponse(JSONObject object) {
+                        Gson gson = new Gson();
+                        Type token = new TypeToken<MaestroGeneratedPart>() {}.getType();
+                        MaestroGeneratedPart part = gson.fromJson(object.toString(), token);
+                        mMistroGeneratedTrack = MixManager.getInstance().generateGuitarPart(part.getNoteOne());
+                        //mMistroGeneratedTrack.play();
+                    }
+                }, new WebApiManager.OnErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
 
-        //call firebase cloud function to generate instrument part and return to it to app
-        WebApiManager.getGeneratedInstrument(getContext(), new WebApiManager.OnObjectResponseListener() {
-            @Override
-            public void onObjectResponse(JSONObject object) {
-                Gson gson = new Gson();
-                Type token = new TypeToken<MaestroGeneratedPart>() {}.getType();
-                MaestroGeneratedPart part = gson.fromJson(object.toString(), token);
-                part.getNoteOne();
-            }
-        }, new WebApiManager.OnErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-
+                    }
+                });
             }
         });
+        builder.setView(dialogView);
+        alert = builder.create();
+        alert.show();
     }
 
     public void addRandomToMix(){}

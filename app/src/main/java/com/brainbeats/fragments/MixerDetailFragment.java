@@ -119,12 +119,12 @@ public class MixerDetailFragment extends Fragment implements LoaderManager.Loade
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mMixerItemList.setLayoutManager(layoutManager);
 
-        mPlayMixButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playMix();
-            }
-        });
+//        mPlayMixButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                playMix();
+//            }
+//        });
 /*        mAddNewBeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,7 +176,7 @@ public class MixerDetailFragment extends Fragment implements LoaderManager.Loade
         //Uri returnRow = getActivity().getContentResolver().insert(BrainBeatsContract.MixItemsEntry.CONTENT_URI, Constants.buildMixItemsRecord(mSelectedMix.getMixId(), item));
     }
 
-    public void playMix() {
+/*    public void playMix() {
         final Thread thread = new Thread(new Runnable() {
             public void run() {
                 handler.post(new Runnable() {
@@ -187,7 +187,7 @@ public class MixerDetailFragment extends Fragment implements LoaderManager.Loade
             }
         });
         thread.start();
-    }
+    }*/
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
