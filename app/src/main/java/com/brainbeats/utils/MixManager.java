@@ -29,10 +29,10 @@ public class MixManager {
         return mInstance;
     }
 
-    public AudioTrack generateGuitarPart(int noteOne){
+    public AudioTrack generateGuitarPart(int[] notes){
 
         // Get array of frequencies with their relative strengths
-        double[][] soundData = buildSoundData(noteOne);
+        double[][] soundData = buildSoundData(notes);
 
         // TODO
         // Perform a calculation to fill an array with the mixed sound - then play it in an infinite loop
@@ -79,12 +79,12 @@ public class MixManager {
         return null;
     }
 
-    private double[][] buildSoundData(int noteOne) {
+    private double[][] buildSoundData(int[] notes) {
         double[][] soundData = new double[1][4];
-        soundData[0][0] = noteOne;
-        soundData[0][1] = noteOne;
-        soundData[0][2] = noteOne;
-        soundData[0][3] = noteOne;
+        soundData[0][0] = notes[0];
+        soundData[0][1] = notes[1];
+        soundData[0][2] = notes[2];
+        soundData[0][3] = notes[3];
         return soundData;
     }
 }

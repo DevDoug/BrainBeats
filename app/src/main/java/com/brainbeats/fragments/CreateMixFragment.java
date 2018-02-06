@@ -435,8 +435,9 @@ public class CreateMixFragment extends Fragment implements View.OnClickListener{
                         Gson gson = new Gson();
                         Type token = new TypeToken<MaestroGeneratedPart>() {}.getType();
                         MaestroGeneratedPart part = gson.fromJson(object.toString(), token);
-                        mMistroGeneratedTrack = MixManager.getInstance().generateGuitarPart(part.getNoteOne());
-                        //mMistroGeneratedTrack.play();
+                        mMistroGeneratedTrack = MixManager.getInstance().generateGuitarPart(part.getNotes());
+                        //mMistroGeneratedTrack = MixManager.getInstance().generateGuitarPart(new int[]{30,40,50,60});
+                        mMistroGeneratedTrack.play();
                     }
                 }, new WebApiManager.OnErrorListener() {
                     @Override

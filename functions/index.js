@@ -16,7 +16,8 @@ admin.initializeApp(functions.config().firebase);
   exports.generateGuitarPart = functions.https.onRequest((request, response) => {
 	  //Use math to generate notes per instrument, eventually would like to generate these instrument peices through machine learning
 	  var guitarPart = new Object();
-	  guitarPart.notes = {0,1,2,3,4,5,6,7}
+	  var noteList = new Array(0,1,2,3,4,5,6,7);
+	  guitarPart.notes = noteList;
 	
 	  response.send(guitarPart)
  });

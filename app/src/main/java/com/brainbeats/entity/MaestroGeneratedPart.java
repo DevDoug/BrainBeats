@@ -2,20 +2,22 @@ package com.brainbeats.entity;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 /**
  * Created by douglas.ray on 1/26/2018.
  */
 
 public class MaestroGeneratedPart {
 
-    @SerializedName("noteOne")
-    public int mNoteOne;
+    @SerializedName("notes")
+    public int[] mNotes;
 
-    public int getNoteOne() {
-        return mNoteOne;
+    public int[] getNotes() {
+        return mNotes;
     }
 
-    public void setNoteOne(int noteOne) {
-        this.mNoteOne = noteOne;
+    public void setNotes(int[] notes) {
+        this.mNotes = notes;
     }
 }
